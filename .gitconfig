@@ -1,0 +1,4 @@
+[core]
+       autocrlf = false
+       whitespace = cr-at-eol
+       eol = lf
