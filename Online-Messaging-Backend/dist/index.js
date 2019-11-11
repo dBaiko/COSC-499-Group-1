@@ -13,9 +13,6 @@ app.use(csp_component_1.default);
 app.get("/", (req, res, next) => {
     res.send("Backend is up and running");
 });
-app.get("/dylan", (req, res, next) => {
-    res.send("Dylan says hi");
-});
 app.listen(port, () => {
     // tslint:disable-next-line:no-console
     console.log(`server started at http://localhost:${port}`);
