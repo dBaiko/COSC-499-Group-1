@@ -23,6 +23,11 @@ export class RegisterComponent implements OnInit {
   codeWasConfirmed = false;
   error = '';
 
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+
   url = 'http://localhost:8080/users/registerUser';
 
   constructor(private auth: AuthenticationService, private _router: Router, private http: HttpClient) {
@@ -42,8 +47,10 @@ export class RegisterComponent implements OnInit {
       (data) => {
         this.confirmCode = true;
 
-        this.addUser(username, email, firstName, lastName);
-
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
 
       },
       (err) => {
@@ -64,6 +71,9 @@ export class RegisterComponent implements OnInit {
         // this._router.navigateByUrl('/');
         this.codeWasConfirmed = true;
         this.confirmCode = false;
+
+        this.addUser();
+
       },
       (err) => {
         console.log(err);
@@ -71,12 +81,12 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  addUser(username, email, firstName, lastName) {
+  addUser() {
     let user: User = {
-      username: username,
-      email: email,
-      firstName: firstName,
-      lastName: lastName
+      username: this.username,
+      email: this.email,
+      firstName: this.firstName,
+      lastName: this.lastName
     };
 
     let httpOptions = {
