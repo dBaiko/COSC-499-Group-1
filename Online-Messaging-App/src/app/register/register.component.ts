@@ -2,6 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
 import {Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
+import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
+
+interface User {
+  username: string,
+  email: string,
+  firstName: string,
+  lastName: string
+}
+
 
 @Component({
   selector: 'app-register',
@@ -14,7 +23,9 @@ export class RegisterComponent implements OnInit {
   codeWasConfirmed = false;
   error = '';
 
-  constructor(private auth: AuthenticationService, private _router: Router) {
+  url = 'http://localhost:8080/users/registerUser';
+
+  constructor(private auth: AuthenticationService, private _router: Router, private http: HttpClient) {
   }
 
   ngOnInit() {
@@ -31,7 +42,8 @@ export class RegisterComponent implements OnInit {
       (data) => {
         this.confirmCode = true;
 
-        // add code to send user info to dynamodb
+        this.addUser(username, email, firstName, lastName);
+
 
       },
       (err) => {
@@ -57,6 +69,24 @@ export class RegisterComponent implements OnInit {
         console.log(err);
         this.error = 'Confirm Authorization Error has occurred';
       });
+  }
+
+  addUser(username, email, firstName, lastName) {
+    let user: User = {
+      username: username,
+      email: email,
+      firstName: firstName,
+      lastName: lastName
+    };
+
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    }
+
+    this.http.post(this.url, user, httpOptions).subscribe(data => {console.log(data);}, err => {console.log(err)})
+
   }
 
 }
