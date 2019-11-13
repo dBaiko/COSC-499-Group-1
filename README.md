@@ -21,7 +21,7 @@ To ensure you have installed the project correctly, you can either configure you
 when conmplete.
 For front end:
 	Go to http://localhost:4200
-	You should see a blank page (likely replaced by the login page as project progresses), and the console should display no errors.
+	You should see a the login page, and the console should display no errors.
 For back end:
 	Go to http://localhost:8080
 	You should see the message "Backend is up and running"
