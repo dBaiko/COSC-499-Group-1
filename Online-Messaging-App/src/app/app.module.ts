@@ -10,7 +10,7 @@ import {FormsModule} from "@angular/forms";
 import { LoginComponent } from './login/login.component';
 import { RegisterRedirectComponent } from './login/register-redirect/register-redirect.component';
 import { HomeComponent } from './home/home.component';
-import { LogoutComponent } from "./logout/logout.component";
+import { LogoutComponent } from "./home/logout/logout.component";
 
 @NgModule({
   declarations: [

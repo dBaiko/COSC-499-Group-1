@@ -1,6 +1,7 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
+import {Common} from "../shared/common";
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,7 @@ import {AuthenticationService} from "../shared/authentication.service";
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private auth: AuthenticationService) { }
+  constructor(public common: Common, private auth: AuthenticationService) { }
 
   ngOnInit() {
   }
@@ -22,6 +23,7 @@ export class LoginComponent implements OnInit {
     this.auth.login(username, password).subscribe(
       (data) => {
         console.log(data);
+        this.common.moveToHome();
       },
       (err) => {
         console.log(err);

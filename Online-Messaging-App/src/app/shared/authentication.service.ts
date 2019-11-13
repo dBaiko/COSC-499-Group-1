@@ -13,22 +13,26 @@ export class AuthenticationService {
 
   constructor() { }
 
+  private EMAIL = 'email';
+  private GIVEN_NAME = 'given_name';
+  private FAMILY_NAME = 'family_name';
+
   public register(username, password, email, firstName, lastName) {
 
     let dataEmail = {
-      Name: 'email',
+      Name: this.EMAIL,
       Value: email
     };
     let attrEmail = new CognitoUserAttribute(dataEmail);
 
    let dataFirstName = {
-      Name: 'given_name',
+      Name: this.GIVEN_NAME,
       Value: firstName
     };
     let attrFirstName = new CognitoUserAttribute(dataFirstName);
 
     let dataLastName = {
-      Name: 'family_name',
+      Name: this.FAMILY_NAME,
       Value: lastName
     };
     let attrLastName = new CognitoUserAttribute(dataLastName);

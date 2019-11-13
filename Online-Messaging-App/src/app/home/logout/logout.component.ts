@@ -1,7 +1,9 @@
 import {Component, NgModule, OnInit} from '@angular/core';
-import {AuthenticationService} from "../shared/authentication.service";
+import {AuthenticationService} from "../../shared/authentication.service";
 import {NgForm} from "@angular/forms";
 import { Router } from "@angular/router";
+import {Common} from "../../shared/common";
+import {Constants} from "../../config/app-config";
 
 @Component({
   selector: 'app-logout',
@@ -10,7 +12,7 @@ import { Router } from "@angular/router";
 })
 export class LogoutComponent implements OnInit {
 
-  constructor(private auth: AuthenticationService, private router: Router) { }
+  constructor(private auth: AuthenticationService, public common: Common) { }
 
   ngOnInit() {
   }
@@ -21,7 +23,7 @@ export class LogoutComponent implements OnInit {
 
   logout() {
     this.auth.logOut();
-    this.router.navigate(['/login']);
+    this.common.routeTo(Constants.LOGIN_ROUTE);
   }
 
 
