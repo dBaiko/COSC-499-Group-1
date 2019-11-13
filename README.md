@@ -9,6 +9,9 @@ cd Online-Messaging-App
 npm install
 cd ../Online-Messaging-Backend
 npm install
+cd ..
+npm i @angular/cli -g --save-dev
+npm i express -g  --save-dev
 ```
 
 Once this is done, everything should be working correctly.
