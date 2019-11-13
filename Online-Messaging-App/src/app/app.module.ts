@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterRedirectComponent } from './login/register-redirect/register-redirect.component';
 import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from "./home/logout/logout.component";
+import {Common} from "./shared/common";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { LogoutComponent } from "./home/logout/logout.component";
     HttpClientModule,
     FormsModule
   ],
-  providers: [AuthenticationService],
+  providers: [AuthenticationService, Common],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
