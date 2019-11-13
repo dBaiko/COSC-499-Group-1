@@ -73,21 +73,21 @@ export class AuthenticationService {
     });
   }
 
-  signIn(email, password) {
+  login(username, password) {
 
     const authenticationData = {
-      Username : email,
+      Username : username,
       Password : password,
     };
     const authenticationDetails = new AuthenticationDetails(authenticationData);
 
     const userData = {
-      Username : email,
+      Username : username,
       Pool : userPool
     };
     const cognitoUser = new CognitoUser(userData);
 
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess(result) {
@@ -114,7 +114,9 @@ export class AuthenticationService {
   }
 
   logOut() {
-    this.getAuthenticatedUser().signOut();
-    this.cognitoUser = null;
+    if(this.getAuthenticatedUser() != null) {
+      this.getAuthenticatedUser().signOut();
+      this.cognitoUser = null;
+    }
   }
 }

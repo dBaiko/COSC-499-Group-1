@@ -32,12 +32,10 @@ export class RegisterComponent implements OnInit {
   }
 
   registerSubmit(form: NgForm) {
-    console.log(form.value.email);
     this.register(form.value.username, form.value.password, form.value.email, form.value.firstName, form.value.lastName);
   }
 
   register(username, password, email, firstName, lastName) {
-    console.log(email);
     this.auth.register(username, password, email, firstName, lastName).subscribe(
       (data) => {
         this.confirmCode = true;
