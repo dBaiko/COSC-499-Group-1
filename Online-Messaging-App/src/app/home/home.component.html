@@ -1,0 +1,10 @@
+<div>
+
+  <div *ngIf="userLoggedIn; else elseBlock">
+    <p>You are currently logged in.</p>
+    <app-logout></app-logout>
+  </div>
+  <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
+
+
+</div>

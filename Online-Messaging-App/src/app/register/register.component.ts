@@ -1,8 +1,10 @@
+/* tslint:disable:no-console */
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
-import {Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
-import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {APIConfig, Constants} from "../config/app-config";
+import {Common} from "../shared/common";
 
 interface User {
   username: string,
@@ -27,21 +29,19 @@ export class RegisterComponent implements OnInit {
   firstName: string;
   lastName: string;
 
-  url = 'http://localhost:8080/users/registerUser';
+  url = APIConfig.RegisterAPI;
 
-  constructor(private auth: AuthenticationService, private _router: Router, private http: HttpClient) {
+  constructor(private auth: AuthenticationService, private http: HttpClient, public common: Common) {
   }
 
   ngOnInit() {
   }
 
   registerSubmit(form: NgForm) {
-    console.log(form.value.email);
     this.register(form.value.username, form.value.password, form.value.email, form.value.firstName, form.value.lastName);
   }
 
   register(username, password, email, firstName, lastName) {
-    console.log(email);
     this.auth.register(username, password, email, firstName, lastName).subscribe(
       (data) => {
         this.confirmCode = true;
@@ -67,11 +67,12 @@ export class RegisterComponent implements OnInit {
 
     this.auth.confirmAuthCode(code).subscribe(
       (data) => {
-        // this._router.navigateByUrl('/');
         this.codeWasConfirmed = true;
         this.confirmCode = false;
 
         this.addUser();
+
+        this.common.routeTo(Constants.LOGIN_ROUTE)
 
       },
       (err) => {
@@ -94,7 +95,13 @@ export class RegisterComponent implements OnInit {
       })
     }
 
-    this.http.post(this.url, user, httpOptions).subscribe(data => {console.log(data);}, err => {console.log(err)})
+    this.http.post(this.url, user, httpOptions).subscribe(
+      data => {
+        console.log(data);
+        },
+        err => {
+        console.log(err)}
+        );
 
   }
 
