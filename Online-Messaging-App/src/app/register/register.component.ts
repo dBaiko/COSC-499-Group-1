@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
 import {Router} from "@angular/router";
 import {NgForm} from "@angular/forms";
-<<<<<<< HEAD
-=======
 import {HttpClient, HttpHeaders, HttpRequest} from '@angular/common/http';
 
 interface User {
@@ -12,8 +10,6 @@ interface User {
   firstName: string,
   lastName: string
 }
-
->>>>>>> 7d5e1b6e456f3d7b21cd33b191550645b2511816
 
 @Component({
   selector: 'app-register',
@@ -50,14 +46,10 @@ export class RegisterComponent implements OnInit {
       (data) => {
         this.confirmCode = true;
 
-<<<<<<< HEAD
-        // add code to send user info to dynamodb
-=======
         this.username = username;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
->>>>>>> 7d5e1b6e456f3d7b21cd33b191550645b2511816
 
       },
       (err) => {
@@ -78,12 +70,9 @@ export class RegisterComponent implements OnInit {
         // this._router.navigateByUrl('/');
         this.codeWasConfirmed = true;
         this.confirmCode = false;
-<<<<<<< HEAD
-=======
 
         this.addUser();
 
->>>>>>> 7d5e1b6e456f3d7b21cd33b191550645b2511816
       },
       (err) => {
         console.log(err);
@@ -91,8 +80,6 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-<<<<<<< HEAD
-=======
   addUser() {
     let user: User = {
       username: this.username,
@@ -111,5 +98,4 @@ export class RegisterComponent implements OnInit {
 
   }
 
->>>>>>> 7d5e1b6e456f3d7b21cd33b191550645b2511816
 }
