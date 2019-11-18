@@ -1,18 +1,32 @@
-<div class="container">
 
+<div class="container">
   <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
   <ng-template #elseBlock>
-    <div class="mat-display-3">Log in to Streamline Athletes</div>
+    <mat-toolbar color="primary" class ="navbar">
+      <div>Streamline Athletes</div>
+      <div>
+        <span>Home</span>
+        <span>About</span>
+        <span>Services</span>
+      </div>
+    </mat-toolbar>
+    <div class="mat-display-2">Log in to Streamline Athletes</div>
     <div class="row">
       <div class="col-lg-4">
         <form (ngSubmit)="loginSubmit(loginForm)" #loginForm="ngForm">
           <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" ngModel class="form-control">
+            <mat-form-field appearance="fill" color = "primary">
+              <mat-label>Username</mat-label>
+            <input matInput type="text" name="username" id="username" ngModel class="form-control">
+            <mat-hint align = "end">The username!</mat-hint>
+            </mat-form-field>
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" ngModel class="form-control" required>
+            <mat-form-field appearance="fill" color = "primary">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" name="password" id="password" ngModel class="form-control">
+              <mat-hint align = "end">Don't mess up!</mat-hint>
+            </mat-form-field>
           </div>
           <button color = "primary" mat-raised-button type="submit" class="btn btn-primary">Login</button>
         </form>
@@ -20,25 +34,34 @@
     </div>
     <app-register-redirect></app-register-redirect>
   </ng-template>
-  <div class = "mat-display-4">This is display 4</div>
-  <button color = "primary" mat-raised-button>Login</button>
-  <button color = "accent" mat-raised-button>Login</button>
-  <button color = "warn" mat-raised-button>Login</button>
-  <mat-button-toggle #toggleBtn checked>Toggle</mat-button-toggle>
-  {{toggleBtn.checked}}
-  <div>
-  <mat-button-toggle-group #toggleGroup="matButtonToggleGroup">
-    <mat-button-toggle value="angular">Angular</mat-button-toggle>
-    <mat-button-toggle value="react">React</mat-button-toggle>
-    <mat-button-toggle value="vue">Vue</mat-button-toggle>
-  </mat-button-toggle-group>
-    {{toggleGroup.value}}
-    <mat-icon>grade</mat-icon>
 
-    <span matBadge="5" matBadgeColor="primary">Notifications</span>
-    <span matBadge="5" matBadgeColor="warm">Notifications</span>
-    <span [matBadge]="notifications" [matBadgeHidden]="notifications == 0" matBadgeColor="accent" matBadgeOverlap="false">Notifications</span>
+<!--  <div class = "mat-display-4">This is display 4</div>-->
+<!--  <button color = "primary" mat-raised-button>Login</button>-->
+<!--  <button color = "accent" mat-raised-button>Login</button>-->
+<!--  <button color = "warn" mat-raised-button>Login</button>-->
+<!--  <mat-button-toggle #toggleBtn checked>Toggle</mat-button-toggle>-->
+<!--  {{toggleBtn.checked}}-->
+<!--  <div>-->
+<!--  <mat-button-toggle-group #toggleGroup="matButtonToggleGroup">-->
+<!--    <mat-button-toggle value="angular">Angular</mat-button-toggle>-->
+<!--    <mat-button-toggle value="react">React</mat-button-toggle>-->
+<!--    <mat-button-toggle value="vue">Vue</mat-button-toggle>-->
+<!--  </mat-button-toggle-group>-->
+<!--    {{toggleGroup.value}}-->
+<!--    <mat-icon>grade</mat-icon>-->
 
-  </div>
+<!--    <span matBadge="5" matBadgeColor="primary">Notifications</span>-->
+<!--    <span matBadge="5" matBadgeColor="warm">Notifications</span>-->
+<!--    <span [matBadge]="notifications" [matBadgeHidden]="notifications == 0" matBadgeColor="accent" matBadgeOverlap="false">Notifications</span>-->
+
+<!--    <mat-progress-spinner value ="40"></mat-progress-spinner>-->
+
+<!--    <mat-menu #appMenu="matMenu">-->
+<!--      <button mat-menu-item>FrontEnd</button>-->
+<!--      <button mat-menu-item>BackEnd</button>-->
+<!--    </mat-menu>-->
+
+<!--    <button mat-flat-button [matMenuTriggerFor]="appMenu">Menu</button>-->
+<!--  </div>-->
 </div>
 
