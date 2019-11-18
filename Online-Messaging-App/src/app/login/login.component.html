@@ -2,7 +2,7 @@
 
   <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
   <ng-template #elseBlock>
-    <p>You are not logged in. Please log in.</p>
+    <div class="mat-display-3">Log in to Streamline Athletes</div>
     <div class="row">
       <div class="col-lg-4">
         <form (ngSubmit)="loginSubmit(loginForm)" #loginForm="ngForm">
@@ -14,11 +14,31 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" ngModel class="form-control" required>
           </div>
-          <button type="submit" class="btn btn-primary">Login</button>
+          <button color = "primary" mat-raised-button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
     </div>
     <app-register-redirect></app-register-redirect>
   </ng-template>
+  <div class = "mat-display-4">This is display 4</div>
+  <button color = "primary" mat-raised-button>Login</button>
+  <button color = "accent" mat-raised-button>Login</button>
+  <button color = "warn" mat-raised-button>Login</button>
+  <mat-button-toggle #toggleBtn checked>Toggle</mat-button-toggle>
+  {{toggleBtn.checked}}
+  <div>
+  <mat-button-toggle-group #toggleGroup="matButtonToggleGroup">
+    <mat-button-toggle value="angular">Angular</mat-button-toggle>
+    <mat-button-toggle value="react">React</mat-button-toggle>
+    <mat-button-toggle value="vue">Vue</mat-button-toggle>
+  </mat-button-toggle-group>
+    {{toggleGroup.value}}
+    <mat-icon>grade</mat-icon>
+
+    <span matBadge="5" matBadgeColor="primary">Notifications</span>
+    <span matBadge="5" matBadgeColor="warm">Notifications</span>
+    <span [matBadge]="notifications" [matBadgeHidden]="notifications == 0" matBadgeColor="accent" matBadgeOverlap="false">Notifications</span>
+
+  </div>
 </div>
 

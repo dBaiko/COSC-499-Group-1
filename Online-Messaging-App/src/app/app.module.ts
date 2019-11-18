@@ -12,6 +12,7 @@ import { RegisterRedirectComponent } from './login/register-redirect/register-re
 import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from "./home/logout/logout.component";
 import {Common} from "./shared/common";
+import {MaterialModule} from "./material/material.module";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {Common} from "./shared/common";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MaterialModule
   ],
   providers: [AuthenticationService, Common],
   bootstrap: [AppComponent]

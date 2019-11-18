@@ -9,7 +9,7 @@ import {Common} from "../shared/common";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
+  notifications = 0;
   constructor(public common: Common, private auth: AuthenticationService) { }
 
   ngOnInit() {
