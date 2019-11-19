@@ -1,12 +1,11 @@
 {
-    "defaultSeverity": "warning",
-    "extends": [
-        "tslint:recommended"
+  "defaultSeverity": "warning",
+  "rulesDirectory": ["node_modules/codelyzer"],
+  "jsRules": {},
+  "rules": {
+    "trailing-comma": [
+      false
     ],
-    "jsRules": {},
-    "rules": {
-        "trailing-comma": [ false ],
-        "quotemark": true
-    },
-    "rulesDirectory": []
+    "quotemark": false
+  }
 }

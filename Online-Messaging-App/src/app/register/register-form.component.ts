@@ -3,8 +3,8 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
 import {NgForm} from "@angular/forms";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {APIConfig, Constants} from "../config/app-config";
-import {Common} from "../shared/common";
+import {APIConfig, Constants} from "../shared/app-config";
+import {CommonService} from "../shared/common.service";
 
 interface User {
   username: string,
@@ -14,11 +14,11 @@ interface User {
 }
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: 'register-form',
+  templateUrl: './register-form.component.html',
+  styleUrls: ['./register-form.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterFormComponent implements OnInit {
 
   confirmCode = false;
   codeWasConfirmed = false;
@@ -31,19 +31,19 @@ export class RegisterComponent implements OnInit {
 
   url = APIConfig.RegisterAPI;
 
-  constructor(private auth: AuthenticationService, private http: HttpClient, public common: Common) {
+  constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService) {
   }
 
   ngOnInit() {
   }
 
-  registerSubmit(form: NgForm) {
+  registerSubmit(form: NgForm): void {
     this.register(form.value.username, form.value.password, form.value.email, form.value.firstName, form.value.lastName);
   }
 
-  register(username, password, email, firstName, lastName) {
+  register(username: string, password: string, email: string, firstName: string, lastName: string): void {
     this.auth.register(username, password, email, firstName, lastName).subscribe(
-      (data) => {
+      () => {
         this.confirmCode = true;
 
         this.username = username;
@@ -66,7 +66,7 @@ export class RegisterComponent implements OnInit {
   validateAuthCode(code) {
 
     this.auth.confirmAuthCode(code).subscribe(
-      (data) => {
+      () => {
         this.codeWasConfirmed = true;
         this.confirmCode = false;
 
@@ -81,7 +81,7 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  addUser() {
+  addUser(): void {
     let user: User = {
       username: this.username,
       email: this.email,
@@ -91,17 +91,18 @@ export class RegisterComponent implements OnInit {
 
     let httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+        'Content-Type': 'application/json'
       })
-    }
+    };
 
     this.http.post(this.url, user, httpOptions).subscribe(
       data => {
         console.log(data);
-        },
-        err => {
-        console.log(err)}
-        );
+      },
+      err => {
+        console.log(err)
+      }
+    );
 
   }
 

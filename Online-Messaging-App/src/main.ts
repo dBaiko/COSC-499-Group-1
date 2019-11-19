@@ -8,5 +8,7 @@ if (environment.production) {
   enableProdMode();
 }
 
+// noinspection JSUnusedLocalSymbols
 platformBrowserDynamic().bootstrapModule(AppModule)
+  .then(success => console.log(`Bootstrap success`))
   .catch(err => console.error(err));
