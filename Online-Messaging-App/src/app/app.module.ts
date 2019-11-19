@@ -29,6 +29,7 @@ import {AuthenticationService} from "./shared/authentication.service";
     FormsModule,
   ],
   providers: [AuthenticationService, CommonService],
+
   bootstrap: [AppComponent]
 })
 export class AppModule {
