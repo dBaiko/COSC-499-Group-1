@@ -39,11 +39,11 @@ export class RegisterFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  registerSubmit(form: NgForm) {
+  registerSubmit(form: NgForm): void {
     this.register(form.value.username, form.value.password, form.value.email, form.value.firstName, form.value.lastName);
   }
 
-  register(username, password, email, firstName, lastName) {
+  register(username: string, password: string, email: string, firstName: string, lastName: string): void {
     this.obs = this.auth.register(username, password, email, firstName, lastName)
     console.log(this.obs)
     this.obs.subscribe(
@@ -85,7 +85,7 @@ export class RegisterFormComponent implements OnInit {
       });
   }
 
-  addUser() {
+  addUser(): void {
     let user: User = {
       username: this.username,
       email: this.email,

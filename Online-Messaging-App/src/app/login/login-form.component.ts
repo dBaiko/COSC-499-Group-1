@@ -15,11 +15,11 @@ export class LoginFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  loginSubmit(form: NgForm) {
+  loginSubmit(form: NgForm): void {
     this.login(form.value.username, form.value.password);
   }
 
-  login(username, password) {
+  login(username: string, password: string): void {
     this.auth.login(username, password).subscribe(
       (data) => {
         console.log(data);

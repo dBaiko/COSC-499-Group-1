@@ -17,11 +17,11 @@ export class LogoutFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  logoutSubmit(form: NgForm) {
+  logoutSubmit(form: NgForm): void {
     this.logout();
   }
 
-  logout() {
+  logout(): void {
     this.auth.logOut();
     this.common.routeTo(Constants.LOGIN_ROUTE);
   }

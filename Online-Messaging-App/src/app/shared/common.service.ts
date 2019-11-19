@@ -10,15 +10,15 @@ export class CommonService {
 
   constructor(private router: Router){}
 
-  public checkIfLoggedIn(){
+  public checkIfLoggedIn(): boolean {
     return this.auth.isLoggedIn();
   }
 
-  public moveToHome(){
+  public moveToHome(): void{
     this.routeTo(Constants.HOME_ROUTE);
   }
 
-  public routeTo(route: string) {
+  public routeTo(route: string): void {
     this.router.navigate([route]);
   }
 
