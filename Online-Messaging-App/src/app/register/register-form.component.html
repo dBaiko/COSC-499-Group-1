@@ -1,29 +1,55 @@
 <div class="container">
+  <app-header></app-header>
 
+  <div align="center" class="mat-display-2">Streamline Athletes</div>
   <div class="row">
     <div class="col-lg-4">
       <form (ngSubmit)="registerSubmit(regform)" #regform="ngForm">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" name="username" id="username" ngModel class="form-control">
+        <div align="center" class="random">
+        <div class="form-group" >
+          <div>
+          <mat-form-field appearance="fill" color = "primary">
+            <mat-label>Username</mat-label>
+            <input matInput type="text" name="username" id="username" ngModel class="form-control">
+          </mat-form-field>
+          </div>
+         <div>
+          <mat-form-field appearance="fill" color = "primary">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" name="password" id="password" ngModel class="form-control">
+            <mat-hint align = "end">Minimum 8 Characters</mat-hint>
+          </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="fill" color = "primary">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput type="password" name="confirmPassword" id="confirmPassword" ngModel class="form-control">
+            </mat-form-field>
+          </div>
+      </div>
+      <div class="form-group" >
+        <div>
+          <mat-form-field appearance="fill" color = "primary">
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" name="firstName" id="firstName" ngModel class="form-control">
+          </mat-form-field>
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password" ngModel class="form-control" required>
+        <div>
+        <mat-form-field appearance="fill" color = "primary">
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" name="lastName" id="lastName" ngModel class="form-control">
+          </mat-form-field>
         </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" name="email" id="email" ngModel class="form-control">
+        <div>
+          <mat-form-field appearance="fill" color = "primary">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" name="email" id="email" ngModel class="form-control">
+          </mat-form-field>
         </div>
-        <div class="form-group">
-          <label for="firstName">First Name</label>
-          <input type="text" name="firstName" id="firstName" ngModel class="form-control">
+      </div>
         </div>
-        <div class="form-group">
-          <label for="lastName">Last Name</label>
-          <input type="text" name="lastName" id="lastName" ngModel class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button color = "primary" mat-raised-button type="submit" class="btn btn-primary">Sign Up</button>
+
       </form>
     </div>
   </div>
@@ -43,7 +69,7 @@
   <div *ngIf="codeWasConfirmed" class="row message-row">
     <h3>Verification Code was confirmed, please click <a routerLink="/login">here</a> to login</h3>
   </div>
-  <div>
-    <p>Already have an account? <a routerLink="/login">Login</a></p>
+  <div class = "mat-body" align="center">
+    Already have an account? <a routerLink="/login">Login</a>
   </div>
 </div>
