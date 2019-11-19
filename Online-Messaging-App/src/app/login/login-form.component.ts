@@ -1,16 +1,16 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
-import {Common} from "../shared/common";
+import {CommonService} from "../shared/common.service";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'login-form',
+  templateUrl: './login-form.component.html',
+  styleUrls: ['./login-form.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginFormComponent implements OnInit {
 
-  constructor(public common: Common, private auth: AuthenticationService) { }
+  constructor(public common: CommonService, private auth: AuthenticationService) { }
 
   ngOnInit() {
   }

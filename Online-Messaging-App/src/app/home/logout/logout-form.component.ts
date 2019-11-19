@@ -2,17 +2,17 @@ import {Component, NgModule, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
 import {NgForm} from "@angular/forms";
 import { Router } from "@angular/router";
-import {Common} from "../../shared/common";
-import {Constants} from "../../config/app-config";
+import {CommonService} from "../../shared/common.service";
+import {Constants} from "../../shared/app-config";
 
 @Component({
-  selector: 'app-logout',
-  templateUrl: './logout.component.html',
-  styleUrls: ['./logout.component.scss']
+  selector: 'logout-form',
+  templateUrl: './logout-form.component.html',
+  styleUrls: ['./logout-form.component.scss']
 })
-export class LogoutComponent implements OnInit {
+export class LogoutFormComponent implements OnInit {
 
-  constructor(private auth: AuthenticationService, public common: Common) { }
+  constructor(private auth: AuthenticationService, public common: CommonService) { }
 
   ngOnInit() {
   }

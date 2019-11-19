@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-register-redirect',
+  selector: 'register-redirect',
   templateUrl: './register-redirect.component.html',
   styleUrls: ['./register-redirect.component.scss']
 })

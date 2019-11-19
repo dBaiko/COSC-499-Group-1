@@ -1,10 +1,10 @@
 import {AuthenticationService} from "./authentication.service";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
-import {Constants} from "../config/app-config";
+import {Constants} from "./app-config";
 
 @Injectable()
-export class Common {
+export class CommonService {
 
   private auth = new AuthenticationService();
 

@@ -3,8 +3,8 @@ import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
 import {NgForm} from "@angular/forms";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {APIConfig, Constants} from "../config/app-config";
-import {Common} from "../shared/common";
+import {APIConfig, Constants} from "../shared/app-config";
+import {CommonService} from "../shared/common.service";
 
 interface User {
   username: string,
@@ -14,11 +14,11 @@ interface User {
 }
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: 'register-form',
+  templateUrl: './register-form.component.html',
+  styleUrls: ['./register-form.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterFormComponent implements OnInit {
 
   confirmCode = false;
   codeWasConfirmed = false;
@@ -31,7 +31,9 @@ export class RegisterComponent implements OnInit {
 
   url = APIConfig.RegisterAPI;
 
-  constructor(private auth: AuthenticationService, private http: HttpClient, public common: Common) {
+  obs = null
+
+  constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService) {
   }
 
   ngOnInit() {
@@ -42,7 +44,9 @@ export class RegisterComponent implements OnInit {
   }
 
   register(username, password, email, firstName, lastName) {
-    this.auth.register(username, password, email, firstName, lastName).subscribe(
+    this.obs = this.auth.register(username, password, email, firstName, lastName)
+    console.log(this.obs)
+    this.obs.subscribe(
       (data) => {
         this.confirmCode = true;
 
