@@ -5,7 +5,7 @@ import {CommonService} from "../shared/common.service";
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
+  templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
