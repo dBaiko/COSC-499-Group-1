@@ -13,6 +13,7 @@ import { HomeComponent } from './home/home.component';
 import { LogoutComponent } from "./home/logout/logout.component";
 import {Common} from "./shared/common";
 import {MaterialModule} from "./material/material.module";
+import { HeaderComponent } from './home/header/header.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {MaterialModule} from "./material/material.module";
     LoginComponent,
     RegisterRedirectComponent,
     HomeComponent,
-    LogoutComponent
+    LogoutComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,

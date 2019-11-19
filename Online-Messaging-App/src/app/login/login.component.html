@@ -2,14 +2,7 @@
 <div class="container">
   <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
   <ng-template #elseBlock>
-    <mat-toolbar color="primary" class ="navbar">
-      <div>Streamline Athletes</div>
-      <div>
-        <span>Home</span>
-        <span>About</span>
-        <span>Services</span>
-      </div>
-    </mat-toolbar>
+  <app-header></app-header>
     <div class="mat-display-2">Log in to Streamline Athletes</div>
     <div class="row">
       <div class="col-lg-4">
