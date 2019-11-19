@@ -20,7 +20,7 @@ export class CommonService {
   }
 
   public routeTo(route: string): void {
-    this.router.navigate([route]);
+    this.router.navigate([route]).then(() => {console.log("Navigating to:" + route)});
   }
 
 }

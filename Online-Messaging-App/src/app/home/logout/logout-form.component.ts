@@ -1,7 +1,5 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
-import {NgForm} from "@angular/forms";
-import {Router} from "@angular/router";
 import {CommonService} from "../../shared/common.service";
 import {Constants} from "../../shared/app-config";
 
@@ -18,7 +16,7 @@ export class LogoutFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  logoutSubmit(form: NgForm): void {
+  logoutSubmit(): void {
     this.logout();
   }
 

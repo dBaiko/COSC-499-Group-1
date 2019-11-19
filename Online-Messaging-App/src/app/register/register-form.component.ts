@@ -31,8 +31,6 @@ export class RegisterFormComponent implements OnInit {
 
   url = APIConfig.RegisterAPI;
 
-  obs = null
-
   constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService) {
   }
 
@@ -44,10 +42,8 @@ export class RegisterFormComponent implements OnInit {
   }
 
   register(username: string, password: string, email: string, firstName: string, lastName: string): void {
-    this.obs = this.auth.register(username, password, email, firstName, lastName)
-    console.log(this.obs)
-    this.obs.subscribe(
-      (data) => {
+    this.auth.register(username, password, email, firstName, lastName).subscribe(
+      () => {
         this.confirmCode = true;
 
         this.username = username;
@@ -70,7 +66,7 @@ export class RegisterFormComponent implements OnInit {
   validateAuthCode(code) {
 
     this.auth.confirmAuthCode(code).subscribe(
-      (data) => {
+      () => {
         this.codeWasConfirmed = true;
         this.confirmCode = false;
 
@@ -97,7 +93,7 @@ export class RegisterFormComponent implements OnInit {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-    }
+    };
 
     this.http.post(this.url, user, httpOptions).subscribe(
       data => {

@@ -1,16 +1,9 @@
 import {Injectable} from '@angular/core';
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserAttribute,
-  CognitoUserPool
-} from 'amazon-cognito-identity-js';
+import {AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
 import {Observable} from "rxjs";
 import {CognitoConfig} from "./app-config";
 
-const poolData = CognitoConfig;
-
-const userPool = new CognitoUserPool(poolData);
+const userPool = new CognitoUserPool(CognitoConfig);
 
 @Injectable()
 export class AuthenticationService {
