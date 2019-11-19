@@ -1,6 +1,22 @@
+$float: left;
+$margin: auto;
+$display-style: table;
 .mat-display-2{
   margin-top: 3rem;
 }
-.mat-form-field{
+.form-group{
+  float:$float;
   margin: 1rem;
 }
+.random{
+  margin-right: $margin;
+  margin-left: $margin;
+  display:$display-style;
+}
+.btn-primary{
+  margin-right: $margin;
+  margin-left: $margin;
+  display:$display-style;
+  text-align: center;
+}
+
