@@ -10,7 +10,8 @@ import {CommonService} from "../shared/common.service";
 })
 export class LoginFormComponent implements OnInit {
 
-  constructor(public common: CommonService, private auth: AuthenticationService) { }
+  constructor(public common: CommonService, private auth: AuthenticationService) {
+  }
 
   ngOnInit() {
   }
@@ -28,7 +29,6 @@ export class LoginFormComponent implements OnInit {
       (err) => {
         console.log(err);
       }
-
     );
   }
 

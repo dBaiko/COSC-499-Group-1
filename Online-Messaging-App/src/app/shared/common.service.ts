@@ -8,13 +8,14 @@ export class CommonService {
 
   private auth = new AuthenticationService();
 
-  constructor(private router: Router){}
+  constructor(private router: Router) {
+  }
 
   public checkIfLoggedIn(): boolean {
     return this.auth.isLoggedIn();
   }
 
-  public moveToHome(): void{
+  public moveToHome(): void {
     this.routeTo(Constants.HOME_ROUTE);
   }
 

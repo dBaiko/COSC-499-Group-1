@@ -1,7 +1,7 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
 import {NgForm} from "@angular/forms";
-import { Router } from "@angular/router";
+import {Router} from "@angular/router";
 import {CommonService} from "../../shared/common.service";
 import {Constants} from "../../shared/app-config";
 
@@ -12,7 +12,8 @@ import {Constants} from "../../shared/app-config";
 })
 export class LogoutFormComponent implements OnInit {
 
-  constructor(private auth: AuthenticationService, public common: CommonService) { }
+  constructor(private auth: AuthenticationService, public common: CommonService) {
+  }
 
   ngOnInit() {
   }

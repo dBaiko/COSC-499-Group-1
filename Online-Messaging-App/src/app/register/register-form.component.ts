@@ -95,17 +95,18 @@ export class RegisterFormComponent implements OnInit {
 
     let httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+        'Content-Type': 'application/json'
       })
     }
 
     this.http.post(this.url, user, httpOptions).subscribe(
       data => {
         console.log(data);
-        },
-        err => {
-        console.log(err)}
-        );
+      },
+      err => {
+        console.log(err)
+      }
+    );
 
   }
 

@@ -1,6 +1,6 @@
 import {Component, NgModule, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
-import { CommonService} from "../shared/common.service";
+import {CommonService} from "../shared/common.service";
 
 @Component({
   selector: 'app-home',
