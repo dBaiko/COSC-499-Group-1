@@ -1,7 +1,7 @@
 // noinspection SpellCheckingInspection
 export const CognitoConfig = {
-  UserPoolId: 'ca-central-1_LYb5qiCzP',
-  ClientId: '5mlgj3ilisnpvjd79ktdjg2cku'
+  UserPoolId: 'ca-central-1_fHZjgJNaL',
+  ClientId: '7h5ftv2f8buj0u61ol8hct6rjg'
 };
 
 export const APIConfig = {
