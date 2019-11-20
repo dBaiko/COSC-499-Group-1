@@ -20,14 +20,7 @@ interface User {
 })
 export class RegisterFormComponent implements OnInit {
 
-  confirmCode = false;
-  codeWasConfirmed = false;
   error = '';
-
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
 
   url = APIConfig.RegisterAPI;
 
@@ -44,13 +37,15 @@ export class RegisterFormComponent implements OnInit {
   register(username: string, password: string, email: string, firstName: string, lastName: string): void {
     this.auth.register(username, password, email, firstName, lastName).subscribe(
       () => {
-        this.confirmCode = true;
 
-        this.username = username;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-
+        this.addUser(username, email, firstName, lastName)
+          .then((data) => {
+            console.log(data);
+            this.common.routeTo(Constants.LOGIN_ROUTE);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
       (err) => {
         console.log(err);
@@ -59,34 +54,12 @@ export class RegisterFormComponent implements OnInit {
     );
   }
 
-  validateAuthCodeSubmit(form: NgForm) {
-    this.validateAuthCode(form.value.code);
-  }
-
-  validateAuthCode(code) {
-
-    this.auth.confirmAuthCode(code).subscribe(
-      () => {
-        this.codeWasConfirmed = true;
-        this.confirmCode = false;
-
-        this.addUser();
-
-        this.common.routeTo(Constants.LOGIN_ROUTE)
-
-      },
-      (err) => {
-        console.log(err);
-        this.error = 'Confirm Authorization Error has occurred';
-      });
-  }
-
-  addUser(): void {
+  addUser(username: string, email: string, firstName: string, lastName: string) {
     let user: User = {
-      username: this.username,
-      email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName
+      username: username,
+      email: email,
+      firstName: firstName,
+      lastName: lastName
     };
 
     let httpOptions = {
@@ -94,16 +67,7 @@ export class RegisterFormComponent implements OnInit {
         'Content-Type': 'application/json'
       })
     };
-
-    this.http.post(this.url, user, httpOptions).subscribe(
-      data => {
-        console.log(data);
-      },
-      err => {
-        console.log(err)
-      }
-    );
-
+    return this.http.post(this.url, user, httpOptions).toPromise()
   }
 
 }

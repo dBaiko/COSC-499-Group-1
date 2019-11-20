@@ -10,7 +10,7 @@ router.use(body_parser_1.default());
 router.post('/', (req, res) => {
     const userRegistration = new UserRegistration_1.default();
     userRegistration.createNewUser(req.body.username, req.body.email, req.body.firstName, req.body.lastName);
-    res.status(200).send("New User added successfully");
+    res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
 });
 module.exports = router;
 //# sourceMappingURL=registerUser.js.map
