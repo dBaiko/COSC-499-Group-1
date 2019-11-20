@@ -12,6 +12,8 @@ import {HomeComponent} from './home/home.component';
 import {LogoutFormComponent} from "./home/logout/logout-form.component";
 import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
+import {HeaderComponent} from "./home/header/header.component";
+import {MaterialModule} from "./material/material.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +22,7 @@ import {AuthenticationService} from "./shared/authentication.service";
     LoginFormComponent,
     RegisterRedirectComponent,
     HomeComponent,
+    HeaderComponent,
     LogoutFormComponent
   ],
   imports: [
@@ -27,6 +30,7 @@ import {AuthenticationService} from "./shared/authentication.service";
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    MaterialModule
   ],
   providers: [AuthenticationService, CommonService],
 
