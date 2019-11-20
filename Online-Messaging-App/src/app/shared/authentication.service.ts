@@ -47,33 +47,16 @@ export class AuthenticationService {
           console.log('Registration Error: ', err);
           observer.error(err);
         }
-
-        this.cognitoUser = result.user;
-        console.log('Registration Success', result);
-        observer.next(result);
-        observer.complete();
-      });
-    });
-
-  }
-
-  confirmAuthCode(code) {
-    const user = {
-      Username: this.cognitoUser.username,
-      Pool: userPool
-    };
-    return new Observable(observer => {
-      const cognitoUser = new CognitoUser(user);
-      cognitoUser.confirmRegistration(code, true, function (err, result) {
-        if (err) {
-          console.log(err);
-          observer.error(err);
+        else {
+          this.cognitoUser = result.user;
+          console.log('Registration Success', result);
+          observer.next(result);
+          observer.complete();
         }
-        console.log('confirmAuthCode() success', result);
-        observer.next(result);
-        observer.complete();
+
       });
     });
+
   }
 
   login(username: string, password: string): Observable<Object> {

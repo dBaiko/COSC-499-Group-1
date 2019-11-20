@@ -8,7 +8,7 @@ router.use(bodyParser());
 router.post('/', (req, res) => {
     const userRegistration = new UserRegistration();
     userRegistration.createNewUser(req.body.username, req.body.email, req.body.firstName, req.body.lastName);
-    res.status(200).send("New User added successfully");
+    res.status(200).send({status: 200, data: {message: "New user added successfully"}});
 });
 
 export  = router;
