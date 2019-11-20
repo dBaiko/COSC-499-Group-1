@@ -4,7 +4,7 @@ import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 
 @Component({
-  selector: 'app-login',
+  selector: 'login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
@@ -27,7 +27,6 @@ export class LoginFormComponent implements OnInit {
       (err) => {
         console.log(err);
       }
-
     );
   }
 
