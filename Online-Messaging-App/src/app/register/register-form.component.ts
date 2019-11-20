@@ -67,10 +67,7 @@ export class RegisterFormComponent implements OnInit {
         'Content-Type': 'application/json'
       })
     };
-
     return this.http.post(this.url, user, httpOptions).toPromise()
-
-
   }
 
 }
