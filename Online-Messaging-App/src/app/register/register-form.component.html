@@ -53,22 +53,6 @@
       </form>
     </div>
   </div>
-  <br/>
-  <div *ngIf="confirmCode" class="row message-row">
-    <h3>Please check your email for the validation code and enter it here:</h3>
-    <div class="col-lg-4">
-      <form (ngSubmit)="validateAuthCodeSubmit(codeform)" #codeform="ngForm">
-        <div class="form-group">
-          <label for="code">Code</label>
-          <input type="text" name="code" id="code" ngModel class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Validate Code</button>
-      </form>
-    </div>
-  </div>
-  <div *ngIf="codeWasConfirmed" class="row message-row">
-    <h3>Verification Code was confirmed, please click <a routerLink="/login">here</a> to login</h3>
-  </div>
   <div class = "mat-body" align="center">
     Already have an account? <a routerLink="/login">Login</a>
   </div>
