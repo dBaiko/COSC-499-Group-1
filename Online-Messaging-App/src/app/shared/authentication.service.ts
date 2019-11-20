@@ -1,23 +1,22 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
-import { Observable } from "rxjs";
-import { CognitoConfig } from "../config/app-config";
+import {Observable} from "rxjs";
+import {CognitoConfig} from "./app-config";
 
-const poolData = CognitoConfig;
-
-const userPool = new CognitoUserPool(poolData);
+const userPool = new CognitoUserPool(CognitoConfig);
 
 @Injectable()
 export class AuthenticationService {
   cognitoUser: any;
 
-  constructor() { }
+  constructor() {
+  }
 
   private EMAIL = 'email';
   private GIVEN_NAME = 'given_name';
   private FAMILY_NAME = 'family_name';
 
-  public register(username, password, email, firstName, lastName) {
+  public register(username: string, password: string, email: string, firstName: string, lastName: string): Observable<Object> {
 
     let dataEmail = {
       Name: this.EMAIL,
@@ -25,7 +24,7 @@ export class AuthenticationService {
     };
     let attrEmail = new CognitoUserAttribute(dataEmail);
 
-   let dataFirstName = {
+    let dataFirstName = {
       Name: this.GIVEN_NAME,
       Value: firstName
     };
@@ -42,56 +41,39 @@ export class AuthenticationService {
     attributeList.push(attrFirstName);
     attributeList.push(attrLastName);
 
-    return new Observable(observer => {
+    return new Observable<Object>(observer => {
       userPool.signUp(username, password, attributeList, null, (err, result) => {
         if (err) {
           console.log('Registration Error: ', err);
           observer.error(err);
         }
-
-        this.cognitoUser = result.user;
-        console.log('Registration Success', result);
-        observer.next(result);
-        observer.complete();
-      });
-    });
-
-  }
-
-  confirmAuthCode(code) {
-    const user = {
-      Username : this.cognitoUser.username,
-      Pool : userPool
-    };
-    return new Observable(observer => {
-      const cognitoUser = new CognitoUser(user);
-      cognitoUser.confirmRegistration(code, true, function(err, result) {
-        if (err) {
-          console.log(err);
-          observer.error(err);
+        else {
+          this.cognitoUser = result.user;
+          console.log('Registration Success', result);
+          observer.next(result);
+          observer.complete();
         }
-        console.log('confirmAuthCode() success', result);
-        observer.next(result);
-        observer.complete();
+
       });
     });
+
   }
 
-  login(username, password) {
+  login(username: string, password: string): Observable<Object> {
 
     const authenticationData = {
-      Username : username,
-      Password : password,
+      Username: username,
+      Password: password,
     };
     const authenticationDetails = new AuthenticationDetails(authenticationData);
 
     const userData = {
-      Username : username,
-      Pool : userPool
+      Username: username,
+      Pool: userPool
     };
     const cognitoUser = new CognitoUser(userData);
 
-    return new Observable(observer => {
+    return new Observable<Object>(observer => {
 
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess(result) {
@@ -108,17 +90,17 @@ export class AuthenticationService {
     });
   }
 
-  isLoggedIn() {
+  isLoggedIn(): boolean {
     return userPool.getCurrentUser() != null;
   }
 
-  getAuthenticatedUser() {
+  getAuthenticatedUser(): CognitoUser {
     // gets the current user from the local storage
     return userPool.getCurrentUser();
   }
 
-  logOut() {
-    if(this.getAuthenticatedUser() != null) {
+  logOut(): void {
+    if (this.getAuthenticatedUser() != null) {
       this.getAuthenticatedUser().signOut();
       this.cognitoUser = null;
     }

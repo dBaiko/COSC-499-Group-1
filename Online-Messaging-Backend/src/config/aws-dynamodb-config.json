@@ -1,6 +1,0 @@
-{
-  "accessKeyId": "AKIAJYW6MCXDBVW6UXXA",
-  "secretAccessKey": "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",
-  "region": "ca-central-1",
-  "endpoint": "https://dynamodb.ca-central-1.amazonaws.com"
-}

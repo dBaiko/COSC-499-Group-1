@@ -1,7 +1,8 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
+import {awsConfigPath} from "../../config/aws-config";
 
-aws.config.loadFromPath('src/config/aws-dynamodb-config.json');
+aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 

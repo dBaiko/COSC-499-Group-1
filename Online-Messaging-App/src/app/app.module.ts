@@ -1,34 +1,40 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
-import { RegisterComponent } from './register/register.component';
-import { AuthenticationService } from "./shared/authentication.service";
+import {RegisterFormComponent} from './register/register-form.component';
 import {FormsModule} from "@angular/forms";
-import { LoginComponent } from './login/login.component';
-import { RegisterRedirectComponent } from './login/register-redirect/register-redirect.component';
-import { HomeComponent } from './home/home.component';
-import { LogoutComponent } from "./home/logout/logout.component";
-import {Common} from "./shared/common";
+import {LoginFormComponent} from './login/login-form.component';
+import {RegisterRedirectComponent} from './login/register-redirect/register-redirect.component';
+import {HomeComponent} from './home/home.component';
+import {LogoutFormComponent} from "./home/logout/logout-form.component";
+import {CommonService} from "./shared/common.service";
+import {AuthenticationService} from "./shared/authentication.service";
+import {HeaderComponent} from "./home/header/header.component";
+import {MaterialModule} from "./material/material.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent,
-    LoginComponent,
+    RegisterFormComponent,
+    LoginFormComponent,
     RegisterRedirectComponent,
     HomeComponent,
-    LogoutComponent
+    HeaderComponent,
+    LogoutFormComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MaterialModule
   ],
-  providers: [AuthenticationService, Common],
+  providers: [AuthenticationService, CommonService],
+
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
