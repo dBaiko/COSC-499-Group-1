@@ -54,7 +54,7 @@ export class RegisterFormComponent implements OnInit {
     );
   }
 
-  addUser(username: string, email: string, firstName: string, lastName: string): Promise {
+  addUser(username: string, email: string, firstName: string, lastName: string): Promise<Object> {
     let user: User = {
       username: username,
       email: email,
