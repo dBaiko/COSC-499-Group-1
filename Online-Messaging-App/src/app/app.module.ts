@@ -14,6 +14,8 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import {MaterialModule} from "./material/material.module";
     RegisterRedirectComponent,
     HomeComponent,
     HeaderComponent,
-    LogoutFormComponent
+    LogoutFormComponent,
+    SidebarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
