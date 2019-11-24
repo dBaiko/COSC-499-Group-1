@@ -1,10 +1,12 @@
 /* tslint:disable:no-console */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
-import {NgForm} from "@angular/forms";
+import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig, Constants} from "../shared/app-config";
 import {CommonService} from "../shared/common.service";
+import {FormValidationService, ParentErrorStateMatcher} from "../shared/form-validation.service";
+import {verifyHostBindings} from "@angular/compiler";
 
 interface User {
   username: string,
@@ -16,22 +18,60 @@ interface User {
 @Component({
   selector: 'register-form',
   templateUrl: './register-form.component.html',
-  styleUrls: ['./register-form.component.scss']
+  styleUrls: ['./register-form.component.scss'],
 })
 export class RegisterFormComponent implements OnInit {
 
-  error = '';
-
   url = APIConfig.RegisterAPI;
 
-  constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService) {
+  registerForm: FormGroup;
+
+  matchingPasswordForm: FormGroup;
+
+  submitAttempt = false;
+
+  matcher = new ParentErrorStateMatcher();
+
+  constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService, private formValidationService: FormValidationService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.matchingPasswordForm = new FormGroup({
+      'password': new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.minLength(8)
+      ])),
+      'confirmPassword': new FormControl('', Validators.compose([
+        Validators.required
+        ])),
+    }, {validators: this.formValidationService.checkIfPasswordsMatch}
+    );
+    this.registerForm = new FormGroup({
+      'username': new FormControl('', Validators.compose([
+        Validators.required,
+        this.formValidationService.isAlphanumericValidator
+      ])),
+      "matchingPasswords": this.matchingPasswordForm,
+      "firstName": new FormControl('', Validators.compose([
+        Validators.required,
+        this.formValidationService.isAlphanumericValidator
+      ])),
+      "lastName": new FormControl('', Validators.compose([
+        Validators.required,
+        this.formValidationService.isAlphanumericValidator
+      ])),
+      "email": new FormControl('', Validators.compose([
+        Validators.required,
+        Validators.email
+      ]))
+    })
   }
 
-  registerSubmit(form: NgForm): void {
-    this.register(form.value.username, form.value.password, form.value.email, form.value.firstName, form.value.lastName);
+  registerSubmit(value): void {
+    this.submitAttempt = true;
+    if(this.registerForm.valid){
+      this.register(value.username, value.matchingPasswords.password, value.email, value.firstName, value.lastName)
+    }
   }
 
   register(username: string, password: string, email: string, firstName: string, lastName: string): void {
@@ -44,12 +84,13 @@ export class RegisterFormComponent implements OnInit {
             this.common.routeTo(Constants.LOGIN_ROUTE);
           })
           .catch((err) => {
-            console.log(err);
+
           });
       },
       (err) => {
-        console.log(err);
-        this.error = 'Registration Error has occurred';
+        if(err.code == "UsernameExistsException"){
+          this.registerForm.get('username').setErrors({"alreadyTaken": true});
+        }
       }
     );
   }

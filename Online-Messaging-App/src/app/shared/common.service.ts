@@ -2,9 +2,12 @@ import {AuthenticationService} from "./authentication.service";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
 import {Constants} from "./app-config";
+import {VALIDATION_MESSAGES} from "./app-config";
 
 @Injectable()
 export class CommonService {
+
+  public validation_methods = VALIDATION_MESSAGES;
 
   private auth = new AuthenticationService();
 

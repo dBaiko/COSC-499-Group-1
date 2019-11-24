@@ -1,7 +1,8 @@
 import {Component, NgModule, OnInit} from '@angular/core';
-import {NgForm} from "@angular/forms";
+import {FormControl, FormGroup, NgForm} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
+import {Validators} from "@angular/forms";
 
 @Component({
   selector: 'login-form',
@@ -9,9 +10,21 @@ import {CommonService} from "../shared/common.service";
   styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
-  constructor(public common: CommonService, private auth: AuthenticationService) { }
+
+  loginForm: FormGroup;
+
+  constructor(public common: CommonService, private auth: AuthenticationService) {
+  }
 
   ngOnInit() {
+    this.loginForm = new FormGroup({
+      'username': new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      'password': new FormControl('', Validators.compose([
+        Validators.required
+      ]))
+    })
   }
 
   loginSubmit(form: NgForm) {
