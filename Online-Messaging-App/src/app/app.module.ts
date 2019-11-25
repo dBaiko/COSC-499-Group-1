@@ -14,6 +14,7 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
+import {ChatboxComponent} from './home/chatbox/chatbox.component';
 import {FormValidationService} from "./shared/form-validation.service";
 
 @NgModule({
@@ -24,7 +25,8 @@ import {FormValidationService} from "./shared/form-validation.service";
     RegisterRedirectComponent,
     HomeComponent,
     HeaderComponent,
-    LogoutFormComponent
+    LogoutFormComponent,
+    ChatboxComponent
   ],
   imports: [
     BrowserModule,

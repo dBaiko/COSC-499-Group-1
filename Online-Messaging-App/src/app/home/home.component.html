@@ -1,7 +1,7 @@
 <div>
 
   <div *ngIf="userLoggedIn; else elseBlock">
-    <p>You are currently logged in.</p>
+    <app-chatbox></app-chatbox>
     <logout-form></logout-form>
   </div>
   <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
