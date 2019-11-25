@@ -4,35 +4,44 @@
       <img mat-card-avatar>
       <mat-card-title>Message Box</mat-card-title>
     </mat-card-header>
+    <p>{{error}}</p>
     <hr>
-    <mat-card-header>
-      <img mat-card-avatar>
-      <mat-card-title>User 1</mat-card-title>
-      <mat-card-subtitle>3:03 PM</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Hey!</p>
-    </mat-card-content>
-    <hr>
+    <div *ngFor="let chatMessage of chatMessages">
+      <mat-card-header>
+        <mat-card-title>{{chatMessage.username}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{chatMessage.message}}</p>
+      </mat-card-content>
+    </div>
+<!--    <mat-card-header>-->
+<!--      <img mat-card-avatar>-->
+<!--      <mat-card-title>User 1</mat-card-title>-->
+<!--      <mat-card-subtitle>3:03 PM</mat-card-subtitle>-->
+<!--    </mat-card-header>-->
+<!--    <mat-card-content>-->
+<!--      <p>Hey!</p>-->
+<!--    </mat-card-content>-->
+<!--    <hr>-->
 
-    <mat-card-header>
-      <img mat-card-avatar>
-      <mat-card-title>User 2</mat-card-title>
-      <mat-card-subtitle>3:04 PM</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Sup Bro!</p>
-    </mat-card-content>
-    <hr>
+<!--    <mat-card-header>-->
+<!--      <img mat-card-avatar>-->
+<!--      <mat-card-title>User 2</mat-card-title>-->
+<!--      <mat-card-subtitle>3:04 PM</mat-card-subtitle>-->
+<!--    </mat-card-header>-->
+<!--    <mat-card-content>-->
+<!--      <p>Sup Bro!</p>-->
+<!--    </mat-card-content>-->
+<!--    <hr>-->
 
-    <mat-card-header>
-      <img mat-card-avatar>
-      <mat-card-title>User 1</mat-card-title>
-      <mat-card-subtitle>3:05 PM</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Nothing, much hbu?</p>
-    </mat-card-content>
+<!--    <mat-card-header>-->
+<!--      <img mat-card-avatar>-->
+<!--      <mat-card-title>User 1</mat-card-title>-->
+<!--      <mat-card-subtitle>3:05 PM</mat-card-subtitle>-->
+<!--    </mat-card-header>-->
+<!--    <mat-card-content>-->
+<!--      <p>Nothing, much hbu?</p>-->
+<!--    </mat-card-content>-->
     <hr>
     <mat-card-footer align="center">
       <mat-form-field>
