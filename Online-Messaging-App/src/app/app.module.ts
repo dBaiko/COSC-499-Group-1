@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {RegisterFormComponent} from './register/register-form.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LoginFormComponent} from './login/login-form.component';
 import {RegisterRedirectComponent} from './login/register-redirect/register-redirect.component';
 import {HomeComponent} from './home/home.component';
@@ -14,7 +14,8 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
-import { ChatboxComponent } from './home/chatbox/chatbox.component';
+import {ChatboxComponent} from './home/chatbox/chatbox.component';
+import {FormValidationService} from "./shared/form-validation.service";
 
 @NgModule({
   declarations: [
@@ -32,9 +33,10 @@ import { ChatboxComponent } from './home/chatbox/chatbox.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    MaterialModule
+    MaterialModule,
+    ReactiveFormsModule
   ],
-  providers: [AuthenticationService, CommonService],
+  providers: [AuthenticationService, CommonService, FormValidationService],
 
   bootstrap: [AppComponent]
 })
