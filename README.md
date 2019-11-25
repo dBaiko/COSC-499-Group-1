@@ -29,3 +29,28 @@ For back end:
 When running the front end, as you make changes to the code, your webbrowser will auto-reload the new changes you've made each time you save.
 
 When running the back end, new changes will not auto-reload, so you will have to manually re-run the backend run configuration, and refresh the page on your browser
+
+*Amazon Cognito Fix*<br>
+There is/was (depending on the status of this [pull request](https://github.com/aws-amplify/amplify-js/pull/4427) on the
+official AWS github) an issue where one error message (that we need to catch to provide vital error checking in the login
+component) cannot be thrown due to a minor BigInteger signing issue. The fix is simple but unfortunately, until the 
+pull request is merged, and the version is updated, we will not have this issue fixed. However, given that that fix is 
+simple enough, a minor change can be done to the local `node_module` of `amazon-cognito-identity-js` fix this issue in
+the mean time.<br>
+To do this fix simply
+1. Under `Online-Messaging-App` go into your local `node_modules` folder
+2. Locate the sub-folder `amazon-cognito-identity-js`
+3. Under this folder find the file: `src\BigInteger.js`
+4. On line `222`
+   1. change:
+   ```javascript
+   if (this.s < 0) return '-' + this.negate().toString();
+   ```
+   2. to:
+   ```javascript
+    if (this.s < 0) return '-' + this.negate().toString(b);
+   ```
+5. Save the file and stop and re-run the app if you started it already.
+<br>**Don't re-run `npm install` or you will have to  do these steps again**
+     
+
