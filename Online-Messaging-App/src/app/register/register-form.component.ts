@@ -28,7 +28,7 @@ export class RegisterFormComponent implements OnInit {
 
   matchingPasswordForm: FormGroup;
 
-  submitAttempt = false;
+  submitAttempt: boolean = false;
 
   matcher = new ParentErrorStateMatcher();
 

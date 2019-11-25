@@ -83,7 +83,7 @@ export class AuthenticationService {
           observer.complete();
         },
         onFailure(err) {
-          console.log(err);
+          //console.log(err.toString());
           observer.error(err);
         },
       });

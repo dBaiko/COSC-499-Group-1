@@ -3,6 +3,7 @@ import {FormControl, FormGroup, NgForm} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 import {Validators} from "@angular/forms";
+import {FormValidationService, ParentErrorStateMatcher} from "../shared/form-validation.service";
 
 @Component({
   selector: 'login-form',
@@ -13,7 +14,9 @@ export class LoginFormComponent implements OnInit {
 
   loginForm: FormGroup;
 
-  constructor(public common: CommonService, private auth: AuthenticationService) {
+  submitAttempt: boolean = false;
+
+  constructor(public common: CommonService, private auth: AuthenticationService, private formValidationService: FormValidationService) {
   }
 
   ngOnInit() {
@@ -27,18 +30,21 @@ export class LoginFormComponent implements OnInit {
     })
   }
 
-  loginSubmit(form: NgForm) {
-    this.login(form.value.username, form.value.password);
+  loginSubmit(value): void {
+    this.submitAttempt = true;
+    this.login(value.username, value.password);
   }
 
-  login(username, password) {
+  login(username, password): void {
     this.auth.login(username, password).subscribe(
       (data) => {
         console.log(data);
         this.common.moveToHome();
       },
       (err) => {
-        console.log(err);
+        if(err.code == "NotAuthorizedException") {
+          this.loginForm.get('username').setErrors({'invalidLogin': true});
+        }
       }
     );
   }

@@ -18,7 +18,8 @@ export const VALIDATION_MESSAGES = {
   'username': [
     {type: "required", message: "Username is required"},
     {type: "alreadyTaken", message: "Your username has already been taken"},
-    {type: "pattern", message: "Username must only contain letters and characters"}
+    {type: "pattern", message: "Username must only contain letters and characters"},
+    {type: "invalidLogin", message: "Username or password is incorrect, please try again."}
   ],
   'email': [
     {type: "required", message: "Email is required"},
