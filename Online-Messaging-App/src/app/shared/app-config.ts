@@ -12,6 +12,9 @@ export const Constants = {
   LOGIN_ROUTE: "/login",
   REGISTER_ROUTE: '/register',
   HOME_ROUTE: '/',
+  USERNAME: 'username',
+  PASSWORD: 'password',
+  EMPTY: ''
 };
 
 export const VALIDATION_MESSAGES = {
@@ -38,8 +41,8 @@ export const VALIDATION_MESSAGES = {
     {type: "pattern", message: "First name must only contain letters and numbers"}
   ],
   "lastName": [
-    {type: "required", message:"Last Name is required"},
-    {type: "pattern", message:"Last Name must only contain letters and numbers"}
+    {type: "required", message: "Last Name is required"},
+    {type: "pattern", message: "Last Name must only contain letters and numbers"}
   ],
 }
 

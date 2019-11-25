@@ -1,12 +1,13 @@
 /* tslint:disable:no-console */
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
-import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig, Constants} from "../shared/app-config";
 import {CommonService} from "../shared/common.service";
 import {FormValidationService, ParentErrorStateMatcher} from "../shared/form-validation.service";
-import {verifyHostBindings} from "@angular/compiler";
+
+const USER_EXISTS_EX = "UsernameExistsException";
 
 interface User {
   username: string,
@@ -22,7 +23,7 @@ interface User {
 })
 export class RegisterFormComponent implements OnInit {
 
-  url = APIConfig.RegisterAPI;
+  url: string = APIConfig.RegisterAPI;
 
   registerForm: FormGroup;
 
@@ -37,40 +38,40 @@ export class RegisterFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.matchingPasswordForm = new FormGroup({
-      'password': new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.minLength(8)
-      ])),
-      'confirmPassword': new FormControl('', Validators.compose([
-        Validators.required
+        password: new FormControl('', Validators.compose([
+          Validators.required,
+          Validators.minLength(8)
         ])),
-    }, {validators: this.formValidationService.checkIfPasswordsMatch}
+        confirmPassword: new FormControl('', Validators.compose([
+          Validators.required
+        ])),
+      }, {validators: this.formValidationService.checkIfPasswordsMatch}
     );
     this.registerForm = new FormGroup({
-      'username': new FormControl('', Validators.compose([
+      username: new FormControl('', Validators.compose([
         Validators.required,
         this.formValidationService.isAlphanumericValidator
       ])),
-      "matchingPasswords": this.matchingPasswordForm,
-      "firstName": new FormControl('', Validators.compose([
+      matchingPasswords: this.matchingPasswordForm,
+      firstName: new FormControl('', Validators.compose([
         Validators.required,
         this.formValidationService.isAlphanumericValidator
       ])),
-      "lastName": new FormControl('', Validators.compose([
+      lastName: new FormControl('', Validators.compose([
         Validators.required,
         this.formValidationService.isAlphanumericValidator
       ])),
-      "email": new FormControl('', Validators.compose([
+      email: new FormControl('', Validators.compose([
         Validators.required,
         Validators.email
       ]))
-    })
+    });
   }
 
-  registerSubmit(value): void {
+  registerSubmit(value: any): void {
     this.submitAttempt = true;
-    if(this.registerForm.valid){
-      this.register(value.username, value.matchingPasswords.password, value.email, value.firstName, value.lastName)
+    if (this.registerForm.valid) {
+      this.register(value.username, value.matchingPasswords.password, value.email, value.firstName, value.lastName);
     }
   }
 
@@ -88,8 +89,8 @@ export class RegisterFormComponent implements OnInit {
           });
       },
       (err) => {
-        if(err.code == "UsernameExistsException"){
-          this.registerForm.get('username').setErrors({"alreadyTaken": true});
+        if (err.code == USER_EXISTS_EX) {
+          this.registerForm.get(Constants.USERNAME).setErrors({alreadyTaken: true});
         }
       }
     );
@@ -108,7 +109,7 @@ export class RegisterFormComponent implements OnInit {
         'Content-Type': 'application/json'
       })
     };
-    return this.http.post(this.url, user, httpOptions).toPromise()
+    return this.http.post(this.url, user, httpOptions).toPromise();
   }
 
 }

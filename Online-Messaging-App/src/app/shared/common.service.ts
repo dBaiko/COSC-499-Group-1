@@ -1,8 +1,7 @@
 import {AuthenticationService} from "./authentication.service";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
-import {Constants} from "./app-config";
-import {VALIDATION_MESSAGES} from "./app-config";
+import {Constants, VALIDATION_MESSAGES} from "./app-config";
 
 @Injectable()
 export class CommonService {
@@ -23,7 +22,9 @@ export class CommonService {
   }
 
   public routeTo(route: string): void {
-    this.router.navigate([route]).then(() => {console.log("Navigating to:" + route)});
+    this.router.navigate([route]).then(() => {
+      console.log("Navigating to:" + route)
+    });
   }
 
 }

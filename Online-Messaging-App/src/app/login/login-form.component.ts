@@ -1,9 +1,11 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {FormControl, FormGroup, NgForm} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
-import {Validators} from "@angular/forms";
-import {FormValidationService, ParentErrorStateMatcher} from "../shared/form-validation.service";
+import {FormValidationService} from "../shared/form-validation.service";
+import {Constants} from "../shared/app-config";
+
+const NOT_AUTH_EX = 'NotAuthorizedException';
 
 @Component({
   selector: 'login-form',
@@ -19,31 +21,31 @@ export class LoginFormComponent implements OnInit {
   constructor(public common: CommonService, private auth: AuthenticationService, private formValidationService: FormValidationService) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loginForm = new FormGroup({
-      'username': new FormControl('', Validators.compose([
+      username: new FormControl(Constants.EMPTY, Validators.compose([
         Validators.required
       ])),
-      'password': new FormControl('', Validators.compose([
+      password: new FormControl(Constants.EMPTY, Validators.compose([
         Validators.required
       ]))
-    })
+    });
   }
 
-  loginSubmit(value): void {
+  loginSubmit(value: any): void {
     this.submitAttempt = true;
     this.login(value.username, value.password);
   }
 
-  login(username, password): void {
+  login(username: string, password: string): void {
     this.auth.login(username, password).subscribe(
       (data) => {
         console.log(data);
         this.common.moveToHome();
       },
       (err) => {
-        if(err.code == "NotAuthorizedException") {
-          this.loginForm.get('username').setErrors({'invalidLogin': true});
+        if (err.code == NOT_AUTH_EX) {
+          this.loginForm.get(Constants.USERNAME).setErrors({invalidLogin: true});
         }
       }
     );

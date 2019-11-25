@@ -7,21 +7,21 @@
       <form (ngSubmit)="registerSubmit(registerForm.value)" [formGroup]="registerForm">
         <div align="center" class="random">
           <div class="form-group">
-              <mat-form-field appearance="fill" color="primary">
-                <mat-label>Username</mat-label>
-                <input matInput type="text" name="username" id="username" class="form-control"
-                       formControlName="username" required>
-                <mat-error *ngFor="let validation of common.validation_methods.username">
-                  <mat-error
-                    *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'username', validation, submitAttempt)">{{validation.message}}</mat-error>
-                </mat-error>
-              </mat-form-field>
+            <mat-form-field appearance="fill" color="primary">
+              <mat-label>Username</mat-label>
+              <input class="form-control" formControlName="username" id="username" matInput name="username"
+                     required type="text">
+              <mat-error *ngFor="let validation of common.validation_methods.username">
+                <mat-error
+                  *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'username', validation, submitAttempt)">{{validation.message}}</mat-error>
+              </mat-error>
+            </mat-form-field>
             <div formGroupName="matchingPasswords">
               <div>
                 <mat-form-field appearance="fill" color="primary">
                   <mat-label>Password</mat-label>
-                  <input matInput type="password" name="password" id="password" class="form-control"
-                         formControlName="password" required>
+                  <input class="form-control" formControlName="password" id="password" matInput name="password"
+                         required type="password">
                   <mat-hint align="end">Minimum 8 Characters</mat-hint>
                   <mat-error *ngFor="let validation of common.validation_methods.password">
                     <mat-error
@@ -32,8 +32,9 @@
               <div>
                 <mat-form-field appearance="fill" color="primary">
                   <mat-label>Confirm Password</mat-label>
-                  <input matInput type="password" name="confirmPassword" id="confirmPassword" class="form-control"
-                         formControlName="confirmPassword" [errorStateMatcher]="matcher" required>
+                  <input [errorStateMatcher]="matcher" class="form-control" formControlName="confirmPassword"
+                         id="confirmPassword" matInput
+                         name="confirmPassword" required type="password">
                   <mat-error *ngFor="let validation of common.validation_methods.confirmPassword">
                     <mat-error
                       *ngIf="(matchingPasswordForm.get('confirmPassword').hasError(validation.type) || matchingPasswordForm.hasError(validation.type) && (matchingPasswordForm.get('confirmPassword').dirty || matchingPasswordForm.get('confirmPassword').touched))">{{validation.message}}</mat-error>
@@ -46,8 +47,8 @@
             <div>
               <mat-form-field appearance="fill" color="primary">
                 <mat-label>First Name</mat-label>
-                <input matInput type="text" name="firstName" id="firstName" class="form-control"
-                       formControlName="firstName" required>
+                <input class="form-control" formControlName="firstName" id="firstName" matInput name="firstName"
+                       required type="text">
                 <mat-error *ngFor="let validation of common.validation_methods.firstName">
                   <mat-error
                     *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'firstName', validation, submitAttempt)">{{validation.message}}</mat-error>
@@ -57,8 +58,8 @@
             <div>
               <mat-form-field appearance="fill" color="primary">
                 <mat-label>Last Name</mat-label>
-                <input matInput type="text" name="lastName" id="lastName" class="form-control"
-                       formControlName="lastName" required>
+                <input class="form-control" formControlName="lastName" id="lastName" matInput name="lastName"
+                       required type="text">
                 <mat-error *ngFor="let validation of common.validation_methods.lastName">
                   <mat-error
                     *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'lastName', validation, submitAttempt)">{{validation.message}}</mat-error>
@@ -68,8 +69,8 @@
             <div>
               <mat-form-field appearance="fill" color="primary">
                 <mat-label>Email</mat-label>
-                <input matInput type="email" name="email" id="email" class="form-control" formControlName="email"
-                       required>
+                <input class="form-control" formControlName="email" id="email" matInput name="email" required
+                       type="email">
                 <mat-error *ngFor="let validation of common.validation_methods.email">
                   <mat-error
                     *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'email', validation, submitAttempt)">{{validation.message}}</mat-error>
@@ -78,11 +79,11 @@
             </div>
           </div>
         </div>
-        <button color="primary" mat-raised-button type="submit" class="btn btn-primary">Sign Up</button>
+        <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Sign Up</button>
       </form>
     </div>
   </div>
-  <div class="mat-body" align="center">
+  <div align="center" class="mat-body">
     Already have an account? <a routerLink="/login">Login</a>
   </div>
 </div>
