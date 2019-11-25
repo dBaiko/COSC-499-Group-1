@@ -16,10 +16,6 @@ export class LogoutFormComponent implements OnInit {
   ngOnInit() {
   }
 
-  logoutSubmit(): void {
-    this.logout();
-  }
-
   logout(): void {
     this.auth.logOut();
     this.common.routeTo(Constants.LOGIN_ROUTE);
