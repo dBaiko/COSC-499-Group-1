@@ -3,6 +3,7 @@ import {MatButtonModule, MatButtonToggleModule, MatIconModule, MatProgressSpinne
 import {MatBadgeModule} from "@angular/material/badge";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {MatCardModule} from '@angular/material/card';
 
 
 const material =[
@@ -17,7 +18,8 @@ const material =[
   MatFormFieldModule,
   MatInputModule,
   BrowserAnimationsModule,
-  NoopAnimationsModule
+  NoopAnimationsModule,
+  MatCardModule
 ]
 @NgModule({
   imports: [material],
