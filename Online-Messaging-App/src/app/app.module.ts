@@ -14,6 +14,8 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
+import {SidebarComponent} from './home/sidebar/sidebar.component';
+import {FooterComponent} from './home/footer/footer.component';
 import {ChatboxComponent} from './home/chatbox/chatbox.component';
 import {FormValidationService} from "./shared/form-validation.service";
 
@@ -26,6 +28,8 @@ import {FormValidationService} from "./shared/form-validation.service";
     HomeComponent,
     HeaderComponent,
     LogoutFormComponent,
+    SidebarComponent,
+    FooterComponent,
     ChatboxComponent
   ],
   imports: [
@@ -33,8 +37,8 @@ import {FormValidationService} from "./shared/form-validation.service";
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MaterialModule
   ],
   providers: [AuthenticationService, CommonService, FormValidationService],
 
