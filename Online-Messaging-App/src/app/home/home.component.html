@@ -11,7 +11,6 @@
     </mat-sidenav>
     <mat-sidenav-content [formGroup]="options">
 
-      <div *ngIf="true; else elseBlock">
         <div *ngIf="userLoggedIn; else elseBlock">
           <app-chatbox></app-chatbox>
           <logout-form></logout-form>
