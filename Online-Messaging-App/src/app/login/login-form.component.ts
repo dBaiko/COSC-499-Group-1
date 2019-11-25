@@ -1,7 +1,11 @@
-import {Component, NgModule, OnInit} from '@angular/core';
-import {NgForm} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
+import {FormValidationService} from "../shared/form-validation.service";
+import {Constants} from "../shared/app-config";
+
+const NOT_AUTH_EX = 'NotAuthorizedException';
 
 @Component({
   selector: 'login-form',
@@ -9,23 +13,40 @@ import {CommonService} from "../shared/common.service";
   styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
-  constructor(public common: CommonService, private auth: AuthenticationService) { }
 
-  ngOnInit() {
+  loginForm: FormGroup;
+
+  submitAttempt: boolean = false;
+
+  constructor(public common: CommonService, private auth: AuthenticationService, private formValidationService: FormValidationService) {
   }
 
-  loginSubmit(form: NgForm) {
-    this.login(form.value.username, form.value.password);
+  ngOnInit(): void {
+    this.loginForm = new FormGroup({
+      username: new FormControl(Constants.EMPTY, Validators.compose([
+        Validators.required
+      ])),
+      password: new FormControl(Constants.EMPTY, Validators.compose([
+        Validators.required
+      ]))
+    });
   }
 
-  login(username, password) {
+  loginSubmit(value: any): void {
+    this.submitAttempt = true;
+    this.login(value.username, value.password);
+  }
+
+  login(username: string, password: string): void {
     this.auth.login(username, password).subscribe(
       (data) => {
         console.log(data);
         this.common.moveToHome();
       },
       (err) => {
-        console.log(err);
+        if (err.code == NOT_AUTH_EX) {
+          this.loginForm.get(Constants.USERNAME).setErrors({invalidLogin: true});
+        }
       }
     );
   }
