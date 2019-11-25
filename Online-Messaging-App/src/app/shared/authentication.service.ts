@@ -8,13 +8,12 @@ const userPool = new CognitoUserPool(CognitoConfig);
 @Injectable()
 export class AuthenticationService {
   cognitoUser: any;
-
-  constructor() {
-  }
-
   private EMAIL = 'email';
   private GIVEN_NAME = 'given_name';
   private FAMILY_NAME = 'family_name';
+
+  constructor() {
+  }
 
   public register(username: string, password: string, email: string, firstName: string, lastName: string): Observable<Object> {
 
@@ -44,12 +43,11 @@ export class AuthenticationService {
     return new Observable<Object>(observer => {
       userPool.signUp(username, password, attributeList, null, (err, result) => {
         if (err) {
-          console.log('Registration Error: ', err);
+          console.log('Registration Error');
           observer.error(err);
-        }
-        else {
+        } else {
           this.cognitoUser = result.user;
-          console.log('Registration Success', result);
+          console.log('Registration Success');
           observer.next(result);
           observer.complete();
         }
@@ -78,12 +76,10 @@ export class AuthenticationService {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess(result) {
 
-          // console.log(result);
           observer.next(result);
           observer.complete();
         },
         onFailure(err) {
-          console.log(err);
           observer.error(err);
         },
       });
