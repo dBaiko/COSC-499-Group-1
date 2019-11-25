@@ -14,10 +14,10 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
-import { SidebarComponent } from './home/sidebar/sidebar.component';
-import { FooterComponent } from './home/footer/footer.component';
-
-
+import {SidebarComponent} from './home/sidebar/sidebar.component';
+import {FooterComponent} from './home/footer/footer.component';
+import {ChatboxComponent} from './home/chatbox/chatbox.component';
+import {FormValidationService} from "./shared/form-validation.service";
 
 @NgModule({
   declarations: [
@@ -29,7 +29,8 @@ import { FooterComponent } from './home/footer/footer.component';
     HeaderComponent,
     LogoutFormComponent,
     SidebarComponent,
-    FooterComponent
+    FooterComponent,
+    ChatboxComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +40,7 @@ import { FooterComponent } from './home/footer/footer.component';
     ReactiveFormsModule,
     MaterialModule
   ],
-  providers: [AuthenticationService, CommonService],
+  providers: [AuthenticationService, CommonService, FormValidationService],
 
   bootstrap: [AppComponent]
 })
