@@ -41,7 +41,8 @@ export class AuthenticationService {
     attributeList.push(attrLastName);
 
     return new Observable<Object>(observer => {
-      userPool.signUp(username, password, attributeList, null, (err, result) => {
+      userPool.signUp(
+        username, password, attributeList, null, (err, result) => {
         if (err) {
           console.log('Registration Error');
           observer.error(err);
