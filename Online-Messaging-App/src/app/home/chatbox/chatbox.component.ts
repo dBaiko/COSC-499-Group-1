@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MessagerService, ChatMessage} from "../../shared/messager.service";
+import {MessengerService, ChatMessage} from "../../shared/messenger.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
@@ -21,7 +21,7 @@ export class ChatboxComponent implements OnInit {
 
   url: string = APIConfig.GetMessagesAPI;
 
-  constructor(private messagerService: MessagerService, private http: HttpClient, private authService: AuthenticationService) {
+  constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -48,11 +48,11 @@ export class ChatboxComponent implements OnInit {
   }
 
   sendMessage(value) {
-    console.log(value.message);
+    console.log(value.content);
 
     let chatMessage = {
       username: this.authService.getAuthenticatedUser().getUsername(),
-      message: value.message
+      content: value.content
     };
 
     this.messagerService.sendMessage(chatMessage);

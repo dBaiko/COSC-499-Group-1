@@ -6,11 +6,18 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
+interface MessageObject {
+    username: string;
+    content: string;
+    messageID: number;
+}
+
 class MessageDAO {
 
     public getMessageHistory(): Promise<any> {
         const params = {
-            TableName: 'Messages'
+            TableName: 'Messages',
+
         };
 
         return new Promise((resolve, reject) => {
@@ -20,8 +27,9 @@ class MessageDAO {
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    // console.log(data);
-                    resolve(data.Items);
+                    console.log(data);
+                    resolve(data.Items.sort(
+                        (a: MessageObject, b: MessageObject) => (a.messageID > b.messageID) ? 1 : -1));
                 }
             });
         });

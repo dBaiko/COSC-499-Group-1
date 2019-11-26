@@ -18,7 +18,7 @@ import {SidebarComponent} from './home/sidebar/sidebar.component';
 import {FooterComponent} from './home/footer/footer.component';
 import {ChatboxComponent} from './home/chatbox/chatbox.component';
 import {FormValidationService} from "./shared/form-validation.service";
-import {MessagerService} from "./shared/messager.service";
+import {MessengerService} from "./shared/messenger.service";
 import {SocketIoModule, SocketIoConfig} from "ngx-socket-io";
 
 const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
@@ -45,7 +45,7 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
     MaterialModule,
     SocketIoModule.forRoot(socketConfig)
   ],
-  providers: [AuthenticationService, CommonService, FormValidationService, MessagerService],
+  providers: [AuthenticationService, CommonService, FormValidationService, MessengerService],
 
   bootstrap: [AppComponent]
 })

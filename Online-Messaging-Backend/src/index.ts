@@ -3,6 +3,7 @@ import express from "express";
 import socket = require("socket.io");
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
+import MessageHandler from "./routes/messages/MessageHandler";
 
 const app = express();
 const port = 8080; // default port to listen
@@ -18,7 +19,7 @@ app.use(cspComponent);
 
 app.use(cors());
 
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
     res.send("Backend is up and running");
 });
 
@@ -30,9 +31,10 @@ io.on("connection", (socketIO) => {
     socketIO.on("message", (message: any) => {
         // tslint:disable-next-line:no-console
         console.log(message);
-        // pass to db
+        io.sockets.emit("broadcast", message);
+        const messageHandler = new MessageHandler();
+        messageHandler.addNewMessage(message);
         // call from db? ~for synchronization
         // socketIO.emit("broadcast", message);
-        io.sockets.emit("broadcast", message);
     });
 });

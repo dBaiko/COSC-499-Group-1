@@ -11,7 +11,7 @@
         <mat-card-title>{{chatMessage.username}}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>{{chatMessage.message}}</p>
+        <p>{{chatMessage.content}}</p>
       </mat-card-content>
     </div>
     <hr>
@@ -19,7 +19,7 @@
       <form (ngSubmit)="sendMessage(messageForm.value)" #messageForm="ngForm">
         <mat-form-field>
           <mat-label>Message</mat-label>
-          <input matInput placeholder="Enter Message" ngModel name="message">
+          <input matInput placeholder="Enter Message" ngModel name="content">
         </mat-form-field>
       </form>
     </mat-card-footer>

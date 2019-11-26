@@ -4,11 +4,11 @@ import {Observable} from "rxjs";
 
 export interface ChatMessage {
   username: string,
-  message: string
+  content: string
 }
 
 @Injectable()
-export class MessagerService {
+export class MessengerService {
   private url = "http://localhost:8080";
   private socket;
 
