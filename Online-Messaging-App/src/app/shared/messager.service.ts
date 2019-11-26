@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Socket} from "ngx-socket-io";
+//import {Socket} from "ngx-socket-io";
 
 export interface ChatMessage {
   username: string,
@@ -9,10 +9,10 @@ export interface ChatMessage {
 @Injectable()
 export class MessagerService {
 
-  constructor(private socket: Socket) {
+  constructor() {
   }
 
-  sendMessage(chatMessage: ChatMessage) {
-    this.socket.emit('addDoc', chatMessage);
-  }
+  // sendMessage(chatMessage: ChatMessage) {
+  //   this.socket.emit('addDoc', chatMessage);
+  // }
 }

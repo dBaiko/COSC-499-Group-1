@@ -21,7 +21,7 @@ import {FormValidationService} from "./shared/form-validation.service";
 import {MessagerService} from "./shared/messager.service";
 import {SocketIoModule, SocketIoConfig} from "ngx-socket-io";
 
-const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
+//const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
 
 @NgModule({
   declarations: [
@@ -43,7 +43,7 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    SocketIoModule.forRoot(socketConfig)
+    //SocketIoModule.forRoot(socketConfig)
   ],
   providers: [AuthenticationService, CommonService, FormValidationService, MessagerService],
 

@@ -24,6 +24,9 @@ export class ChatboxComponent implements OnInit {
   }
 
   ngOnInit() {
+    //get old messages
+    this.getMessages();
+    //subscribe to socket
   }
 
   getMessages() {
@@ -33,11 +36,11 @@ export class ChatboxComponent implements OnInit {
       })
     };
     this.http.get(this.url, httpOptions).subscribe((data) => {
-        this.chatMessages = data;
-      },
-      err => {
-        this.error = err;
-      });
-  }
+      this.chatMessages = data;
+  },
+  err => {
+    this.error = err.toString();
+  });
+}
 
 }
