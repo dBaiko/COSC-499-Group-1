@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {RegisterFormComponent} from "./register/register-form.component";
 import {LoginFormComponent} from "./login/login-form.component";
@@ -16,6 +16,9 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule
+  ],
+  Schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ]
 })
 export class AppRoutingModule {

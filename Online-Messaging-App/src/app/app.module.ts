@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
@@ -37,8 +37,12 @@ import { FooterComponent } from './home/footer/footer.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    CommonModule
   ],
+  Schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ]
   providers: [AuthenticationService, CommonService],
 
   bootstrap: [AppComponent]
