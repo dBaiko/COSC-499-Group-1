@@ -6,7 +6,8 @@
     "jsRules": {},
     "rules": {
         "trailing-comma": [ false ],
-        "quotemark": false
+        "quotemark": false,
+        "interface-name" : [false, "never"]
     },
     "rulesDirectory": []
 }
