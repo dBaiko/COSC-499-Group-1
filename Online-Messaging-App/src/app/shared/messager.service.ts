@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-//import {Socket} from "ngx-socket-io";
+import * as Socket from "socket.io-client";
+import {Observable} from "rxjs";
 
 export interface ChatMessage {
   username: string,
@@ -8,11 +9,20 @@ export interface ChatMessage {
 
 @Injectable()
 export class MessagerService {
+  private url = "http://localhost:8080";
+  private socket;
 
   constructor() {
+    this.socket = Socket(this.url);
   }
 
-  // sendMessage(chatMessage: ChatMessage) {
-  //   this.socket.emit('addDoc', chatMessage);
-  // }
+  subscribeToSocket(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on('broadcast', (data) => observer.next(data));
+    })
+  }
+
+  sendMessage(chatMessage: ChatMessage) {
+    this.socket.emit('message', chatMessage);
+  }
 }
