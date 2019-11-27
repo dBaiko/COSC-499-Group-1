@@ -20,10 +20,6 @@ export class ChatboxComponent implements OnInit {
   chatMessages;
   error: string = '';
 
-  chatMessages;
-
-  error: string = '';
-
   url: string = APIConfig.GetMessagesAPI;
 
   constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
