@@ -1,6 +1,7 @@
 
 mat-sidenav, mat-sidenav-content {
   padding:16px;
+  overflow: hidden;
 }
 mat-sidenav {
   width: 400px;
@@ -121,5 +122,5 @@ mat-button-toggle-group {
   display: none;
 }
 .mat-drawer-content {
-  overflow: hidden;
+  overflow: hidden !important;
 }

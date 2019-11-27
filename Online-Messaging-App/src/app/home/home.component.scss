@@ -5,6 +5,7 @@
   left: 0;
   right: 0;
   background-color: #5280e9;
+  overflow: hidden;
 }
 .sidenav {
   display: flex;
@@ -12,6 +13,7 @@
   justify-content: center;
   width: 250px;
   border:none;
+  overflow: hidden;
 
 }
 app-header {
@@ -19,4 +21,19 @@ app-header {
   top: 0;
   right: 0;
   left: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+#chatbox {
+  //display: flex;
+  overflow: hidden;
+}
+
+#home {
+  overflow: hidden;
+}
+
+.mat-drawer-content {
+  overflow-y: scroll;
 }
