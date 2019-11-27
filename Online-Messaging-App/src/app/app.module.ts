@@ -14,10 +14,14 @@ import {CommonService} from "./shared/common.service";
 import {AuthenticationService} from "./shared/authentication.service";
 import {HeaderComponent} from "./home/header/header.component";
 import {MaterialModule} from "./material/material.module";
-import { SidebarComponent } from './home/sidebar/sidebar.component';
-import { FooterComponent } from './home/footer/footer.component';
+import {SidebarComponent} from './home/sidebar/sidebar.component';
+import {FooterComponent} from './home/footer/footer.component';
+import {ChatboxComponent} from './home/chatbox/chatbox.component';
+import {FormValidationService} from "./shared/form-validation.service";
+import {MessengerService} from "./shared/messenger.service";
+import {SocketIoModule, SocketIoConfig} from "ngx-socket-io";
 
-
+const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
 
 @NgModule({
   declarations: [
@@ -29,7 +33,8 @@ import { FooterComponent } from './home/footer/footer.component';
     HeaderComponent,
     LogoutFormComponent,
     SidebarComponent,
-    FooterComponent
+    FooterComponent,
+    ChatboxComponent
   ],
   imports: [
     BrowserModule,
@@ -38,12 +43,9 @@ import { FooterComponent } from './home/footer/footer.component';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    CommonModule
+    SocketIoModule.forRoot(socketConfig)
   ],
-  Schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
-  providers: [AuthenticationService, CommonService],
+  providers: [AuthenticationService, CommonService, FormValidationService, MessengerService],
 
   bootstrap: [AppComponent]
 })

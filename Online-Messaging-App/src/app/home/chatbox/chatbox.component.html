@@ -1,0 +1,28 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <img mat-card-avatar>
+      <mat-card-title>Message Box</mat-card-title>
+    </mat-card-header>
+    <p>{{error}}</p>
+    <hr>
+    <div *ngFor="let chatMessage of chatMessages">
+      <mat-card-header>
+        <mat-card-title>{{chatMessage.username}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{chatMessage.content}}</p>
+      </mat-card-content>
+    </div>
+    <hr>
+    <mat-card-footer align="center">
+      <form (ngSubmit)="sendMessage(messageForm.value)" #messageForm="ngForm">
+        <mat-form-field>
+          <mat-label>Message</mat-label>
+          <input matInput placeholder="Enter Message" ngModel name="content">
+        </mat-form-field>
+      </form>
+    </mat-card-footer>
+  </mat-card>
+
+</div>

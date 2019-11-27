@@ -1,24 +1,22 @@
 
 <div>
 
-
   <app-header></app-header>
-<mat-sidenav-container class="container">
-  <mat-sidenav #sidenav mode="side" opened class="sidenav"
-                   [fixedInViewport]="options.value.fixed" [fixedTopGap]="options.value.top"
-                   [fixedBottomGap]="options.value.bottom">
+  <mat-sidenav-container class="container">
+    <mat-sidenav #sidenav [fixedBottomGap]="options.value.bottom" [fixedInViewport]="options.value.fixed"
+                 [fixedTopGap]="options.value.top"
+                 class="sidenav" mode="side"
+                 opened>
 
-  <app-sidebar></app-sidebar>
-  </mat-sidenav>
-<mat-sidenav-content [formGroup]="options">
+      <app-sidebar></app-sidebar>
+    </mat-sidenav>
+    <mat-sidenav-content [formGroup]="options">
 
-
-<div *ngIf="true; else elseBlock">
-    <p>You are currently logged in.</p>
-    <logout-form></logout-form>
-  </div>
-  <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
-  </mat-sidenav-content>
+        <div *ngIf="userLoggedIn; else elseBlock">
+          <app-chatbox></app-chatbox>
+        </div>
+        <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
+    </mat-sidenav-content>
   </mat-sidenav-container>
 
 
