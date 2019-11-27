@@ -2,15 +2,17 @@
 
 
 <mat-sidenav-container>
-  <button mat-button (click)="selectPublicChannel()">Public</button>
-  <button color = "primary" (click)="selectPrivateChannel()">Private</button>
-  <button color ="primary" (click)="selectFriend()">Friend</button>
+  <mat-button-toggle-group class ="channelSelector">
+  <mat-button-toggle checked (click)="selectPublicChannel()">Public</mat-button-toggle>
+  <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
+  <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
+  </mat-button-toggle-group>
+
  <div *ngIf="publicChannelSelect;">
     <mat-list >
-      <h2> Public Channel</h2>
         <mat-list-item class ="channelHeader"><h3 matLine>Channel 1</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
@@ -20,7 +22,7 @@
         </mat-list-item>
         <mat-list-item class ="channelHeader"><h3 matLine>Channel 2</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
@@ -30,7 +32,7 @@
         </mat-list-item>
         <mat-list-item class ="channelHeader"><h3 matLine>Channel 3</h3>
             <a routerLink="/chat">
-              <mat-icon>chat_bubble
+              <mat-icon>settings
               </mat-icon>
             </a>
             <a routerLink="/delete">
@@ -42,10 +44,9 @@
     </div>
     <div *ngIf = "privateChannelSelect">
     <mat-list>
-      <h2> Private Channel</h2>
-        <mat-list-item><h3 matLine>Private Channel 1</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Private Channel 1</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
@@ -53,18 +54,19 @@
             </mat-icon>
           </a>
         </mat-list-item>
-        <mat-list-item><h3 matLine>Private Channel 2</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Private Channel 2</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
             <mat-icon>clear
             </mat-icon>
           </a>
-        </mat-list-item>  <mat-list-item><h3 matLine>Private Channel 3</h3>
+        </mat-list-item>
+        <mat-list-item class ="channelHeader"><h3 matLine>Private Channel 3</h3>
             <a routerLink="/chat">
-              <mat-icon>chat_bubble
+              <mat-icon>settings
               </mat-icon>
             </a>
             <a routerLink="/delete">
@@ -76,10 +78,9 @@
     </div>
     <div *ngIf= "friendChannelSelect">
     <mat-list>
-      <h2> Friend List</h2>
-        <mat-list-item><h3 matLine>Friend 1</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Friend 1</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
@@ -87,18 +88,19 @@
             </mat-icon>
           </a>
         </mat-list-item>
-        <mat-list-item><h3 matLine>Friend 2</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Friend 2</h3>
           <a routerLink="/chat">
-            <mat-icon>chat_bubble
+            <mat-icon>settings
             </mat-icon>
           </a>
           <a routerLink="/delete">
             <mat-icon>clear
             </mat-icon>
           </a>
-        </mat-list-item>  <mat-list-item><h3 matLine>Friend 3</h3>
+        </mat-list-item>
+          <mat-list-item class ="channelHeader"><h3 matLine>Friend 3</h3>
             <a routerLink="/chat">
-              <mat-icon>chat_bubble
+              <mat-icon>settings
               </mat-icon>
             </a>
             <a routerLink="/delete">
@@ -110,6 +112,9 @@
     </div>
 
     <br>
+    <button class="joinCreate" style="margin-bottom:0px;bottom:16vh;">Join Channel</button>
+    <button class="joinCreate" >Create Channel</button>
+
   <div class="icon">
       <a routerLink="home"><mat-icon inline="true">home</mat-icon></a>
       <a routerLink="profile"><mat-icon inline ="true">account_box</mat-icon></a>
