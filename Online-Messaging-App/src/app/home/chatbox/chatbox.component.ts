@@ -1,4 +1,4 @@
-import {AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MessengerService, ChatMessage} from "../../shared/messenger.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig} from "../../shared/app-config";
@@ -13,11 +13,15 @@ interface ChatMessages {
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
-export class ChatboxComponent implements OnInit, AfterViewInit {
+export class ChatboxComponent implements OnInit {
 
   container: HTMLElement;
 
   chatMessages;
+  error: string = '';
+
+  chatMessages;
+
   error: string = '';
 
   url: string = APIConfig.GetMessagesAPI;
@@ -34,11 +38,6 @@ export class ChatboxComponent implements OnInit, AfterViewInit {
       this.chatMessages.push(data);
 
     })
-  }
-
-  ngAfterViewInit(): void {
-    this.container = document.getElementById('scrollable');
-    this.container.scrollTop = this.container.scrollHeight;
   }
 
   getMessages() {
@@ -63,6 +62,7 @@ export class ChatboxComponent implements OnInit, AfterViewInit {
       username: this.authService.getAuthenticatedUser().getUsername(),
       content: value.content
     };
+
     this.messagerService.sendMessage(chatMessage);
 
   }
