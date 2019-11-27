@@ -15,8 +15,9 @@ interface ChatMessages {
 })
 export class ChatboxComponent implements OnInit {
 
-  chatMessages;
+  container: HTMLElement;
 
+  chatMessages;
   error: string = '';
 
   url: string = APIConfig.GetMessagesAPI;
@@ -28,8 +29,10 @@ export class ChatboxComponent implements OnInit {
     //get old messages
     this.getMessages();
     //subscribe to socket
+
     this.messagerService.subscribeToSocket().subscribe((data) => {
       this.chatMessages.push(data);
+
     })
   }
 
@@ -47,9 +50,10 @@ export class ChatboxComponent implements OnInit {
       });
   }
 
-  sendMessage(value) {
+  sendMessage(form) {
+    let value = form.value;
+    form.reset();
     console.log(value.content);
-
     let chatMessage = {
       username: this.authService.getAuthenticatedUser().getUsername(),
       content: value.content
