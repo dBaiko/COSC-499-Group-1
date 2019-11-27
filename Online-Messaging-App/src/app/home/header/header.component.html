@@ -1,6 +1,8 @@
 <header>
   <mat-toolbar class ="navbar">
   <div>Streamline Athletes</div>
-  <logout-form></logout-form>
+  <div *ngIf="userloggedIn">
+    <logout-form></logout-form>
+  </div>
 </mat-toolbar>
 </header>

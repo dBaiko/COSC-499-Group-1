@@ -1,4 +1,5 @@
 import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AuthenticationService} from "../../shared/authentication.service";
 
 @Component({
   selector: 'app-header',
@@ -7,7 +8,11 @@ import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angul
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  userloggedIn = false;
+
+  constructor(private auth: AuthenticationService) {
+    this.userloggedIn = auth.isLoggedIn();
+  }
 
   ngOnInit() {
   }
