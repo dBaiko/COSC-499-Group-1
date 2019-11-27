@@ -1,13 +1,15 @@
 <div class="container">
   <div>
     <mat-card>
+      <div class = "headerTop">
       <mat-card-header>
         <img mat-card-avatar>
         <mat-card-title>Message Box</mat-card-title>
       </mat-card-header>
+      </div>
       <p>{{error}}</p>
       <hr>
-      <div class="scrollable">
+      <div id="scrollable">
         <div *ngFor="let chatMessage of chatMessages">
           <mat-card-header>
             <mat-card-title>{{chatMessage.username}}</mat-card-title>

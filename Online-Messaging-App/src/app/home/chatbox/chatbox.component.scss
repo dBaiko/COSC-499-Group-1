@@ -1,9 +1,10 @@
 mat-card {
   background-color: #282828;
-  height: 32rem;
-  margin-top: 1rem;
+  height: 34rem;
   overflow: hidden;
   position: relative;
+  border-radius: 0px;
+  border-top: 1px solid #F8F8F8;
 }
 mat-form-field {
   border-radius: 0.5rem;
@@ -17,7 +18,7 @@ hr {
 mat-card-title{
   color: #F8F8F8;
 }
-mat-card-header{
+.headerTop{
   position: sticky; top:0;
 }
 mat-card-footer{
@@ -32,9 +33,12 @@ mat-label{
   color: #F8F8F8;
   padding-left: 0.5rem;
 }
-.scrollable{
+#scrollable{
   overflow-y: scroll;
-  height: 80%;
+  height: 100%;
+}
+.container{
+  height: 100%;
 }
 
 
