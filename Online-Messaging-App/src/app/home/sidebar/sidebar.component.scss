@@ -7,7 +7,7 @@ mat-sidenav {
   background-color: #5280e9;
 }
 mat-list {
-  background-color: black;
+  font-family: arial;
   margin-left: 10px;
   margin-right:10px;
   margin-top: 10px;
@@ -27,7 +27,7 @@ mat-icon {
   color: white;
 }
 .icon {
-  background-color: black;
+
   margin-left: 10px;
   margin-right: 10px;
   font-size: 48px;
@@ -37,7 +37,7 @@ mat-icon {
   left: 0;
 }
 mat-sidenav-container {
-  background-color: #5280e9;
+  background-color: #282828;
   height: 100%;
 }
 
@@ -47,4 +47,7 @@ h2 {
 ::ng-deep .mat-list .mat-list-item .mat-line{
      word-wrap: break-word;
     white-space: pre-wrap;
+}
+.channelHeader:hover {
+  background-color: #000000;
 }

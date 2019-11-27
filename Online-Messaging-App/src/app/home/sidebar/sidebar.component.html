@@ -2,11 +2,13 @@
 
 
 <mat-sidenav-container>
-  <mat-tab-group>
-    <mat-tab label="Public Channel">
-    <mat-list>
+  <button mat-button (click)="selectPublicChannel()">Public</button>
+  <button color = "primary" (click)="selectPrivateChannel()">Private</button>
+  <button color ="primary" (click)="selectFriend()">Friend</button>
+ <div *ngIf="publicChannelSelect;">
+    <mat-list >
       <h2> Public Channel</h2>
-        <mat-list-item><h3 matLine>Channel 1</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Channel 1</h3>
           <a routerLink="/chat">
             <mat-icon>chat_bubble
             </mat-icon>
@@ -16,7 +18,7 @@
             </mat-icon>
           </a>
         </mat-list-item>
-        <mat-list-item><h3 matLine>Channel 2</h3>
+        <mat-list-item class ="channelHeader"><h3 matLine>Channel 2</h3>
           <a routerLink="/chat">
             <mat-icon>chat_bubble
             </mat-icon>
@@ -25,7 +27,8 @@
             <mat-icon>clear
             </mat-icon>
           </a>
-        </mat-list-item>  <mat-list-item><h3 matLine>Channel 3</h3>
+        </mat-list-item>
+        <mat-list-item class ="channelHeader"><h3 matLine>Channel 3</h3>
             <a routerLink="/chat">
               <mat-icon>chat_bubble
               </mat-icon>
@@ -36,8 +39,8 @@
             </a>
           </mat-list-item>
     </mat-list>
-    </mat-tab>
-    <mat-tab label ="Private Channel">
+    </div>
+    <div *ngIf = "privateChannelSelect">
     <mat-list>
       <h2> Private Channel</h2>
         <mat-list-item><h3 matLine>Private Channel 1</h3>
@@ -70,8 +73,8 @@
             </a>
           </mat-list-item>
     </mat-list>
-    </mat-tab>
-    <mat-tab label ="Friends">
+    </div>
+    <div *ngIf= "friendChannelSelect">
     <mat-list>
       <h2> Friend List</h2>
         <mat-list-item><h3 matLine>Friend 1</h3>
@@ -104,8 +107,7 @@
             </a>
           </mat-list-item>
     </mat-list>
-    </mat-tab>
-    </mat-tab-group>
+    </div>
 
     <br>
   <div class="icon">

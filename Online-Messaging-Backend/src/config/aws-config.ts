@@ -1,2 +1,2 @@
 // replace with path on running machine
-export const awsConfigPath = "C:\\Users\\Micha\\aws\\aws-dynamodb-config.json";
+export const awsConfigPath = "D:\\School\\COSC499\\Project Secrets\\aws-dynamodb-config.json";
