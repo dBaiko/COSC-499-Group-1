@@ -7,7 +7,7 @@ mat-sidenav {
   background-color: #5280e9;
 }
 mat-list {
-  background-color: black;
+  font-family: arial;
   margin-left: 10px;
   margin-right:10px;
   margin-top: 10px;
@@ -27,7 +27,7 @@ mat-icon {
   color: white;
 }
 .icon {
-  background-color: black;
+
   margin-left: 10px;
   margin-right: 10px;
   font-size: 48px;
@@ -37,7 +37,7 @@ mat-icon {
   left: 0;
 }
 mat-sidenav-container {
-  background-color: #5280e9;
+  background-color: #282828;
   height: 100%;
 }
 
@@ -47,4 +47,79 @@ h2 {
 ::ng-deep .mat-list .mat-list-item .mat-line{
      word-wrap: break-word;
     white-space: pre-wrap;
+}
+.channelHeader:hover {
+  background-color: #000000;
+}
+.channelSelector {
+  width: auto;
+  display: flex;
+}
+.channelSelector > mat-button-toggle {
+  flex-grow: 1;
+}
+mat-button-toggle {
+  border-radius: 0px !important;
+  background-color: grey;
+  color: white;
+  border: 0px;
+}
+mat-button-toggle:hover {
+    background-color: #696969;
+}
+mat-button-toggle-group {
+  border-radius: 0px !important;
+  border: none;
+}
+
+.mat-button-toggle-checked {
+  background-color: #282828;
+  color: white;
+  border: none;
+  box-shadow: none !important;
+  transition: none !important;
+}
+.mat-button-toggle-checked:hover{
+    background-color: #282828;
+    color:white;
+    border: none;
+}
+
+
+.mat-button-toggle-checked, .mat-button-toggle-focus-overlay {
+  border-bottom-color: #282828;
+}
+
+.joinCreate {
+  width: 100%;
+  background-color: grey;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 0;
+  cursor: pointer;
+  position: absolute;
+  left:0;
+  bottom: 10vh;
+}
+.joinCreate:focus {
+  outline:0;
+}
+.joinCreate:hover {
+  background-color: #696969;
+}
+
+.mat-flat-button {
+  border-radius: 0px !important;
+}
+
+.mat-button-toggle ::ng-deep .mat-button-toggle-focus-overlay {
+  display: none;
+}
+.mat-drawer-content {
+  overflow: hidden;
 }
