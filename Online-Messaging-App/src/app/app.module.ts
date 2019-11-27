@@ -42,7 +42,7 @@ import { FooterComponent } from './home/footer/footer.component';
   ],
   Schemas: [
     CUSTOM_ELEMENTS_SCHEMA
-  ]
+  ],
   providers: [AuthenticationService, CommonService],
 
   bootstrap: [AppComponent]
