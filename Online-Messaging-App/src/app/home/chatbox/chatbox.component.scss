@@ -1,38 +1,42 @@
 mat-card {
-  background-color: #4051B6;
-  height: 27rem;
-  overflow-y: auto;
+  background-color: #282828;
+  height: 32rem;
   margin-top: 1rem;
+  overflow: hidden;
+  position: relative;
 }
 mat-form-field {
-  width: 90%;
   border-radius: 0.5rem;
-  background-color: white;
-  margin-top:1rem;
+  background-color: #282828;
+  width: 100%;
+  color:#F8F8F8;
 }
 hr {
-  border: 1px dashed black;
+  border: 1px solid #F8F8F8;
 }
-.footer {
-
-  height:5rem;
+mat-card-title{
+  color: #F8F8F8;
+}
+mat-card-header{
+  position: sticky; top:0;
+}
+mat-card-footer{
   width: 100%;
-  background-image: none;
-  background-repeat: repeat;
-  background-attachment: scroll;
-  background-position: 0% 0%;
-  position: fixed;
-  bottom: 0pt;
-  margin-bottom: 0.5rem;
-
+  position: absolute;
+  bottom: 0;
 }
-.footer_contents {
-
-  height:5rem;
-  width: 100%;
-  margin:auto;
-
+p{
+  color:#F8F8F8;
 }
+mat-label{
+  color: #F8F8F8;
+  padding-left: 0.5rem;
+}
+.scrollable{
+  overflow-y: scroll;
+  height: 80%;
+}
+
 
 
 

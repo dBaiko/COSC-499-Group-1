@@ -1,32 +1,77 @@
 <div class="container">
-  <mat-card>
+  <div>
+    <mat-card>
     <mat-card-header>
       <img mat-card-avatar>
       <mat-card-title>Message Box</mat-card-title>
     </mat-card-header>
-    <p>{{error}}</p>
+<!--    <p>{{error}}</p>-->
+    <div class = "scrollable">
     <hr>
-    <div *ngFor="let chatMessage of chatMessages">
-      <mat-card-header>
-        <mat-card-title>{{chatMessage.username}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{chatMessage.content}}</p>
-      </mat-card-content>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+    <p>pargaraj</p>
+      <p>pargaraj</p>
+      <p>pargaraj</p>
+      <p>pargaraj</p>
+      <p>pargaraj</p>      <p>pargaraj</p>
+      <p>pargarassj</p>
+      <p>pargarassj</p>
+      <p>pargarasdasdsasj</p>
+      <p>pargarassdadaj</p>
+      <p>pargaraj</p>
+      <p>pargaraj</p>      <p>pargaraj</p>
+      <p>pargarassj</p>
+      <p>pargarassj</p>
+      <p>pargarasdasdsasj</p>
+      <p>pargarassdadaj</p>      <p>pargaraj</p>
+      <p>pargaraj</p>      <p>pargaraj</p>
+      <p>pargarassj</p>
+      <p>pargarassj</p>
+      <p>pargarasdasdsasj</p>
+      <p>pargarassdadaj</p>      <p>pargaraj</p>
+      <p>pargaraj</p>      <p>pargaraj</p>
+      <p>pargarassj</p>
+      <p>pargarassj</p>
+      <p>pargarasdasdsasj</p>
+      <p>pargarassdadaj</p>      <p>pargaraj</p>
+      <p>pargaraj</p>      <p>pargaraj</p>
+      <p>pargarassj</p>
+      <p>pargarassj</p>
+      <p>pargarasdasdsasj</p>
+      <p>pargarassdadaj</p>
+
     </div>
-    <hr>
+    <!--    <div *ngFor="let chatMessage of chatMessages">-->
+<!--      <mat-card-header>-->
+<!--        <mat-card-title>{{chatMessage.username}}</mat-card-title>-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content>-->
+<!--        <p>{{chatMessage.content}}</p>-->
+<!--      </mat-card-content>-->
+<!--    </div>-->
+      <hr>
+      <div>
+      <mat-card-footer>
+        <form (ngSubmit)="sendMessage(messageForm.value)" #messageForm="ngForm" autocomplete="off">
+          <mat-form-field>
+            <mat-label>Message</mat-label>
+            <input class ="input" matInput placeholder="Enter Message" ngModel name="content">
+          </mat-form-field>
+        </form>
+      </mat-card-footer>
+      </div>
   </mat-card>
-  <div class="footer">
 
-    <div class="footer_contents">
-      <form (ngSubmit)="sendMessage(messageForm.value)" #messageForm="ngForm" autocomplete="off">
-        <mat-form-field>
-          <mat-label>Message</mat-label>
-          <input matInput placeholder="Enter Message" ngModel name="content">
-        </mat-form-field>
-      </form>
-    </div>
 
-  </div>
 
+</div>
 </div>
