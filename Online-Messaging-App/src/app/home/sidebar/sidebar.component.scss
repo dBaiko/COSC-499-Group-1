@@ -97,7 +97,7 @@ mat-button-toggle-group {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 0;
   cursor: pointer;
   position: absolute;
   left:0;
@@ -116,4 +116,7 @@ mat-button-toggle-group {
 
 .mat-button-toggle ::ng-deep .mat-button-toggle-focus-overlay {
   display: none;
+}
+.mat-drawer-content {
+  overflow: hidden;
 }
