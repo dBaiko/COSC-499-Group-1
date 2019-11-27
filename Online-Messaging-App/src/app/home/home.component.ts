@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 import {FormGroup, FormBuilder} from '@angular/forms';
@@ -9,6 +9,8 @@ import {FormGroup, FormBuilder} from '@angular/forms';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+
+  container: HTMLElement;
 
   userLoggedIn = false;
   options: FormGroup;

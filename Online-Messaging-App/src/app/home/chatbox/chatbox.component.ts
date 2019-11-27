@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild} from '@angular/core';
 import {MessengerService, ChatMessage} from "../../shared/messenger.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig} from "../../shared/app-config";
@@ -13,10 +13,11 @@ interface ChatMessages {
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.scss']
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, AfterViewInit {
+
+  container: HTMLElement;
 
   chatMessages;
-
   error: string = '';
 
   url: string = APIConfig.GetMessagesAPI;
@@ -28,9 +29,16 @@ export class ChatboxComponent implements OnInit {
     //get old messages
     this.getMessages();
     //subscribe to socket
+
     this.messagerService.subscribeToSocket().subscribe((data) => {
       this.chatMessages.push(data);
+
     })
+  }
+
+  ngAfterViewInit(): void {
+    this.container = document.getElementById('scrollable');
+    this.container.scrollTop = this.container.scrollHeight;
   }
 
   getMessages() {
@@ -47,14 +55,14 @@ export class ChatboxComponent implements OnInit {
       });
   }
 
-  sendMessage(value) {
+  sendMessage(form) {
+    let value = form.value;
+    form.reset();
     console.log(value.content);
-
     let chatMessage = {
       username: this.authService.getAuthenticatedUser().getUsername(),
       content: value.content
     };
-
     this.messagerService.sendMessage(chatMessage);
 
   }
