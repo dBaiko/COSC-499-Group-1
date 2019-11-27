@@ -69,12 +69,15 @@ mat-button-toggle:hover {
 }
 mat-button-toggle-group {
   border-radius: 0px !important;
+  border: none;
 }
 
 .mat-button-toggle-checked {
   background-color: #282828;
   color: white;
   border: none;
+  box-shadow: none !important;
+  transition: none !important;
 }
 .mat-button-toggle-checked:hover{
     background-color: #282828;
