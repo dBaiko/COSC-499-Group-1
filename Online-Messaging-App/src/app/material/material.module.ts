@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import {MatButtonModule, MatButtonToggleModule, MatListModule, MatIconModule, MatProgressSpinnerModule,MatToolbarModule, MatSidenavModule, MatMenuModule, MatFormFieldModule,MatInputModule} from "@angular/material"
+import {MatButtonModule,MatTabsModule, MatButtonToggleModule, MatListModule, MatIconModule, MatProgressSpinnerModule,MatToolbarModule, MatSidenavModule, MatMenuModule, MatFormFieldModule,MatInputModule} from "@angular/material"
 import {MatBadgeModule} from "@angular/material/badge";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {NoopAnimationsModule} from "@angular/platform-browser/animations";
@@ -8,6 +8,7 @@ import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 const material =[
   MatButtonModule,
   MatButtonToggleModule,
+  MatTabsModule,
   MatListModule,
   MatIconModule,
   MatBadgeModule,
