@@ -10,7 +10,7 @@ const table = "Users";
 
 class UserRegistration {
 
-    public createNewUser(username: string, email: string, firstName: string, lastName: string) {
+    public createNewUser(username: string, email: string, firstName: string, lastName: string): void {
         const params = {
             Item: {
                 email,

@@ -1,13 +1,18 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "rules": {
+    "trailing-comma": [
+      false
     ],
-    "jsRules": {},
-    "rules": {
-        "trailing-comma": [ false ],
-        "quotemark": false,
-        "interface-name" : [false, "never"]
-    },
-    "rulesDirectory": []
+    "quotemark": false,
+    "interface-name": [
+      false,
+      "never"
+    ]
+  },
+  "rulesDirectory": []
 }

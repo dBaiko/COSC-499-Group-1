@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express from 'express';
 import UserRegistration from "./UserRegistration";
+
 const router = express.Router();
 
 router.use(bodyParser());
@@ -11,4 +12,4 @@ router.post('/', (req, res) => {
     res.status(200).send({status: 200, data: {message: "New user added successfully"}});
 });
 
-export  = router;
+export = router;

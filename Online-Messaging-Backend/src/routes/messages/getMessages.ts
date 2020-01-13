@@ -1,8 +1,8 @@
 /* tslint:disable:no-console */
 import bodyParser from "body-parser";
-import cors from "cors";
 import express from 'express';
 import MessageDAO from "./MessageDAO";
+
 const router = express.Router();
 
 router.use(bodyParser());
@@ -18,4 +18,4 @@ router.get('/', (req, res) => {
         });
 });
 
-export  = router;
+export = router;
