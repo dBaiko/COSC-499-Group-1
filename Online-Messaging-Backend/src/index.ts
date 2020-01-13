@@ -1,9 +1,9 @@
 import cors from "cors";
 import express from "express";
-import socket = require("socket.io");
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
 import MessageHandler from "./routes/messages/MessageHandler";
+import socket = require("socket.io");
 
 const app = express();
 const port = 8080; // default port to listen

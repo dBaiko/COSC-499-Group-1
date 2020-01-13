@@ -1,39 +1,41 @@
 <div class="container">
-  <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
-  <ng-template #elseBlock>
-    <app-header></app-header>
-    <div align="center" class="mat-display-2">Log in to Streamline Athletes Chat Service</div>
-    <div align="center" class="row">
-      <div class="col-lg-4">
-        <form (ngSubmit)="loginSubmit(loginForm.value)" [formGroup]="loginForm">
-          <div class="form-group">
-            <mat-form-field appearance="fill" color="primary">
-              <mat-label>Username</mat-label>
-              <input matInput type="text" name="username" id="username" class="form-control" formControlName="username">
-              <mat-error *ngFor="let validation of common.validation_methods.username">
-                <mat-error
-                  *ngIf="(validation.type == 'required' || validation.type == 'invalidLogin') && formValidationService.checkIfFormElementInvalid(loginForm, 'username', validation, submitAttempt);">
-                  {{validation.message}}
-                </mat-error>
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="form-group">
-            <mat-form-field appearance="fill" color="primary">
-              <mat-label>Password</mat-label>
-              <input matInput type="password" name="password" id="password" class="form-control"
-                     formControlName="password">
-              <mat-error *ngFor="let validation of common.validation_methods.password">
-                <mat-error
-                  *ngIf="validation.type == 'required' && formValidationService.checkIfFormElementInvalid(loginForm, 'password', validation, submitAttempt)">{{validation.message}}</mat-error>
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <button color="primary" mat-raised-button type="submit" class="btn btn-primary">Login</button>
-        </form>
-      </div>
-    </div>
-    <register-redirect></register-redirect>
+    <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
+    <ng-template #elseBlock>
+        <app-header></app-header>
+        <div align="center" class="mat-display-2">Log in to Streamline Athletes Chat Service</div>
+        <div align="center" class="row">
+            <div class="col-lg-4">
+                <form (ngSubmit)="loginSubmit(loginForm)" [formGroup]="loginForm">
+                    <div class="form-group">
+                        <mat-form-field appearance="fill" color="primary">
+                            <mat-label>Username</mat-label>
+                            <input class="form-control" formControlName="username" id="username" matInput
+                                   name="username" type="text">
+                            <mat-error *ngFor="let validation of common.validation_methods.username">
+                                <mat-error
+                                    *ngIf="(validation.type == 'required' || validation.type == 'invalidLogin') && formValidationService.checkIfFormElementInvalid(loginForm, 'username', validation, submitAttempt);">
+                                    {{validation.message}}
+                                </mat-error>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group">
+                        <mat-form-field appearance="fill" color="primary">
+                            <mat-label>Password</mat-label>
+                            <input class="form-control" formControlName="password" id="password" matInput
+                                   name="password"
+                                   type="password">
+                            <mat-error *ngFor="let validation of common.validation_methods.password">
+                                <mat-error
+                                    *ngIf="validation.type == 'required' && formValidationService.checkIfFormElementInvalid(loginForm, 'password', validation, submitAttempt)">{{validation.message}}</mat-error>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+        <register-redirect></register-redirect>
 
-  </ng-template>
+    </ng-template>
 </div>

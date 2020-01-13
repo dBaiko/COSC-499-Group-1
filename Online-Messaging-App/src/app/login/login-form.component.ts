@@ -8,47 +8,47 @@ import {Constants} from "../shared/app-config";
 const NOT_AUTH_EX = 'NotAuthorizedException';
 
 @Component({
-  selector: 'login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+    selector: 'login-form',
+    templateUrl: './login-form.component.html',
+    styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent implements OnInit {
 
-  loginForm: FormGroup;
+    loginForm: FormGroup;
 
-  submitAttempt: boolean = false;
+    submitAttempt: boolean = false;
 
-  constructor(public common: CommonService, private auth: AuthenticationService, private formValidationService: FormValidationService) {
-  }
+    constructor(public common: CommonService, private auth: AuthenticationService, private formValidationService: FormValidationService) {
+    }
 
-  ngOnInit(): void {
-    this.loginForm = new FormGroup({
-      username: new FormControl(Constants.EMPTY, Validators.compose([
-        Validators.required
-      ])),
-      password: new FormControl(Constants.EMPTY, Validators.compose([
-        Validators.required
-      ]))
-    });
-  }
+    ngOnInit(): void {
+        this.loginForm = new FormGroup({
+            username: new FormControl(Constants.EMPTY, Validators.compose([
+                Validators.required
+            ])),
+            password: new FormControl(Constants.EMPTY, Validators.compose([
+                Validators.required
+            ]))
+        });
+    }
 
-  loginSubmit(value: any): void {
-    this.submitAttempt = true;
-    this.login(value.username, value.password);
-  }
+    loginSubmit(form: FormGroup): void {
+        this.submitAttempt = true;
+        this.login(form.value.username, form.value.password);
+    }
 
-  login(username: string, password: string): void {
-    this.auth.login(username, password).subscribe(
-      (data) => {
-        console.log(data);
-        this.common.moveToHome();
-      },
-      (err) => {
-        if (err.code == NOT_AUTH_EX) {
-          this.loginForm.get(Constants.USERNAME).setErrors({invalidLogin: true});
-        }
-      }
-    );
-  }
+    login(username: string, password: string): void {
+        this.auth.login(username, password).subscribe(
+            (data) => {
+                console.log(data);
+                this.common.moveToHome();
+            },
+            (err) => {
+                if (err.code == NOT_AUTH_EX) {
+                    this.loginForm.get(Constants.USERNAME).setErrors({invalidLogin: true});
+                }
+            }
+        );
+    }
 
 }

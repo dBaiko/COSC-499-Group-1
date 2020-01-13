@@ -1,26 +1,29 @@
 $float: left;
 $margin: auto;
 $display-style: table;
-.mat-display-2{
-  margin-top: 3rem;
+.mat-display-2 {
+    margin-top: 3rem;
 }
-.form-group{
-  float:$float;
-  margin: 1rem;
+
+.form-group {
+    float: $float;
+    margin: 1rem;
 }
-.random{
-  margin-right: $margin;
-  margin-left: $margin;
-  display:$display-style;
+
+.random {
+    margin-right: $margin;
+    margin-left: $margin;
+    display: $display-style;
 }
-.btn-primary{
-  margin-right: $margin;
-  margin-left: $margin;
-  display:$display-style;
-  text-align: center;
+
+.btn-primary {
+    margin-right: $margin;
+    margin-left: $margin;
+    display: $display-style;
+    text-align: center;
 }
 
 mat-form-field {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 

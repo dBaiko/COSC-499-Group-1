@@ -1,0 +1,23 @@
+<div id="home">
+
+    <app-header></app-header>
+    <mat-sidenav-container class="container">
+        <mat-sidenav #sidenav [fixedBottomGap]="options.value.bottom" [fixedInViewport]="options.value.fixed"
+                     [fixedTopGap]="options.value.top"
+                     class="sidenav" mode="side"
+                     opened>
+
+            <app-sidebar #chatbox></app-sidebar>
+        </mat-sidenav>
+
+        <mat-sidenav-content [formGroup]="options" id="scrollMe">
+
+            <div *ngIf="userLoggedIn; else elseBlock">
+                <app-chatbox></app-chatbox>
+            </div>
+            <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
+
+</div>
