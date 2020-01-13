@@ -1,0 +1,53 @@
+mat-card {
+    background-color: #282828;
+    height: 34rem;
+    position: relative;
+    border-radius: 0px;
+    border-top: 1px solid #F8F8F8;
+    height: 100%;
+}
+
+mat-form-field {
+    border-radius: 0.5rem;
+    background-color: #282828;
+    width: 100%;
+    color: #F8F8F8;
+}
+
+hr {
+    border: 1px solid #F8F8F8;
+}
+
+mat-card-title {
+    color: #F8F8F8;
+}
+
+.headerTop {
+    background-color: #282828;
+    width: 100%;
+    position: fixed;
+    top: 4rem;
+}
+
+mat-card-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+
+p {
+    color: #F8F8F8;
+}
+
+mat-label {
+    color: #F8F8F8;
+    padding-left: 0.5rem;
+}
+
+.container {
+    height: 100%;
+}
+
+
+
+

@@ -6,25 +6,23 @@ import {Constants, VALIDATION_MESSAGES} from "./app-config";
 @Injectable()
 export class CommonService {
 
-  public validation_methods = VALIDATION_MESSAGES;
+    public validation_methods = VALIDATION_MESSAGES;
 
-  private auth = new AuthenticationService();
+    constructor(private router: Router, private auth: AuthenticationService) {
+    }
 
-  constructor(private router: Router) {
-  }
+    public checkIfLoggedIn(): boolean {
+        return this.auth.isLoggedIn();
+    }
 
-  public checkIfLoggedIn(): boolean {
-    return this.auth.isLoggedIn();
-  }
+    public moveToHome(): void {
+        this.routeTo(Constants.HOME_ROUTE);
+    }
 
-  public moveToHome(): void {
-    this.routeTo(Constants.HOME_ROUTE);
-  }
-
-  public routeTo(route: string): void {
-    this.router.navigate([route]).then(() => {
-      console.log("Navigating to:" + route)
-    });
-  }
+    public routeTo(route: string): void {
+        this.router.navigate([route]).then(() => {
+            console.log("Navigating to:" + route)
+        });
+    }
 
 }
