@@ -2,10 +2,12 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {HomeComponent} from './home.component';
 import {AuthenticationService} from "../shared/authentication.service";
-import {LogoutFormComponent} from "./logout/logout-form.component";
 import {CommonService} from "../shared/common.service";
 import {RouterTestingModule} from '@angular/router/testing';
 import {FormBuilder} from "@angular/forms";
+import {routes} from "../app-routing.module";
+import {HomeModule} from "./home.module";
+import {MaterialModule} from "../material/material.module";
 
 describe('HomeComponent', () => {
     let component: HomeComponent;
@@ -13,11 +15,12 @@ describe('HomeComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [HomeComponent, LogoutFormComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [AuthenticationService, CommonService, FormBuilder],
             imports: [
-                RouterTestingModule
+                RouterTestingModule.withRoutes(routes),
+                HomeModule,
+                MaterialModule
             ]
         })
             .compileComponents();

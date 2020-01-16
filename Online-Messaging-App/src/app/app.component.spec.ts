@@ -12,7 +12,7 @@ describe('AppComponent', () => {
             ],
             imports: [
                 RouterTestingModule.withRoutes(routes),
-                HomeModule
+                HomeModule,
             ]
         }).compileComponents();
     }));
