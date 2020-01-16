@@ -6,12 +6,12 @@ import {LoginFormComponent} from "./login/login-form.component";
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes({"/login", component: LoginFormComponent})
-            ],
             declarations: [
                 AppComponent
             ],
+            imports: [
+                RouterTestingModule
+            ]
         }).compileComponents();
     }));
 
