@@ -18,7 +18,7 @@ describe('LoginComponent', () => {
             imports: [
                 FormsModule,
                 ReactiveFormsModule,
-                RouterTestingModule.withRoutes({'login', component: LoginFormComponent})
+                RouterTestingModule
             ],
             providers: [CommonService, AuthenticationService, FormValidationService]
         })
