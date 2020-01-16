@@ -33,6 +33,11 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
     ],
     exports: [
         HeaderComponent,
+        HomeComponent,
+        LogoutFormComponent,
+        SidebarComponent,
+        FooterComponent,
+        ChatboxComponent
     ],
     providers: [MessengerService, AuthenticationService, CommonService]
 })

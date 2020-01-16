@@ -14,6 +14,7 @@ import {
 } from "@angular/material"
 import {MatBadgeModule} from "@angular/material/badge";
 import {MatCardModule} from '@angular/material/card';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 const material = [
@@ -29,7 +30,8 @@ const material = [
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    BrowserAnimationsModule
 ]
 
 @NgModule({
