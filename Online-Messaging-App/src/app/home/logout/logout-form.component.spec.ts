@@ -31,7 +31,7 @@ describe('LogoutComponent', () => {
                 MaterialModule,
                 ReactiveFormsModule,
                 FormsModule
-             ]
+            ]
         })
             .compileComponents();
     }));
