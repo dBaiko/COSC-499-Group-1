@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {RegisterFormComponent} from "./register-form.component";
 import {MaterialModule} from "../material/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HomeModule} from "../home.module/home.module";
+import {HomeModule} from "../home/home.module";
 import {FormValidationService} from "../shared/form-validation.service";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";

@@ -6,10 +6,9 @@ import {MatInputModule} from "@angular/material/input";
 import {AuthenticationService} from "../shared/authentication.service";
 import {HttpClient, HttpHandler} from "@angular/common/http";
 import {CommonService} from "../shared/common.service";
-import {RouterTestingModule} from "@angular/router/testing";
 import {FormValidationService} from "../shared/form-validation.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {LoginFormComponent} from "../login/login-form.component";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('RegisterComponent', () => {
     let component: RegisterFormComponent;
@@ -23,8 +22,8 @@ describe('RegisterComponent', () => {
                 FormsModule,
                 ReactiveFormsModule,
                 MatInputModule,
-                RouterTestingModule.withRoutes({"/login", component: LoginFormComponent}),
-                BrowserAnimationsModule
+                BrowserAnimationsModule,
+                RouterTestingModule
             ],
             providers: [AuthenticationService, HttpClient, HttpHandler, CommonService, FormValidationService]
         })
