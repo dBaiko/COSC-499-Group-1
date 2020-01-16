@@ -5,7 +5,8 @@ import {LogoutFormComponent} from "../logout/logout-form.component";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {RouterTestingModule} from "@angular/router/testing";
-import {LoginFormComponent} from "../../login/login-form.component";
+import {routes} from "../../app-routing.module";
+import {HomeComponent} from "../home.component";
 
 describe('HeaderComponent', () => {
     let component: HeaderComponent;
@@ -13,12 +14,16 @@ describe('HeaderComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [HeaderComponent, LogoutFormComponent],
+            declarations: [
+                HeaderComponent,
+                LogoutFormComponent,
+                HomeComponent
+            ],
+            imports: [
+                RouterTestingModule.withRoutes(routes)
+            ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [AuthenticationService],
-            imports: [
-                RouterTestingModule.withRoutes({"/login", component: LoginFormComponent})
-            ]
         })
             .compileComponents();
     }));
