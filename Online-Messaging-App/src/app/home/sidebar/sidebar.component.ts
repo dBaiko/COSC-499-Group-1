@@ -10,7 +10,7 @@ export class SidebarComponent implements OnInit {
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
-
+    list;
     constructor() {
     }
 

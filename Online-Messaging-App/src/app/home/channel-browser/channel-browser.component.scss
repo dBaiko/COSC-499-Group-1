@@ -1,0 +1,80 @@
+mat-card {
+    background-color: #282828;
+    height: 34rem;
+    position: relative;
+    border-radius: 0px;
+    border-top: 1px solid #F8F8F8;
+    height: 100%;
+}
+
+mat-form-field {
+    background-color: #282828;
+    width: 100%;
+    color: #F8F8F8;
+    left: 0px;
+}
+
+hr {
+    border: 1px solid #F8F8F8;
+}
+
+mat-card-title {
+    color: #F8F8F8;
+}
+
+.headerTop {
+    background-color: #282828;
+    width: 100%;
+    position: fixed;
+    top: 4rem;
+    margin-left: 0px;
+}
+
+mat-label {
+    color: #F8F8F8;
+    padding-left: 0.5rem;
+}
+
+.container {
+    height: 100%;
+}
+
+.searchBar {
+    width: 100%;
+    position: absolute;
+    margin-top: 1.4rem;
+    margin-left: 0;
+}
+
+.join {
+    background-color: grey;
+    margin-right: 5vh;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+
+}
+
+.joinCreate:focus {
+    outline: 0;
+}
+
+.joinCreate:hover {
+    background-color: #696969;
+}
+mat-card-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+mat-expansion-panel {
+    background-color: #282828;
+    color: #F8F8F8;
+}
+mat-panel-title, mat-panel-description {
+    color: #F8F8F8;
+}
+
+
+
+
