@@ -6,13 +6,14 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-const tableName = "Channel";
+const channelTableName = "Channel";
+const userChannelTableName = "UserChannel";
 
 class ChannelDAO {
 
     public getChannelInfo(channelId: number): Promise<any> {
         const params = {
-            TableName: tableName,
+            TableName: channelTableName,
             KeyConditionExpression: "channelId = :channelId",
             ExpressionAttributeValues: {
                 ":channelId": channelId
@@ -36,7 +37,7 @@ class ChannelDAO {
 
     public getAllChannels(): Promise<any> {
         const params = {
-            TableName: tableName,
+            TableName: channelTableName,
 
         };
 
@@ -54,7 +55,7 @@ class ChannelDAO {
 
     }
 
-    public addNewChannel(channelName: string, channelType: string): Promise<any> {
+    public addNewChannel(channelName: string, channelType: string, firstUsername: string, firstUserChannelRole: string): Promise<any> {
         const channelId = Date.now();
         const params = {
             Item: {
@@ -62,7 +63,7 @@ class ChannelDAO {
                 channelName,
                 channelType
             },
-            TableName: tableName
+            TableName: channelTableName
         };
 
         return new Promise((resolve, reject) => {
@@ -72,9 +73,40 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Added new:", JSON.stringify(data, null, 2));
-                    resolve();
+                    this.addFirstUserToChannel(channelId, firstUsername, firstUserChannelRole)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+
                 }
             });
+        })
+
+    }
+
+    private addFirstUserToChannel(channelId: number, username: string, userChannelRole: string): Promise<any> {
+        const params = {
+            Item: {
+                username,
+                channelId,
+                userChannelRole
+            },
+            TableName: userChannelTableName
+        };
+
+        return new Promise((resolve, reject) => {
+            docClient.put(params, (err, data) => {
+                if (err) {
+                    console.error("Unable to add a new item to UserChannel Table. Error JSON: ", JSON.stringify(err, null, 2));
+                    reject(err);
+                } else {
+                    console.log("Added new:", JSON.stringify(data, null, 2));
+                    resolve();
+                }
+            })
         })
 
     }
