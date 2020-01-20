@@ -7,8 +7,7 @@ const router = express.Router();
 
 const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 
-router
-    .use(bodyParser());
+router.use(bodyParser());
 
 router.get('/', (req, res) => {
     const messageDAO = new MessageDAO();
