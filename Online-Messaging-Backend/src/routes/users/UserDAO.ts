@@ -8,7 +8,7 @@ const docClient = new aws.DynamoDB.DocumentClient();
 
 const table = "Users";
 
-class UserRegistration {
+class UserDAO {
 
     public createNewUser(username: string, email: string, firstName: string, lastName: string): void {
         const params = {
@@ -33,4 +33,4 @@ class UserRegistration {
 
 }
 
-export default UserRegistration;
+export default UserDAO;

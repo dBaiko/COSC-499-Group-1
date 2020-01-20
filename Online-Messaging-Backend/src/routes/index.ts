@@ -1,7 +1,7 @@
 import express from 'express';
-import getMessages from "./messages/getMessages";
-import getChannels from "./channels/getChannels"
-import userRegistration from "./users/registerUser";
+import getMessages from "./messages/messages";
+import getChannels from "./channels/channels"
+import userRegistration from "./users/users";
 
 const router = express.Router();
 

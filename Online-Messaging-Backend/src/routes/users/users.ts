@@ -1,13 +1,13 @@
 import bodyParser from "body-parser";
 import express from 'express';
-import UserRegistration from "./UserRegistration";
+import UserDAO from "./UserDAO";
 
 const router = express.Router();
 
 router.use(bodyParser());
 
 router.post('/', (req, res) => {
-    const userRegistration = new UserRegistration();
+    const userRegistration = new UserDAO();
     userRegistration.createNewUser(req.body.username, req.body.email, req.body.firstName, req.body.lastName);
     res.status(200).send({status: 200, data: {message: "New user added successfully"}});
 });

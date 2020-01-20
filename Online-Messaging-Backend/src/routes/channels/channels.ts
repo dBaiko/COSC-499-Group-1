@@ -36,4 +36,15 @@ router.get('/:channelId', (req, res) => {
     }
 });
 
+router.post('/', (req, res) => {
+    const channelDAO = new ChannelDAO();
+    channelDAO.addNewChannel(req.body.channelName, req.body.channelType)
+        .then(() => {
+            res.status(200).send({status: 200, data: {message: "New channel added successfully"}});
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        });
+});
+
 export = router;
