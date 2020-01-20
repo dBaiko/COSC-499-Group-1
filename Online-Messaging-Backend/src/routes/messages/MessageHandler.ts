@@ -14,17 +14,17 @@ const table = "Messages";
 
 class MessageHandler {
     public addNewMessage(message: Message): void {
-        const messageID = Date.now();
-        const messageSort = messageID;
-        console.log(messageID);
+        const channelId = 0;
+        const messageId = Date.now();
+        console.log(messageId);
         const username = message.username;
         const content = message.content;
         const params = {
             Item:
                 {
+                    channelId,
                     content,
-                    messageID,
-                    messageSort,
+                    messageId,
                     username,
                 },
             TableName: table

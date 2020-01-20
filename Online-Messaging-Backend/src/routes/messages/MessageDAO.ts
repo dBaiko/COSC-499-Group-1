@@ -17,21 +17,24 @@ class MessageDAO {
     public getMessageHistory(): Promise<any> {
         const params = {
             TableName: 'Messages',
-
+            KeyConditionExpression: "channelId = :channelId",
+            ExpressionAttributeValues: {
+                ":channelId": 0
+            }
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
                     console.log(data);
-                    resolve(data.Items.sort(
-                        (a: MessageObject, b: MessageObject) => (a.messageID > b.messageID) ? 1 : -1));
+                    resolve(data.Items);
                 }
             });
+
         });
 
     }
