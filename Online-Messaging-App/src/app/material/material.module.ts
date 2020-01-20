@@ -8,6 +8,7 @@ import {
     MatListModule,
     MatMenuModule,
     MatProgressSpinnerModule,
+    MatExpansionModule,
     MatSidenavModule,
     MatTabsModule,
     MatToolbarModule
@@ -21,6 +22,7 @@ const material = [
     MatButtonModule,
     MatButtonToggleModule,
     MatTabsModule,
+    MatExpansionModule,
     MatListModule,
     MatIconModule,
     MatBadgeModule,

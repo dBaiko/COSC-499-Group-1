@@ -9,7 +9,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
 
 @NgModule({
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     imports: [
         AppRoutingModule,
