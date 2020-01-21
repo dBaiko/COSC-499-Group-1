@@ -79,3 +79,5 @@ class ProfileDAO
         });
     }
 }
+
+export default ProfileDAO;
