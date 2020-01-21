@@ -1,5 +1,4 @@
 import {Injectable} from "@angular/core";
-import {isAlphanumeric} from "validator";
 import {AbstractControl, FormGroup} from "@angular/forms";
 import {Constants} from "./app-config";
 
@@ -10,6 +9,8 @@ interface ValidationMethod {
     message: string
 }
 
+const alphanumRegex: RegExp = /^[a-z0-9]+$/i;
+
 @Injectable()
 export class FormValidationService {
 
@@ -17,7 +18,7 @@ export class FormValidationService {
     }
 
     public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
-        if (!isAlphanumeric(control.value)) {
+        if (alphanumRegex.test(control.value)) {
             return {pattern: true};
         }
         return null;

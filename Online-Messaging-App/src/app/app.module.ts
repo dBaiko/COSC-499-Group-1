@@ -2,9 +2,10 @@ import {NgModule} from '@angular/core';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
-import {HomeModule} from "./home.module/home.module";
-import {LoginModule} from "./login/login.module";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {HomeModule} from "./home/home.module";
+import {LoginModule} from "./login/login.module";
+import {RegisterModule} from "./register/register.module";
 
 
 @NgModule({
@@ -14,10 +15,11 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
     imports: [
         AppRoutingModule,
         HttpClientModule,
+        BrowserAnimationsModule,
+        NoopAnimationsModule,
         HomeModule,
         LoginModule,
-        BrowserAnimationsModule,
-        NoopAnimationsModule
+        RegisterModule
     ],
 
     bootstrap: [AppComponent]

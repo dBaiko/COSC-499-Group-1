@@ -13,7 +13,10 @@ module.exports = function (config) {
             require('@angular-devkit/build-angular/plugins/karma')
         ],
         client: {
-            clearContext: false // leave Jasmine Spec Runner output visible in browser
+            clearContext: false, // leave Jasmine Spec Runner output visible in browser
+            jasmine: {
+                random: false
+            }
         },
         coverageIstanbulReporter: {
             dir: require('path').join(__dirname, './coverage/Online-Messaging-App'),
@@ -25,7 +28,7 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome'],
+        browsers: ['ChromeHeadless'],
         singleRun: false,
         restartOnFileChange: true
     });

@@ -29,7 +29,7 @@ const material = [
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
 ]
 
 @NgModule({

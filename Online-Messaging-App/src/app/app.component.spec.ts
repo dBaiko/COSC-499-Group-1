@@ -1,17 +1,19 @@
 import {async, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {AppComponent} from './app.component';
-import {LoginFormComponent} from "./login/login-form.component";
+import {routes} from "./app-routing.module";
+import {HomeModule} from "./home/home.module";
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule.withRoutes({"/login", component: LoginFormComponent})
-            ],
             declarations: [
                 AppComponent
             ],
+            imports: [
+                RouterTestingModule.withRoutes(routes),
+                HomeModule,
+            ]
         }).compileComponents();
     }));
 

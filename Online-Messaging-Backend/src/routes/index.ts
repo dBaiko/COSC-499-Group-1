@@ -1,10 +1,12 @@
 import express from 'express';
-import getMessages from "./messages/getMessages";
-import userRegistration from "./users/registerUser";
+import getMessages from "./messages/messages";
+import getChannels from "./channels/channels"
+import userRegistration from "./users/users";
 
 const router = express.Router();
 
 router.use('/users/', userRegistration);
 router.use('/messages/', getMessages);
+router.use('/channels/', getChannels)
 
 export = router;

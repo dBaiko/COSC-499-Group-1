@@ -5,7 +5,7 @@ import {FormValidationService} from './form-validation.service';
 describe('FormValidatorService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [FormValidationService]
+            providers: [FormValidationService],
         });
         TestBed.configureTestingModule({});
     });
