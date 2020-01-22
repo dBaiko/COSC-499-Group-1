@@ -1,9 +1,9 @@
 import cors from "cors";
 import express from "express";
-import socket = require("socket.io");
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
-import MessageHandler from "./routes/messages/MessageHandler";
+import MessageDAO from "./routes/messages/MessageDAO";
+import socket = require("socket.io");
 
 const app = express();
 const port = 8080; // default port to listen
@@ -32,8 +32,8 @@ io.on("connection", (socketIO) => {
         // tslint:disable-next-line:no-console
         console.log(message);
         io.sockets.emit("broadcast", message);
-        const messageHandler = new MessageHandler();
-        messageHandler.addNewMessage(message);
+        const messageDAO = new MessageDAO();
+        messageDAO.addNewMessage(message);
         // call from db? ~for synchronization
         // socketIO.emit("broadcast", message);
     });

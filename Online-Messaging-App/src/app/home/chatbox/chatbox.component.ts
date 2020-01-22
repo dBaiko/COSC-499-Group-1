@@ -19,7 +19,8 @@ export class ChatboxComponent implements OnInit {
     chatMessages;
     error: string = '';
 
-    private url: string = APIConfig.GetMessagesAPI;
+    // TODO: Change this to actually get current channel
+    private url: string = APIConfig.GetMessagesAPI + 0;
 
     constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
     }
