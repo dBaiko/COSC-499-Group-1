@@ -1,18 +1,13 @@
 {
-  "defaultSeverity": "error",
-  "extends": [
-    "tslint:recommended"
+  "defaultSeverity": "warning",
+  "rulesDirectory": [
+    "node_modules/codelyzer"
   ],
   "jsRules": {},
   "rules": {
     "trailing-comma": [
       false
     ],
-    "quotemark": false,
-    "interface-name": [
-      false,
-      "never"
-    ]
-  },
-  "rulesDirectory": []
+    "quotemark": false
+  }
 }
