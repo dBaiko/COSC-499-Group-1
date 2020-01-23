@@ -9,12 +9,12 @@
         <mat-card-content class="searchBar">
             <form #messageForm="ngForm" (ngSubmit)="sendQuery(messageForm)" autocomplete="off">
                 <mat-form-field>
-                    <mat-label>Enter a channel name that you would like to join</mat-label>
-                    <input matInput name="content">
+                    <mat-label>Search...</mat-label>
+                    <input (keyup)="onKey($event)" matInput name="content">
                 </mat-form-field>
             </form>
         <div id="scrollable">
-            <mat-accordion multi="true">
+<!--            <mat-accordion multi="true">-->
             <div *ngFor="let channel of channels">
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
@@ -31,7 +31,7 @@
                 </mat-action-row>
             </mat-expansion-panel>
             </div>
-            </mat-accordion>
+<!--            </mat-accordion>-->
         </div>
         </mat-card-content>
 
