@@ -12,10 +12,12 @@ export class CommonService {
     }
 
     public checkIfLoggedIn(): boolean {
+        console.log(this.auth.isLoggedIn());
         return this.auth.isLoggedIn();
     }
 
     public moveToHome(): void {
+        console.log("called");
         this.routeTo(Constants.HOME_ROUTE);
     }
 

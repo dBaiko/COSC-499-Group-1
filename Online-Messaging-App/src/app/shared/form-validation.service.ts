@@ -18,7 +18,7 @@ export class FormValidationService {
     }
 
     public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
-        if (alphanumRegex.test(control.value)) {
+        if (!alphanumRegex.test(control.value)) {
             return {pattern: true};
         }
         return null;
