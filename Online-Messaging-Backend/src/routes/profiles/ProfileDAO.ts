@@ -8,10 +8,8 @@ const docClient = new aws.DynamoDB.DocumentClient();
 
 const table = "Profiles";
 
-class ProfileDAO
-{
-    public createProfileFromUser(username: string, email: string, firstName: string, lastName: string): Promise<any>
-    {
+class ProfileDAO {
+    public createProfileFromUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
                 email,
@@ -21,7 +19,7 @@ class ProfileDAO
             },
             TableName: table
         };
-        console.log("Creating Profile for"+username+"...");
+        console.log("Creating Profile for" + username + "...");
         return new Promise((resolve, reject) => {
             docClient.put(params, (err, data) => {
                 if (err) {
@@ -34,9 +32,9 @@ class ProfileDAO
             });
         });
     };
+
     public updateProfile(username: string, email: string, firstName: string, lastName: string,
-                         age: number, school: string, gender: string, activities: string, bio: string)
-    {
+                         age: number, school: string, gender: string, activities: string, bio: string) {
         const params =
             {
                 TableName: table,
@@ -60,22 +58,46 @@ class ProfileDAO
                     }
             };
 
-        console.log("Updating profile for user"+username+"...");
+        console.log("Updating profile for user" + username + "...");
+        return new Promise((resolve, reject) => {
+            docClient.update(params, (err, data) => {
+                if (err) {
+                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                    reject();
+                } else {
+                    console.log("Item updated successfully:", JSON.stringify(data, null, 2));
+                    resolve();
+                }
+            });
+        });
+    }
+
+    public getUserProfile(username: string) {
+        const params =
+            {
+                TableName: table,
+                KeyConditionExpression: "username = :username",
+                ExpressionAttributeValues:
+                    {
+                        ":username": username
+                    }
+            };
         return new Promise((resolve, reject) =>
         {
-            docClient.update(params, (err, data) =>
+            docClient.query(params, (err, data) =>
             {
                 if (err)
                 {
-                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-                    reject();
+                    console.log(err);
+                    reject(err);
                 }
                 else
                     {
-                        console.log("Item updated successfully:", JSON.stringify(data, null, 2));
-                        resolve();
+                        console.log("Successfully retrieved profile for user "+username);
+                        resolve(data.Items);
                     }
             });
+
         });
     }
 }

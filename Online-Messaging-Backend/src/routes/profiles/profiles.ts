@@ -33,4 +33,20 @@ router.put('/', (req, res) =>
 
 });
 
+router.get('/', (req, res) =>
+{
+    const getProfile = new ProfileDAO();
+    let username=req.params.username;
+
+    const response = getProfile.getUserProfile(username)
+        .then((data) =>
+        {
+            res.status(200).send(data);
+        })
+        .catch((err) =>
+        {
+            res.status(400).send(err);
+        });
+});
+
 export = router;
