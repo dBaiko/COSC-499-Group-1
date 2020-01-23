@@ -17,4 +17,20 @@ router.post('/', (req, res) => {
         });
 });
 
+router.put('/', (req, res) =>
+{
+    const updateProfile = new ProfileDAO();
+    updateProfile.updateProfile(req.body.username, req.body.email, req.body.firstName, req.body.lastName, req.body.age,
+                                 req.body.school, req.body.activities, req.body.gender, req.body.bio).then(() =>
+    {
+        res.status(200).send({status: 200, data: {message: "Profile for user"
+                    +req.body.username+ "updated successfully"}});
+    })
+        .catch((err) =>
+        {
+            res.status(400).send(err);
+        });
+
+});
+
 export = router;
