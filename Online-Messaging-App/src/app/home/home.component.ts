@@ -12,7 +12,8 @@ export class HomeComponent implements OnInit {
 
     userLoggedIn = false;
     options: FormGroup;
-
+    selectedChannelId: number = 1;
+    selectedChannelName: string;
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
@@ -23,6 +24,14 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+    }
+
+    receiveId($event){
+        this.selectedChannelId = $event;
+
+    }
+    receiveName($event){
+        this.selectedChannelName = $event;
     }
 
 }

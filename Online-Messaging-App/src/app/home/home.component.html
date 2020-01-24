@@ -6,14 +6,13 @@
                      [fixedTopGap]="options.value.top"
                      class="sidenav" mode="side"
                      opened>
-
-            <app-sidebar #chatbox></app-sidebar>
+            <app-sidebar #chatbox (channelIdEvent)="receiveId($event)" (channelNameEvent)="receiveName($event)"></app-sidebar>
         </mat-sidenav>
 
         <mat-sidenav-content [formGroup]="options" id="scrollMe">
 
             <div *ngIf="userLoggedIn; else elseBlock">
-                <app-chatbox></app-chatbox>
+                <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"> </app-chatbox>
             </div>
             <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
         </mat-sidenav-content>
