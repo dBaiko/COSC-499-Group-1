@@ -10,6 +10,25 @@ const userChannelTableName = "UserChannel";
 
 class UserChannelDAO {
 
+    public getAll(): Promise<any> {
+        const params = {
+            TableName: userChannelTableName,
+        };
+
+        return new Promise((resolve, reject) => {
+            docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query Succeeded");
+                    resolve(data.Items);
+                }
+            });
+        });
+
+    }
+
     public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
         const params = {
             Item: {
@@ -54,7 +73,31 @@ class UserChannelDAO {
                 }
             });
 
-        })
+        });
+    }
+
+    public getAllSubscribedUsers(channelId: number): Promise<any> {
+        const params = {
+            TableName: userChannelTableName,
+            IndexName: "channelId-username-index",
+            KeyConditionExpression: "channelId = :channelId",
+            ExpressionAttributeValues: {
+                ":channelId": channelId
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            docClient.query(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query for " + channelId + " Succeeded");
+                    resolve(data.Items);
+                }
+            });
+
+        });
     }
 
 }
