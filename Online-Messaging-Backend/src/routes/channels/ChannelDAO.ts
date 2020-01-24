@@ -9,6 +9,12 @@ const docClient = new aws.DynamoDB.DocumentClient();
 const channelTableName = "Channel";
 const userChannelTableName = "UserChannel";
 
+interface ChannelObject {
+    channelId: number,
+    channelName: string,
+    channelType: string
+}
+
 class ChannelDAO {
 
     public getChannelInfo(channelId: number): Promise<any> {
@@ -27,7 +33,8 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query for " + channelId + " Succeeded");
-                    resolve(data.Items);
+                    resolve(data.Items)
+                    ;
                 }
             });
 
@@ -38,7 +45,6 @@ class ChannelDAO {
     public getAllChannels(): Promise<any> {
         const params = {
             TableName: channelTableName,
-
         };
 
         return new Promise((resolve, reject) => {
@@ -48,7 +54,7 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    resolve(data.Items);
+                    resolve(data.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName) ? 1 : -1));
                 }
             });
         });

@@ -12,6 +12,9 @@ export class HomeComponent implements OnInit {
 
     userLoggedIn = false;
     options: FormGroup;
+
+    messagesShown = false;
+
     selectedChannelId: number = 1;
     selectedChannelName: string;
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {

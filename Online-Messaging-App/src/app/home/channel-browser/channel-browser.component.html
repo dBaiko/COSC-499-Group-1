@@ -1,0 +1,47 @@
+<div class="container">
+    <mat-card>
+        <div class="headerTop">
+            <mat-card-header>
+                <mat-card-title>Channel Browser</mat-card-title>
+            </mat-card-header>
+
+        </div>
+        <mat-card-content class="searchBar">
+            <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
+                <mat-form-field>
+                    <mat-label>Search...</mat-label>
+                    <input (input)="onKey($event)" matInput name="content">
+                </mat-form-field>
+            </form>
+            <div id="scrollable">
+                <mat-accordion>
+                    <div *ngFor="let channel of channels">
+                        <div *ngIf="channel.filtered == false || channel.filtered == null">
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        {{channel.channelName}}
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        {{channel.channelName}} tags
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <p>Description of the channel</p>
+                                <mat-action-row>
+                                    <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">
+                                    <button  (click)="joinChannel(channel.channelId)" class="join" mat-button>Join Channel</button>
+                                    </div>
+                                    <ng-template #joined>
+                                        <button class="joined" mat-button disableRipple="true">Joined</button>
+                                    </ng-template>
+                                </mat-action-row>
+                            </mat-expansion-panel>
+                        </div>
+                    </div>
+                </mat-accordion>
+            </div>
+        </mat-card-content>
+
+
+    </mat-card>
+</div>

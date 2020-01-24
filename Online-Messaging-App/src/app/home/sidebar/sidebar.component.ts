@@ -1,4 +1,4 @@
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
@@ -27,14 +27,13 @@ export class SidebarComponent implements OnInit {
 
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
-
-    private url: string = APIConfig.GetSubscribedChannelsAPI;
-
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
+    list;
+    private url: string = APIConfig.GetSubscribedChannelsAPI;
 
-    constructor(private auth: AuthenticationService, private http: HttpClient) {
+    constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
 
@@ -51,13 +50,11 @@ export class SidebarComponent implements OnInit {
         this.http.get(this.url + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
                 this.userSubscribedChannels = data;
                 this.userSubscribedChannels.forEach((item: userChannelObject) => {
-                    if (item.channelType == "public"){
+                    if (item.channelType == "public") {
                         this.publicChannels.push(item);
-                    }
-                    else if(item.channelType == "private"){
+                    } else if (item.channelType == "private") {
                         this.privateChannels.push(item);
-                    }
-                    else{
+                    } else {
                         this.friendsChannels.push(item);
                     }
                 })
@@ -87,12 +84,11 @@ export class SidebarComponent implements OnInit {
 
     selectChannel(id: number) {
         this.userSubscribedChannels.forEach((item: userChannelObject) => {
-            if (item.channelId == id){
+            if (item.channelId == id) {
                 this.channelIdEvent.emit(id.toString());
                 this.channelNameEvent.emit(item.channelName);
                 item["selected"] = true;
-            }
-            else{
+            } else {
                 item["selected"] = false;
             }
         })
