@@ -46,7 +46,7 @@ router.get('/channels/:channelId', (req, res) => {
 
 router.post('/', (req, res) => {
     const userChannelDAO = new UserChannelDAO();
-    userChannelDAO.addNewUserToChannel(req.body.username, req.body.channelId, req.body.userChannelRole)
+    userChannelDAO.addNewUserToChannel(req.body.username, req.body.channelId, req.body.userChannelRole, req.body.channelName, req.body.channelType)
         .then(() => {
             res.status(200).send({status: 200, data: {message: "New userChannel added successfully"}});
         })

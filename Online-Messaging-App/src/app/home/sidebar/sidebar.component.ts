@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
@@ -22,7 +22,7 @@ export class SidebarComponent implements OnInit {
     privateChannels = [];
     friendsChannels = [];
 
-    userSubscribedChannels;
+    userSubscribedChannels = [];
 
 
     @Output() channelNameEvent = new EventEmitter<string>();
@@ -34,6 +34,27 @@ export class SidebarComponent implements OnInit {
     private url: string = APIConfig.GetSubscribedChannelsAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
+    }
+
+    private _subbedChannel: userChannelObject;
+
+    get subbedChannel(): userChannelObject {
+        return this._subbedChannel;
+    }
+
+    @Input()
+    set subbedChannel(value: userChannelObject) {
+        if (value) {
+            this._subbedChannel = value;
+            this.userSubscribedChannels.push(value);
+            if (value.channelType == "public") {
+                this.publicChannels.push(value);
+            } else if (value.channelType == "private") {
+                this.privateChannels.push(value);
+            } else {
+                this.friendsChannels.push(value);
+            }
+        }
     }
 
 
@@ -48,6 +69,9 @@ export class SidebarComponent implements OnInit {
             })
         };
         this.http.get(this.url + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
+                this.publicChannels = [];
+                this.privateChannels = [];
+                this.friendsChannels = [];
                 this.userSubscribedChannels = data;
                 this.userSubscribedChannels.forEach((item: userChannelObject) => {
                     if (item.channelType == "public") {
@@ -57,7 +81,10 @@ export class SidebarComponent implements OnInit {
                     } else {
                         this.friendsChannels.push(item);
                     }
-                })
+                });
+                this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
+                this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
+                this.userSubscribedChannels[0]["selected"] = true;
             },
             err => {
                 console.log(err);

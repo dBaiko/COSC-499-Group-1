@@ -29,12 +29,14 @@ class UserChannelDAO {
 
     }
 
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
+    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string, channelName: string, channelType: string): Promise<any> {
         const params = {
             Item: {
                 username,
                 channelId,
-                userChannelRole
+                userChannelRole,
+                channelName,
+                channelType
             },
             TableName: userChannelTableName
         }

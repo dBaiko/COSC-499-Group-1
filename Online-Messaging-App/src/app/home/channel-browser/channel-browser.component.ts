@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {APIConfig} from "../../shared/app-config";
-import {equal} from "assert";
 
 
 interface userChannelObject {
     username: string;
     channelId: number;
     userChannelRole: string;
+    channelName: string;
+    channelType: string;
 }
 
 @Component({
@@ -17,11 +18,13 @@ interface userChannelObject {
     styleUrls: ['./channel-browser.component.scss'],
 })
 export class ChannelBrowserComponent implements OnInit {
-    // channels = [1, 2, 3, 4, 5, 6, 7];
+
     subscribedChannels: number[] = [];
     channels;
 
     search = "";
+
+    @Output() newChannelIdEvent = new EventEmitter<userChannelObject>();
 
     private getChannelsAPI = APIConfig.GetChannelsAPI;
     private getUserChannelsAPI = APIConfig.GetUserChannelsAPI;
@@ -46,7 +49,6 @@ export class ChannelBrowserComponent implements OnInit {
                 data.forEach((item: userChannelObject) => {
                     this.subscribedChannels.push(item.channelId);
                 });
-                console.log(this.subscribedChannels);
             },
             err => {
                 console.log(err.toString());
@@ -60,7 +62,6 @@ export class ChannelBrowserComponent implements OnInit {
             } else {
                 this.channels[i]["filtered"] = true;
             }
-            //console.log(this.channels[i]);
         }
     }
 
@@ -86,20 +87,25 @@ export class ChannelBrowserComponent implements OnInit {
             });
     }
 
-    //TODO fix joinChannel: figure out how to get channel information
-    joinChannel(channelId: number): Promise<Object> {
+    joinChannel(channel: userChannelObject): Promise<Object> {
+
+        this.subscribedChannels.push(channel.channelId);
+        this.newChannelIdEvent.emit(channel)
+
         let user: userChannelObject = {
             username: this.auth.getAuthenticatedUser().getUsername(),
-            channelId: channelId,
-            userChannelRole: "user"
+            channelId: channel.channelId,
+            userChannelRole: "user",
+            channelName: channel.channelName,
+            channelType: channel.channelType
         };
-
 
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             })
         };
+
         return this.http.post(this.getUserChannelsAPI, user, httpOptions).toPromise();// TODO: check for errors in responce
     }
 
