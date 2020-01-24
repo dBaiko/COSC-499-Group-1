@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AuthenticationService} from "../../shared/authentication.service";
 import {APIConfig} from "../../shared/app-config";
 
 interface User {
@@ -23,7 +24,7 @@ export class SidebarComponent implements OnInit {
     friendChannelSelect: boolean = false;
     list;
     private url: string = APIConfig.GetChannelsAPI;
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
     ngOnInit(): void {
@@ -46,21 +47,21 @@ export class SidebarComponent implements OnInit {
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
     }
-    joinChannel(username: string, userId: number, channelName: string, channelId: number): Promise<Object> {
-        let user: User = {
-            username: username,
-            userId: userId
-        };
-        let channel: Channel = {
-            channelId : channelId,
-            channelName: channelName
-        };
-
-        let httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json'
-            })
-        };
-        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
-    }
+    // joinChannel(username: string, userId: number, channelName: string, channelId: number): Promise<Object> {
+    //     let user: User = {
+    //         username: this.auth.getAuthenticatedUser().getUsername(),
+    //         userId: userId
+    //     };
+    //     let channel: Channel = {
+    //         channelId : channelId,
+    //         channelName: channelName
+    //     };
+    //
+    //     let httpOptions = {
+    //         headers: new HttpHeaders({
+    //             'Content-Type': 'application/json'
+    //         })
+    //     };
+    //     return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
+    // }
 }

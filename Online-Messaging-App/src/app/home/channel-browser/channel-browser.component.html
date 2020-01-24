@@ -28,7 +28,7 @@
                                 </mat-expansion-panel-header>
                                 <p>Description of the channel</p>
                                 <mat-action-row>
-                                    <button class="join" mat-button>Join Channel</button>
+                                    <button (click)="joinChannel(channel.channelName)" class="join" mat-button>Join Channel</button>
                                 </mat-action-row>
                             </mat-expansion-panel>
                         </div>

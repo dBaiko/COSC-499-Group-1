@@ -1,7 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AuthenticationService} from "../../shared/authentication.service";
 import {APIConfig} from "../../shared/app-config";
 
+
+interface User {
+    username: string;
+    userId: number;
+}
+interface Channel {
+    channelName: string;
+    channelId: number;
+}
 @Component({
     selector: 'app-channel-browser',
     templateUrl: './channel-browser.component.html',
@@ -16,7 +26,7 @@ export class ChannelBrowserComponent implements OnInit {
 
     private url = APIConfig.GetChannelsAPI;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
     ngOnInit() {
@@ -54,6 +64,24 @@ export class ChannelBrowserComponent implements OnInit {
             err => {
                 console.log(err);
             });
+    }
+    //TODO fix joinChannel: figure out how to get channel information
+    joinChannel(channelName: string): Promise<Object> {
+        let user: User = {
+            username: this.auth.getAuthenticatedUser().getUsername(),
+            userId: 0
+        };
+        let channel: Channel = {
+            channelName: channelName,
+            channelId: 0
+        };
+
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
     }
 
 }
