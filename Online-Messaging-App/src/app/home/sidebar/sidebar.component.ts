@@ -1,4 +1,15 @@
 import {Component, OnInit} from '@angular/core';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {APIConfig} from "../../shared/app-config";
+
+interface User {
+    username: string;
+    userId: number;
+}
+interface Channel {
+    channelName: string;
+    channelId: number;
+}
 
 @Component({
     selector: 'app-sidebar',
@@ -11,7 +22,8 @@ export class SidebarComponent implements OnInit {
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
     list;
-    constructor() {
+    private url: string = APIConfig.GetChannelsAPI;
+    constructor(private http: HttpClient) {
     }
 
     ngOnInit(): void {
@@ -33,5 +45,22 @@ export class SidebarComponent implements OnInit {
         this.publicChannelSelect = false;
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
+    }
+    joinChannel(username: string, userId: number, channelName: string, channelId: number): Promise<Object> {
+        let user: User = {
+            username: username,
+            userId: userId
+        };
+        let channel: Channel = {
+            channelId : channelId,
+            channelName: channelName
+        };
+
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
     }
 }

@@ -34,8 +34,7 @@ export class ChannelBrowserComponent implements OnInit {
         }
     }
 
-    // TODO: change this to on a change of the search form
-    onKey($event: KeyboardEvent) {
+    onKey($event: Event) {
         //set search value as whatever is entered on search bar every keystroke
         this.search = ($event.target as HTMLInputElement).value;
 

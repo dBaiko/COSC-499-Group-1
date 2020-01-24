@@ -7,10 +7,10 @@
 
         </div>
         <mat-card-content class="searchBar">
-            <form #messageForm="ngForm" (ngSubmit)="sendQuery(messageForm)" autocomplete="off">
+            <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
                 <mat-form-field>
                     <mat-label>Search...</mat-label>
-                    <input (keyup)="onKey($event)" matInput name="content">
+                    <input (input)="onKey($event)" matInput name="content">
                 </mat-form-field>
             </form>
             <div id="scrollable">
