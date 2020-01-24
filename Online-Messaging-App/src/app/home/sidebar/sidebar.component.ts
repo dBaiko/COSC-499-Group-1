@@ -1,15 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
 
-interface User {
-    username: string;
-    userId: number;
-}
-interface Channel {
-    channelName: string;
-    channelId: number;
+interface userChannelObject {
+    username: string,
+    channelId: number,
+    userChannelRole: string,
+    channelType: string,
+    channelName: string
 }
 
 @Component({
@@ -19,15 +18,50 @@ interface Channel {
 })
 export class SidebarComponent implements OnInit {
 
+    publicChannels = [];
+    privateChannels = [];
+    friendsChannels = [];
+
+    userSubscribedChannels;
+
+
+    @Output() channelNameEvent = new EventEmitter<string>();
+    @Output() channelIdEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
     list;
-    private url: string = APIConfig.GetChannelsAPI;
+    private url: string = APIConfig.GetSubscribedChannelsAPI;
+
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
+
     ngOnInit(): void {
+        this.getSubscribedChannels();
+    }
+
+    getSubscribedChannels(): void {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        this.http.get(this.url + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
+                this.userSubscribedChannels = data;
+                this.userSubscribedChannels.forEach((item: userChannelObject) => {
+                    if (item.channelType == "public") {
+                        this.publicChannels.push(item);
+                    } else if (item.channelType == "private") {
+                        this.privateChannels.push(item);
+                    } else {
+                        this.friendsChannels.push(item);
+                    }
+                })
+            },
+            err => {
+                console.log(err);
+            });
     }
 
     selectPublicChannel(): void {
@@ -47,21 +81,17 @@ export class SidebarComponent implements OnInit {
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
     }
-    // joinChannel(username: string, userId: number, channelName: string, channelId: number): Promise<Object> {
-    //     let user: User = {
-    //         username: this.auth.getAuthenticatedUser().getUsername(),
-    //         userId: userId
-    //     };
-    //     let channel: Channel = {
-    //         channelId : channelId,
-    //         channelName: channelName
-    //     };
-    //
-    //     let httpOptions = {
-    //         headers: new HttpHeaders({
-    //             'Content-Type': 'application/json'
-    //         })
-    //     };
-    //     return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
-    // }
+
+    selectChannel(id: number) {
+        this.userSubscribedChannels.forEach((item: userChannelObject) => {
+            if (item.channelId == id) {
+                this.channelIdEvent.emit(id.toString());
+                this.channelNameEvent.emit(item.channelName);
+                item["selected"] = true;
+            } else {
+                item["selected"] = false;
+            }
+        })
+
+    }
 }

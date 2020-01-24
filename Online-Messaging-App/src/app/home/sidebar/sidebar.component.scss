@@ -62,8 +62,15 @@ h2 {
 }
 
 .channelHeader:hover {
-    background-color: #000000;
+    background-color: #1f1f1f;
 }
+.channelRan {
+    background-color: #1a1a1a;
+}
+.channelRan:hover {
+    background-color: #1a1a1a;
+}
+
 
 .channelSelector {
     width: auto;

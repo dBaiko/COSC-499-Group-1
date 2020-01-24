@@ -6,8 +6,7 @@
                      [fixedTopGap]="options.value.top"
                      class="sidenav" mode="side"
                      opened>
-
-            <app-sidebar #chatbox></app-sidebar>
+            <app-sidebar #chatbox (channelIdEvent)="receiveId($event)" (channelNameEvent)="receiveName($event)"></app-sidebar>
         </mat-sidenav>
 
         <mat-sidenav-content [formGroup]="options" id="scrollMe">
@@ -20,7 +19,7 @@
                     Browser
                 </button>
                 <app-channel-browser *ngIf="this.messagesShown == false"></app-channel-browser>
-                <app-chatbox *ngIf="this.messagesShown == true"></app-chatbox>
+                <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName" *ngIf="this.messagesShown == true"></app-chatbox>
             </div>
             <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
         </mat-sidenav-content>
