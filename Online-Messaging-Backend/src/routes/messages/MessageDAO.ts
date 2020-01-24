@@ -13,6 +13,7 @@ interface MessageObject {
 }
 
 interface Message {
+    channelId: number;
     username: string;
     content: string;
 }
@@ -66,7 +67,7 @@ class MessageDAO {
     }
 
     public addNewMessage(message: Message): void {
-        const channelId = 0; // TODO: change to dynamic channel
+        const channelId = Number(message.channelId);
         const messageId = Date.now();
         console.log(messageId);
         const username = message.username;

@@ -9,6 +9,12 @@ const docClient = new aws.DynamoDB.DocumentClient();
 const channelTableName = "Channel";
 const userChannelTableName = "UserChannel";
 
+interface ChannelObject {
+    channelId: number,
+    channelName: string,
+    channelType: string
+}
+
 class ChannelDAO {
 
     public getChannelInfo(channelId: number): Promise<any> {
@@ -27,7 +33,8 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query for " + channelId + " Succeeded");
-                    resolve(data.Items);
+                    resolve(data.Items)
+                    ;
                 }
             });
 
@@ -38,7 +45,6 @@ class ChannelDAO {
     public getAllChannels(): Promise<any> {
         const params = {
             TableName: channelTableName,
-
         };
 
         return new Promise((resolve, reject) => {
@@ -48,7 +54,7 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    resolve(data.Items);
+                    resolve(data.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName) ? 1 : -1));
                 }
             });
         });
@@ -73,7 +79,7 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Added new:", JSON.stringify(data, null, 2));
-                    this.addFirstUserToChannel(channelId, firstUsername, firstUserChannelRole)
+                    this.addFirstUserToChannel(channelId, firstUsername, firstUserChannelRole, channelName, channelType)
                         .then(() => {
                             resolve();
                         })
@@ -87,36 +93,14 @@ class ChannelDAO {
 
     }
 
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
+    private addFirstUserToChannel(channelId: number, username: string, userChannelRole: string, channelName: string, channelType: string): Promise<any> {
         const params = {
             Item: {
                 username,
                 channelId,
-                userChannelRole
-            },
-            TableName: channelTableName
-        }
-
-        return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    console.log("Added new user subsription: ", JSON.stringify(data, null, 2));
-                    resolve();
-                }
-            })
-        })
-
-    }
-
-    private addFirstUserToChannel(channelId: number, username: string, userChannelRole: string): Promise<any> {
-        const params = {
-            Item: {
-                username,
-                channelId,
-                userChannelRole
+                userChannelRole,
+                channelName,
+                channelType
             },
             TableName: userChannelTableName
         };

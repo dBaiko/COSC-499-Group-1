@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {ChatboxComponent} from "./chatbox/chatbox.component";
 import {FooterComponent} from "./footer/footer.component";
 import {HeaderComponent} from "./header/header.component";
+import {ChannelBrowserComponent} from "./channel-browser/channel-browser.component";
 import {HomeComponent} from "./home.component";
 import {LogoutFormComponent} from "./logout/logout-form.component";
 import {SidebarComponent} from "./sidebar/sidebar.component";
@@ -18,6 +19,7 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
 @NgModule({
     declarations: [
         ChatboxComponent,
+        ChannelBrowserComponent,
         FooterComponent,
         HeaderComponent,
         HomeComponent,
@@ -36,6 +38,7 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
         HomeComponent,
         LogoutFormComponent,
         SidebarComponent,
+        ChannelBrowserComponent,
         FooterComponent,
         ChatboxComponent
     ],

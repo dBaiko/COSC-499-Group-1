@@ -3,6 +3,7 @@ import * as Socket from "socket.io-client";
 import {Observable} from "rxjs";
 
 export interface ChatMessage {
+    channelId: number,
     username: string,
     content: string
 }
