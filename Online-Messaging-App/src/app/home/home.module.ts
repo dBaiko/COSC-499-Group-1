@@ -38,10 +38,7 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
         HomeComponent,
         LogoutFormComponent,
         SidebarComponent,
-<<<<<<< HEAD
         ChannelBrowserComponent,
-=======
->>>>>>> 8ba055e5cb59f4cdb15d7296e3be593723cd81d0
         FooterComponent,
         ChatboxComponent
     ],

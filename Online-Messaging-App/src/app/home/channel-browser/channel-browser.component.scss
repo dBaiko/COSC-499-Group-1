@@ -18,6 +18,7 @@ mat-form-field {
     padding-right: 10vh !important;
 }
 
+
 hr {
     border: 1px solid #F8F8F8;
 }
@@ -68,15 +69,18 @@ mat-label {
 .joinCreate:hover {
     background-color: #696969;
 }
+
 mat-card-footer {
     width: 100%;
     position: fixed;
     bottom: 0;
 }
+
 mat-expansion-panel {
     background-color: #282828;
     color: #F8F8F8;
 }
+
 mat-panel-title, mat-panel-description {
     color: #F8F8F8;
 }

@@ -2,13 +2,13 @@ import {NgModule} from "@angular/core";
 import {
     MatButtonModule,
     MatButtonToggleModule,
+    MatExpansionModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    MatExpansionModule,
     MatSidenavModule,
     MatTabsModule,
     MatToolbarModule
@@ -33,10 +33,7 @@ const material = [
     MatFormFieldModule,
     MatInputModule,
     MatCardModule,
-<<<<<<< HEAD
     BrowserAnimationsModule
-=======
->>>>>>> 8ba055e5cb59f4cdb15d7296e3be593723cd81d0
 ]
 
 @NgModule({
