@@ -2,175 +2,22 @@
     <mat-card>
         <div class="headerTop">
             <mat-card-header>
-                <mat-card-title>Channel {{channelId}}</mat-card-title>
+                <mat-card-title>{{channelName}}</mat-card-title>
             </mat-card-header>
         </div>
         <p>{{error}}</p>
         <hr>
         <div id="scrollable">
-<!--            <div *ngFor="let chatMessage of chatMessages">-->
-<!--                <mat-card-header>-->
-<!--                    <mat-card-title>{{chatMessage.username}}</mat-card-title>-->
-<!--                </mat-card-header>-->
-<!--                <mat-card-content>-->
-<!--                    <p>{{chatMessage.content}}</p>-->
-<!--                </mat-card-content>-->
-<!--                <hr>-->
-<!--            </div>-->
-            <div *ngIf="channelId==1" >
+            <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
-                    <mat-card-title>Lebron James</mat-card-title>
+                    <mat-card-title>{{chatMessage.username}}</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <p>The GOAT </p>
+                    <p>{{chatMessage.content}}</p>
                 </mat-card-content>
                 <hr>
-                <mat-card-header>
-                    <mat-card-title>Kobe Bryant</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>YUH</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Lebron James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Basketball</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Lebron James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>The GOAT </p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Lebron James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>The GOAT </p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Lebron James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>The GOAT </p>
-                </mat-card-content>
-                <hr>
+            </div>
         </div>
-            <div *ngIf="channelId==2" >
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>KK10</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>BEST</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Dylan James</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Computer Science</p>
-                </mat-card-content>
-                <hr>
-            </div>
-            <div *ngIf="channelId==3" >
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Hermoine Granger</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Muggle</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-                <mat-card-header>
-                    <mat-card-title>Harry Potter</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p>Wizard</p>
-                </mat-card-content>
-                <hr>
-            </div>
-        <hr>
         <div class="footerTop">
             <mat-card-footer align="center">
                 <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)" autocomplete="off">
@@ -180,7 +27,6 @@
                     </mat-form-field>
                 </form>
             </mat-card-footer>
-        </div>
         </div>
     </mat-card>
 </div>
