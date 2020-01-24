@@ -3,6 +3,14 @@ import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 import {FormBuilder, FormGroup} from '@angular/forms';
 
+interface userChannelObject {
+    username: string;
+    channelId: number;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+}
+
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
@@ -15,8 +23,11 @@ export class HomeComponent implements OnInit {
 
     messagesShown = false;
 
-    selectedChannelId: number = 1;
+    selectedChannelId: number;
     selectedChannelName: string;
+
+    newSubbedChannel: userChannelObject;
+
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
@@ -29,12 +40,17 @@ export class HomeComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    receiveId($event){
+    receiveId($event) {
         this.selectedChannelId = $event;
 
     }
-    receiveName($event){
+
+    receiveName($event) {
         this.selectedChannelName = $event;
+    }
+
+    recieveNewSubedChannel($event) {
+        this.newSubbedChannel = $event;
     }
 
 }

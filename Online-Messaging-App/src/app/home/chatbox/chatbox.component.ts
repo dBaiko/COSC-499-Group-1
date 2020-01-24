@@ -1,13 +1,9 @@
-import {Component, OnInit, Input} from '@angular/core';
-import {ChatMessage, MessengerService} from "../../shared/messenger.service";
+import {Component, Input, OnInit} from '@angular/core';
+import {MessengerService} from "../../shared/messenger.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {FormGroup} from "@angular/forms";
-
-interface ChatMessages {
-    [index: number]: ChatMessage;
-}
 
 @Component({
     selector: 'app-chatbox',
@@ -15,16 +11,19 @@ interface ChatMessages {
     styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
-    private _channelId;
-    private _channelName;
+
     chatMessages;
     error: string = '';
+
     @Input() channelName: string;
-    // TODO: Change this to actually get current channel
+
+    private _channelName;
     private url: string = APIConfig.GetMessagesAPI;
 
     constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
     }
+
+    private _channelId;
 
     get channelId(): any {
         return this._channelId;
@@ -37,14 +36,12 @@ export class ChatboxComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        //get old messages
-        //this.getMessages();
-        //subscribe to socket
-
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            this.chatMessages.push(data);
+            console.log(data);
+            if (data.channelId == this.channelId)
+                this.chatMessages.push(data);
 
-        })
+        });
     }
 
     getMessages(channelId: number): void {
@@ -53,7 +50,7 @@ export class ChatboxComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        this.http.get(this.url+channelId, httpOptions).subscribe((data) => {
+        this.http.get(this.url + channelId, httpOptions).subscribe((data) => {
                 this.chatMessages = data;
             },
             err => {
@@ -64,8 +61,8 @@ export class ChatboxComponent implements OnInit {
     sendMessage(form: FormGroup) {
         let value = form.value;
         form.reset();
-        console.log(value.content);
         let chatMessage = {
+            channelId: this._channelId,
             username: this.authService.getAuthenticatedUser().getUsername(),
             content: value.content
         };

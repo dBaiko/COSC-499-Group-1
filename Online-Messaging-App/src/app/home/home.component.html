@@ -2,24 +2,29 @@
 
     <app-header></app-header>
     <mat-sidenav-container class="container">
-        <mat-sidenav #sidenav [fixedBottomGap]="options.value.bottom" [fixedInViewport]="options.value.fixed"
+        <mat-sidenav [fixedBottomGap]="options.value.bottom" [fixedInViewport]="options.value.fixed"
                      [fixedTopGap]="options.value.top"
                      class="sidenav" mode="side"
                      opened>
-            <app-sidebar #chatbox (channelIdEvent)="receiveId($event)" (channelNameEvent)="receiveName($event)"></app-sidebar>
+            <app-sidebar (channelIdEvent)="receiveId($event)"
+                         (channelNameEvent)="receiveName($event)" [subbedChannel]="newSubbedChannel"></app-sidebar>
         </mat-sidenav>
 
         <mat-sidenav-content [formGroup]="options" id="scrollMe">
 
             <div *ngIf="userLoggedIn; else elseBlock">
-                <button id="tempMessage" (click)="this.messagesShown = true" *ngIf="this.messagesShown == false" mat-button>Back to
+                <button (click)="this.messagesShown = true" *ngIf="this.messagesShown == false" id="tempMessage"
+                        mat-button>Back to
                     messages
                 </button>
-                <button id="tempChannelBrowser" (click)="this.messagesShown = false" *ngIf="this.messagesShown == true" mat-button>Back to Channel
+                <button (click)="this.messagesShown = false" *ngIf="this.messagesShown == true" id="tempChannelBrowser"
+                        mat-button>Back to Channel
                     Browser
                 </button>
-                <app-channel-browser *ngIf="this.messagesShown == false"></app-channel-browser>
-                <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName" *ngIf="this.messagesShown == true"></app-chatbox>
+                <app-channel-browser (newChannelIdEvent)="recieveNewSubedChannel($event)"
+                                     *ngIf="this.messagesShown == false"></app-channel-browser>
+                <app-chatbox *ngIf="this.messagesShown == true" [channelId]="selectedChannelId"
+                             [channelName]="selectedChannelName"></app-chatbox>
             </div>
             <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
         </mat-sidenav-content>
