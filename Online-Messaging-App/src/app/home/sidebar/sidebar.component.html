@@ -6,8 +6,8 @@
     </mat-button-toggle-group>
 
     <div *ngIf="publicChannelSelect;">
-        <mat-list>
-            <mat-list-item class="channelHeader"><h3 matLine>Channel 1</h3>
+        <mat-nav-list>
+            <mat-list-item class="channelHeader" (click)="selectChannel1()" [ngClass]=" status ? 'channelRan' : 'channelHeader'"><h3 matLine>Channel 1</h3>
                 <a routerLink="/chat">
                     <mat-icon>settings
                     </mat-icon>
@@ -17,7 +17,7 @@
                     </mat-icon>
                 </a>
             </mat-list-item>
-            <mat-list-item class="channelHeader"><h3 matLine>Channel 2</h3>
+            <mat-list-item class="channelHeader" (click)="selectChannel2()" [ngClass]=" status1 ? 'channelRan' : 'channelHeader'"><h3 matLine>Channel 2</h3>
                 <a routerLink="/chat">
                     <mat-icon>settings
                     </mat-icon>
@@ -27,7 +27,7 @@
                     </mat-icon>
                 </a>
             </mat-list-item>
-            <mat-list-item class="channelHeader"><h3 matLine>Channel 3</h3>
+            <mat-list-item class="channelHeader" (click)="selectChannel3()" [ngClass]=" status2 ? 'channelRan' : 'channelHeader'"><h3 matLine>Channel 3</h3>
                 <a routerLink="/chat">
                     <mat-icon>settings
                     </mat-icon>
@@ -37,7 +37,7 @@
                     </mat-icon>
                 </a>
             </mat-list-item>
-        </mat-list>
+        </mat-nav-list>
     </div>
     <div *ngIf="privateChannelSelect">
         <mat-list>

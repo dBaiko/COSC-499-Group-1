@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import {ChatMessage, MessengerService} from "../../shared/messenger.service";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {APIConfig} from "../../shared/app-config";
@@ -15,10 +15,9 @@ interface ChatMessages {
     styleUrls: ['./chatbox.component.scss']
 })
 export class ChatboxComponent implements OnInit {
-
     chatMessages;
     error: string = '';
-
+    @Input() channelId: number = 1;
     // TODO: Change this to actually get current channel
     private url: string = APIConfig.GetMessagesAPI + 0;
 
