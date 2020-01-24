@@ -9,21 +9,33 @@ const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 
 router.use(bodyParser());
 
-// router.get('/', (req, res) => {
-//     const channelDAO = new ChannelDAO();
-//     channelDAO.getAllChannels()
-//         .then((data) => {
-//             res.status(200).send(data);
-//         })
-//         .catch((err) => {
-//             res.status(400).send(err);
-//         });
-// });
+router.get('/', (req, res) => {
+    const userChannelDAO = new UserChannelDAO();
+    userChannelDAO.getAll()
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        });
+});
 
-router.get('/:username', (req, res) => {
+router.get('/users/:username', (req, res) => {
     const userChannelDAO = new UserChannelDAO();
     let username = req.params.username;
     const response = userChannelDAO.getAllSubscribedChannels(username)
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        });
+});
+
+router.get('/channels/:channelId', (req, res) => {
+    const userChannelDAO = new UserChannelDAO();
+    let channelId = req.params.channelId;
+    const response = userChannelDAO.getAllSubscribedUsers(Number(channelId))
         .then((data) => {
             res.status(200).send(data);
         })

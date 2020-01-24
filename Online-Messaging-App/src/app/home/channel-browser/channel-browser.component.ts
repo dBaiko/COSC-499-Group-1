@@ -25,6 +25,7 @@ export class ChannelBrowserComponent implements OnInit {
     search = "";
 
     private url = APIConfig.GetChannelsAPI;
+    private url2 = APIConfig.GetSubscribedChannelAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
@@ -81,7 +82,7 @@ export class ChannelBrowserComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
+        return this.http.post(this.url2, user, channel, httpOptions).toPromise();// TODO: check for errors in responce
     }
 
 }
