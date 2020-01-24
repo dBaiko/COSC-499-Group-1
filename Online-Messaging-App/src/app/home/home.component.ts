@@ -13,6 +13,8 @@ export class HomeComponent implements OnInit {
     userLoggedIn = false;
     options: FormGroup;
 
+    messagesShown = false;
+
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({

@@ -13,8 +13,14 @@
         <mat-sidenav-content [formGroup]="options" id="scrollMe">
 
             <div *ngIf="userLoggedIn; else elseBlock">
-                <app-channel-browser></app-channel-browser>
-<!--                <app-chatbox></app-chatbox>-->
+                <button (click)="this.messagesShown = true" *ngIf="this.messagesShown == false" mat-button>Back to
+                    messages
+                </button>
+                <button (click)="this.messagesShown = false" *ngIf="this.messagesShown == true" mat-button>Back Channel
+                    Browser
+                </button>
+                <app-channel-browser *ngIf="this.messagesShown == false"></app-channel-browser>
+                <app-chatbox *ngIf="this.messagesShown == true"></app-chatbox>
             </div>
             <ng-template #elseBlock>{{common.routeTo("/login")}}</ng-template>
         </mat-sidenav-content>
