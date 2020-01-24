@@ -6,7 +6,8 @@ export const CognitoConfig = {
 
 export const APIConfig = {
     RegisterAPI: 'http://localhost:8080/users/',
-    GetMessagesAPI: 'http://localhost:8080/messages/'
+    GetMessagesAPI: 'http://localhost:8080/messages/',
+    GetSubscribedChannelAPI: 'http://localhost:8080/userChannels/'
 };
 
 export const Constants = {
