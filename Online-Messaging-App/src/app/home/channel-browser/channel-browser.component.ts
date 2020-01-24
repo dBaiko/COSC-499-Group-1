@@ -2,16 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {APIConfig} from "../../shared/app-config";
+import {equal} from "assert";
 
 
-interface User {
+interface userChannelObject {
     username: string;
-    userId: number;
-}
-interface Channel {
-    channelName: string;
     channelId: number;
+    userChannelRole: string;
 }
+
 @Component({
     selector: 'app-channel-browser',
     templateUrl: './channel-browser.component.html',
@@ -19,19 +18,39 @@ interface Channel {
 })
 export class ChannelBrowserComponent implements OnInit {
     // channels = [1, 2, 3, 4, 5, 6, 7];
-
+    subscribedChannels: number[] = [];
     channels;
 
     search = "";
 
-    private url = APIConfig.GetChannelsAPI;
-    private url2 = APIConfig.GetSubscribedChannelAPI;
+    private getChannelsAPI = APIConfig.GetChannelsAPI;
+    private getUserChannelsAPI = APIConfig.GetUserChannelsAPI;
+    private getSubscribedChannelsAPI = APIConfig.GetSubscribedChannelsAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
     ngOnInit() {
         this.getChannels();
+        this.getSubscribedChannels();
+
+    }
+
+    getSubscribedChannels() {
+        let httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        };
+        this.http.get(this.getSubscribedChannelsAPI + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
+                data.forEach((item: userChannelObject) => {
+                    this.subscribedChannels.push(item.channelId);
+                });
+                console.log(this.subscribedChannels);
+            },
+            err => {
+                console.log(err.toString());
+            });
     }
 
     sendQuery() {
@@ -59,30 +78,29 @@ export class ChannelBrowserComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        this.http.get(this.url, httpOptions).subscribe((data) => {
+        this.http.get(this.getChannelsAPI, httpOptions).subscribe((data) => {
                 this.channels = data;
             },
             err => {
                 console.log(err);
             });
     }
+
     //TODO fix joinChannel: figure out how to get channel information
-    joinChannel(channelName: string): Promise<Object> {
-        let user: User = {
+    joinChannel(channelId: number): Promise<Object> {
+        let user: userChannelObject = {
             username: this.auth.getAuthenticatedUser().getUsername(),
-            userId: 0
+            channelId: channelId,
+            userChannelRole: "user"
         };
-        let channel: Channel = {
-            channelName: channelName,
-            channelId: 0
-        };
+
 
         let httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'application/json'
             })
         };
-        return this.http.post(this.url2, user, channel, httpOptions).toPromise();// TODO: check for errors in responce
+        return this.http.post(this.getUserChannelsAPI, user, httpOptions).toPromise();// TODO: check for errors in responce
     }
 
 }

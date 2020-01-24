@@ -61,6 +61,17 @@ mat-label {
     cursor: pointer;
 
 }
+.joined {
+    background-color: dimgrey;
+    margin-right: 5vh;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+
+}
+.joined:hover {
+    background-color: dimgrey;
+}
 
 .joinCreate:focus {
     outline: 0;

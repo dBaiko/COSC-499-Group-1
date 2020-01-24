@@ -28,7 +28,12 @@
                                 </mat-expansion-panel-header>
                                 <p>Description of the channel</p>
                                 <mat-action-row>
-                                    <button (click)="joinChannel(channel.channelName)" class="join" mat-button>Join Channel</button>
+                                    <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">
+                                    <button  (click)="joinChannel(channel.channelId)" class="join" mat-button>Join Channel</button>
+                                    </div>
+                                    <ng-template #joined>
+                                        <button class="joined" mat-button disableRipple="true">Joined</button>
+                                    </ng-template>
                                 </mat-action-row>
                             </mat-expansion-panel>
                         </div>
