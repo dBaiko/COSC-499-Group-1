@@ -39,3 +39,19 @@ app-header {
 .mat-drawer-content {
     overflow-y: scroll;
 }
+#tempMessage {
+    right: 1vh;
+    position: absolute;
+    bottom: 0vh;
+    background-color: black;
+    color: white;
+}
+#tempChannelBrowser {
+    margin: 1vh;
+    right: 1vh;
+    z-index: 1;
+    position: absolute;
+    top: 0vh;
+    background-color: black;
+    color: white;
+}

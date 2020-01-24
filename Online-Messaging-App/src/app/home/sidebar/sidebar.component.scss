@@ -43,6 +43,9 @@ mat-icon {
     right: 0;
     left: 0;
 }
+.icon:hover {
+    cursor: pointer;
+}
 
 mat-sidenav-container {
     background-color: #282828;
