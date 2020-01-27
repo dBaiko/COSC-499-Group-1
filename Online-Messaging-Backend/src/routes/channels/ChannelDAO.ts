@@ -8,8 +8,7 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-const channelTableName = "Channel";
-const userChannelTableName = "UserChannel";
+const channelTableName: string = "Channel";
 
 interface ChannelObject {
     channelId: number,
@@ -19,10 +18,12 @@ interface ChannelObject {
 
 class ChannelDAO {
 
+    private channelIdQueryDeclaration = "channelId = :channelId";
+
     public getChannelInfo(channelId: number): Promise<any> {
         const params = {
             TableName: channelTableName,
-            KeyConditionExpression: "channelId = :channelId",
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }

@@ -5,13 +5,20 @@ import ChannelDAO from "./ChannelDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import MessageDAO from "../messages/MessageDAO";
 
+const PATH_GET_ALL_CHANNELS: string = "/";
+const PATH_GET_CHANNEL_BY_ID: string = "/:channelId";
+const PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL: string = "/:channelId/users";
+const PATH_GET_ALL_MESSAGES_FOR_CHANNEL: string = "/:channelId/messages/";
+const PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL: string = "/:channelId/users";
+const PATH_POST_NEW_CHANNEL: string = "/";
+
 const router = express.Router();
 
 const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 
 router.use(bodyParser());
 
-router.get("/", (req, res) => {
+router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
     const channelDAO = new ChannelDAO();
     channelDAO.getAllChannels()
         .then((data) => {
@@ -22,11 +29,11 @@ router.get("/", (req, res) => {
         });
 });
 
-router.get("/:channelId", (req, res) => {
+router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
     const channelDAO = new ChannelDAO();
     let channelIdString = req.params.channelId;
     if (numRegExp.test(channelIdString)) {
-        const response = channelDAO.getChannelInfo(Number(channelIdString))
+        channelDAO.getChannelInfo(Number(channelIdString))
             .then((data) => {
                 res.status(200).send(data);
             })
@@ -38,10 +45,10 @@ router.get("/:channelId", (req, res) => {
     }
 });
 
-router.get("/:channelId/users", (req, res) => {
+router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
     const userChannelDAO = new UserChannelDAO();
     let channelId = req.params.channelId;
-    const response = userChannelDAO.getAllSubscribedUsers(Number(channelId))
+    userChannelDAO.getAllSubscribedUsers(Number(channelId))
         .then((data) => {
             res.status(200).send(data);
         })
@@ -50,11 +57,11 @@ router.get("/:channelId/users", (req, res) => {
         });
 });
 
-router.get("/:channelId/messages/", (req, res) => {
+router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
     if (numRegExp.test(channelIdString)) {
-        const response = messageDAO.getMessageHistory(channelIdString)
+        messageDAO.getMessageHistory(channelIdString)
             .then((data) => {
                 res.status(200).send(data);
             })
@@ -67,7 +74,7 @@ router.get("/:channelId/messages/", (req, res) => {
 
 });
 
-router.post("/:channelId/users", (req, res) => {
+router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
     console.log(req.body);
     console.log(req.params.channelId);
     const userChannelDAO = new UserChannelDAO();
@@ -80,7 +87,7 @@ router.post("/:channelId/users", (req, res) => {
         });
 });
 
-router.post("/", (req, res) => {
+router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
     const channelDAO = new ChannelDAO();
     channelDAO.addNewChannel(req.body.channelName, req.body.channelType, req.body.firstUsername, req.body.firstUserChannelRole)
         .then(() => {

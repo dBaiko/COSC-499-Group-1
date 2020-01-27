@@ -7,26 +7,23 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-interface MessageObject {
-    username: string;
-    content: string;
-    messageID: number;
-}
-
 interface Message {
     channelId: number;
     username: string;
     content: string;
+    insertTime: number;
 }
 
-const tableName = "Messages";
+const tableName: string = "Messages";
 
 class MessageDAO {
+
+    private channelIdQueryDeclaration = "channelId = :channelId";
 
     public getMessageHistory(channelId: string): Promise<any> {
         const params = {
             TableName: tableName,
-            KeyConditionExpression: "channelId = :channelId",
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }

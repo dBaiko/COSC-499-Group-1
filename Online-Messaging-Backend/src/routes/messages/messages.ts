@@ -5,11 +5,13 @@ import MessageDAO from "./MessageDAO";
 
 const router = express.Router();
 
+const PATH_GET_ALL_MESSAGES: string = "/";
+
 router.use(bodyParser());
 
-router.get("/", (req, res) => {
+router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
     const messageDAO = new MessageDAO();
-    const response = messageDAO.getAllMessageHistory()
+    messageDAO.getAllMessageHistory()
         .then((data) => {
             res.status(200).send(data);
         })
