@@ -1,6 +1,7 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import {awsConfigPath} from "../../config/aws-config";
+import UserChannelDAO from "../userChannels/UserChannelDAO";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -62,6 +63,7 @@ class ChannelDAO {
     }
 
     public addNewChannel(channelName: string, channelType: string, firstUsername: string, firstUserChannelRole: string): Promise<any> {
+        const userChannelDAO = new UserChannelDAO();
         const channelId = Date.now();
         const params = {
             Item: {
@@ -71,7 +73,6 @@ class ChannelDAO {
             },
             TableName: channelTableName
         };
-
         return new Promise((resolve, reject) => {
             docClient.put(params, (err, data) => {
                 if (err) {
@@ -79,7 +80,7 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Added new:", JSON.stringify(data, null, 2));
-                    this.addFirstUserToChannel(channelId, firstUsername, firstUserChannelRole, channelName, channelType)
+                    userChannelDAO.addNewUserToChannel(firstUsername, channelId, firstUserChannelRole, channelName, channelType)
                         .then(() => {
                             resolve();
                         })
@@ -92,33 +93,6 @@ class ChannelDAO {
         })
 
     }
-
-    private addFirstUserToChannel(channelId: number, username: string, userChannelRole: string, channelName: string, channelType: string): Promise<any> {
-        const params = {
-            Item: {
-                username,
-                channelId,
-                userChannelRole,
-                channelName,
-                channelType
-            },
-            TableName: userChannelTableName
-        };
-
-        return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
-                if (err) {
-                    console.error("Unable to add a new item to UserChannel Table. Error JSON: ", JSON.stringify(err, null, 2));
-                    reject(err);
-                } else {
-                    console.log("Added new:", JSON.stringify(data, null, 2));
-                    resolve();
-                }
-            })
-        })
-
-    }
-
 
 }
 

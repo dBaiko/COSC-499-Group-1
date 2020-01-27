@@ -52,7 +52,7 @@ class MessageDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
