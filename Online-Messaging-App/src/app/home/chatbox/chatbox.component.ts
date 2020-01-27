@@ -1,19 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {MessengerService} from "../../shared/messenger.service";
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {FormGroup} from "@angular/forms";
 
 @Component({
-    selector: 'app-chatbox',
-    templateUrl: './chatbox.component.html',
-    styleUrls: ['./chatbox.component.scss']
+    selector: "app-chatbox",
+    templateUrl: "./chatbox.component.html",
+    styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit {
 
     chatMessages;
-    error: string = '';
+    error: string = "";
 
     @Input() channelName: string;
 
@@ -47,7 +47,7 @@ export class ChatboxComponent implements OnInit {
     getMessages(channelId: number): void {
         let httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             })
         };
         this.http.get(this.url + channelId, httpOptions).subscribe((data) => {

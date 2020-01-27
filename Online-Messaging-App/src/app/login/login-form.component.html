@@ -27,7 +27,9 @@
                                    type="password">
                             <mat-error *ngFor="let validation of common.validation_methods.password">
                                 <mat-error
-                                    *ngIf="validation.type == 'required' && formValidationService.checkIfFormElementInvalid(loginForm, 'password', validation, submitAttempt)">{{validation.message}}</mat-error>
+                                    *ngIf="validation.type == 'required' && formValidationService.checkIfFormElementInvalid(loginForm, 'password', validation, submitAttempt)">
+                                    {{validation.message}}
+                                </mat-error>
                             </mat-error>
                         </mat-form-field>
                     </div>

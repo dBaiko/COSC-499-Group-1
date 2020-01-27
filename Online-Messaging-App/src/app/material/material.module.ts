@@ -14,7 +14,7 @@ import {
     MatToolbarModule
 } from "@angular/material"
 import {MatBadgeModule} from "@angular/material/badge";
-import {MatCardModule} from '@angular/material/card';
+import {MatCardModule} from "@angular/material/card";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 

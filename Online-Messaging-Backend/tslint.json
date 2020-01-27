@@ -8,6 +8,9 @@
     "trailing-comma": [
       false
     ],
-    "quotemark": false
+    "quotemark": [
+      true,
+      "double"
+    ]
   }
 }

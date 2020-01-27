@@ -1,36 +1,36 @@
 // noinspection SpellCheckingInspection
 export const CognitoConfig = {
-    UserPoolId: 'ca-central-1_6ickHVand',
-    ClientId: '2n7od4b3prkjdc9trthuf3d92q'
+    UserPoolId: "ca-central-1_6ickHVand",
+    ClientId: "2n7od4b3prkjdc9trthuf3d92q"
 };
 
 export const APIConfig = {
-    usersAPI: 'http://localhost:8080/users/',
-    messagesAPI: 'http://localhost:8080/messages/',
-    channelsAPI: 'http://localhost:8080/channels/',
+    usersAPI: "http://localhost:8080/users/",
+    messagesAPI: "http://localhost:8080/messages/",
+    channelsAPI: "http://localhost:8080/channels/",
 };
 
 export const Constants = {
     LOGIN_ROUTE: "/login",
-    REGISTER_ROUTE: '/register',
-    HOME_ROUTE: '/',
-    USERNAME: 'username',
-    PASSWORD: 'password',
-    EMPTY: ''
+    REGISTER_ROUTE: "/register",
+    HOME_ROUTE: "/",
+    USERNAME: "username",
+    PASSWORD: "password",
+    EMPTY: ""
 };
 
 export const VALIDATION_MESSAGES = {
-    'username': [
+    "username": [
         {type: "required", message: "Username is required"},
         {type: "alreadyTaken", message: "Your username has already been taken"},
         {type: "pattern", message: "Username must only contain letters and characters"},
         {type: "invalidLogin", message: "Username or password is incorrect, please try again."}
     ],
-    'email': [
+    "email": [
         {type: "required", message: "Email is required"},
         {type: "email", message: "Invalid email"}
     ],
-    'password': [
+    "password": [
         {type: "required", message: "Password is required"},
         {type: "minlength", message: "Password must be at least 8 characters long"},
     ],

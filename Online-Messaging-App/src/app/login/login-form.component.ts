@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 import {FormValidationService} from "../shared/form-validation.service";
 import {Constants} from "../shared/app-config";
 
-const NOT_AUTH_EX = 'NotAuthorizedException';
+const NOT_AUTH_EX = "NotAuthorizedException";
 
 @Component({
-    selector: 'login-form',
-    templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.scss']
+    selector: "login-form",
+    templateUrl: "./login-form.component.html",
+    styleUrls: ["./login-form.component.scss"]
 })
 export class LoginFormComponent implements OnInit {
 

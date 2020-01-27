@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
@@ -12,9 +12,9 @@ interface userChannelObject {
 }
 
 @Component({
-    selector: 'app-sidebar',
-    templateUrl: './sidebar.component.html',
-    styleUrls: ['./sidebar.component.scss']
+    selector: "app-sidebar",
+    templateUrl: "./sidebar.component.html",
+    styleUrls: ["./sidebar.component.scss"]
 })
 export class SidebarComponent implements OnInit {
 
@@ -66,7 +66,7 @@ export class SidebarComponent implements OnInit {
     getSubscribedChannels(): void {
         let httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             })
         };
         this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + "/channels", httpOptions).subscribe((data: Object[]) => {

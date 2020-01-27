@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import * as Socket from "socket.io-client";
 import {Observable} from "rxjs";
 
@@ -19,11 +19,11 @@ export class MessengerService {
 
     subscribeToSocket(): Observable<any> {
         return new Observable<any>(observer => {
-            this.socket.on('broadcast', (data) => observer.next(data));
+            this.socket.on("broadcast", (data) => observer.next(data));
         })
     }
 
     sendMessage(chatMessage: ChatMessage) {
-        this.socket.emit('message', chatMessage);
+        this.socket.emit("message", chatMessage);
     }
 }

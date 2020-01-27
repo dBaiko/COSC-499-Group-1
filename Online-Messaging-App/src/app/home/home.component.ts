@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 interface userChannelObject {
     username: string;
@@ -12,9 +12,9 @@ interface userChannelObject {
 }
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
+    selector: "app-home",
+    templateUrl: "./home.component.html",
+    styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {APIConfig} from "../../shared/app-config";
@@ -13,9 +13,9 @@ interface userChannelObject {
 }
 
 @Component({
-    selector: 'app-channel-browser',
-    templateUrl: './channel-browser.component.html',
-    styleUrls: ['./channel-browser.component.scss'],
+    selector: "app-channel-browser",
+    templateUrl: "./channel-browser.component.html",
+    styleUrls: ["./channel-browser.component.scss"],
 })
 export class ChannelBrowserComponent implements OnInit {
 
@@ -41,7 +41,7 @@ export class ChannelBrowserComponent implements OnInit {
     getSubscribedChannels() {
         let httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             })
         };
         this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + "/channels", httpOptions).subscribe((data: Object[]) => {
@@ -75,7 +75,7 @@ export class ChannelBrowserComponent implements OnInit {
     getChannels(): void {
         let httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             })
         };
         this.http.get(this.channelsAPI, httpOptions).subscribe((data) => {
@@ -101,7 +101,7 @@ export class ChannelBrowserComponent implements OnInit {
 
         let httpOptions = {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             })
         };
 

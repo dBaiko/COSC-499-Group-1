@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {Injectable} from "@angular/core";
+import {AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool} from "amazon-cognito-identity-js";
 import {Observable} from "rxjs";
 import {CognitoConfig} from "./app-config";
 
@@ -8,9 +8,9 @@ const userPool = new CognitoUserPool(CognitoConfig);
 @Injectable()
 export class AuthenticationService {
     cognitoUser: CognitoUser;
-    private EMAIL: string = 'email';
-    private GIVEN_NAME: string = 'given_name';
-    private FAMILY_NAME: string = 'family_name';
+    private EMAIL: string = "email";
+    private GIVEN_NAME: string = "given_name";
+    private FAMILY_NAME: string = "family_name";
 
     constructor() {
     }
@@ -44,11 +44,11 @@ export class AuthenticationService {
             userPool.signUp(
                 username, password, attributeList, null, (err, result) => {
                     if (err) {
-                        console.log('Registration Error');
+                        console.log("Registration Error");
                         observer.error(err);
                     } else {
                         this.cognitoUser = result.user;
-                        console.log('Registration Success');
+                        console.log("Registration Success");
                         observer.next(result);
                         observer.complete();
                     }
