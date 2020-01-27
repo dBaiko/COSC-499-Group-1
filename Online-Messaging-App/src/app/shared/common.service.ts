@@ -12,7 +12,6 @@ export class CommonService {
     }
 
     public checkIfLoggedIn(): boolean {
-        console.log(this.auth.isLoggedIn());
         return this.auth.isLoggedIn();
     }
 

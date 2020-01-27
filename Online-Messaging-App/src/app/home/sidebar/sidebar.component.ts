@@ -5,7 +5,7 @@ import {APIConfig, Constants} from "../../shared/app-config";
 
 interface userChannelObject {
     username: string,
-    channelId: number,
+    channelId: string,
     userChannelRole: string,
     channelType: string,
     channelName: string
@@ -82,9 +82,12 @@ export class SidebarComponent implements OnInit {
                         this.friendsChannels.push(item);
                     }
                 });
-                this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
-                this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
-                this.userSubscribedChannels[0][SELECTED] = true;
+                if (this.userSubscribedChannels.length > 0) {
+                    this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
+                    this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
+                    this.userSubscribedChannels[0][SELECTED] = true;
+                }
+
             },
             err => {
                 console.log(err);
@@ -109,7 +112,7 @@ export class SidebarComponent implements OnInit {
         this.friendChannelSelect = true;
     }
 
-    selectChannel(id: number) {
+    selectChannel(id: string) {
         this.userSubscribedChannels.forEach((item: userChannelObject) => {
             if (item.channelId == id) {
                 this.channelIdEvent.emit(id.toString());

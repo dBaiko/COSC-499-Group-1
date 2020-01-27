@@ -54,7 +54,7 @@ router.get("/:channelId/messages/", (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
     if (numRegExp.test(channelIdString)) {
-        const response = messageDAO.getMessageHistory(Number(channelIdString))
+        const response = messageDAO.getMessageHistory(channelIdString)
             .then((data) => {
                 res.status(200).send(data);
             })

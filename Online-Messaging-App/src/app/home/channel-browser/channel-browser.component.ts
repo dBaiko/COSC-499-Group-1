@@ -6,7 +6,7 @@ import {APIConfig, Constants} from "../../shared/app-config";
 
 interface userChannelObject {
     username: string;
-    channelId: number;
+    channelId: string;
     userChannelRole: string;
     channelName: string;
     channelType: string;
@@ -23,7 +23,7 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 })
 export class ChannelBrowserComponent implements OnInit {
 
-    subscribedChannels: number[] = [];
+    subscribedChannels: string[] = [];
     channels;
 
     search = Constants.EMPTY;

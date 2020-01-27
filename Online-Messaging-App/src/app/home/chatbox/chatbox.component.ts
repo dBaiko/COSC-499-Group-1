@@ -5,6 +5,8 @@ import {APIConfig, Constants} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {FormGroup} from "@angular/forms";
 
+const whitespaceRegEx: RegExp = /^\s+$/i;
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
@@ -18,7 +20,7 @@ export class ChatboxComponent implements OnInit {
     @Input() channelName: string;
 
     private _channelName;
-    private url: string = APIConfig.messagesAPI;
+    private url: string = APIConfig.channelsAPI;
 
     constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
     }
@@ -37,15 +39,14 @@ export class ChatboxComponent implements OnInit {
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            console.log(data);
             if (data.channelId == this.channelId)
                 this.chatMessages.push(data);
 
         });
     }
 
-    getMessages(channelId: number): void {
-        this.http.get(this.url + channelId, Constants.HTTP_OPTIONS).subscribe((data) => {
+    getMessages(channelId: string): void {
+        this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.chatMessages = data;
             },
             err => {
@@ -55,14 +56,16 @@ export class ChatboxComponent implements OnInit {
 
     sendMessage(form: FormGroup) {
         let value = form.value;
-        form.reset();
-        let chatMessage = {
-            channelId: this._channelId,
-            username: this.authService.getAuthenticatedUser().getUsername(),
-            content: value.content
-        };
+        if (value.content && !(whitespaceRegEx.test(value.content))) {
+            form.reset();
+            let chatMessage = {
+                channelId: this._channelId,
+                username: this.authService.getAuthenticatedUser().getUsername(),
+                content: value.content
+            };
 
-        this.messagerService.sendMessage(chatMessage);
+            this.messagerService.sendMessage(chatMessage);
+        }// TODO: add user error message if this is false
 
     }
 

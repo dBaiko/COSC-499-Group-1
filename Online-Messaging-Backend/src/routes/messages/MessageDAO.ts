@@ -1,6 +1,7 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import {awsConfigPath} from "../../config/aws-config";
+import {uuid} from "uuidv4";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -22,7 +23,7 @@ const tableName = "Messages";
 
 class MessageDAO {
 
-    public getMessageHistory(channelId: number): Promise<any> {
+    public getMessageHistory(channelId: string): Promise<any> {
         const params = {
             TableName: tableName,
             KeyConditionExpression: "channelId = :channelId",
@@ -67,9 +68,9 @@ class MessageDAO {
     }
 
     public addNewMessage(message: Message): void {
-        const channelId = Number(message.channelId);
-        const messageId = Date.now();
-        console.log(messageId);
+        const channelId = message.channelId;
+        const insertTime = Date.now();
+        const messageId = uuid();
         const username = message.username;
         const content = message.content;
         const params = {
@@ -79,6 +80,7 @@ class MessageDAO {
                     content,
                     messageId,
                     username,
+                    insertTime
                 },
             TableName: tableName
         };

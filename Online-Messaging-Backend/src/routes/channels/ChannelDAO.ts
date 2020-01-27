@@ -2,6 +2,7 @@
 import aws from "aws-sdk";
 import {awsConfigPath} from "../../config/aws-config";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
+import {uuid} from "uuidv4";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -64,7 +65,7 @@ class ChannelDAO {
 
     public addNewChannel(channelName: string, channelType: string, firstUsername: string, firstUserChannelRole: string): Promise<any> {
         const userChannelDAO = new UserChannelDAO();
-        const channelId = Date.now();
+        const channelId = uuid();
         const params = {
             Item: {
                 channelId,
