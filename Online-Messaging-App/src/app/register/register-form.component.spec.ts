@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {RegisterFormComponent} from './register-form.component';
+import {RegisterFormComponent} from "./register-form.component";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {MatInputModule} from "@angular/material/input";
 import {AuthenticationService} from "../shared/authentication.service";
@@ -10,7 +10,7 @@ import {FormValidationService} from "../shared/form-validation.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {RouterTestingModule} from "@angular/router/testing";
 
-describe('RegisterComponent', () => {
+describe("RegisterComponent", () => {
     let component: RegisterFormComponent;
     let fixture: ComponentFixture<RegisterFormComponent>;
 
@@ -36,7 +36,7 @@ describe('RegisterComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });
