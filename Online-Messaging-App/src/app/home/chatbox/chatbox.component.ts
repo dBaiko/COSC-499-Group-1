@@ -18,7 +18,7 @@ export class ChatboxComponent implements OnInit {
     @Input() channelName: string;
 
     private _channelName;
-    private url: string = APIConfig.GetMessagesAPI;
+    private url: string = APIConfig.messagesAPI;
 
     constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
     }

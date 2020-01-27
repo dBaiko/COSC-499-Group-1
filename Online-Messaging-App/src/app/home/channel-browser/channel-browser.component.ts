@@ -26,9 +26,8 @@ export class ChannelBrowserComponent implements OnInit {
 
     @Output() newChannelIdEvent = new EventEmitter<userChannelObject>();
 
-    private getChannelsAPI = APIConfig.GetChannelsAPI;
-    private getUserChannelsAPI = APIConfig.GetUserChannelsAPI;
-    private getSubscribedChannelsAPI = APIConfig.GetSubscribedChannelsAPI;
+    private channelsAPI = APIConfig.channelsAPI;
+    private usersAPI = APIConfig.usersAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
@@ -45,7 +44,7 @@ export class ChannelBrowserComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        this.http.get(this.getSubscribedChannelsAPI + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
+        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + "/channels", httpOptions).subscribe((data: Object[]) => {
                 data.forEach((item: userChannelObject) => {
                     this.subscribedChannels.push(item.channelId);
                 });
@@ -79,7 +78,7 @@ export class ChannelBrowserComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        this.http.get(this.getChannelsAPI, httpOptions).subscribe((data) => {
+        this.http.get(this.channelsAPI, httpOptions).subscribe((data) => {
                 this.channels = data;
             },
             err => {
@@ -106,7 +105,7 @@ export class ChannelBrowserComponent implements OnInit {
             })
         };
 
-        return this.http.post(this.getUserChannelsAPI, user, httpOptions).toPromise();// TODO: check for errors in responce
+        return this.http.post(this.channelsAPI + "/" + channel.channelId + "/users", user, httpOptions).toPromise();// TODO: check for errors in responce
     }
 
 }

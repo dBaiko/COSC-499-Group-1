@@ -32,7 +32,7 @@ export class RegisterFormComponent implements OnInit {
 
     matcher = new ParentErrorStateMatcher();
 
-    private url: string = APIConfig.RegisterAPI;
+    private url: string = APIConfig.usersAPI;
 
     constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService, private formValidationService: FormValidationService) {
     }

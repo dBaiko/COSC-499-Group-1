@@ -31,7 +31,8 @@ export class SidebarComponent implements OnInit {
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
     list;
-    private url: string = APIConfig.GetSubscribedChannelsAPI;
+
+    private usersAPI: string = APIConfig.usersAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
@@ -68,7 +69,7 @@ export class SidebarComponent implements OnInit {
                 'Content-Type': 'application/json'
             })
         };
-        this.http.get(this.url + this.auth.getAuthenticatedUser().getUsername(), httpOptions).subscribe((data: Object[]) => {
+        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + "/channels", httpOptions).subscribe((data: Object[]) => {
                 this.publicChannels = [];
                 this.privateChannels = [];
                 this.friendsChannels = [];
