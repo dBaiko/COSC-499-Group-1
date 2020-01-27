@@ -1,15 +1,15 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {HomeComponent} from './home.component';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import {HomeComponent} from "./home.component";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
-import {RouterTestingModule} from '@angular/router/testing';
+import {RouterTestingModule} from "@angular/router/testing";
 import {FormBuilder} from "@angular/forms";
 import {routes} from "../app-routing.module";
 import {HomeModule} from "./home.module";
 import {MaterialModule} from "../material/material.module";
 
-describe('HomeComponent', () => {
+describe("HomeComponent", () => {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
 
@@ -32,7 +32,7 @@ describe('HomeComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

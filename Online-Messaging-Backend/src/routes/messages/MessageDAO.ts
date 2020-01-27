@@ -1,31 +1,29 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import {awsConfigPath} from "../../config/aws-config";
+import {uuid} from "uuidv4";
 
 aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-interface MessageObject {
-    username: string;
-    content: string;
-    messageID: number;
-}
-
 interface Message {
     channelId: number;
     username: string;
     content: string;
+    insertTime: number;
 }
 
-const tableName = "Messages";
+const tableName: string = "Messages";
 
 class MessageDAO {
 
-    public getMessageHistory(channelId: number): Promise<any> {
+    private channelIdQueryDeclaration = "channelId = :channelId";
+
+    public getMessageHistory(channelId: string): Promise<any> {
         const params = {
             TableName: tableName,
-            KeyConditionExpression: "channelId = :channelId",
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
@@ -52,7 +50,7 @@ class MessageDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -67,9 +65,9 @@ class MessageDAO {
     }
 
     public addNewMessage(message: Message): void {
-        const channelId = Number(message.channelId);
-        const messageId = Date.now();
-        console.log(messageId);
+        const channelId = message.channelId;
+        const insertTime = Date.now();
+        const messageId = uuid();
         const username = message.username;
         const content = message.content;
         const params = {
@@ -79,6 +77,7 @@ class MessageDAO {
                     content,
                     messageId,
                     username,
+                    insertTime
                 },
             TableName: tableName
         };

@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {NgModule} from "@angular/core";
+import {CommonModule} from "@angular/common";
 import {ChatboxComponent} from "./chatbox/chatbox.component";
 import {FooterComponent} from "./footer/footer.component";
 import {HeaderComponent} from "./header/header.component";
@@ -14,7 +14,7 @@ import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
 
-const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
+const socketConfig: SocketIoConfig = {url: "http://localhost:8080", options: {}};
 
 @NgModule({
     declarations: [

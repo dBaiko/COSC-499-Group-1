@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {CommonService} from "../../shared/common.service";
 import {Constants} from "../../shared/app-config";
 
 @Component({
-    selector: 'logout-form',
-    templateUrl: './logout-form.component.html',
-    styleUrls: ['./logout-form.component.scss']
+    selector: "logout-form",
+    templateUrl: "./logout-form.component.html",
+    styleUrls: ["./logout-form.component.scss"]
 })
 export class LogoutFormComponent implements OnInit {
 

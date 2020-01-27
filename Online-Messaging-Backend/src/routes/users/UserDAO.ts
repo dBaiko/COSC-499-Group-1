@@ -6,7 +6,7 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-const table = "Users";
+const USERS_TABLE_NAME = "Users";
 
 class UserDAO {
 
@@ -18,7 +18,7 @@ class UserDAO {
                 lastName,
                 username,
             },
-            TableName: table
+            TableName: USERS_TABLE_NAME
         };
 
         return new Promise((resolve, reject) => {
