@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {AuthenticationService} from "../../shared/authentication.service";
-import {APIConfig} from "../../shared/app-config";
+import {APIConfig, Constants} from "../../shared/app-config";
 
 
 interface userChannelObject {
@@ -11,6 +11,10 @@ interface userChannelObject {
     channelName: string;
     channelType: string;
 }
+
+const CHANNEL_NAME: string = "channelName";
+const FILTERED: string = "filtered";
+const DEFAULT_CHANNEL_ROLE: string = "user";
 
 @Component({
     selector: "app-channel-browser",
@@ -22,7 +26,7 @@ export class ChannelBrowserComponent implements OnInit {
     subscribedChannels: number[] = [];
     channels;
 
-    search = "";
+    search = Constants.EMPTY;
 
     @Output() newChannelIdEvent = new EventEmitter<userChannelObject>();
 
@@ -39,12 +43,7 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getSubscribedChannels() {
-        let httpOptions = {
-            headers: new HttpHeaders({
-                "Content-Type": "application/json"
-            })
-        };
-        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + "/channels", httpOptions).subscribe((data: Object[]) => {
+        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH, Constants.HTTP_OPTIONS).subscribe((data: Object[]) => {
                 data.forEach((item: userChannelObject) => {
                     this.subscribedChannels.push(item.channelId);
                 });
@@ -56,10 +55,10 @@ export class ChannelBrowserComponent implements OnInit {
 
     sendQuery() {
         for (let i in this.channels) {
-            if (this.channels[i]["channelName"].includes(this.search.toString())) {
-                this.channels[i]["filtered"] = false;
+            if (this.channels[i][CHANNEL_NAME].includes(this.search.toString())) {
+                this.channels[i][FILTERED] = false;
             } else {
-                this.channels[i]["filtered"] = true;
+                this.channels[i][FILTERED] = true;
             }
         }
     }
@@ -73,12 +72,7 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getChannels(): void {
-        let httpOptions = {
-            headers: new HttpHeaders({
-                "Content-Type": "application/json"
-            })
-        };
-        this.http.get(this.channelsAPI, httpOptions).subscribe((data) => {
+        this.http.get(this.channelsAPI, Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.channels = data;
             },
             err => {
@@ -94,18 +88,13 @@ export class ChannelBrowserComponent implements OnInit {
         let user: userChannelObject = {
             username: this.auth.getAuthenticatedUser().getUsername(),
             channelId: channel.channelId,
-            userChannelRole: "user",
+            userChannelRole: DEFAULT_CHANNEL_ROLE,
             channelName: channel.channelName,
             channelType: channel.channelType
         };
 
-        let httpOptions = {
-            headers: new HttpHeaders({
-                "Content-Type": "application/json"
-            })
-        };
-
-        return this.http.post(this.channelsAPI + "/" + channel.channelId + "/users", user, httpOptions).toPromise();// TODO: check for errors in responce
+        // TODO: check for errors in responce
+        return this.http.post(this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH, user, Constants.HTTP_OPTIONS).toPromise();
     }
 
 }

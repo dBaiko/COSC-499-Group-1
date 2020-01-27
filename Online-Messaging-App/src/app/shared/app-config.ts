@@ -1,4 +1,6 @@
 // noinspection SpellCheckingInspection
+import {HttpHeaders} from "@angular/common/http";
+
 export const CognitoConfig = {
     UserPoolId: "ca-central-1_6ickHVand",
     ClientId: "2n7od4b3prkjdc9trthuf3d92q"
@@ -14,9 +16,17 @@ export const Constants = {
     LOGIN_ROUTE: "/login",
     REGISTER_ROUTE: "/register",
     HOME_ROUTE: "/",
+    SLASH: "/",
     USERNAME: "username",
     PASSWORD: "password",
-    EMPTY: ""
+    EMPTY: "",
+    USERS_PATH: "/users",
+    CHANNELS_PATH: "/channels",
+    HTTP_OPTIONS: {
+        headers: new HttpHeaders({
+            "Content-Type": "application/json"
+        })
+    }
 };
 
 export const VALIDATION_MESSAGES = {

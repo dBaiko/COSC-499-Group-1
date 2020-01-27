@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", routes);
-io.origins('http://localhost:4200');
+io.origins("http://localhost:4200");
 io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");

@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import bodyParser from "body-parser";
-import express from 'express';
+import express from "express";
 import ChannelDAO from "./ChannelDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import MessageDAO from "../messages/MessageDAO";
@@ -11,7 +11,7 @@ const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 
 router.use(bodyParser());
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
     const channelDAO = new ChannelDAO();
     channelDAO.getAllChannels()
         .then((data) => {
@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:channelId', (req, res) => {
+router.get("/:channelId", (req, res) => {
     const channelDAO = new ChannelDAO();
     let channelIdString = req.params.channelId;
     if (numRegExp.test(channelIdString)) {
@@ -38,7 +38,7 @@ router.get('/:channelId', (req, res) => {
     }
 });
 
-router.get('/:channelId/users', (req, res) => {
+router.get("/:channelId/users", (req, res) => {
     const userChannelDAO = new UserChannelDAO();
     let channelId = req.params.channelId;
     const response = userChannelDAO.getAllSubscribedUsers(Number(channelId))
@@ -50,7 +50,7 @@ router.get('/:channelId/users', (req, res) => {
         });
 });
 
-router.get('/:channelId/messages/', (req, res) => {
+router.get("/:channelId/messages/", (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
     if (numRegExp.test(channelIdString)) {
@@ -67,7 +67,7 @@ router.get('/:channelId/messages/', (req, res) => {
 
 });
 
-router.post('/:channelId/users', (req, res) => {
+router.post("/:channelId/users", (req, res) => {
     console.log(req.body);
     console.log(req.params.channelId);
     const userChannelDAO = new UserChannelDAO();
@@ -80,7 +80,7 @@ router.post('/:channelId/users', (req, res) => {
         });
 });
 
-router.post('/', (req, res) => {
+router.post("/", (req, res) => {
     const channelDAO = new ChannelDAO();
     channelDAO.addNewChannel(req.body.channelName, req.body.channelType, req.body.firstUsername, req.body.firstUserChannelRole)
         .then(() => {

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {MessengerService} from "../../shared/messenger.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {APIConfig} from "../../shared/app-config";
+import {HttpClient} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {FormGroup} from "@angular/forms";
 
@@ -13,7 +13,7 @@ import {FormGroup} from "@angular/forms";
 export class ChatboxComponent implements OnInit {
 
     chatMessages;
-    error: string = "";
+    error: string = Constants.EMPTY;
 
     @Input() channelName: string;
 
@@ -45,12 +45,7 @@ export class ChatboxComponent implements OnInit {
     }
 
     getMessages(channelId: number): void {
-        let httpOptions = {
-            headers: new HttpHeaders({
-                "Content-Type": "application/json"
-            })
-        };
-        this.http.get(this.url + channelId, httpOptions).subscribe((data) => {
+        this.http.get(this.url + channelId, Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.chatMessages = data;
             },
             err => {

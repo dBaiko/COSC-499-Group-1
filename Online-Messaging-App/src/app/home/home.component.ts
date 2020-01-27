@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
         this.selectedChannelName = $event;
     }
 
-    recieveNewSubedChannel($event) {
+    receiveNewSubbedChannel($event) {
         this.newSubbedChannel = $event;
     }
 

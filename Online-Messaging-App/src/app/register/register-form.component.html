@@ -1,11 +1,11 @@
 <div class="container">
     <app-header></app-header>
 
-    <div align="center" class="mat-display-2">Streamline Athletes</div>
+    <div class="mat-display-2">Streamline Athletes</div>
     <div class="row">
         <div class="col-lg-4">
             <form (ngSubmit)="registerSubmit(registerForm)" [formGroup]="registerForm">
-                <div align="center" class="random">
+                <div class="random">
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>
@@ -24,7 +24,7 @@
                                     <input class="form-control" formControlName="password" id="password" matInput
                                            name="password"
                                            required type="password">
-                                    <mat-hint align="end">Minimum 8 Characters</mat-hint>
+                                    <mat-hint>Minimum 8 Characters</mat-hint>
                                     <mat-error *ngFor="let validation of common.validation_methods.password">
                                         <mat-error
                                             *ngIf="formValidationService.checkIfFormElementInvalid(matchingPasswordForm, 'password', validation, submitAttempt)">{{validation.message}}</mat-error>
@@ -89,7 +89,7 @@
             </form>
         </div>
     </div>
-    <div align="center" class="mat-body">
+    <div class="mat-body">
         Already have an account? <a routerLink="/login">Login</a>
     </div>
 </div>

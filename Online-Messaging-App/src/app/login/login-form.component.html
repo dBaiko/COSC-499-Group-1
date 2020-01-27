@@ -2,8 +2,8 @@
     <div *ngIf="common.checkIfLoggedIn(); else elseBlock">{{common.moveToHome()}}</div>
     <ng-template #elseBlock>
         <app-header></app-header>
-        <div align="center" class="mat-display-2">Log in to Streamline Athletes Chat Service</div>
-        <div align="center" class="row">
+        <div class="mat-display-2">Log in to Streamline Athletes Chat Service</div>
+        <div class="row">
             <div class="col-lg-4">
                 <form (ngSubmit)="loginSubmit(loginForm)" [formGroup]="loginForm">
                     <div class="form-group">

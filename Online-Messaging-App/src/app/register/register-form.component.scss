@@ -3,6 +3,7 @@ $margin: auto;
 $display-style: table;
 .mat-display-2 {
     margin-top: 3rem;
+    text-align: center;
 }
 
 .form-group {
@@ -14,6 +15,7 @@ $display-style: table;
     margin-right: $margin;
     margin-left: $margin;
     display: $display-style;
+    text-align: center;
 }
 
 .btn-primary {
@@ -23,7 +25,14 @@ $display-style: table;
     text-align: center;
 }
 
+.mat-body {
+    text-align: center;
+}
+
 mat-form-field {
     margin-bottom: 2rem;
 }
 
+mat-hint {
+    text-align: end;
+}

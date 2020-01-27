@@ -17,7 +17,6 @@ export class CommonService {
     }
 
     public moveToHome(): void {
-        console.log("called");
         this.routeTo(Constants.HOME_ROUTE);
     }
 

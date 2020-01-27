@@ -2,7 +2,7 @@
 import {Component, OnInit} from "@angular/core";
 import {AuthenticationService} from "../shared/authentication.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {APIConfig, Constants} from "../shared/app-config";
 import {CommonService} from "../shared/common.service";
 import {FormValidationService} from "../shared/form-validation.service";
@@ -105,12 +105,7 @@ export class RegisterFormComponent implements OnInit {
             lastName: lastName
         };
 
-        let httpOptions = {
-            headers: new HttpHeaders({
-                "Content-Type": "application/json"
-            })
-        };
-        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
+        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise();// TODO: check for errors in responce
     }
 
 }
