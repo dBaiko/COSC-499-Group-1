@@ -21,7 +21,7 @@
                         mat-button>Back to Channel
                     Browser
                 </button>
-                <app-channel-browser (newChannelIdEvent)="recieveNewSubedChannel($event)"
+                <app-channel-browser (newChannelIdEvent)="receiveNewSubbedChannel($event)"
                                      *ngIf="this.messagesShown == false"></app-channel-browser>
                 <app-chatbox *ngIf="this.messagesShown == true" [channelId]="selectedChannelId"
                              [channelName]="selectedChannelName"></app-chatbox>
