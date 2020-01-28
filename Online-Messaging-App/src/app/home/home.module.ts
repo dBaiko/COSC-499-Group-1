@@ -13,6 +13,7 @@ import {MessengerService} from "../shared/messenger.service";
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
+import {ProfileComponent} from "./profile/profile.component";
 
 const socketConfig: SocketIoConfig = {url: "http://localhost:8080", options: {}};
 
@@ -24,6 +25,7 @@ const socketConfig: SocketIoConfig = {url: "http://localhost:8080", options: {}}
         HeaderComponent,
         HomeComponent,
         LogoutFormComponent,
+        ProfileComponent,
         SidebarComponent
     ],
     imports: [
@@ -40,7 +42,8 @@ const socketConfig: SocketIoConfig = {url: "http://localhost:8080", options: {}}
         SidebarComponent,
         ChannelBrowserComponent,
         FooterComponent,
-        ChatboxComponent
+        ChatboxComponent,
+        ProfileComponent
     ],
     providers: [MessengerService, AuthenticationService, CommonService]
 })

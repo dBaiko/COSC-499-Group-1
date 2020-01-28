@@ -17,7 +17,7 @@ interface userChannelObject {
     styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
-
+    public display ="profile";
     userLoggedIn = false;
     options: FormGroup;
 
@@ -52,5 +52,10 @@ export class HomeComponent implements OnInit {
     receiveNewSubbedChannel($event) {
         this.newSubbedChannel = $event;
     }
+
+    updateDisplay(value: string) {
+        this.display = value;
+    }
+
 
 }

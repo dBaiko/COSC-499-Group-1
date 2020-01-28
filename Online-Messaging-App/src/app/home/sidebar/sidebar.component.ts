@@ -21,14 +21,15 @@ const SELECTED: string = "selected";
     styleUrls: ["./sidebar.component.scss"]
 })
 export class SidebarComponent implements OnInit {
-
+    private chatBox = "chatBox";
+    @Output() channelBrowserEvent = new EventEmitter<string>();
+    @Output() chatBoxEvent = new EventEmitter<string>();
+    @Input() display: string;
     publicChannels = [];
     privateChannels = [];
     friendsChannels = [];
 
     userSubscribedChannels = [];
-
-
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
@@ -123,5 +124,12 @@ export class SidebarComponent implements OnInit {
             }
         })
 
+    }
+
+    toChannelBrowser(channelBrowser: string): void {
+        this.channelBrowserEvent.emit(channelBrowser);
+    }
+    toChat(chatBox: string) {
+        this.chatBoxEvent.emit(chatBox);
     }
 }
