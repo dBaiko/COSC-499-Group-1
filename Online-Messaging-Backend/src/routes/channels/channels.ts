@@ -60,7 +60,6 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
-    if (numRegExp.test(channelIdString)) {
         messageDAO.getMessageHistory(channelIdString)
             .then((data) => {
                 res.status(200).send(data);
@@ -68,10 +67,6 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
             .catch((err) => {
                 res.status(400).send(err);
             });
-    } else {
-        res.status(400).send("ChannelId must be a positive integer");
-    }
-
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {

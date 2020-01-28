@@ -56,6 +56,13 @@ export const VALIDATION_MESSAGES = {
         {type: "required", message: "Last Name is required"},
         {type: "pattern", message: "Last Name must only contain letters and numbers"}
     ],
+    "channelName": [
+        {type: "required", message: "Channel Name is required"},
+        {type: "pattern", message: "Channel Name must only contain letters and characters"},
+    ],
+    "channelType": [
+        {type: "required", message: "Channel Name is required"},
+    ]
 }
 
 
