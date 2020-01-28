@@ -8,7 +8,7 @@
     <div *ngIf="publicChannelSelect;">
         <mat-nav-list>
             <div *ngFor="let publicChannel of publicChannels">
-                <mat-list-item  (click)="selectChannel(publicChannel.channelId); toChat(chatBox)"
+                <mat-list-item  (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
                                [ngClass]=" publicChannel.selected ? 'channelRan' : 'channelHeader'"><h3
                     matLine>{{publicChannel.channelName}}</h3>
                     <a routerLink="/chat">
@@ -27,7 +27,7 @@
     <div *ngIf="privateChannelSelect;">
         <mat-nav-list>
             <div *ngFor="let privateChannel of privateChannels">
-                <mat-list-item (click)="selectChannel(privateChannel.channelId); toChat(chatBox)"
+                <mat-list-item (click)="selectChannel(privateChannel.channelId); switchDisplay(chatBox)"
                                [ngClass]=" privateChannel.selected ? 'channelRan' : 'channelHeader'"><h3
                     matLine>{{privateChannel.channelName}}</h3>
                     <a routerLink="/chat">
@@ -46,7 +46,7 @@
     <div *ngIf="friendChannelSelect;">
         <mat-nav-list>
             <div *ngFor="let friendChannel of friendsChannels">
-                <mat-list-item (click)="selectChannel(friendChannel.channelId); toChat(chatBox)"
+                <mat-list-item (click)="selectChannel(friendChannel.channelId); switchDisplay(chatBox)"
                                [ngClass]=" friendChannel.selected ? 'channelRan' : 'channelHeader'"><h3
                     matLine>{{friendChannel.channelName}}</h3>
                     <a routerLink="/chat">
@@ -67,10 +67,10 @@
     <button class="joinCreate">Create Channel</button>
 
     <div class="icon">
-        <a (click)="toChannelBrowser(channelBrowser)" routerLink="home">
+        <a (click)="switchDisplay(channelBrowser)" routerLink="home">
             <mat-icon inline="true">home</mat-icon>
         </a>
-        <a (click)="toProfile(profile)" routerLink="profile">
+        <a (click)="switchDisplay(profile)" routerLink="profile">
             <mat-icon inline="true">account_box</mat-icon>
         </a>
         <a routerLink="setting">

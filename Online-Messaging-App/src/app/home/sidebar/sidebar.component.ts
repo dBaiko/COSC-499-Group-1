@@ -27,6 +27,7 @@ export class SidebarComponent implements OnInit {
     @Output() channelBrowserEvent = new EventEmitter<string>();
     @Output() chatBoxEvent = new EventEmitter<string>();
     @Output() profileEvent = new EventEmitter<string>();
+    @Output() switchEvent = new EventEmitter<string>();
     @Input() display: string;
     publicChannels = [];
     privateChannels = [];
@@ -137,5 +138,8 @@ export class SidebarComponent implements OnInit {
     }
     toProfile(profile:string) {
         this.profileEvent.emit(profile);
+    }
+    switchDisplay(value:string) {
+        this.switchEvent.emit(value);
     }
 }

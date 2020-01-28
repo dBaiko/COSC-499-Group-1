@@ -6,7 +6,7 @@
                      [fixedTopGap]="options.value.top"
                      class="sidenav" mode="side"
                      opened>
-            <app-sidebar (channelBrowserEvent)="updateDisplay($event)" (chatBoxEvent)="updateDisplay($event)" (channelIdEvent)="receiveId($event)"
+            <app-sidebar (switchEvent)="updateDisplay($event)" (channelIdEvent)="receiveId($event)"
                          (channelNameEvent)="receiveName($event)" [subbedChannel]="newSubbedChannel"></app-sidebar>
         </mat-sidenav>
 
