@@ -2,7 +2,7 @@
     <mat-card>
         <div class="headerTop">
             <mat-card-header>
-                <mat-card-title>Channel 1</mat-card-title>
+                <mat-card-title>{{channelName}}</mat-card-title>
             </mat-card-header>
         </div>
         <p>{{error}}</p>
@@ -18,10 +18,9 @@
                 <hr>
             </div>
         </div>
-        <hr>
         <div class="footerTop">
-            <mat-card-footer align="center">
-                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)" autocomplete="off">
+            <mat-card-footer>
+                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
                         <input matInput name="content" ngModel placeholder="Enter Message">

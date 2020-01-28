@@ -1,8 +1,8 @@
 /* tslint:disable:no-console */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {AuthenticationService} from "../shared/authentication.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from "@angular/common/http";
 import {APIConfig, Constants} from "../shared/app-config";
 import {CommonService} from "../shared/common.service";
 import {FormValidationService} from "../shared/form-validation.service";
@@ -18,9 +18,9 @@ interface User {
 }
 
 @Component({
-    selector: 'register-form',
-    templateUrl: './register-form.component.html',
-    styleUrls: ['./register-form.component.scss'],
+    selector: "register-form",
+    templateUrl: "./register-form.component.html",
+    styleUrls: ["./register-form.component.scss"],
 })
 export class RegisterFormComponent implements OnInit {
 
@@ -32,37 +32,37 @@ export class RegisterFormComponent implements OnInit {
 
     matcher = new ParentErrorStateMatcher();
 
-    private url: string = APIConfig.RegisterAPI;
+    private url: string = APIConfig.usersAPI;
 
     constructor(private auth: AuthenticationService, private http: HttpClient, public common: CommonService, private formValidationService: FormValidationService) {
     }
 
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup({
-                password: new FormControl('', Validators.compose([
+                password: new FormControl("", Validators.compose([
                     Validators.required,
                     Validators.minLength(8)
                 ])),
-                confirmPassword: new FormControl('', Validators.compose([
+                confirmPassword: new FormControl("", Validators.compose([
                     Validators.required
                 ])),
             }, {validators: this.formValidationService.checkIfPasswordsMatch}
         );
         this.registerForm = new FormGroup({
-            username: new FormControl('', Validators.compose([
+            username: new FormControl("", Validators.compose([
                 Validators.required,
                 this.formValidationService.isAlphanumericValidator
             ])),
             matchingPasswords: this.matchingPasswordForm,
-            firstName: new FormControl('', Validators.compose([
+            firstName: new FormControl("", Validators.compose([
                 Validators.required,
                 this.formValidationService.isAlphanumericValidator
             ])),
-            lastName: new FormControl('', Validators.compose([
+            lastName: new FormControl("", Validators.compose([
                 Validators.required,
                 this.formValidationService.isAlphanumericValidator
             ])),
-            email: new FormControl('', Validators.compose([
+            email: new FormControl("", Validators.compose([
                 Validators.required,
                 Validators.email
             ]))
@@ -105,12 +105,7 @@ export class RegisterFormComponent implements OnInit {
             lastName: lastName
         };
 
-        let httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json'
-            })
-        };
-        return this.http.post(this.url, user, httpOptions).toPromise();// TODO: check for errors in responce
+        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise();// TODO: check for errors in responce
     }
 
 }

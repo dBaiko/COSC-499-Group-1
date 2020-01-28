@@ -1,48 +1,52 @@
-import {Component, OnInit} from '@angular/core';
-import {ChatMessage, MessengerService} from "../../shared/messenger.service";
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {APIConfig} from "../../shared/app-config";
+import {Component, Input, OnInit} from "@angular/core";
+import {MessengerService} from "../../shared/messenger.service";
+import {HttpClient} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {FormGroup} from "@angular/forms";
 
-interface ChatMessages {
-    [index: number]: ChatMessage;
-}
+const whitespaceRegEx: RegExp = /^\s+$/i;
 
 @Component({
-    selector: 'app-chatbox',
-    templateUrl: './chatbox.component.html',
-    styleUrls: ['./chatbox.component.scss']
+    selector: "app-chatbox",
+    templateUrl: "./chatbox.component.html",
+    styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit {
 
     chatMessages;
-    error: string = '';
+    error: string = Constants.EMPTY;
 
-    // TODO: Change this to actually get current channel
-    private url: string = APIConfig.GetMessagesAPI + 0;
+    @Input() channelName: string;
+
+    private _channelName;
+    private url: string = APIConfig.channelsAPI;
 
     constructor(private messagerService: MessengerService, private http: HttpClient, private authService: AuthenticationService) {
     }
 
-    ngOnInit(): void {
-        //get old messages
-        this.getMessages();
-        //subscribe to socket
+    private _channelId;
 
-        this.messagerService.subscribeToSocket().subscribe((data) => {
-            this.chatMessages.push(data);
-
-        })
+    get channelId(): any {
+        return this._channelId;
     }
 
-    getMessages(): void {
-        let httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json'
-            })
-        };
-        this.http.get(this.url, httpOptions).subscribe((data) => {
+    @Input()
+    set channelId(value: any) {
+        this._channelId = value;
+        this.getMessages(this._channelId);
+    }
+
+    ngOnInit(): void {
+        this.messagerService.subscribeToSocket().subscribe((data) => {
+            if (data.channelId == this.channelId)
+                this.chatMessages.push(data);
+
+        });
+    }
+
+    getMessages(channelId: string): void {
+        this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.chatMessages = data;
             },
             err => {
@@ -52,14 +56,16 @@ export class ChatboxComponent implements OnInit {
 
     sendMessage(form: FormGroup) {
         let value = form.value;
-        form.reset();
-        console.log(value.content);
-        let chatMessage = {
-            username: this.authService.getAuthenticatedUser().getUsername(),
-            content: value.content
-        };
+        if (value.content && !(whitespaceRegEx.test(value.content))) {
+            form.reset();
+            let chatMessage = {
+                channelId: this._channelId,
+                username: this.authService.getAuthenticatedUser().getUsername(),
+                content: value.content
+            };
 
-        this.messagerService.sendMessage(chatMessage);
+            this.messagerService.sendMessage(chatMessage);
+        }// TODO: add user error message if this is false
 
     }
 

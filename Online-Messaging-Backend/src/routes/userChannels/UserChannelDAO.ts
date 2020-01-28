@@ -6,13 +6,17 @@ aws.config.loadFromPath(awsConfigPath);
 
 const docClient = new aws.DynamoDB.DocumentClient();
 
-const userChannelTableName = "UserChannel";
+const USER_CHANNEL_TABLE_NAME = "UserChannel";
+const CHANNELID_USERNAME_INDEX = "channelId-username-index";
 
 class UserChannelDAO {
 
+    private channelIdQueryDeclaration = "channelId = :channelId";
+    private usernameQueryDeclaration = "username = :username";
+
     public getAll(): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
+            TableName: USER_CHANNEL_TABLE_NAME,
         };
 
         return new Promise((resolve, reject) => {
@@ -29,14 +33,16 @@ class UserChannelDAO {
 
     }
 
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
+    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string, channelName: string, channelType: string): Promise<any> {
         const params = {
             Item: {
                 username,
                 channelId,
-                userChannelRole
+                userChannelRole,
+                channelName,
+                channelType
             },
-            TableName: userChannelTableName
+            TableName: USER_CHANNEL_TABLE_NAME
         }
 
         return new Promise((resolve, reject) => {
@@ -55,8 +61,8 @@ class UserChannelDAO {
 
     public getAllSubscribedChannels(username: string): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
-            KeyConditionExpression: "username = :username",
+            TableName: USER_CHANNEL_TABLE_NAME,
+            KeyConditionExpression: this.usernameQueryDeclaration,
             ExpressionAttributeValues: {
                 ":username": username
             }
@@ -78,13 +84,14 @@ class UserChannelDAO {
 
     public getAllSubscribedUsers(channelId: number): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
-            IndexName: "channelId-username-index",
-            KeyConditionExpression: "channelId = :channelId",
-            ExpressionAttributeValues: {
-                ":channelId": channelId
+                TableName: USER_CHANNEL_TABLE_NAME,
+                IndexName: CHANNELID_USERNAME_INDEX,
+                KeyConditionExpression: this.channelIdQueryDeclaration,
+                ExpressionAttributeValues: {
+                    ":channelId": channelId
+                }
             }
-        };
+        ;
 
         return new Promise((resolve, reject) => {
             docClient.query(params, (err, data) => {

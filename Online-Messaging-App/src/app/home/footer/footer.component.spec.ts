@@ -1,10 +1,10 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 
-import {FooterComponent} from './footer.component';
+import {FooterComponent} from "./footer.component";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {RouterTestingModule} from "@angular/router/testing";
 
-describe('FooterComponent', () => {
+describe("FooterComponent", () => {
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
 
@@ -23,7 +23,7 @@ describe('FooterComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });
