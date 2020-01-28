@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 
-import {LogoutFormComponent} from './logout-form.component';
+import {LogoutFormComponent} from "./logout-form.component";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {CommonService} from "../../shared/common.service";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -12,7 +12,7 @@ import {SidebarComponent} from "../sidebar/sidebar.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ChatboxComponent} from "../chatbox/chatbox.component";
 
-describe('LogoutComponent', () => {
+describe("LogoutComponent", () => {
     let component: LogoutFormComponent;
     let fixture: ComponentFixture<LogoutFormComponent>;
 
@@ -42,7 +42,7 @@ describe('LogoutComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

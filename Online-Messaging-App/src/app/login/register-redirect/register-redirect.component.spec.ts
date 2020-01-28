@@ -1,13 +1,13 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {routes} from "../../app-routing.module";
 
-import {RegisterRedirectComponent} from './register-redirect.component';
+import {RegisterRedirectComponent} from "./register-redirect.component";
 import {RouterTestingModule} from "@angular/router/testing";
 import {MaterialModule} from "../../material/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HomeModule} from "../../home/home.module";
 
-describe('RegisterRedirectComponent', () => {
+describe("RegisterRedirectComponent", () => {
     let component: RegisterRedirectComponent;
     let fixture: ComponentFixture<RegisterRedirectComponent>;
 
@@ -33,7 +33,7 @@ describe('RegisterRedirectComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

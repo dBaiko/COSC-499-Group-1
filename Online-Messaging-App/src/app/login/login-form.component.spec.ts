@@ -1,13 +1,13 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {LoginFormComponent} from './login-form.component';
+import {LoginFormComponent} from "./login-form.component";
 import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {CommonService} from "../shared/common.service";
 import {RouterTestingModule} from "@angular/router/testing";
 import {AuthenticationService} from "../shared/authentication.service";
 import {FormValidationService} from "../shared/form-validation.service";
 
-describe('LoginComponent', () => {
+describe("LoginComponent", () => {
     let component: LoginFormComponent;
     let fixture: ComponentFixture<LoginFormComponent>;
 
@@ -31,7 +31,7 @@ describe('LoginComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });
