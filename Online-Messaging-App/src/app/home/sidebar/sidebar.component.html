@@ -67,10 +67,10 @@
     <button class="joinCreate">Create Channel</button>
 
     <div class="icon">
-        <a (click)="toChannelBrowser('channelBrowser')" routerLink="home">
+        <a (click)="toChannelBrowser(channelBrowser)" routerLink="home">
             <mat-icon inline="true">home</mat-icon>
         </a>
-        <a routerLink="profile">
+        <a (click)="toProfile(profile)" routerLink="profile">
             <mat-icon inline="true">account_box</mat-icon>
         </a>
         <a routerLink="setting">

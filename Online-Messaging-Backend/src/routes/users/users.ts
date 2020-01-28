@@ -2,11 +2,13 @@ import bodyParser from "body-parser";
 import express from "express";
 import UserDAO from "./UserDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
+import ChannelDAO from "../channels/ChannelDAO";
 
 const router = express.Router();
 
 const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
 const PATH_POST_NEW_USER = "/";
+const PATH_GET_USER_BY_USERNAME = "/:username";
 
 router.use(bodyParser());
 
@@ -32,6 +34,19 @@ router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
         .catch((err) => {
             res.status(400).send(err);
         });
+});
+
+router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
+    const userDAO = new UserDAO();
+    let channelIdString = req.params.channelId;
+    userDAO.createNewUser(Number(channelIdString))
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        });
+
 });
 
 export = router;
