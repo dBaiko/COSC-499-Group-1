@@ -24,11 +24,7 @@ export class SidebarComponent implements OnInit {
     private chatBox = "chatBox";
     private channelBrowser = "channelBrowser";
     private profile = "profile";
-    @Output() channelBrowserEvent = new EventEmitter<string>();
-    @Output() chatBoxEvent = new EventEmitter<string>();
-    @Output() profileEvent = new EventEmitter<string>();
     @Output() switchEvent = new EventEmitter<string>();
-    @Input() display: string;
     publicChannels = [];
     privateChannels = [];
     friendsChannels = [];
@@ -128,16 +124,6 @@ export class SidebarComponent implements OnInit {
             }
         })
 
-    }
-
-    toChannelBrowser(channelBrowser: string): void {
-        this.channelBrowserEvent.emit(channelBrowser);
-    }
-    toChat(chatBox: string) {
-        this.chatBoxEvent.emit(chatBox);
-    }
-    toProfile(profile:string) {
-        this.profileEvent.emit(profile);
     }
     switchDisplay(value:string) {
         this.switchEvent.emit(value);
