@@ -6,6 +6,7 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-b
 import {HomeModule} from "./home/home.module";
 import {LoginModule} from "./login/login.module";
 import {RegisterModule} from "./register/register.module";
+import {CreateChannelComponent} from "./home/createChannel/create-channel.component";
 
 
 @NgModule({
@@ -22,7 +23,9 @@ import {RegisterModule} from "./register/register.module";
         RegisterModule
     ],
 
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    entryComponents: [CreateChannelComponent]
+
 })
 export class AppModule {
 }

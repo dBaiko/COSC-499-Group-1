@@ -2,6 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AuthenticationService} from "../../shared/authentication.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {APIConfig} from "../../shared/app-config";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {CreateChannelComponent} from "../createChannel/create-channel.component";
+
 
 interface userChannelObject {
     username: string,
@@ -33,7 +36,7 @@ export class SidebarComponent implements OnInit {
     list;
     private url: string = APIConfig.GetSubscribedChannelsAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {
+    constructor(private http: HttpClient, private auth: AuthenticationService, private dialog: MatDialog) {
     }
 
     private _subbedChannel: userChannelObject;
@@ -120,5 +123,13 @@ export class SidebarComponent implements OnInit {
             }
         })
 
+    }
+
+    joinChannel():void{
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = "35%";
+        this.dialog.open(CreateChannelComponent,dialogConfig);
     }
 }

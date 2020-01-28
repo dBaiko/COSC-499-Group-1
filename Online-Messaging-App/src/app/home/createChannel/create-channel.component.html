@@ -1,0 +1,28 @@
+<div class="container">
+    <form (ngSubmit)="registerSubmit(registerForm)" [formGroup]="registerForm">
+        <div align="center">
+            <h2>Create A Channel</h2>
+            <div class="leftSide">
+                <mat-form-field appearance="fill" color="primary">
+                    <mat-label>Channel Name</mat-label>
+                    <input class="form-control" formControlName="username" id="username" matInput
+                        name="username" required type="text">
+                    <mat-error *ngFor="let validation of common.validation_methods.username">
+                     <mat-error *ngIf="formValidationService.checkIfFormElementInvalid(registerForm, 'username', validation, submitAttempt)">{{validation.message}}</mat-error>
+            </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="rightSide">
+                <p>Channel Type</p>
+                <mat-radio-group>
+                    <mat-radio-button value="public">Public</mat-radio-button>
+                    <mat-radio-button value="private">Private</mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
+        <div align="center">
+            <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Cancel</button>
+            <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Create</button>
+        </div>
+    </form>
+</div>

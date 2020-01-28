@@ -13,6 +13,9 @@ import {MessengerService} from "../shared/messenger.service";
 import {SocketIoConfig, SocketIoModule} from "ngx-socket-io";
 import {AuthenticationService} from "../shared/authentication.service";
 import {CommonService} from "../shared/common.service";
+import { CreateChannelComponent } from './createChannel/create-channel.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatRadioModule} from "@angular/material/radio";
 
 const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}};
 
@@ -24,7 +27,8 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
         HeaderComponent,
         HomeComponent,
         LogoutFormComponent,
-        SidebarComponent
+        SidebarComponent,
+        CreateChannelComponent
     ],
     imports: [
         CommonModule,
@@ -32,6 +36,8 @@ const socketConfig: SocketIoConfig = {url: 'http://localhost:8080', options: {}}
         FormsModule,
         ReactiveFormsModule,
         SocketIoModule.forRoot(socketConfig),
+        MatSelectModule,
+        MatRadioModule,
     ],
     exports: [
         HeaderComponent,
