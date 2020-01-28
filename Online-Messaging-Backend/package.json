@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@shelf/jest-dynamodb": "^1.6.0",
     "@types/socket.io": "^2.1.4",
     "aws-sdk": "^2.605.0",
     "body-parser": "^1.19.0",
@@ -38,6 +39,7 @@
   },
   "jest": {
     "testEnvironment": "node",
+    "preset": "@shelf/jest-dynamodb",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
     ]
