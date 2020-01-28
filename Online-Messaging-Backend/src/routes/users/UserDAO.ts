@@ -10,6 +10,8 @@ const USERS_TABLE_NAME = "Users";
 
 class UserDAO {
 
+    private usernameQueryDeclaration = "username = :username";
+
     public createNewUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
@@ -33,6 +35,30 @@ class UserDAO {
             });
         });
 
+    }
+
+    public getUserInfoByUsername(username: string) {
+        const params = {
+            TableName: USERS_TABLE_NAME,
+            KeyConditionExpression: this.usernameQueryDeclaration,
+            ExpressionAttributeValues: {
+                ":username": username
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            docClient.query(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query for " + username + " Succeeded");
+                    resolve(data.Items)
+                    ;
+                }
+            });
+
+        });
     }
 
 }
