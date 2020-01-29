@@ -1,0 +1,29 @@
+<div class="wrapper" *ngIf="user">
+    <mat-card>
+        <div class="icon">
+            <mat-card-header>
+                <mat-icon inline="true">account_box</mat-icon> <b id="profileTitle">Profile</b>
+            </mat-card-header>
+        </div>
+        <mat-card-content>
+            <hr>
+            <br>
+            <b id="first">Username</b>
+            <mat-icon id="profilePicture" inline="true">person</mat-icon> <br>
+            <p>{{user[0].username}}</p> <br>
+            <b>Email</b> <br>
+            <p>{{user[0].email}}</p> <br>
+            <b>First Name</b> <br>
+            <p>{{user[0].firstName}}</p> <br>
+            <b>Last Name</b> <br>
+            <p>{{user[0].lastName}}</p> <br>
+
+            <button mat-button>Edit</button>
+            <br><br><br>
+        </mat-card-content>
+
+
+
+
+    </mat-card>
+</div>

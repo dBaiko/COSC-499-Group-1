@@ -1,0 +1,37 @@
+mat-card-content {
+    margin-left: 1vh;
+    margin-right: 1vh;
+    margin-top: 1vh;
+}
+mat-icon {
+    margin-bottom: 1vh;
+}
+.icon {
+
+    font-size: 64px;
+}
+#profilePicture {
+    float:right;
+    margin-right: 5vh;
+    border-style: solid;
+    border-color: black;
+    border-radius: 0.5vh;
+    font-size: 128px;
+}
+
+.wrapper {
+    width: 60%;
+    margin:auto;
+}
+button {
+    float: right;
+    margin-right: 5vh;
+    color: white;
+    background-color: black;
+    margin-bottom: 1vh;
+    width: 14vh;
+}
+#profileTitle {
+    font-size: 48px;
+    margin-left: 1vh;
+}
