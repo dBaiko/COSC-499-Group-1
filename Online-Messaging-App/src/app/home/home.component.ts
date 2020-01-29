@@ -22,6 +22,8 @@ export class HomeComponent implements OnInit {
 
     messagesShown = false;
 
+    display: string = "channelBrowser";
+
     selectedChannelId: number;
     selectedChannelName: string;
 
@@ -48,5 +50,9 @@ export class HomeComponent implements OnInit {
 
     receiveNewSubbedChannel($event) {
         this.newSubbedChannel = $event;
+    }
+
+    updateDisplay(value: string): void {
+        this.display = value;
     }
 }

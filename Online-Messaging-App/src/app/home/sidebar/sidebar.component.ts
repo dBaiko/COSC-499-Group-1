@@ -25,17 +25,18 @@ export class SidebarComponent implements OnInit {
     privateChannels = [];
     friendsChannels = [];
 
-    tes = "s";
-
     userSubscribedChannels = [];
 
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
+    @Output() switchEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
     list;
-
+    private chatBox = "chatBox";
+    private channelBrowser = "channelBrowser";
+    private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {}
@@ -126,5 +127,9 @@ export class SidebarComponent implements OnInit {
                 item[SELECTED] = false;
             }
         });
+    }
+
+    switchDisplay(value: string): void {
+        this.switchEvent.emit(value);
     }
 }

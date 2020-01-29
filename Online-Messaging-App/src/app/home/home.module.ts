@@ -13,6 +13,7 @@ import { MessengerService } from "../shared/messenger.service";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
 import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
+import { ProfileComponent } from "./profile/profile.component";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -27,7 +28,8 @@ const socketConfig: SocketIoConfig = {
         HeaderComponent,
         HomeComponent,
         LogoutFormComponent,
-        SidebarComponent
+        SidebarComponent,
+        ProfileComponent
     ],
     imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, SocketIoModule.forRoot(socketConfig)],
     exports: [
