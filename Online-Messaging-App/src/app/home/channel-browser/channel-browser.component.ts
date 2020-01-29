@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -7,6 +7,12 @@ interface userChannelObject {
     username: string;
     channelId: string;
     userChannelRole: string;
+    channelName: string;
+    channelType: string;
+}
+
+interface ChannelObject {
+    channelId: string;
     channelName: string;
     channelType: string;
 }
@@ -22,7 +28,7 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 })
 export class ChannelBrowserComponent implements OnInit {
     subscribedChannels: string[] = [];
-    channels;
+    channels: Object[] = [];
 
     search = Constants.EMPTY;
 
@@ -31,7 +37,23 @@ export class ChannelBrowserComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {}
+    constructor(private http: HttpClient, private auth: AuthenticationService) {
+    }
+
+    private _newChannel: ChannelObject;
+
+    get newChannel(): ChannelObject {
+        return this._newChannel;
+    }
+
+    @Input()
+    set newChannel(value: ChannelObject) {
+        if (value) {
+            this._newChannel = value;
+            this.channels.push(value);
+            this.subscribedChannels.push(value.channelId);
+        }
+    }
 
     ngOnInit() {
         this.getChannels();
@@ -75,7 +97,7 @@ export class ChannelBrowserComponent implements OnInit {
 
     getChannels(): void {
         this.http.get(this.channelsAPI, Constants.HTTP_OPTIONS).subscribe(
-            (data) => {
+            (data: Object[]) => {
                 this.channels = data;
             },
             (err) => {

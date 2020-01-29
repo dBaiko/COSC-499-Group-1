@@ -21,4 +21,5 @@ import { RegisterModule } from "./register/register.module";
 
     bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

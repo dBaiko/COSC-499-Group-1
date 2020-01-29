@@ -25,4 +25,5 @@ import { RegisterRoutingModule } from "./register-routing.module";
     ],
     providers: [FormValidationService, AuthenticationService, CommonService]
 })
-export class RegisterModule {}
+export class RegisterModule {
+}
