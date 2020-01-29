@@ -10,14 +10,15 @@ const PATH_GET_ALL_MESSAGES: string = "/";
 router.use(bodyParser());
 
 router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
-    const messageDAO = new MessageDAO();
-    messageDAO.getAllMessageHistory()
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+  const messageDAO = new MessageDAO();
+  messageDAO
+    .getAllMessageHistory()
+    .then(data => {
+      res.status(200).send(data);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
 });
 
 export = router;

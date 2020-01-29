@@ -1,7 +1,7 @@
-import {Component, OnInit} from "@angular/core";
-import {AuthenticationService} from "../shared/authentication.service";
-import {CommonService} from "../shared/common.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { AuthenticationService } from "../shared/authentication.service";
+import { CommonService } from "../shared/common.service";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 interface userChannelObject {
     username: string;
@@ -14,7 +14,7 @@ interface userChannelObject {
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
-    styleUrls: ["./home.component.scss"],
+    styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent implements OnInit {
     public display = "channelBrowser";
@@ -28,7 +28,11 @@ export class HomeComponent implements OnInit {
 
     newSubbedChannel: userChannelObject;
 
-    constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
+    constructor(
+        private auth: AuthenticationService,
+        public common: CommonService,
+        fb: FormBuilder
+    ) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
             bottom: 0,
@@ -37,12 +41,10 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 
     receiveId($event) {
         this.selectedChannelId = $event;
-
     }
 
     receiveName($event) {
@@ -56,6 +58,4 @@ export class HomeComponent implements OnInit {
     updateDisplay(value: string): void {
         this.display = value;
     }
-
-
 }
