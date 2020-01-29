@@ -10,6 +10,7 @@ import {HttpClient} from "@angular/common/http";
     styleUrls: ["./profile.component.scss"]
 })
 export class ProfileComponent implements OnInit {
+
     user;
     private usersAPI = APIConfig.usersAPI;
 
@@ -20,10 +21,9 @@ export class ProfileComponent implements OnInit {
         this.getUserInfo();
     }
 
-    getUserInfo() {
+    getUserInfo(): void {
         this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.user = data;
-                console.log(this.user);
             },
             err => {
                 console.log(err);

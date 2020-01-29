@@ -124,7 +124,7 @@ export class SidebarComponent implements OnInit {
 
     }
 
-    switchDisplay(value: string) {
+    switchDisplay(value: string): void {
         this.switchEvent.emit(value);
     }
 }

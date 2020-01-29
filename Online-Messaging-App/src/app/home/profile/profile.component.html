@@ -9,19 +9,25 @@
         <mat-card-content>
             <hr>
             <br>
-            <b id="first">Username</b>
-            <mat-icon id="profilePicture" inline="true">person</mat-icon>
-            <br>
-            <p>{{user[0].username}}</p> <br>
-            <b>Email</b> <br>
-            <p>{{user[0].email}}</p> <br>
-            <b>First Name</b> <br>
-            <p>{{user[0].firstName}}</p> <br>
-            <b>Last Name</b> <br>
-            <p>{{user[0].lastName}}</p> <br>
 
-            <button mat-button>Edit</button>
-            <br><br><br>
+            <div class="profileInfo">
+
+                <mat-icon id="profilePicture" inline="true">person</mat-icon>
+
+
+                <p><b>Username</b>
+                    {{user[0].username}}
+                    <b>Email</b>
+                    {{user[0].email}}
+                    <b>First Name</b>
+                    {{user[0].firstName}}
+                    <b>Last Name</b>
+                    {{user[0].lastName}}</p>
+            </div>
+            <br>
+            <!--edit button for future implementation-->
+            <!--            <button mat-button>Edit</button>-->
+
         </mat-card-content>
 
 
