@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ChannelBrowserComponent } from "./channel-browser.component";
+import { CreateChannelComponent } from "./create-channel.component";
 
-describe("ChannelBrowserComponent", () => {
-    let component: ChannelBrowserComponent;
-    let fixture: ComponentFixture<ChannelBrowserComponent>;
+describe("CreateChannelComponent", () => {
+    let component: CreateChannelComponent;
+    let fixture: ComponentFixture<CreateChannelComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ChannelBrowserComponent]
+            declarations: [CreateChannelComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ChannelBrowserComponent);
+        fixture = TestBed.createComponent(CreateChannelComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

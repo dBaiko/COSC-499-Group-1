@@ -1,38 +1,44 @@
-import {Injectable} from "@angular/core";
-import {AbstractControl, FormGroup} from "@angular/forms";
-import {Constants} from "./app-config";
+import { Injectable } from "@angular/core";
+import { AbstractControl, FormGroup } from "@angular/forms";
+import { Constants } from "./app-config";
 
 const CONFIRM_PASSWORD = "confirmPassword";
 
 interface ValidationMethod {
-    type: string,
-    message: string
+    type: string;
+    message: string;
 }
 
 const alphanumRegex: RegExp = /^[a-z0-9]+$/i;
 
 @Injectable()
 export class FormValidationService {
-
     constructor() {
     }
 
     public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
         if (!alphanumRegex.test(control.value)) {
-            return {pattern: true};
+            return { pattern: true };
         }
         return null;
     }
 
-    public checkIfFormElementInvalid(form: FormGroup, element: string, validation: ValidationMethod, submitAttempt: boolean): boolean {
-        return form.get(element).hasError(validation.type) && (form.get(element).dirty || form.get(element).touched || (form.get(element).untouched && submitAttempt));
+    public checkIfFormElementInvalid(
+        form: FormGroup,
+        element: string,
+        validation: ValidationMethod,
+        submitAttempt: boolean
+    ): boolean {
+        return (
+            form.get(element).hasError(validation.type) &&
+            (form.get(element).dirty || form.get(element).touched || (form.get(element).untouched && submitAttempt))
+        );
     }
 
     public checkIfPasswordsMatch(formGroup: FormGroup): { [key: string]: boolean } | null {
         let password = formGroup.get(Constants.PASSWORD).value;
         let confirmPassword = formGroup.get(CONFIRM_PASSWORD).value;
 
-        return password === confirmPassword ? null : {misMatch: true};
+        return password === confirmPassword ? null : { misMatch: true };
     }
-
 }

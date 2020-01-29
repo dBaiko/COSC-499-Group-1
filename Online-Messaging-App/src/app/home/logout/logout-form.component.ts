@@ -1,7 +1,7 @@
-import {Component, OnInit} from "@angular/core";
-import {AuthenticationService} from "../../shared/authentication.service";
-import {CommonService} from "../../shared/common.service";
-import {Constants} from "../../shared/app-config";
+import { Component, OnInit } from "@angular/core";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { CommonService } from "../../shared/common.service";
+import { Constants } from "../../shared/app-config";
 
 @Component({
     selector: "logout-form",
@@ -9,7 +9,6 @@ import {Constants} from "../../shared/app-config";
     styleUrls: ["./logout-form.component.scss"]
 })
 export class LogoutFormComponent implements OnInit {
-
     constructor(private auth: AuthenticationService, public common: CommonService) {
     }
 
@@ -20,6 +19,4 @@ export class LogoutFormComponent implements OnInit {
         this.auth.logOut();
         this.common.routeTo(Constants.LOGIN_ROUTE);
     }
-
-
 }

@@ -29,12 +29,10 @@ io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");
     socketIO.on("message", (message: any) => {
-
         if (message.content) {
             io.sockets.emit("broadcast", message);
             const messageDAO = new MessageDAO();
             messageDAO.addNewMessage(message);
         }
-
     });
 });
