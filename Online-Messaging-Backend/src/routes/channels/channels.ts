@@ -19,93 +19,105 @@ const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 router.use(bodyParser());
 
 router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
-    const channelDAO = new ChannelDAO();
-    channelDAO.getAllChannels()
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+  const channelDAO = new ChannelDAO();
+  channelDAO
+    .getAllChannels()
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
-    const channelDAO = new ChannelDAO();
-    let channelIdString = req.params.channelId;
-    if (numRegExp.test(channelIdString)) {
-        channelDAO.getChannelInfo(Number(channelIdString))
-            .then((data) => {
-                res.status(200).send(data);
-            })
-            .catch((err) => {
-                res.status(400).send(err);
-            });
-    } else {
-        res.status(400).send("ChannelId must be a positive integer");
-    }
+  const channelDAO = new ChannelDAO();
+  let channelIdString = req.params.channelId;
+  if (numRegExp.test(channelIdString)) {
+    channelDAO
+      .getChannelInfo(Number(channelIdString))
+      .then((data) => {
+        res.status(200).send(data);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
+  } else {
+    res.status(400).send("ChannelId must be a positive integer");
+  }
 });
 
 router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
-    const userChannelDAO = new UserChannelDAO();
-    let channelId = req.params.channelId;
-    userChannelDAO.getAllSubscribedUsers(Number(channelId))
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+  const userChannelDAO = new UserChannelDAO();
+  let channelId = req.params.channelId;
+  userChannelDAO
+    .getAllSubscribedUsers(Number(channelId))
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
-    const messageDAO = new MessageDAO();
-    let channelIdString = req.params.channelId;
-    if (numRegExp.test(channelIdString)) {
-        messageDAO
-            .getMessageHistory(channelIdString)
-            .then((data) => {
-                res.status(200).send(data);
-            })
-            .catch((err) => {
-                res.status(400).send(err);
-            });
-    } else {
-        res.status(400).send("ChannelId must be a positive integer");
-    }
+  const messageDAO = new MessageDAO();
+  let channelIdString = req.params.channelId;
+  if (numRegExp.test(channelIdString)) {
+    messageDAO
+      .getMessageHistory(channelIdString)
+      .then((data) => {
+        res.status(200).send(data);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
+  } else {
+    res.status(400).send("ChannelId must be a positive integer");
+  }
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
-    console.log(req.body);
-    console.log(req.params.channelId);
-    const userChannelDAO = new UserChannelDAO();
-    userChannelDAO
-        .addNewUserToChannel(
-            req.body.username,
-            req.body.channelId,
-            req.body.userChannelRole,
-            req.body.channelName,
-            req.body.channelType
-        )
-        .then(() => {
-            res.status(200).send({
-                status: 200,
-                data: { message: "New userChannel added successfully" }
-            });
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+  console.log(req.body);
+  console.log(req.params.channelId);
+  const userChannelDAO = new UserChannelDAO();
+  userChannelDAO
+    .addNewUserToChannel(
+      req.body.username,
+      req.body.channelId,
+      req.body.userChannelRole,
+      req.body.channelName,
+      req.body.channelType
+    )
+    .then(() => {
+      res.status(200).send({
+        status: 200,
+        data: { message: "New userChannel added successfully" }
+      });
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
-    const channelDAO = new ChannelDAO();
-    channelDAO.addNewChannel(req.body.channelName, req.body.channelType, req.body.firstUsername, req.body.firstUserChannelRole)
-        .then((data) => {
-            res.status(200).send({status: 200, data: {message: "New channel added successfully", newChannel: data}});
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+  const channelDAO = new ChannelDAO();
+  channelDAO
+    .addNewChannel(
+      req.body.channelName,
+      req.body.channelType,
+      req.body.firstUsername,
+      req.body.firstUserChannelRole
+    )
+    .then((data) => {
+      res.status(200).send({
+        status: 200,
+        data: { message: "New channel added successfully", newChannel: data }
+      });
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
 });
 
 export = router;
