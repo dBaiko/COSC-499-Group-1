@@ -1,4 +1,4 @@
-import {NgModule} from "@angular/core";
+import { NgModule } from "@angular/core";
 import {
     MatButtonModule,
     MatButtonToggleModule,
@@ -12,11 +12,10 @@ import {
     MatSidenavModule,
     MatTabsModule,
     MatToolbarModule
-} from "@angular/material"
-import {MatBadgeModule} from "@angular/material/badge";
-import {MatCardModule} from "@angular/material/card";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-
+} from "@angular/material";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatCardModule } from "@angular/material/card";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 const material = [
     MatButtonModule,
@@ -34,13 +33,11 @@ const material = [
     MatInputModule,
     MatCardModule,
     BrowserAnimationsModule
-]
+];
 
 @NgModule({
     imports: [material],
     exports: [material],
     providers: [material]
 })
-export class MaterialModule {
-
-}
+export class MaterialModule {}

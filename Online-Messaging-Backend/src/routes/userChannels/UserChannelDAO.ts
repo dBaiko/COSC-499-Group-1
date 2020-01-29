@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
+import { awsConfigPath } from "../../config/aws-config";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -10,13 +10,12 @@ const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
 
 class UserChannelDAO {
-
     private channelIdQueryDeclaration = "channelId = :channelId";
     private usernameQueryDeclaration = "username = :username";
 
     public getAll(): Promise<any> {
         const params = {
-            TableName: USER_CHANNEL_TABLE_NAME,
+            TableName: USER_CHANNEL_TABLE_NAME
         };
 
         return new Promise((resolve, reject) => {
@@ -30,10 +29,15 @@ class UserChannelDAO {
                 }
             });
         });
-
     }
 
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string, channelName: string, channelType: string): Promise<any> {
+    public addNewUserToChannel(
+        username: string,
+        channelId: string,
+        userChannelRole: string,
+        channelName: string,
+        channelType: string
+    ): Promise<any> {
         const params = {
             Item: {
                 username,
@@ -43,7 +47,7 @@ class UserChannelDAO {
                 channelType
             },
             TableName: USER_CHANNEL_TABLE_NAME
-        }
+        };
 
         return new Promise((resolve, reject) => {
             docClient.put(params, (err, data) => {
@@ -54,9 +58,8 @@ class UserChannelDAO {
                     console.log("Added new user subsription: ", JSON.stringify(data, null, 2));
                     resolve();
                 }
-            })
-        })
-
+            });
+        });
     }
 
     public getAllSubscribedChannels(username: string): Promise<any> {
@@ -78,20 +81,18 @@ class UserChannelDAO {
                     resolve(data.Items);
                 }
             });
-
         });
     }
 
     public getAllSubscribedUsers(channelId: number): Promise<any> {
         const params = {
-                TableName: USER_CHANNEL_TABLE_NAME,
-                IndexName: CHANNELID_USERNAME_INDEX,
-                KeyConditionExpression: this.channelIdQueryDeclaration,
-                ExpressionAttributeValues: {
-                    ":channelId": channelId
-                }
+            TableName: USER_CHANNEL_TABLE_NAME,
+            IndexName: CHANNELID_USERNAME_INDEX,
+            KeyConditionExpression: this.channelIdQueryDeclaration,
+            ExpressionAttributeValues: {
+                ":channelId": channelId
             }
-        ;
+        };
 
         return new Promise((resolve, reject) => {
             docClient.query(params, (err, data) => {
@@ -103,10 +104,8 @@ class UserChannelDAO {
                     resolve(data.Items);
                 }
             });
-
         });
     }
-
 }
 
 export default UserChannelDAO;
