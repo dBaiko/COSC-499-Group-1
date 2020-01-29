@@ -1,15 +1,17 @@
-<div class="wrapper" *ngIf="user">
+<div *ngIf="user" class="wrapper">
     <mat-card>
         <div class="icon">
             <mat-card-header>
-                <mat-icon inline="true">account_box</mat-icon> <b id="profileTitle">Profile</b>
+                <mat-icon inline="true">account_box</mat-icon>
+                <b id="profileTitle">Profile</b>
             </mat-card-header>
         </div>
         <mat-card-content>
             <hr>
             <br>
             <b id="first">Username</b>
-            <mat-icon id="profilePicture" inline="true">person</mat-icon> <br>
+            <mat-icon id="profilePicture" inline="true">person</mat-icon>
+            <br>
             <p>{{user[0].username}}</p> <br>
             <b>Email</b> <br>
             <p>{{user[0].email}}</p> <br>
@@ -21,8 +23,6 @@
             <button mat-button>Edit</button>
             <br><br><br>
         </mat-card-content>
-
-
 
 
     </mat-card>

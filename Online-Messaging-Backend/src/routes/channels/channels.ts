@@ -57,13 +57,13 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
-        messageDAO.getMessageHistory(channelIdString)
-            .then((data) => {
-                res.status(200).send(data);
-            })
-            .catch((err) => {
-                res.status(400).send(err);
-            });
+    messageDAO.getMessageHistory(channelIdString)
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(400).send(err);
+        });
 
 
 });

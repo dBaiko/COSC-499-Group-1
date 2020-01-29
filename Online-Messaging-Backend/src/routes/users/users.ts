@@ -2,7 +2,6 @@ import bodyParser from "body-parser";
 import express from "express";
 import UserDAO from "./UserDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
-import ChannelDAO from "../channels/ChannelDAO";
 
 const router = express.Router();
 
