@@ -21,8 +21,8 @@ export class MessengerService {
     }
 
     subscribeToSocket(): Observable<any> {
-        return new Observable<any>(observer => {
-            this.socket.on(BROADCAST, data => observer.next(data));
+        return new Observable<any>((observer) => {
+            this.socket.on(BROADCAST, (data) => observer.next(data));
         });
     }
 

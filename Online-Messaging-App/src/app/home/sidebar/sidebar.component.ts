@@ -21,13 +21,15 @@ const SELECTED: string = "selected";
     styleUrls: ["./sidebar.component.scss"]
 })
 export class SidebarComponent implements OnInit {
-    @Output() switchEvent = new EventEmitter<string>();
     publicChannels = [];
     privateChannels = [];
     friendsChannels = [];
+
     userSubscribedChannels = [];
+
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
+    @Output() switchEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
@@ -37,10 +39,7 @@ export class SidebarComponent implements OnInit {
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
 
-    constructor(
-        private http: HttpClient,
-        private auth: AuthenticationService
-    ) {}
+    constructor(private http: HttpClient, private auth: AuthenticationService) {}
 
     private _subbedChannel: userChannelObject;
 
@@ -70,9 +69,7 @@ export class SidebarComponent implements OnInit {
     getSubscribedChannels(): void {
         this.http
             .get(
-                this.usersAPI +
-                    this.auth.getAuthenticatedUser().getUsername() +
-                    Constants.CHANNELS_PATH,
+                this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
                 Constants.HTTP_OPTIONS
             )
             .subscribe(
@@ -81,28 +78,22 @@ export class SidebarComponent implements OnInit {
                     this.privateChannels = [];
                     this.friendsChannels = [];
                     this.userSubscribedChannels = data;
-                    this.userSubscribedChannels.forEach(
-                        (item: userChannelObject) => {
-                            if (item.channelType == PUBLIC) {
-                                this.publicChannels.push(item);
-                            } else if (item.channelType == PRIVATE) {
-                                this.privateChannels.push(item);
-                            } else {
-                                this.friendsChannels.push(item);
-                            }
+                    this.userSubscribedChannels.forEach((item: userChannelObject) => {
+                        if (item.channelType == PUBLIC) {
+                            this.publicChannels.push(item);
+                        } else if (item.channelType == PRIVATE) {
+                            this.privateChannels.push(item);
+                        } else {
+                            this.friendsChannels.push(item);
                         }
-                    );
+                    });
                     if (this.userSubscribedChannels.length > 0) {
-                        this.channelIdEvent.emit(
-                            this.userSubscribedChannels[0].channelId
-                        );
-                        this.channelNameEvent.emit(
-                            this.userSubscribedChannels[0].channelName
-                        );
+                        this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
+                        this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
                         this.userSubscribedChannels[0][SELECTED] = true;
                     }
                 },
-                err => {
+                (err) => {
                     console.log(err);
                 }
             );

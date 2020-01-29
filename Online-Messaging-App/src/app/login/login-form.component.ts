@@ -25,14 +25,8 @@ export class LoginFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.loginForm = new FormGroup({
-            username: new FormControl(
-                Constants.EMPTY,
-                Validators.compose([Validators.required])
-            ),
-            password: new FormControl(
-                Constants.EMPTY,
-                Validators.compose([Validators.required])
-            )
+            username: new FormControl(Constants.EMPTY, Validators.compose([Validators.required])),
+            password: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
         });
     }
 
@@ -43,14 +37,12 @@ export class LoginFormComponent implements OnInit {
 
     login(username: string, password: string): void {
         this.auth.login(username, password).subscribe(
-            data => {
+            (data) => {
                 this.common.moveToHome();
             },
-            err => {
+            (err) => {
                 if (err.code == NOT_AUTH_EX) {
-                    this.loginForm
-                        .get(Constants.USERNAME)
-                        .setErrors({ invalidLogin: true });
+                    this.loginForm.get(Constants.USERNAME).setErrors({ invalidLogin: true });
                 }
             }
         );

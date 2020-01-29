@@ -43,47 +43,26 @@ export class RegisterFormComponent implements OnInit {
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup(
             {
-                password: new FormControl(
-                    "",
-                    Validators.compose([
-                        Validators.required,
-                        Validators.minLength(8)
-                    ])
-                ),
-                confirmPassword: new FormControl(
-                    "",
-                    Validators.compose([Validators.required])
-                )
+                password: new FormControl("", Validators.compose([Validators.required, Validators.minLength(8)])),
+                confirmPassword: new FormControl("", Validators.compose([Validators.required]))
             },
             { validators: this.formValidationService.checkIfPasswordsMatch }
         );
         this.registerForm = new FormGroup({
             username: new FormControl(
                 "",
-                Validators.compose([
-                    Validators.required,
-                    this.formValidationService.isAlphanumericValidator
-                ])
+                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
             ),
             matchingPasswords: this.matchingPasswordForm,
             firstName: new FormControl(
                 "",
-                Validators.compose([
-                    Validators.required,
-                    this.formValidationService.isAlphanumericValidator
-                ])
+                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([
-                    Validators.required,
-                    this.formValidationService.isAlphanumericValidator
-                ])
+                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
             ),
-            email: new FormControl(
-                "",
-                Validators.compose([Validators.required, Validators.email])
-            )
+            email: new FormControl("", Validators.compose([Validators.required, Validators.email]))
         });
     }
 
@@ -100,40 +79,25 @@ export class RegisterFormComponent implements OnInit {
         }
     }
 
-    register(
-        username: string,
-        password: string,
-        email: string,
-        firstName: string,
-        lastName: string
-    ): void {
-        this.auth
-            .register(username, password, email, firstName, lastName)
-            .subscribe(
-                () => {
-                    this.addUser(username, email, firstName, lastName)
-                        .then(data => {
-                            console.log(data);
-                            this.common.routeTo(Constants.LOGIN_ROUTE);
-                        })
-                        .catch(err => {});
-                },
-                err => {
-                    if (err.code == USER_EXISTS_EX) {
-                        this.registerForm
-                            .get(Constants.USERNAME)
-                            .setErrors({ alreadyTaken: true });
-                    }
+    register(username: string, password: string, email: string, firstName: string, lastName: string): void {
+        this.auth.register(username, password, email, firstName, lastName).subscribe(
+            () => {
+                this.addUser(username, email, firstName, lastName)
+                    .then((data) => {
+                        console.log(data);
+                        this.common.routeTo(Constants.LOGIN_ROUTE);
+                    })
+                    .catch((err) => {});
+            },
+            (err) => {
+                if (err.code == USER_EXISTS_EX) {
+                    this.registerForm.get(Constants.USERNAME).setErrors({ alreadyTaken: true });
                 }
-            );
+            }
+        );
     }
 
-    addUser(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string
-    ): Promise<Object> {
+    addUser(username: string, email: string, firstName: string, lastName: string): Promise<Object> {
         let user: User = {
             username: username,
             email: email,
@@ -141,8 +105,6 @@ export class RegisterFormComponent implements OnInit {
             lastName: lastName
         };
 
-        return this.http
-            .post(this.url, user, Constants.HTTP_OPTIONS)
-            .toPromise(); // TODO: check for errors in responce
+        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise(); // TODO: check for errors in responce
     }
 }

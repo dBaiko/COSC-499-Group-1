@@ -11,9 +11,7 @@ describe("FormValidatorService", () => {
     });
 
     it("should be created", () => {
-        const service: FormValidationService = TestBed.get(
-            FormValidationService
-        );
+        const service: FormValidationService = TestBed.get(FormValidationService);
         expect(service).toBeTruthy();
     });
 });

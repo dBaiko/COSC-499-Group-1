@@ -18,20 +18,9 @@ describe("LogoutComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                LogoutFormComponent,
-                HomeComponent,
-                HeaderComponent,
-                SidebarComponent,
-                ChatboxComponent
-            ],
+            declarations: [LogoutFormComponent, HomeComponent, HeaderComponent, SidebarComponent, ChatboxComponent],
             providers: [AuthenticationService, CommonService],
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                MaterialModule,
-                ReactiveFormsModule,
-                FormsModule
-            ]
+            imports: [RouterTestingModule.withRoutes(routes), MaterialModule, ReactiveFormsModule, FormsModule]
         }).compileComponents();
     }));
 

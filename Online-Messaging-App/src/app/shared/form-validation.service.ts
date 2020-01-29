@@ -15,9 +15,7 @@ const alphanumRegex: RegExp = /^[a-z0-9]+$/i;
 export class FormValidationService {
     constructor() {}
 
-    public isAlphanumericValidator(
-        control: AbstractControl
-    ): { [key: string]: boolean } | null {
+    public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
         if (!alphanumRegex.test(control.value)) {
             return { pattern: true };
         }
@@ -32,15 +30,11 @@ export class FormValidationService {
     ): boolean {
         return (
             form.get(element).hasError(validation.type) &&
-            (form.get(element).dirty ||
-                form.get(element).touched ||
-                (form.get(element).untouched && submitAttempt))
+            (form.get(element).dirty || form.get(element).touched || (form.get(element).untouched && submitAttempt))
         );
     }
 
-    public checkIfPasswordsMatch(
-        formGroup: FormGroup
-    ): { [key: string]: boolean } | null {
+    public checkIfPasswordsMatch(formGroup: FormGroup): { [key: string]: boolean } | null {
         let password = formGroup.get(Constants.PASSWORD).value;
         let confirmPassword = formGroup.get(CONFIRM_PASSWORD).value;
 

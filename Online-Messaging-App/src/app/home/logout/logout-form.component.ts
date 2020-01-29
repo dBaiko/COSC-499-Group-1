@@ -9,10 +9,7 @@ import { Constants } from "../../shared/app-config";
     styleUrls: ["./logout-form.component.scss"]
 })
 export class LogoutFormComponent implements OnInit {
-    constructor(
-        private auth: AuthenticationService,
-        public common: CommonService
-    ) {}
+    constructor(private auth: AuthenticationService, public common: CommonService) {}
 
     ngOnInit(): void {}
 

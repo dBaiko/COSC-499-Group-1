@@ -28,16 +28,10 @@ const socketConfig: SocketIoConfig = {
         HeaderComponent,
         HomeComponent,
         LogoutFormComponent,
-        ProfileComponent,
-        SidebarComponent
+        SidebarComponent,
+        ProfileComponent
     ],
-    imports: [
-        CommonModule,
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        SocketIoModule.forRoot(socketConfig)
-    ],
+    imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, SocketIoModule.forRoot(socketConfig)],
     exports: [
         HeaderComponent,
         HomeComponent,
@@ -45,8 +39,7 @@ const socketConfig: SocketIoConfig = {
         SidebarComponent,
         ChannelBrowserComponent,
         FooterComponent,
-        ChatboxComponent,
-        ProfileComponent
+        ChatboxComponent
     ],
     providers: [MessengerService, AuthenticationService, CommonService]
 })

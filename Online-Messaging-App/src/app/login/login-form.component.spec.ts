@@ -16,11 +16,7 @@ describe("LoginComponent", () => {
             declarations: [LoginFormComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             imports: [FormsModule, ReactiveFormsModule, RouterTestingModule],
-            providers: [
-                CommonService,
-                AuthenticationService,
-                FormValidationService
-            ]
+            providers: [CommonService, AuthenticationService, FormValidationService]
         }).compileComponents();
     }));
 

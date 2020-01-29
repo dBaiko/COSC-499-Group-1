@@ -12,28 +12,20 @@ export class ProfileComponent implements OnInit {
     user;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(
-        private auth: AuthenticationService,
-        private http: HttpClient
-    ) {}
+    constructor(private auth: AuthenticationService, private http: HttpClient) {}
 
     ngOnInit() {
         this.getUserInfo();
     }
 
     getUserInfo(): void {
-        this.http
-            .get(
-                this.usersAPI + this.auth.getAuthenticatedUser().getUsername(),
-                Constants.HTTP_OPTIONS
-            )
-            .subscribe(
-                data => {
-                    this.user = data;
-                },
-                err => {
-                    console.log(err);
-                }
-            );
+        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), Constants.HTTP_OPTIONS).subscribe(
+            (data) => {
+                this.user = data;
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 }

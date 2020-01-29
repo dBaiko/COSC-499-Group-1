@@ -17,22 +17,19 @@ interface userChannelObject {
     styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent implements OnInit {
-    public display = "channelBrowser";
     userLoggedIn = false;
     options: FormGroup;
 
     messagesShown = false;
+
+    display: string = "channelBrowser";
 
     selectedChannelId: number;
     selectedChannelName: string;
 
     newSubbedChannel: userChannelObject;
 
-    constructor(
-        private auth: AuthenticationService,
-        public common: CommonService,
-        fb: FormBuilder
-    ) {
+    constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
             bottom: 0,

@@ -40,22 +40,20 @@ export class ChatboxComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.messagerService.subscribeToSocket().subscribe(data => {
+        this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.channelId) this.chatMessages.push(data);
         });
     }
 
     getMessages(channelId: string): void {
-        this.http
-            .get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS)
-            .subscribe(
-                data => {
-                    this.chatMessages = data;
-                },
-                err => {
-                    this.error = err.toString();
-                }
-            );
+        this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe(
+            (data) => {
+                this.chatMessages = data;
+            },
+            (err) => {
+                this.error = err.toString();
+            }
+        );
     }
 
     sendMessage(form: FormGroup) {

@@ -17,11 +17,7 @@ describe("HomeComponent", () => {
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [AuthenticationService, CommonService, FormBuilder],
-            imports: [
-                RouterTestingModule.withRoutes(routes),
-                HomeModule,
-                MaterialModule
-            ]
+            imports: [RouterTestingModule.withRoutes(routes), HomeModule, MaterialModule]
         }).compileComponents();
     }));
 

@@ -1,10 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-    AuthenticationDetails,
-    CognitoUser,
-    CognitoUserAttribute,
-    CognitoUserPool
-} from "amazon-cognito-identity-js";
+import { AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Observable } from "rxjs";
 import { CognitoConfig } from "./app-config";
 
@@ -49,24 +44,18 @@ export class AuthenticationService {
         attributeList.push(attrFirstName);
         attributeList.push(attrLastName);
 
-        return new Observable<Object>(observer => {
-            userPool.signUp(
-                username,
-                password,
-                attributeList,
-                null,
-                (err, result) => {
-                    if (err) {
-                        console.log("Registration Error");
-                        observer.error(err);
-                    } else {
-                        this.cognitoUser = result.user;
-                        console.log("Registration Success");
-                        observer.next(result);
-                        observer.complete();
-                    }
+        return new Observable<Object>((observer) => {
+            userPool.signUp(username, password, attributeList, null, (err, result) => {
+                if (err) {
+                    console.log("Registration Error");
+                    observer.error(err);
+                } else {
+                    this.cognitoUser = result.user;
+                    console.log("Registration Success");
+                    observer.next(result);
+                    observer.complete();
                 }
-            );
+            });
         });
     }
 
@@ -75,9 +64,7 @@ export class AuthenticationService {
             Username: username,
             Password: password
         };
-        const authenticationDetails = new AuthenticationDetails(
-            authenticationData
-        );
+        const authenticationDetails = new AuthenticationDetails(authenticationData);
 
         const userData = {
             Username: username,
@@ -85,7 +72,7 @@ export class AuthenticationService {
         };
         const cognitoUser = new CognitoUser(userData);
 
-        return new Observable<Object>(observer => {
+        return new Observable<Object>((observer) => {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess(result) {
                     observer.next(result);

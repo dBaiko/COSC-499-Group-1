@@ -9,10 +9,7 @@
         </div>
         <div class="row">
             <div class="col-lg-4">
-                <form
-                    (ngSubmit)="loginSubmit(loginForm)"
-                    [formGroup]="loginForm"
-                >
+                <form (ngSubmit)="loginSubmit(loginForm)" [formGroup]="loginForm">
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>
@@ -24,17 +21,10 @@
                                 name="username"
                                 type="text"
                             />
-                            <mat-error
-                                *ngFor="
-                                    let validation of common.validation_methods
-                                        .username
-                                "
-                            >
+                            <mat-error *ngFor="let validation of common.validation_methods.username">
                                 <mat-error
                                     *ngIf="
-                                        (validation.type == 'required' ||
-                                            validation.type ==
-                                                'invalidLogin') &&
+                                        (validation.type == 'required' || validation.type == 'invalidLogin') &&
                                         formValidationService.checkIfFormElementInvalid(
                                             loginForm,
                                             'username',
@@ -59,12 +49,7 @@
                                 name="password"
                                 type="password"
                             />
-                            <mat-error
-                                *ngFor="
-                                    let validation of common.validation_methods
-                                        .password
-                                "
-                            >
+                            <mat-error *ngFor="let validation of common.validation_methods.password">
                                 <mat-error
                                     *ngIf="
                                         validation.type == 'required' &&
@@ -81,12 +66,7 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-                    <button
-                        class="btn btn-primary"
-                        color="primary"
-                        mat-raised-button
-                        type="submit"
-                    >
+                    <button class="btn btn-primary" color="primary" mat-raised-button type="submit">
                         Login
                     </button>
                 </form>

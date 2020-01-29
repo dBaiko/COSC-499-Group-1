@@ -31,10 +31,7 @@ export class ChannelBrowserComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(
-        private http: HttpClient,
-        private auth: AuthenticationService
-    ) {}
+    constructor(private http: HttpClient, private auth: AuthenticationService) {}
 
     ngOnInit() {
         this.getChannels();
@@ -44,9 +41,7 @@ export class ChannelBrowserComponent implements OnInit {
     getSubscribedChannels() {
         this.http
             .get(
-                this.usersAPI +
-                    this.auth.getAuthenticatedUser().getUsername() +
-                    Constants.CHANNELS_PATH,
+                this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
                 Constants.HTTP_OPTIONS
             )
             .subscribe(
@@ -55,7 +50,7 @@ export class ChannelBrowserComponent implements OnInit {
                         this.subscribedChannels.push(item.channelId);
                     });
                 },
-                err => {
+                (err) => {
                     console.log(err.toString());
                 }
             );
@@ -63,9 +58,7 @@ export class ChannelBrowserComponent implements OnInit {
 
     sendQuery() {
         for (let i in this.channels) {
-            if (
-                this.channels[i][CHANNEL_NAME].includes(this.search.toString())
-            ) {
+            if (this.channels[i][CHANNEL_NAME].includes(this.search.toString())) {
                 this.channels[i][FILTERED] = false;
             } else {
                 this.channels[i][FILTERED] = true;
@@ -82,10 +75,10 @@ export class ChannelBrowserComponent implements OnInit {
 
     getChannels(): void {
         this.http.get(this.channelsAPI, Constants.HTTP_OPTIONS).subscribe(
-            data => {
+            (data) => {
                 this.channels = data;
             },
-            err => {
+            (err) => {
                 console.log(err);
             }
         );
@@ -106,10 +99,7 @@ export class ChannelBrowserComponent implements OnInit {
         // TODO: check for errors in responce
         return this.http
             .post(
-                this.channelsAPI +
-                    Constants.SLASH +
-                    channel.channelId +
-                    Constants.USERS_PATH,
+                this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH,
                 user,
                 Constants.HTTP_OPTIONS
             )

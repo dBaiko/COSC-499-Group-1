@@ -18,20 +18,8 @@ describe("RegisterComponent", () => {
         TestBed.configureTestingModule({
             declarations: [RegisterFormComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            imports: [
-                FormsModule,
-                ReactiveFormsModule,
-                MatInputModule,
-                BrowserAnimationsModule,
-                RouterTestingModule
-            ],
-            providers: [
-                AuthenticationService,
-                HttpClient,
-                HttpHandler,
-                CommonService,
-                FormValidationService
-            ]
+            imports: [FormsModule, ReactiveFormsModule, MatInputModule, BrowserAnimationsModule, RouterTestingModule],
+            providers: [AuthenticationService, HttpClient, HttpHandler, CommonService, FormValidationService]
         }).compileComponents();
     }));
 

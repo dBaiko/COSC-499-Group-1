@@ -4,10 +4,7 @@
     <div class="mat-display-2">Streamline Athletes</div>
     <div class="row">
         <div class="col-lg-4">
-            <form
-                (ngSubmit)="registerSubmit(registerForm)"
-                [formGroup]="registerForm"
-            >
+            <form (ngSubmit)="registerSubmit(registerForm)" [formGroup]="registerForm">
                 <div class="random">
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
@@ -21,12 +18,7 @@
                                 required
                                 type="text"
                             />
-                            <mat-error
-                                *ngFor="
-                                    let validation of common.validation_methods
-                                        .username
-                                "
-                            >
+                            <mat-error *ngFor="let validation of common.validation_methods.username">
                                 <mat-error
                                     *ngIf="
                                         formValidationService.checkIfFormElementInvalid(
@@ -42,10 +34,7 @@
                         </mat-form-field>
                         <div formGroupName="matchingPasswords">
                             <div>
-                                <mat-form-field
-                                    appearance="fill"
-                                    color="primary"
-                                >
+                                <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Password</mat-label>
                                     <input
                                         class="form-control"
@@ -57,12 +46,7 @@
                                         type="password"
                                     />
                                     <mat-hint>Minimum 8 Characters</mat-hint>
-                                    <mat-error
-                                        *ngFor="
-                                            let validation of common
-                                                .validation_methods.password
-                                        "
-                                    >
+                                    <mat-error *ngFor="let validation of common.validation_methods.password">
                                         <mat-error
                                             *ngIf="
                                                 formValidationService.checkIfFormElementInvalid(
@@ -78,10 +62,7 @@
                                 </mat-form-field>
                             </div>
                             <div>
-                                <mat-form-field
-                                    appearance="fill"
-                                    color="primary"
-                                >
+                                <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Confirm Password</mat-label>
                                     <input
                                         [errorStateMatcher]="matcher"
@@ -93,29 +74,13 @@
                                         required
                                         type="password"
                                     />
-                                    <mat-error
-                                        *ngFor="
-                                            let validation of common
-                                                .validation_methods
-                                                .confirmPassword
-                                        "
-                                    >
+                                    <mat-error *ngFor="let validation of common.validation_methods.confirmPassword">
                                         <mat-error
                                             *ngIf="
-                                                matchingPasswordForm
-                                                    .get('confirmPassword')
-                                                    .hasError(
-                                                        validation.type
-                                                    ) ||
-                                                (matchingPasswordForm.hasError(
-                                                    validation.type
-                                                ) &&
-                                                    (matchingPasswordForm.get(
-                                                        'confirmPassword'
-                                                    ).dirty ||
-                                                        matchingPasswordForm.get(
-                                                            'confirmPassword'
-                                                        ).touched))
+                                                matchingPasswordForm.get('confirmPassword').hasError(validation.type) ||
+                                                (matchingPasswordForm.hasError(validation.type) &&
+                                                    (matchingPasswordForm.get('confirmPassword').dirty ||
+                                                        matchingPasswordForm.get('confirmPassword').touched))
                                             "
                                             >{{ validation.message }}</mat-error
                                         >
@@ -137,12 +102,7 @@
                                     required
                                     type="text"
                                 />
-                                <mat-error
-                                    *ngFor="
-                                        let validation of common
-                                            .validation_methods.firstName
-                                    "
-                                >
+                                <mat-error *ngFor="let validation of common.validation_methods.firstName">
                                     <mat-error
                                         *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
@@ -169,12 +129,7 @@
                                     required
                                     type="text"
                                 />
-                                <mat-error
-                                    *ngFor="
-                                        let validation of common
-                                            .validation_methods.lastName
-                                    "
-                                >
+                                <mat-error *ngFor="let validation of common.validation_methods.lastName">
                                     <mat-error
                                         *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
@@ -201,12 +156,7 @@
                                     required
                                     type="email"
                                 />
-                                <mat-error
-                                    *ngFor="
-                                        let validation of common
-                                            .validation_methods.email
-                                    "
-                                >
+                                <mat-error *ngFor="let validation of common.validation_methods.email">
                                     <mat-error
                                         *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
@@ -223,18 +173,11 @@
                         </div>
                     </div>
                 </div>
-                <button
-                    class="btn btn-primary"
-                    color="primary"
-                    mat-raised-button
-                    type="submit"
-                >
+                <button class="btn btn-primary" color="primary" mat-raised-button type="submit">
                     Sign Up
                 </button>
             </form>
         </div>
     </div>
-    <div class="mat-body">
-        Already have an account? <a routerLink="/login">Login</a>
-    </div>
+    <div class="mat-body">Already have an account? <a routerLink="/login">Login</a></div>
 </div>

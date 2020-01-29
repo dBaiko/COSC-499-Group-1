@@ -6,11 +6,7 @@
             </mat-card-header>
         </div>
         <mat-card-content class="searchBar">
-            <form
-                #messageForm="ngForm"
-                (ngSubmit)="sendQuery()"
-                autocomplete="off"
-            >
+            <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
                 <mat-form-field>
                     <mat-label>Search...</mat-label>
                     <input (input)="onKey($event)" matInput name="content" />
@@ -19,43 +15,23 @@
             <div id="scrollable">
                 <mat-accordion>
                     <div *ngFor="let channel of channels">
-                        <div
-                            *ngIf="
-                                channel.filtered == false ||
-                                channel.filtered == null
-                            "
-                        >
+                        <div *ngIf="channel.filtered == false || channel.filtered == null">
                             <mat-expansion-panel>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
                                         {{ channel.channelName }}
                                     </mat-panel-title>
-                                    <mat-panel-description>
-                                        {{ channel.channelName }} tags
-                                    </mat-panel-description>
+                                    <mat-panel-description> {{ channel.channelName }} tags </mat-panel-description>
                                 </mat-expansion-panel-header>
                                 <p>Description of the channel</p>
                                 <mat-action-row>
-                                    <div
-                                        *ngIf="
-                                            !this.subscribedChannels.includes(
-                                                channel.channelId
-                                            );
-                                            else joined
-                                        "
-                                    >
-                                        <button
-                                            (click)="joinChannel(channel)"
-                                            class="join"
-                                            mat-button
-                                        >
+                                    <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">
+                                        <button (click)="joinChannel(channel)" class="join" mat-button>
                                             Join Channel
                                         </button>
                                     </div>
                                     <ng-template #joined>
-                                        <mat-label class="joined"
-                                            >Joined</mat-label
-                                        >
+                                        <mat-label class="joined">Joined</mat-label>
                                     </ng-template>
                                 </mat-action-row>
                             </mat-expansion-panel>

@@ -15,12 +15,7 @@ describe("ChatboxComponent", () => {
             declarations: [ChatboxComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             imports: [FormsModule, ReactiveFormsModule],
-            providers: [
-                MessengerService,
-                HttpClient,
-                HttpHandler,
-                AuthenticationService
-            ]
+            providers: [MessengerService, HttpClient, HttpHandler, AuthenticationService]
         }).compileComponents();
     }));
 

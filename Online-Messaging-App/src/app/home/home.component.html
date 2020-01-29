@@ -22,16 +22,11 @@
                 <div [ngSwitch]="display">
                     <div *ngSwitchCase="'channelBrowser'">
                         <app-channel-browser
-                            (newChannelIdEvent)="
-                                receiveNewSubbedChannel($event)
-                            "
+                            (newChannelIdEvent)="receiveNewSubbedChannel($event)"
                         ></app-channel-browser>
                     </div>
                     <div *ngSwitchCase="'chatBox'">
-                        <app-chatbox
-                            [channelId]="selectedChannelId"
-                            [channelName]="selectedChannelName"
-                        ></app-chatbox>
+                        <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'">
                         <app-profile></app-profile>
