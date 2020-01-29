@@ -21,6 +21,7 @@ router.post(PATH_POST_NEW_USER, (req, res) => {
         });
 });
 
+
 router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
     const userChannelDAO = new UserChannelDAO();
     let username = req.params.username;
