@@ -8,7 +8,7 @@
     <div *ngIf="publicChannelSelect;">
         <mat-nav-list>
             <div *ngFor="let publicChannel of publicChannels">
-                <mat-list-item  (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
+                <mat-list-item (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
                                [ngClass]=" publicChannel.selected ? 'channelRan' : 'channelHeader'"><h3
                     matLine>{{publicChannel.channelName}}</h3>
                     <a routerLink="/chat">

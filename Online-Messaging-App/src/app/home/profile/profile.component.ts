@@ -1,19 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {APIConfig, Constants} from "../../shared/app-config";
 import {AuthenticationService} from "../../shared/authentication.service";
 import {HttpClient} from "@angular/common/http";
 
 
-
 @Component({
-    selector: 'app-profile',
-    templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss']
+    selector: "app-profile",
+    templateUrl: "./profile.component.html",
+    styleUrls: ["./profile.component.scss"]
 })
 export class ProfileComponent implements OnInit {
-    private usersAPI = APIConfig.usersAPI;
     user;
-    constructor(private auth:AuthenticationService, private http: HttpClient) {
+    private usersAPI = APIConfig.usersAPI;
+
+    constructor(private auth: AuthenticationService, private http: HttpClient) {
     }
 
     ngOnInit() {
