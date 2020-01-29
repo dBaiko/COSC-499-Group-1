@@ -1,7 +1,7 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
-import {uuid} from "uuidv4";
+import { awsConfigPath } from "../../config/aws-config";
+import { uuid } from "uuidv4";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -17,7 +17,6 @@ interface Message {
 const tableName: string = "Messages";
 
 class MessageDAO {
-
     private channelIdQueryDeclaration = "channelId = :channelId";
 
     public getMessageHistory(channelId: string): Promise<any> {
@@ -39,14 +38,12 @@ class MessageDAO {
                     resolve(data.Items);
                 }
             });
-
         });
-
     }
 
     public getAllMessageHistory(): Promise<any> {
         const params = {
-            TableName: tableName,
+            TableName: tableName
         };
 
         return new Promise((resolve, reject) => {
@@ -59,9 +56,7 @@ class MessageDAO {
                     resolve(data.Items);
                 }
             });
-
         });
-
     }
 
     public addNewMessage(message: Message): void {
@@ -71,14 +66,13 @@ class MessageDAO {
         const username = message.username;
         const content = message.content;
         const params = {
-            Item:
-                {
-                    channelId,
-                    content,
-                    messageId,
-                    username,
-                    insertTime
-                },
+            Item: {
+                channelId,
+                content,
+                messageId,
+                username,
+                insertTime
+            },
             TableName: tableName
         };
 
@@ -90,7 +84,6 @@ class MessageDAO {
             }
         });
     }
-
 }
 
 export default MessageDAO;

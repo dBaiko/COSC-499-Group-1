@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import {ChannelBrowserComponent} from "./channel-browser.component";
+import { ChannelBrowserComponent } from "./channel-browser.component";
 
 describe("ChannelBrowserComponent", () => {
     let component: ChannelBrowserComponent;
@@ -9,8 +9,7 @@ describe("ChannelBrowserComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ChannelBrowserComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {
