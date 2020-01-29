@@ -13,5 +13,6 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 }

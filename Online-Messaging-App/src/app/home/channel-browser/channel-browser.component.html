@@ -9,7 +9,7 @@
             <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
                 <mat-form-field>
                     <mat-label>Search...</mat-label>
-                    <input (input)="onKey($event)" matInput name="content" />
+                    <input (input)="onKey($event)" matInput name="content"/>
                 </mat-form-field>
             </form>
             <div id="scrollable">
@@ -21,7 +21,7 @@
                                     <mat-panel-title>
                                         {{ channel.channelName }}
                                     </mat-panel-title>
-                                    <mat-panel-description> {{ channel.channelName }} tags </mat-panel-description>
+                                    <mat-panel-description> {{ channel.channelName }} tags</mat-panel-description>
                                 </mat-expansion-panel-header>
                                 <p>Description of the channel</p>
                                 <mat-action-row>

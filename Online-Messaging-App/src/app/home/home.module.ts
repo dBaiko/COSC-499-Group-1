@@ -13,6 +13,9 @@ import { MessengerService } from "../shared/messenger.service";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
 import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
+import { CreateChannelComponent } from "./createChannel/create-channel.component";
+import { MatSelectModule } from "@angular/material/select";
+import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";
 
 const socketConfig: SocketIoConfig = {
@@ -29,9 +32,18 @@ const socketConfig: SocketIoConfig = {
         HomeComponent,
         LogoutFormComponent,
         SidebarComponent,
+        CreateChannelComponent,
         ProfileComponent
     ],
-    imports: [CommonModule, MaterialModule, FormsModule, ReactiveFormsModule, SocketIoModule.forRoot(socketConfig)],
+    imports: [
+        CommonModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SocketIoModule.forRoot(socketConfig),
+        MatSelectModule,
+        MatRadioModule
+    ],
     exports: [
         HeaderComponent,
         HomeComponent,
@@ -41,6 +53,8 @@ const socketConfig: SocketIoConfig = {
         FooterComponent,
         ChatboxComponent
     ],
-    providers: [MessengerService, AuthenticationService, CommonService]
+    providers: [MessengerService, AuthenticationService, CommonService],
+    entryComponents: [CreateChannelComponent]
 })
-export class HomeModule {}
+export class HomeModule {
+}

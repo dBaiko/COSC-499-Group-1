@@ -18,6 +18,7 @@ export class ChatboxComponent implements OnInit {
 
     @Input() channelName: string;
 
+
     private _channelName;
     private url: string = APIConfig.channelsAPI;
 
@@ -46,10 +47,11 @@ export class ChatboxComponent implements OnInit {
         });
     }
 
+
     getMessages(channelId: string): void {
         this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe(
             (data) => {
-                this.chatMessages = data;
+                this.chatMessages = data || [];
             },
             (err) => {
                 this.error = err.toString();
@@ -70,4 +72,6 @@ export class ChatboxComponent implements OnInit {
             this.messagerService.sendMessage(chatMessage);
         } // TODO: add user error message if this is false
     }
+
+
 }

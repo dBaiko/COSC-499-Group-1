@@ -27,4 +27,5 @@ import { HomeModule } from "../home/home.module";
     providers: [FormValidationService, AuthenticationService, CommonService],
     exports: [RegisterRedirectComponent]
 })
-export class LoginModule {}
+export class LoginModule {
+}

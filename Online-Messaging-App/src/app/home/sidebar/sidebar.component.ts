@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { CreateChannelComponent } from "../createChannel/create-channel.component";
 
 interface userChannelObject {
     username: string;
@@ -9,6 +11,12 @@ interface userChannelObject {
     userChannelRole: string;
     channelType: string;
     channelName: string;
+}
+
+interface ChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
 }
 
 const PRIVATE: string = "private";
@@ -29,6 +37,7 @@ export class SidebarComponent implements OnInit {
 
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
+    @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
@@ -39,7 +48,8 @@ export class SidebarComponent implements OnInit {
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {}
+    constructor(private http: HttpClient, private auth: AuthenticationService, private dialog: MatDialog) {
+    }
 
     private _subbedChannel: userChannelObject;
 
@@ -125,6 +135,27 @@ export class SidebarComponent implements OnInit {
                 item[SELECTED] = true;
             } else {
                 item[SELECTED] = false;
+            }
+        });
+    }
+
+    joinChannel(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = "35%";
+        let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this.newChannelEvent.emit(result);
+                this.userSubscribedChannels.push(result);
+                if (result.channelType == PUBLIC) {
+                    this.publicChannels.push(result);
+                } else if (result.channelType == PRIVATE) {
+                    this.privateChannels.push(result);
+                } else {
+                    this.friendsChannels.push(result);
+                }
             }
         });
     }

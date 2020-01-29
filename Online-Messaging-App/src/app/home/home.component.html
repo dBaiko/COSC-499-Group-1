@@ -12,6 +12,7 @@
             <app-sidebar
                 (channelIdEvent)="receiveId($event)"
                 (channelNameEvent)="receiveName($event)"
+                (newChannelEvent)="addNewChannel($event)"
                 (switchEvent)="updateDisplay($event)"
                 [subbedChannel]="newSubbedChannel"
             ></app-sidebar>
@@ -23,6 +24,7 @@
                     <div *ngSwitchCase="'channelBrowser'">
                         <app-channel-browser
                             (newChannelIdEvent)="receiveNewSubbedChannel($event)"
+                            [newChannel]="newAddedChannel"
                         ></app-channel-browser>
                     </div>
                     <div *ngSwitchCase="'chatBox'">
