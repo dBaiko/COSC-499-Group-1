@@ -1,19 +1,24 @@
+.center{
+    text-align: center;
+}
 .leftSide{
-    margin-top: 1rem;
-    display:inline-block;
-    margin-right: 2rem;
-    margin-bottom: 2rem;
+    float: left;
+    margin-top: 0.9em;
 }
 .rightSide{
-    margin-top: 1rem;
-    display:inline-block;
-    margin-bottom: 2rem;
+    float:left;
+    margin-left: 5em;
+}
+.bothSides:after{
+    content: "";
+    display:table;
+    clear:both;
 }
 mat-radio-button{
-    padding-bottom: 10px;
+    padding-bottom: 1em;
     display: block;
 }
 button{
-    margin-right: 5px;
+    margin-right: 0.5em;
     text-align: center;
 }

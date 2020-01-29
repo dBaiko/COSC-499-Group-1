@@ -85,8 +85,8 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
 router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
     const channelDAO = new ChannelDAO();
     channelDAO.addNewChannel(req.body.channelName, req.body.channelType, req.body.firstUsername, req.body.firstUserChannelRole)
-        .then(() => {
-            res.status(200).send({status: 200, data: {message: "New channel added successfully"}});
+        .then((data) => {
+            res.status(200).send({status: 200, data: {message: "New channel added successfully", newChannel: data}});
         })
         .catch((err) => {
             res.status(400).send(err);

@@ -10,6 +10,11 @@ interface userChannelObject {
     channelName: string;
     channelType: string;
 }
+interface ChannelObject {
+    channelId: string,
+    channelName: string,
+    channelType: string
+}
 
 @Component({
     selector: "app-home",
@@ -25,7 +30,7 @@ export class HomeComponent implements OnInit {
 
     selectedChannelId: number;
     selectedChannelName: string;
-
+    newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
 
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
@@ -51,6 +56,10 @@ export class HomeComponent implements OnInit {
 
     receiveNewSubbedChannel($event) {
         this.newSubbedChannel = $event;
+    }
+
+    addNewChannel($event) {
+        this.newAddedChannel = $event;
     }
 
 }

@@ -4,7 +4,7 @@
         <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
         <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
     </mat-button-toggle-group>
-
+    <div class="scrollable">
     <div *ngIf="publicChannelSelect;">
         <mat-nav-list>
             <div *ngFor="let publicChannel of publicChannels">
@@ -61,7 +61,7 @@
             </div>
         </mat-nav-list>
     </div>
-
+    </div>
     <br>
     <button class="joinCreate" style="margin-bottom:0px;bottom:18vh;">Join Channel</button>
     <button class="joinCreate" (click)="joinChannel()">Create Channel</button>

@@ -1,28 +1,32 @@
 <div class="container">
     <form (ngSubmit)="newChannel(newChannelForm)" [formGroup]="newChannelForm">
-        <div align="center">
+        <div class="center">
             <h2>Create A Channel</h2>
-            <div class="leftSide">
-                <mat-form-field appearance="fill" color="primary">
-                    <mat-label>Channel Name</mat-label>
-                    <input class="form-control" formControlName="channelName" id="channelName" matInput
-                        name="channelName" required type="text">
-                    <mat-error *ngFor="let validation of common.validation_methods.channelName">
-                    <mat-error *ngIf="formValidationService.checkIfFormElementInvalid(newChannelForm, 'channelName', validation, submitAttempt)">{{validation.message}}
-                     </mat-error>
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="rightSide">
-                <p>Channel Type</p>
-                <mat-radio-group formControlName="channelType">
-                    <mat-radio-button value="public">Public</mat-radio-button>
-                    <mat-radio-button value="private">Private</mat-radio-button>
-                </mat-radio-group>
+            <div class="bothSides">
+                <div class="leftSide">
+                    <mat-form-field appearance="fill" color="primary">
+                        <mat-label>Channel Name</mat-label>
+                        <input class="form-control" formControlName="channelName" id="channelName" matInput
+                               name="channelName" required type="text">
+                        <mat-error *ngFor="let validation of common.validation_methods.channelName">
+                            <mat-error
+                                *ngIf="formValidationService.checkIfFormElementInvalid(newChannelForm, 'channelName', validation, submitAttempt)">{{validation.message}}
+                            </mat-error>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="rightSide">
+                    <p>Channel Type</p>
+                    <mat-radio-group formControlName="channelType">
+                        <mat-radio-button value="public">Public</mat-radio-button>
+                        <mat-radio-button value="private">Private</mat-radio-button>
+                    </mat-radio-group>
+                </div>
             </div>
         </div>
-        <div align="center">
-            <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Cancel</button>
+        <div class="center">
+            <button class="btn btn-primary" color="primary" mat-raised-button type="submit" (click)="onClose()">Cancel
+            </button>
             <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Create</button>
         </div>
     </form>

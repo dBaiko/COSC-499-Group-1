@@ -84,7 +84,7 @@ class ChannelDAO {
                     console.log("Added new:", JSON.stringify(data, null, 2));
                     userChannelDAO.addNewUserToChannel(firstUsername, channelId, firstUserChannelRole, channelName, channelType)
                         .then(() => {
-                            resolve();
+                            resolve(params.Item);
                         })
                         .catch((err) => {
                             reject(err);
