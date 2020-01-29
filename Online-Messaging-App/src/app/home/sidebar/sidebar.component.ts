@@ -60,7 +60,7 @@ export class SidebarComponent implements OnInit {
     set subbedChannel(value: userChannelObject) {
         if (value) {
             this._subbedChannel = value;
-            this.userSubscribedChannels.push(value);
+            this.pushUserSubbedChannels(value);
             if (value.channelType == PUBLIC) {
                 this.publicChannels.push(value);
             } else if (value.channelType == PRIVATE) {
@@ -143,7 +143,7 @@ export class SidebarComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result) => {
             if(result){
                 this.newChannelEvent.emit(result);
-                this.userSubscribedChannels.push(result);
+                this.pushUserSubbedChannels(result);
                 if (result.channelType == PUBLIC) {
                     this.publicChannels.push(result);
                 } else if (result.channelType == PRIVATE) {
@@ -153,5 +153,8 @@ export class SidebarComponent implements OnInit {
                 }
             }
         })
+    }
+    pushUserSubbedChannels(data): void{
+        this.userSubscribedChannels.push(data);
     }
 }

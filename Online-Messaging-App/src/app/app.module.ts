@@ -23,9 +23,7 @@ import {CreateChannelComponent} from "./home/createChannel/create-channel.compon
         RegisterModule
     ],
 
-    bootstrap: [AppComponent],
-    entryComponents: [CreateChannelComponent]
-
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

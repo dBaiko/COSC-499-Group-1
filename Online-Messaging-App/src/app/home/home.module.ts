@@ -49,7 +49,9 @@ const socketConfig: SocketIoConfig = {url: "http://localhost:8080", options: {}}
         FooterComponent,
         ChatboxComponent
     ],
-    providers: [MessengerService, AuthenticationService, CommonService]
+    providers: [MessengerService, AuthenticationService, CommonService],
+    entryComponents: [CreateChannelComponent]
+
 })
 export class HomeModule {
 }
