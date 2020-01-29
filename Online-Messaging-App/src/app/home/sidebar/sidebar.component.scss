@@ -1,5 +1,5 @@
-
-mat-sidenav, mat-sidenav-content {
+mat-sidenav,
+mat-sidenav-content {
     padding: 16px;
     overflow: hidden;
 }
@@ -17,7 +17,9 @@ mat-list {
     height: 28%;
 }
 
-h2, h3, mat-icon {
+h2,
+h3,
+mat-icon {
     color: white;
 }
 
@@ -34,7 +36,6 @@ mat-icon {
 }
 
 .icon {
-
     margin-left: 10px;
     margin-right: 10px;
     font-size: 48px;
@@ -73,7 +74,6 @@ h2 {
 .channelRan:hover {
     background-color: #1a1a1a;
 }
-
 
 .channelSelector {
     width: auto;
@@ -114,8 +114,8 @@ mat-button-toggle-group {
     border: none;
 }
 
-
-.mat-button-toggle-checked, .mat-button-toggle-focus-overlay {
+.mat-button-toggle-checked,
+.mat-button-toggle-focus-overlay {
     border-bottom-color: #282828;
 }
 
