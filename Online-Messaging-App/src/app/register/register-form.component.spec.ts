@@ -32,4 +32,94 @@ describe("RegisterComponent", () => {
     it("should create", () => {
         expect(component).toBeTruthy();
     });
+
+    it("should fail no value email", () => {
+        let email = component.registerForm.controls["email"];
+        expect(email.valid).toBeFalsy();
+    });
+
+    it("should pass valid email", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue("test@test.com");
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeFalsy();
+
+    });
+
+    it("should fail imvalid email", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue("notAnEmail");
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeTruthy();
+
+    });
+
+    it("should fail invalid email", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue("@test.com");
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeTruthy();
+
+    });
+
+    it("should fail invalid email", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue(123);
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeTruthy();
+
+    });
+
+    it("should fail invalid email", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue("👌");
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeTruthy();
+
+    });
+
+    it("should fail invalid email emoji", () => {
+        expect(component).toBeTruthy();
+
+        let errors = {};
+
+        let email = component.registerForm.controls["email"];
+        email.setValue("👌@test.com");
+
+        errors = email.errors || {};
+
+        expect(errors["email"]).toBeTruthy();
+
+    });
+
 });

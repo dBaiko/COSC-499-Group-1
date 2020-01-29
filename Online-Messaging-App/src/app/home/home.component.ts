@@ -20,8 +20,6 @@ export class HomeComponent implements OnInit {
     userLoggedIn = false;
     options: FormGroup;
 
-    messagesShown = false;
-
     display: string = "channelBrowser";
 
     selectedChannelId: number;
@@ -38,7 +36,8 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 
     receiveId($event) {
         this.selectedChannelId = $event;

@@ -25,7 +25,8 @@ export class ChatboxComponent implements OnInit {
         private messagerService: MessengerService,
         private http: HttpClient,
         private authService: AuthenticationService
-    ) {}
+    ) {
+    }
 
     private _channelId;
 
@@ -56,7 +57,7 @@ export class ChatboxComponent implements OnInit {
         );
     }
 
-    sendMessage(form: FormGroup) {
+    sendMessage(form: FormGroup): void {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
