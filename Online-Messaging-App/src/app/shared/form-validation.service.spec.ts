@@ -1,11 +1,11 @@
-import {TestBed} from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 
-import {FormValidationService} from "./form-validation.service";
+import { FormValidationService } from "./form-validation.service";
 
 describe("FormValidatorService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [FormValidationService],
+            providers: [FormValidationService]
         });
         TestBed.configureTestingModule({});
     });
@@ -14,6 +14,4 @@ describe("FormValidatorService", () => {
         const service: FormValidationService = TestBed.get(FormValidationService);
         expect(service).toBeTruthy();
     });
-
-
 });

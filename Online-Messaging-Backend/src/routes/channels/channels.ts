@@ -60,22 +60,37 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
     const messageDAO = new MessageDAO();
     let channelIdString = req.params.channelId;
-        messageDAO.getMessageHistory(channelIdString)
+    if (numRegExp.test(channelIdString)) {
+        messageDAO
+            .getMessageHistory(channelIdString)
             .then((data) => {
                 res.status(200).send(data);
             })
             .catch((err) => {
                 res.status(400).send(err);
             });
+    } else {
+        res.status(400).send("ChannelId must be a positive integer");
+    }
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
     console.log(req.body);
     console.log(req.params.channelId);
     const userChannelDAO = new UserChannelDAO();
-    userChannelDAO.addNewUserToChannel(req.body.username, req.body.channelId, req.body.userChannelRole, req.body.channelName, req.body.channelType)
+    userChannelDAO
+        .addNewUserToChannel(
+            req.body.username,
+            req.body.channelId,
+            req.body.userChannelRole,
+            req.body.channelName,
+            req.body.channelType
+        )
         .then(() => {
-            res.status(200).send({status: 200, data: {message: "New userChannel added successfully"}});
+            res.status(200).send({
+                status: 200,
+                data: { message: "New userChannel added successfully" }
+            });
         })
         .catch((err) => {
             res.status(400).send(err);

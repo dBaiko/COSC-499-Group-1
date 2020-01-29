@@ -56,9 +56,19 @@
         "karma-sourcemap-loader": "^0.3.7",
         "karma-webpack": "^4.0.2",
         "ngx-socket-io": "^3.0.1",
+        "prettier": "1.19.1",
         "protractor": "^5.4.2",
         "ts-node": "~7.0.0",
         "tslint": "~5.15.0",
         "typescript": "~3.5.3"
+    },
+    "prettier": {
+        "singleQuote": false,
+        "printWidth": 120,
+        "tabWidth": 4,
+        "semi": true,
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "proseWrap": "always"
     }
 }

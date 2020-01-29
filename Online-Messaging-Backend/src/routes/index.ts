@@ -1,6 +1,6 @@
 import express from "express";
 import getMessages from "./messages/messages";
-import getChannels from "./channels/channels"
+import getChannels from "./channels/channels";
 import userRegistration from "./users/users";
 
 const router = express.Router();

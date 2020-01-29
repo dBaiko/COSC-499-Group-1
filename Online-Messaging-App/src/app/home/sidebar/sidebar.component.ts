@@ -1,23 +1,22 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {AuthenticationService} from "../../shared/authentication.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {APIConfig} from "../../shared/app-config";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {CreateChannelComponent} from "../createChannel/create-channel.component";
-
-import {Constants} from "../../shared/app-config";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { HttpClient } from "@angular/common/http";
+import { APIConfig, Constants } from "../../shared/app-config";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { CreateChannelComponent } from "../createChannel/create-channel.component";
 
 interface userChannelObject {
-    username: string,
-    channelId: string,
-    userChannelRole: string,
-    channelType: string,
-    channelName: string
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelType: string;
+    channelName: string;
 }
+
 interface ChannelObject {
-    channelId: string,
-    channelName: string,
-    channelType: string
+    channelId: string;
+    channelName: string;
+    channelType: string;
 }
 
 const PRIVATE: string = "private";
@@ -30,13 +29,11 @@ const SELECTED: string = "selected";
     styleUrls: ["./sidebar.component.scss"]
 })
 export class SidebarComponent implements OnInit {
-
     publicChannels = [];
     privateChannels = [];
     friendsChannels = [];
 
     userSubscribedChannels = [];
-
 
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
@@ -71,36 +68,41 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-
     ngOnInit(): void {
         this.getSubscribedChannels();
     }
 
     getSubscribedChannels(): void {
-        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH, Constants.HTTP_OPTIONS).subscribe((data: Object[]) => {
-                this.publicChannels = [];
-                this.privateChannels = [];
-                this.friendsChannels = [];
-                this.userSubscribedChannels = data;
-                this.userSubscribedChannels.forEach((item: userChannelObject) => {
-                    if (item.channelType == PUBLIC) {
-                        this.publicChannels.push(item);
-                    } else if (item.channelType == PRIVATE) {
-                        this.privateChannels.push(item);
-                    } else {
-                        this.friendsChannels.push(item);
+        this.http
+            .get(
+                this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
+                Constants.HTTP_OPTIONS
+            )
+            .subscribe(
+                (data: Object[]) => {
+                    this.publicChannels = [];
+                    this.privateChannels = [];
+                    this.friendsChannels = [];
+                    this.userSubscribedChannels = data;
+                    this.userSubscribedChannels.forEach((item: userChannelObject) => {
+                        if (item.channelType == PUBLIC) {
+                            this.publicChannels.push(item);
+                        } else if (item.channelType == PRIVATE) {
+                            this.privateChannels.push(item);
+                        } else {
+                            this.friendsChannels.push(item);
+                        }
+                    });
+                    if (this.userSubscribedChannels.length > 0) {
+                        this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
+                        this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
+                        this.userSubscribedChannels[0][SELECTED] = true;
                     }
-                });
-                if (this.userSubscribedChannels.length > 0) {
-                    this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
-                    this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
-                    this.userSubscribedChannels[0][SELECTED] = true;
+                },
+                (err) => {
+                    console.log(err);
                 }
-
-            },
-            err => {
-                console.log(err);
-            });
+            );
     }
 
     selectPublicChannel(): void {
@@ -130,18 +132,17 @@ export class SidebarComponent implements OnInit {
             } else {
                 item[SELECTED] = false;
             }
-        })
-
+        });
     }
 
-    joinChannel():void{
+    joinChannel(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
-        let dialogRef = this.dialog.open(CreateChannelComponent,dialogConfig);
+        let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
-            if(result){
+            if (result) {
                 this.newChannelEvent.emit(result);
                 this.pushUserSubbedChannels(result);
                 if (result.channelType == PUBLIC) {
@@ -152,9 +153,10 @@ export class SidebarComponent implements OnInit {
                     this.friendsChannels.push(result);
                 }
             }
-        })
+        });
     }
-    pushUserSubbedChannels(data): void{
+
+    pushUserSubbedChannels(data): void {
         this.userSubscribedChannels.push(data);
     }
 }

@@ -6,11 +6,26 @@
                 <div class="leftSide">
                     <mat-form-field appearance="fill" color="primary">
                         <mat-label>Channel Name</mat-label>
-                        <input class="form-control" formControlName="channelName" id="channelName" matInput
-                               name="channelName" required type="text">
+                        <input
+                            class="form-control"
+                            formControlName="channelName"
+                            id="channelName"
+                            matInput
+                            name="channelName"
+                            required
+                            type="text"
+                        />
                         <mat-error *ngFor="let validation of common.validation_methods.channelName">
                             <mat-error
-                                *ngIf="formValidationService.checkIfFormElementInvalid(newChannelForm, 'channelName', validation, submitAttempt)">{{validation.message}}
+                                *ngIf="
+                                    formValidationService.checkIfFormElementInvalid(
+                                        newChannelForm,
+                                        'channelName',
+                                        validation,
+                                        submitAttempt
+                                    )
+                                "
+                            >{{ validation.message }}
                             </mat-error>
                         </mat-error>
                     </mat-form-field>
@@ -25,7 +40,8 @@
             </div>
         </div>
         <div class="center">
-            <button class="btn btn-primary" color="primary" mat-raised-button type="submit" (click)="onClose()">Cancel
+            <button (click)="onClose()" class="btn btn-primary" color="primary" mat-raised-button type="submit">
+                Cancel
             </button>
             <button class="btn btn-primary" color="primary" mat-raised-button type="submit">Create</button>
         </div>

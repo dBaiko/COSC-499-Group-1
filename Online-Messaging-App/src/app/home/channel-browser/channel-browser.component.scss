@@ -11,20 +11,19 @@ mat-card {
 mat-form-field {
     background-color: #282828;
     width: 100%;
-    color: #F8F8F8;
+    color: #f8f8f8;
     left: 0vh;
     margin-bottom: 1vh;
     margin-top: 4vh;
     padding-right: 10vh !important;
 }
 
-
 hr {
-    border: 1px solid #F8F8F8;
+    border: 1px solid #f8f8f8;
 }
 
 mat-card-title {
-    color: #F8F8F8;
+    color: #f8f8f8;
     padding-top: 1px;
 }
 
@@ -38,7 +37,7 @@ mat-card-title {
 }
 
 mat-label {
-    color: #F8F8F8;
+    color: #f8f8f8;
     padding-left: 0.5rem;
 }
 
@@ -59,14 +58,12 @@ mat-label {
     color: white;
     text-align: center;
     cursor: pointer;
-
 }
 
 .joined {
     margin-right: 5vh;
     color: white;
     text-align: center;
-
 }
 
 .joinCreate:focus {
@@ -85,14 +82,10 @@ mat-card-footer {
 
 mat-expansion-panel {
     background-color: #282828;
-    color: #F8F8F8;
+    color: #f8f8f8;
 }
 
-mat-panel-title, mat-panel-description {
-    color: #F8F8F8;
+mat-panel-title,
+mat-panel-description {
+    color: #f8f8f8;
 }
-
-
-
-
-

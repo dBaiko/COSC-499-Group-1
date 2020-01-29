@@ -1,6 +1,6 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {SidebarComponent} from "./sidebar.component";
-import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { SidebarComponent } from "./sidebar.component";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 describe("SidebarComponent", () => {
     let component: SidebarComponent;
@@ -9,18 +9,15 @@ describe("SidebarComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [],
-            declarations: [
-                SidebarComponent
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
+            declarations: [SidebarComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
-            .compileComponents().then(() => {
-            fixture = TestBed.createComponent(SidebarComponent);
-            component = fixture.componentInstance;
-            fixture.detectChanges();
-        });
+            .compileComponents()
+            .then(() => {
+                fixture = TestBed.createComponent(SidebarComponent);
+                component = fixture.componentInstance;
+                fixture.detectChanges();
+            });
     }));
 
     beforeEach(() => {
@@ -32,5 +29,4 @@ describe("SidebarComponent", () => {
     it("should create", () => {
         expect(component).toBeTruthy();
     });
-
 });
