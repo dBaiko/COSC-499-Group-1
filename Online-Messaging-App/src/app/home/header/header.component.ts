@@ -1,5 +1,5 @@
-import {Component, OnInit} from "@angular/core";
-import {AuthenticationService} from "../../shared/authentication.service";
+import { Component, OnInit } from "@angular/core";
+import { AuthenticationService } from "../../shared/authentication.service";
 
 @Component({
     selector: "app-header",
@@ -7,7 +7,6 @@ import {AuthenticationService} from "../../shared/authentication.service";
     styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
-
     userLoggedIn = false;
 
     constructor(private auth: AuthenticationService) {
@@ -16,5 +15,4 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
     }
-
 }

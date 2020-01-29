@@ -11,7 +11,8 @@ router.use(bodyParser());
 
 router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
     const messageDAO = new MessageDAO();
-    messageDAO.getAllMessageHistory()
+    messageDAO
+        .getAllMessageHistory()
         .then((data) => {
             res.status(200).send(data);
         })
