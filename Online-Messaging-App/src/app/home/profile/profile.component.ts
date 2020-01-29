@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
         this.getUserInfo();
     }
 
-    getUserInfo(): void {
+    getUserInfo() {
         this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), Constants.HTTP_OPTIONS).subscribe((data) => {
                 this.user = data;
                 console.log(this.user);

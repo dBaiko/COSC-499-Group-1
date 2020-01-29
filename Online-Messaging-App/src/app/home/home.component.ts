@@ -17,7 +17,7 @@ interface userChannelObject {
     styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
-    public display ="profile";
+    public display ="channelBrowser";
     userLoggedIn = false;
     options: FormGroup;
 
