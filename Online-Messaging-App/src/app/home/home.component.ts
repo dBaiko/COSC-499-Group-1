@@ -11,6 +11,12 @@ interface userChannelObject {
     channelType: string;
 }
 
+interface ChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+}
+
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
@@ -20,14 +26,12 @@ export class HomeComponent implements OnInit {
     userLoggedIn = false;
     options: FormGroup;
 
-    messagesShown = false;
-
     display: string = "channelBrowser";
-
     selectedChannelId: number;
     selectedChannelName: string;
-
+    newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
+    private scrollContainer: any;
 
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
@@ -38,7 +42,8 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 
     receiveId($event) {
         this.selectedChannelId = $event;
@@ -52,7 +57,12 @@ export class HomeComponent implements OnInit {
         this.newSubbedChannel = $event;
     }
 
+    addNewChannel($event) {
+        this.newAddedChannel = $event;
+    }
+
     updateDisplay(value: string): void {
         this.display = value;
     }
+
 }

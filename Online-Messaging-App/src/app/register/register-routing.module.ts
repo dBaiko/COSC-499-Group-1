@@ -8,4 +8,5 @@ const routes: Routes = [{ path: "", component: RegisterFormComponent }];
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class RegisterRoutingModule {}
+export class RegisterRoutingModule {
+}
