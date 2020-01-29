@@ -54,6 +54,13 @@ mat-sidenav-container {
     height: 100%;
 }
 
+
+.scrollable {
+    height: 66vh;
+    overflow-y: auto;
+    margin-top: 1%;
+}
+
 h2 {
     margin-left: 15px;
 }

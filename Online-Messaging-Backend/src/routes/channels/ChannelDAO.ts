@@ -89,7 +89,7 @@ class ChannelDAO {
                     userChannelDAO
                         .addNewUserToChannel(firstUsername, channelId, firstUserChannelRole, channelName, channelType)
                         .then(() => {
-                            resolve();
+                            resolve(params.Item);
                         })
                         .catch((err) => {
                             reject(err);
