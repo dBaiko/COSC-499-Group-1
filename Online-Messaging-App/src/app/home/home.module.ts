@@ -16,6 +16,7 @@ import { CommonService } from "../shared/common.service";
 import { CreateChannelComponent } from "./createChannel/create-channel.component";
 import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
+import { ProfileComponent } from "./profile/profile.component";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -31,7 +32,8 @@ const socketConfig: SocketIoConfig = {
         HomeComponent,
         LogoutFormComponent,
         SidebarComponent,
-        CreateChannelComponent
+        CreateChannelComponent,
+        ProfileComponent
     ],
     imports: [
         CommonModule,

@@ -38,10 +38,14 @@ export class SidebarComponent implements OnInit {
     @Output() channelNameEvent = new EventEmitter<string>();
     @Output() channelIdEvent = new EventEmitter<string>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
+    @Output() switchEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
     list;
+    private chatBox = "chatBox";
+    private channelBrowser = "channelBrowser";
+    private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService, private dialog: MatDialog) {
@@ -154,5 +158,9 @@ export class SidebarComponent implements OnInit {
                 }
             }
         });
+    }
+
+    switchDisplay(value: string): void {
+        this.switchEvent.emit(value);
     }
 }

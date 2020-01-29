@@ -54,9 +54,11 @@ mat-sidenav-container {
     height: 100%;
 }
 
-mat-nav-list {
-    height: 21rem;
-    overflow-y: scroll;
+
+.scrollable {
+    height: 66vh;
+    overflow-y: auto;
+    margin-top: 1%;
 }
 
 h2 {

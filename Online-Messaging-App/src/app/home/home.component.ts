@@ -26,12 +26,12 @@ export class HomeComponent implements OnInit {
     userLoggedIn = false;
     options: FormGroup;
 
-    messagesShown = false;
-
+    display: string = "channelBrowser";
     selectedChannelId: number;
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
+    private scrollContainer: any;
 
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
         this.userLoggedIn = auth.isLoggedIn();
@@ -60,4 +60,9 @@ export class HomeComponent implements OnInit {
     addNewChannel($event) {
         this.newAddedChannel = $event;
     }
+
+    updateDisplay(value: string): void {
+        this.display = value;
+    }
+
 }
