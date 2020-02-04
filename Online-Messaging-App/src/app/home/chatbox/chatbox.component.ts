@@ -59,7 +59,7 @@ export class ChatboxComponent implements OnInit {
         );
     }
 
-    sendMessage(form: FormGroup) {
+    sendMessage(form: FormGroup): void {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
