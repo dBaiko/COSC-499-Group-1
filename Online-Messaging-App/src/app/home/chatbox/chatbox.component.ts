@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup } from "@angular/forms";
@@ -49,14 +49,30 @@ export class ChatboxComponent implements OnInit {
 
 
     getMessages(channelId: string): void {
-        this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe(
+
+        this.authService.getCurrentSessionId().subscribe(
             (data) => {
-                this.chatMessages = data || [];
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.url + channelId + "/messages", httpHeaders).subscribe(
+                    (data) => {
+                        this.chatMessages = data || [];
+                    },
+                    (err) => {
+                        this.error = err.toString();
+                    }
+                );
             },
             (err) => {
-                this.error = err.toString();
+                console.log(err);
             }
         );
+
     }
 
     sendMessage(form: FormGroup): void {
