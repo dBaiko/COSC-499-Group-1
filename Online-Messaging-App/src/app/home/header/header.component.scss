@@ -6,3 +6,13 @@ mat-toolbar {
 logout-form:hover {
     color: #138cfa;
 }
+mat-option {
+    background-color: black;
+    color: white;
+}
+::ng-deep .mat-select-content{
+    width:2000px;
+    background-color: red;
+    font-size: 10px;
+}
+
