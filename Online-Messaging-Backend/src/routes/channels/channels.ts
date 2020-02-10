@@ -3,6 +3,9 @@ import bodyParser from "body-parser";
 import express from "express";
 import ChannelDAO from "./ChannelDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
+import jwkToBuffer, { JWK } from "jwk-to-pem";
+import * as jwt from "jsonwebtoken";
+import { awsCognitoConfig } from "../../config/aws-config";
 import MessageDAO from "../messages/MessageDAO";
 
 const PATH_GET_ALL_CHANNELS: string = "/";
@@ -15,6 +18,8 @@ const PATH_POST_NEW_CHANNEL: string = "/";
 const router = express.Router();
 
 const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
+
+const jwk: JWK = awsCognitoConfig;
 
 router.use(bodyParser());
 
@@ -57,16 +62,57 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
 });
 
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
-    const messageDAO = new MessageDAO();
-    let channelIdString = req.params.channelId;
-    messageDAO
-        .getMessageHistory(channelIdString)
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch((err) => {
-            res.status(400).send(err);
+
+    let token: string = req.headers["authorization"];
+    if (token) {
+
+        if (token.startsWith("Bearer ") || token.startsWith("Bearer")) {
+            token = token.slice(7, token.length);
+        }
+
+        if (token) {
+
+            let pem = jwkToBuffer(jwk);
+            jwt.verify(token, pem, { algorithms: ["RS256"] }, (err, decodedToken) => {
+                if (err) {
+                    res.status(401).send({
+                        status: 401,
+                        data: { message: "Token is not valid" }
+                    });
+                } else {
+
+                    console.log(JSON.stringify(decodedToken, null, 4));
+
+                    const messageDAO = new MessageDAO();
+                    let channelIdString = req.params.channelId;
+                    messageDAO
+                        .getMessageHistory(channelIdString)
+                        .then((data) => {
+                            res.status(200).send(data);
+                        })
+                        .catch((err) => {
+                            res.status(400).send(err);
+                        });
+                }
+            });
+
+
+        } else {
+            res.status(401).send({
+                status: 401,
+                data: { message: "Auth token is missing" }
+            });
+
+        }
+
+
+    } else {
+        res.status(401).send({
+            status: 401,
+            data: { message: "Auth token is missing" }
         });
+    }
+
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {

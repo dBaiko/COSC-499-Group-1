@@ -15,7 +15,7 @@
                 </form>
             </div>
             <div id="scrollable">
-                <mat-accordion>
+                <mat-accordion id="list">
                     <div *ngFor="let channel of channels">
                         <div *ngIf="channel.filtered == false || channel.filtered == null">
                             <mat-expansion-panel>

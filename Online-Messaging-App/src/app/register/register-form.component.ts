@@ -89,6 +89,7 @@ export class RegisterFormComponent implements OnInit {
                         this.common.routeTo(Constants.LOGIN_ROUTE);
                     })
                     .catch((err) => {
+                        console.log(err);
                     });
             },
             (err) => {
