@@ -12,7 +12,14 @@ describe("AppComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [AppComponent, RegisterFormComponent],
-            imports: [RouterTestingModule.withRoutes(routes), HomeModule, MaterialModule, FormsModule, ReactiveFormsModule, LoginModule]
+            imports: [
+                RouterTestingModule.withRoutes(routes),
+                HomeModule,
+                MaterialModule,
+                FormsModule,
+                ReactiveFormsModule,
+                LoginModule
+            ]
         }).compileComponents();
     }));
 

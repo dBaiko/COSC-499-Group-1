@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -12,15 +12,17 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
     templateUrl: "./chatbox.component.html",
     styleUrls: ["./chatbox.component.scss"]
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages;
     error: string = Constants.EMPTY;
 
     @Input() channelName: string;
-
-
+    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
     private _channelName;
     private url: string = APIConfig.channelsAPI;
+    private called: boolean = true;
+    private isNearBottom = false;
+    private atBottom = true;
 
     constructor(
         private messagerService: MessengerService,
@@ -32,6 +34,7 @@ export class ChatboxComponent implements OnInit {
     private _channelId;
 
     get channelId(): any {
+        this.scrollToBottom();
         return this._channelId;
     }
 
@@ -39,14 +42,20 @@ export class ChatboxComponent implements OnInit {
     set channelId(value: any) {
         this._channelId = value;
         this.getMessages(this._channelId);
+        this.isNearBottom = false;
     }
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            if (data.channelId == this.channelId) this.chatMessages.push(data);
+            if (data.channelId == this.channelId) {
+                this.chatMessages.push(data);
+            }
         });
     }
 
+    ngAfterViewChecked() {
+        this.scrollToBottom();
+    }
 
     getMessages(channelId: string): void {
 
@@ -84,10 +93,32 @@ export class ChatboxComponent implements OnInit {
                 username: this.authService.getAuthenticatedUser().getUsername(),
                 content: value.content
             };
-
+            this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
         } // TODO: add user error message if this is false
     }
 
+    private onScroll() {
+        let element = this.scrollContainer.nativeElement;
+        // using ceiling and floor here to normalize the differences in browsers way of calculating these values
+        this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
+        console.log(this.atBottom);
+        if (this.atBottom) {
+            this.isNearBottom = false;
+        } else {
+            this.isNearBottom = true;
+        }
+    }
 
+    private scrollToBottom(): void {
+        if (this.isNearBottom) {
+            return;
+        }
+        try {
+            this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+            this.isNearBottom = false;
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <div class="container">
-    <mat-card>
+    <mat-card class="scrollMe">
         <div class="headerTop">
             <mat-card-header>
                 <mat-card-title>{{ channelName }}</mat-card-title>
@@ -7,7 +7,7 @@
         </div>
         <p>{{ error }}</p>
         <hr/>
-        <div id="scrollable">
+        <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
                     <mat-card-title>{{ chatMessage.username }}</mat-card-title>
@@ -18,7 +18,7 @@
                 <hr/>
             </div>
         </div>
-        <br><br>
+        <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
                 <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off">

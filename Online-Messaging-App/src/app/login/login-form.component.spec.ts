@@ -53,6 +53,4 @@ describe("LoginComponent", () => {
         password.setValue("test💕");
         expect(password.valid).toBeTruthy();
     });
-
-
 });
