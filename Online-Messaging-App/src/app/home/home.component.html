@@ -28,7 +28,8 @@
                         ></app-channel-browser>
                     </div>
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
-                        <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"></app-chatbox>
+                        <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"
+                                     class="scrollMe"></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'" class="scrollMe">
                         <app-profile></app-profile>
