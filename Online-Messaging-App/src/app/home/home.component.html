@@ -24,12 +24,16 @@
                     <div *ngSwitchCase="'channelBrowser'" class="scrollMe">
                         <app-channel-browser
                             (newChannelIdEvent)="receiveNewSubbedChannel($event)"
-                            [newChannel]="newAddedChannel" class="scrollMe"
+                            [newChannel]="newAddedChannel"
+                            class="scrollMe"
                         ></app-channel-browser>
                     </div>
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
-                        <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"
-                                     class="scrollMe"></app-chatbox>
+                        <app-chatbox
+                            [channelId]="selectedChannelId"
+                            [channelName]="selectedChannelName"
+                            class="scrollMe"
+                        ></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'" class="scrollMe">
                         <app-profile></app-profile>

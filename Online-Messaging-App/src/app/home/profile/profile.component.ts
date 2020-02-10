@@ -12,7 +12,8 @@ export class ProfileComponent implements OnInit {
     user;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(private auth: AuthenticationService, private http: HttpClient) {}
+    constructor(private auth: AuthenticationService, private http: HttpClient) {
+    }
 
     ngOnInit() {
         this.getUserInfo();
