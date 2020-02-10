@@ -7,7 +7,7 @@
         </div>
         <p>{{ error }}</p>
         <hr/>
-        <div id="scrollable">
+        <div id="scrollable" (scroll)="onScroll()" #scrollframe>
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
                     <mat-card-title>{{ chatMessage.username }}</mat-card-title>
