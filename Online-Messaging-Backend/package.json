@@ -22,7 +22,6 @@
     "express": "^4.17.1",
     "helmet-csp": "^2.9.4",
     "nodemon": "^1.19.4",
-    "scroll-js": "^3.1.1",
     "socket.io": "^2.3.0",
     "uuid": "^3.4.0",
     "uuidv4": "^6.0.2"

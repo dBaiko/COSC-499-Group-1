@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -12,7 +12,7 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
     templateUrl: "./chatbox.component.html",
     styleUrls: ["./chatbox.component.scss"]
 })
-export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     chatMessages;
     error: string = Constants.EMPTY;
@@ -48,8 +48,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            if (data.channelId == this.channelId) this.chatMessages.push(data);
-            this.scrollToBottom();
+            if (data.channelId == this.channelId) {
+                this.chatMessages.push(data);
+            }
         });
 
     }
@@ -57,10 +58,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit
     ngAfterViewChecked() {
         this.scrollToBottom();
     }
-
-    ngAfterViewInit(): void {
-    }
-
 
     getMessages(channelId: string): void {
         this.http.get(this.url + channelId + "/messages", Constants.HTTP_OPTIONS).subscribe(
@@ -99,8 +96,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit
     }
 
     private scrollToBottom(): void {
-        try {
-
             if (this.isNearBottom) {
                 return;
             }
@@ -108,11 +103,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit
                 this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
                 this.isNearBottom = false;
             } catch (err) {
+                console.log(err);
             }
-            // this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-        } catch (err) {
-            console.log(err);
-        }
     }
 
 
