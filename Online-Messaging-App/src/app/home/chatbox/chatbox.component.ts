@@ -84,7 +84,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     private onScroll() {
         let element = this.scrollContainer.nativeElement;
-        this.atBottom = element.scrollHeight - element.scrollTop === element.offsetHeight;
+        // using ceiling and floor here to normalize the differences in browsers way of calculating these values
+        this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
         console.log(this.atBottom);
         if (this.atBottom) {
             this.isNearBottom = false;
