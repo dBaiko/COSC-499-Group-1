@@ -49,7 +49,6 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeFalsy();
-
     });
 
     it("should fail invalid email with no @", () => {
@@ -63,7 +62,6 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeTruthy();
-
     });
 
     it("should fail invalid email without anything before @", () => {
@@ -77,7 +75,6 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeTruthy();
-
     });
 
     it("should fail invalid email of just numbers", () => {
@@ -91,7 +88,6 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeTruthy();
-
     });
 
     it("should fail invalid email emoji only", () => {
@@ -105,7 +101,6 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeTruthy();
-
     });
 
     it("should fail invalid email emoji", () => {
@@ -119,14 +114,12 @@ describe("RegisterComponent", () => {
         errors = email.errors || {};
 
         expect(errors["email"]).toBeTruthy();
-
     });
 
     it("should fail no value username", () => {
         let username = component.registerForm.controls["username"];
         expect(username.valid).toBeFalsy();
     });
-
 
     it("should pass valid username without numbers", () => {
         expect(component).toBeTruthy();
@@ -139,7 +132,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid username with numbers", () => {
@@ -153,7 +145,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid username with only numbers", () => {
@@ -167,7 +158,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should fail invalid username with only emoji", () => {
@@ -181,7 +171,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid username with only symbols", () => {
@@ -195,7 +184,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid username with symbols", () => {
@@ -209,7 +197,6 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
     it("should fail invalid username with emoji", () => {
         expect(component).toBeTruthy();
@@ -222,15 +209,12 @@ describe("RegisterComponent", () => {
         errors = username.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
-
 
     it("should fail no value first name", () => {
         let firstName = component.registerForm.controls["firstName"];
         expect(firstName.valid).toBeFalsy();
     });
-
 
     it("should pass valid first name without numbers", () => {
         expect(component).toBeTruthy();
@@ -243,7 +227,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid first name with numbers", () => {
@@ -257,7 +240,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid first name with only numbers", () => {
@@ -271,7 +253,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should fail invalid first name with only emoji", () => {
@@ -285,7 +266,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid first name with only symbols", () => {
@@ -299,7 +279,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid first name with symbols", () => {
@@ -313,7 +292,6 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
     it("should fail invalid first name with emoji", () => {
         expect(component).toBeTruthy();
@@ -326,14 +304,12 @@ describe("RegisterComponent", () => {
         errors = firstName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail no value last name", () => {
         let lastName = component.registerForm.controls["lastName"];
         expect(lastName.valid).toBeFalsy();
     });
-
 
     it("should pass valid last name without numbers", () => {
         expect(component).toBeTruthy();
@@ -346,7 +322,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid last name with numbers", () => {
@@ -360,7 +335,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should pass valid last name with only numbers", () => {
@@ -374,7 +348,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-
     });
 
     it("should fail invalid last name with only emoji", () => {
@@ -388,7 +361,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid last name with only symbols", () => {
@@ -402,7 +374,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail invalid last name with symbols", () => {
@@ -416,7 +387,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
     it("should fail invalid last name with emoji", () => {
         expect(component).toBeTruthy();
@@ -429,7 +399,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeTruthy();
-
     });
 
     it("should fail no value password", () => {
@@ -448,7 +417,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with only letters", () => {
@@ -462,7 +430,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with only symbols", () => {
@@ -476,7 +443,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with only emoji", () => {
@@ -490,7 +456,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with letters and symbols", () => {
@@ -504,7 +469,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with numbers and symbols", () => {
@@ -518,7 +482,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should pass valid password with letters and numbers", () => {
@@ -532,7 +495,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeFalsy();
-
     });
 
     it("should fail invalid password with numbers and symbols", () => {
@@ -546,7 +508,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeTruthy();
-
     });
 
     it("should fail invalid password with letters and symbols", () => {
@@ -560,7 +521,6 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeTruthy();
-
     });
 
     it("should fail invalid password with letters and numbers", () => {
@@ -574,9 +534,5 @@ describe("RegisterComponent", () => {
         errors = password.errors || {};
 
         expect(errors["minlength"]).toBeTruthy();
-
     });
-
-
-
 });

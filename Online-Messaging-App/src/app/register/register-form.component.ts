@@ -38,7 +38,8 @@ export class RegisterFormComponent implements OnInit {
         private http: HttpClient,
         public common: CommonService,
         private formValidationService: FormValidationService
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup(
@@ -87,7 +88,8 @@ export class RegisterFormComponent implements OnInit {
                         console.log(data);
                         this.common.routeTo(Constants.LOGIN_ROUTE);
                     })
-                    .catch((err) => {});
+                    .catch((err) => {
+                    });
             },
             (err) => {
                 if (err.code == USER_EXISTS_EX) {

@@ -13,7 +13,6 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
     styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-
     chatMessages;
     error: string = Constants.EMPTY;
 
@@ -52,7 +51,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.chatMessages.push(data);
             }
         });
-
     }
 
     ngAfterViewChecked() {
@@ -96,16 +94,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private scrollToBottom(): void {
-            if (this.isNearBottom) {
-                return;
-            }
-            try {
-                this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-                this.isNearBottom = false;
-            } catch (err) {
-                console.log(err);
-            }
+        if (this.isNearBottom) {
+            return;
+        }
+        try {
+            this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+            this.isNearBottom = false;
+        } catch (err) {
+            console.log(err);
+        }
     }
-
-
 }

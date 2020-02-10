@@ -15,8 +15,7 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.userLoggedIn == true)
-            this.user = this.auth.getAuthenticatedUser();
+        if (this.userLoggedIn == true) this.user = this.auth.getAuthenticatedUser();
         console.log(this.user);
     }
 
@@ -29,6 +28,4 @@ export class HeaderComponent implements OnInit {
         let element = document.getElementsByClassName("mat-select-arrow")[0];
         element.classList.remove("dropped");
     }
-
-
 }
