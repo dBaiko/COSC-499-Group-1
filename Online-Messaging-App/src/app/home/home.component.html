@@ -18,19 +18,19 @@
             ></app-sidebar>
         </mat-sidenav>
 
-        <mat-sidenav-content [formGroup]="options" id="scrollMe">
-            <div *ngIf="userLoggedIn; else elseBlock">
-                <div [ngSwitch]="display">
-                    <div *ngSwitchCase="'channelBrowser'">
+        <mat-sidenav-content [formGroup]="options" class="scrollMe">
+            <div *ngIf="userLoggedIn; else elseBlock" class="scrollMe">
+                <div [ngSwitch]="display" class="scrollMe">
+                    <div *ngSwitchCase="'channelBrowser'" class="scrollMe">
                         <app-channel-browser
                             (newChannelIdEvent)="receiveNewSubbedChannel($event)"
-                            [newChannel]="newAddedChannel"
+                            [newChannel]="newAddedChannel" class="scrollMe"
                         ></app-channel-browser>
                     </div>
-                    <div *ngSwitchCase="'chatBox'">
+                    <div *ngSwitchCase="'chatBox'" class="scrollMe">
                         <app-chatbox [channelId]="selectedChannelId" [channelName]="selectedChannelName"></app-chatbox>
                     </div>
-                    <div *ngSwitchCase="'profile'">
+                    <div *ngSwitchCase="'profile'" class="scrollMe">
                         <app-profile></app-profile>
                     </div>
                 </div>

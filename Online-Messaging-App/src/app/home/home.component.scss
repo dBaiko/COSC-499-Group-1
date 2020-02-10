@@ -56,3 +56,9 @@ app-header {
     background-color: black;
     color: white;
 }
+
+.scrollMe {
+    overflow: hidden;
+    height: 100%;
+    padding: 0px !important;
+}
