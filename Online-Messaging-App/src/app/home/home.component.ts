@@ -64,5 +64,4 @@ export class HomeComponent implements OnInit {
     updateDisplay(value: string): void {
         this.display = value;
     }
-
 }

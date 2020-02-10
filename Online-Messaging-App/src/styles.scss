@@ -9,3 +9,42 @@ html,
 body {
     overflow: hidden;
 }
+
+html {
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+}
+
+.mat-select-panel {
+    border-radius: 0 !important;
+}
+
+.dropped {
+    transform: rotate(180deg);
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 0px;
+    background: dimgrey;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #1f1f1f;
+    border-radius: 2.5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #282828;
+}

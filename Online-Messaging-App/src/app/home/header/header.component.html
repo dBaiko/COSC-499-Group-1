@@ -1,8 +1,17 @@
 <header>
     <mat-toolbar class="navbar">
         <div>Streamline Athletes</div>
+
         <div *ngIf="userLoggedIn">
-            <logout-form></logout-form>
+            <div class="headInfo">
+                {{ user.username }}
+                <mat-select (closed)="unDrop()" (opened)="drop()" disableOptionCentering>
+                    <mat-option>
+                        <logout-form></logout-form>
+                    </mat-option>
+                </mat-select>
+            </div>
+            <div></div>
         </div>
     </mat-toolbar>
 </header>
