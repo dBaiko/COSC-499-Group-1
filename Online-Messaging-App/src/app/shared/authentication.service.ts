@@ -83,7 +83,6 @@ export class AuthenticationService {
         return new Observable<Object>((observer) => {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess(result) {
-                    console.log("JWT Token:\n" + result.getIdToken().getJwtToken());
                     observer.next(result);
                     observer.complete();
                 },

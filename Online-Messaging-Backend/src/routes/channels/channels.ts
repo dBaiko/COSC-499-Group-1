@@ -80,6 +80,9 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                         data: { message: "Token is not valid" }
                     });
                 } else {
+
+                    console.log(JSON.stringify(decodedToken, null, 4));
+
                     const messageDAO = new MessageDAO();
                     let channelIdString = req.params.channelId;
                     messageDAO
@@ -108,7 +111,6 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
             status: 401,
             data: { message: "Auth token is missing" }
         });
-
     }
 
 });
