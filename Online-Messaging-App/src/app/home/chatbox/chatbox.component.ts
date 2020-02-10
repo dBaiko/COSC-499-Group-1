@@ -1,9 +1,9 @@
-import {AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from "@angular/core";
-import {MessengerService} from "../../shared/messenger.service";
-import {HttpClient} from "@angular/common/http";
-import {APIConfig, Constants} from "../../shared/app-config";
-import {AuthenticationService} from "../../shared/authentication.service";
-import {FormGroup} from "@angular/forms";
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { MessengerService } from "../../shared/messenger.service";
+import { HttpClient } from "@angular/common/http";
+import { APIConfig, Constants } from "../../shared/app-config";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { FormGroup } from "@angular/forms";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 
@@ -12,17 +12,19 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
     templateUrl: "./chatbox.component.html",
     styleUrls: ["./chatbox.component.scss"]
 })
-export class ChatboxComponent implements OnInit, AfterViewChecked,AfterViewInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
     chatMessages;
     error: string = Constants.EMPTY;
 
     @Input() channelName: string;
-    @ViewChild('scrollframe', {static: false}) scrollContainer: ElementRef;
+    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
     private _channelName;
     private url: string = APIConfig.channelsAPI;
     private called: boolean = true;
     private isNearBottom = false;
+    private atBottom = true;
+
     constructor(
         private messagerService: MessengerService,
         private http: HttpClient,
@@ -41,27 +43,22 @@ export class ChatboxComponent implements OnInit, AfterViewChecked,AfterViewInit 
     set channelId(value: any) {
         this._channelId = value;
         this.getMessages(this._channelId);
+        this.isNearBottom = false;
     }
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.channelId) this.chatMessages.push(data);
-            console.log("sub");
-
+            this.scrollToBottom();
         });
 
     }
 
     ngAfterViewChecked() {
-        // console.log("checked");
-        //     console.log('here');
-            this.scrollToBottom();
-
-            // this.scrollToBottom();
-            // this.called = false;
+        this.scrollToBottom();
     }
+
     ngAfterViewInit(): void {
-        // this.scrollToBottom();
     }
 
 
@@ -89,14 +86,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked,AfterViewInit 
             this.messagerService.sendMessage(chatMessage);
         } // TODO: add user error message if this is false
     }
+
     private onScroll() {
         let element = this.scrollContainer.nativeElement;
-        let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
-        console.log(atBottom);
-        if (atBottom)  {
-            this.isNearBottom = false
+        this.atBottom = element.scrollHeight - element.scrollTop === element.offsetHeight;
+        console.log(this.atBottom);
+        if (this.atBottom) {
+            this.isNearBottom = false;
         } else {
-            this.isNearBottom= true
+            this.isNearBottom = true;
         }
     }
 
@@ -104,18 +102,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked,AfterViewInit 
         try {
 
             if (this.isNearBottom) {
-                return
+                return;
             }
             try {
                 this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-                this.isNearBottom=false;
-            } catch(err) { }
+                this.isNearBottom = false;
+            } catch (err) {
+            }
             // this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
-        }catch (err){
+        } catch (err) {
             console.log(err);
         }
     }
-
 
 
 }
