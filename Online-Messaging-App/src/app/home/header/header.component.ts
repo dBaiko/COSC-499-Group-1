@@ -1,7 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
-import {APIConfig, Constants} from "../../shared/app-config";
-import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: "app-header",
@@ -17,9 +15,19 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.userLoggedIn==true)
-        this.user = this.auth.getAuthenticatedUser();
+        if (this.userLoggedIn == true)
+            this.user = this.auth.getAuthenticatedUser();
         console.log(this.user);
+    }
+
+    drop() {
+        let element = document.getElementsByClassName("mat-select-arrow")[0];
+        element.classList.add("dropped");
+    }
+
+    unDrop() {
+        let element = document.getElementsByClassName("mat-select-arrow")[0];
+        element.classList.remove("dropped");
     }
 
 

@@ -3,16 +3,31 @@ mat-toolbar {
     color: white;
 }
 
-logout-form:hover {
-    color: #138cfa;
-}
 mat-option {
-    background-color: black;
+    background: #000000;
     color: white;
+    width: 100%;
 }
-::ng-deep .mat-select-content{
-    width:2000px;
+
+::ng-deep .mat-select-content {
+    width: 2000px;
     background-color: red;
     font-size: 10px;
 }
 
+.mat-select {
+    width: auto;
+    border-radius: 0% !important;
+}
+
+.mat-option {
+    background: #282828;
+    color: white;
+    text-align: center;
+    padding-right: 0.2vw;
+    padding-left: 0.2vw;
+}
+
+.mat-option:hover {
+    background-color: #1f1f1f;
+}

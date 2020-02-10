@@ -14,8 +14,7 @@ mat-form-field {
     color: #f8f8f8;
     left: 0vh;
     margin-bottom: 1vh;
-    margin-top: 4vh;
-    padding-right: 10vh !important;
+    margin-top: 1vh;
 }
 
 hr {
@@ -29,11 +28,8 @@ mat-card-title {
 
 .headerTop {
     background-color: #282828;
-    width: 100%;
-    position: fixed;
     top: 4rem;
     margin-top: 1vh !important;
-    margin-right: 1vh !important;
 }
 
 mat-label {
@@ -46,9 +42,8 @@ mat-label {
 }
 
 .searchBar {
-    width: 100%;
+    width: 97%;
     position: absolute;
-    margin-top: 1.4rem;
     margin-left: 0;
 }
 
@@ -88,4 +83,8 @@ mat-expansion-panel {
 mat-panel-title,
 mat-panel-description {
     color: #f8f8f8;
+}
+
+mat-panel-title {
+    width: 20vh;
 }

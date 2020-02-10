@@ -9,3 +9,16 @@ html,
 body {
     overflow: hidden;
 }
+
+.cdk-overlay-pane {
+    margin-top: 3rem;
+    margin-right: 500em;
+}
+
+.mat-select-panel {
+    border-radius: 0 !important;
+}
+
+.dropped {
+    transform: rotate(180deg);
+}
