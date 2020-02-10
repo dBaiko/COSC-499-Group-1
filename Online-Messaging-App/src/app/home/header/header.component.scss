@@ -31,3 +31,7 @@ mat-option {
 .mat-option:hover {
     background-color: #1f1f1f;
 }
+
+::ng-deep .cdk-overlay-pane {
+    margin-top: 3rem;
+}

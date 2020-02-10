@@ -1,11 +1,7 @@
 mat-card {
     background-color: #5280e9;
-    height: 34rem;
-    position: relative;
     border-radius: 0vh;
     height: 100%;
-    padding: 0vh;
-    padding-left: 1vh;
 }
 
 mat-form-field {
@@ -21,9 +17,21 @@ hr {
     border: 1px solid #f8f8f8;
 }
 
+.mat-card-title .mat-card-header {
+    margin-bottom: 0px !important;
+}
+
+.mat-card-header {
+    margin-bottom: 0px !important;
+}
+
+.mat-card-title {
+    margin-bottom: 0px !important;
+}
+
 mat-card-title {
     color: #f8f8f8;
-    padding-top: 1px;
+    padding: 10px 0px 10px 0px;
 }
 
 .headerTop {
@@ -41,10 +49,11 @@ mat-label {
     height: 100%;
 }
 
-.searchBar {
-    width: 97%;
-    position: absolute;
-    margin-left: 0;
+#searchBar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .join {
@@ -69,15 +78,11 @@ mat-label {
     background-color: #696969;
 }
 
-mat-card-footer {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-}
 
 mat-expansion-panel {
     background-color: #282828;
     color: #f8f8f8;
+    border-radius: 0 !important;
 }
 
 mat-panel-title,
@@ -87,4 +92,15 @@ mat-panel-description {
 
 mat-panel-title {
     width: 20vh;
+}
+
+.mat-card {
+    padding: 0px;
+}
+
+#scrollable {
+    height: 85%;
+    overflow-y: auto;
+    z-index: 5;
+    padding: 0px;
 }

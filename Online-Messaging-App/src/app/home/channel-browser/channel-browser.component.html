@@ -1,18 +1,19 @@
-<div class="container">
-    <mat-card>
-
-        <mat-card-content class="searchBar">
-            <div class="headerTop">
-                <mat-card-header>
-                    <mat-card-title>Channel Browser</mat-card-title>
-                </mat-card-header>
+<div class="container scrollMe">
+    <mat-card class="scrollMe">
+        <mat-card-content class="searchBar scrollMe" id="searchBar">
+            <div class="browserHeader">
+                <div class="headerTop">
+                    <mat-card-header>
+                        <mat-card-title>Channel Browser</mat-card-title>
+                    </mat-card-header>
+                </div>
+                <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
+                    <mat-form-field>
+                        <mat-label>Search...</mat-label>
+                        <input (input)="onKey($event)" matInput name="content"/>
+                    </mat-form-field>
+                </form>
             </div>
-            <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
-                <mat-form-field>
-                    <mat-label>Search...</mat-label>
-                    <input (input)="onKey($event)" matInput name="content"/>
-                </mat-form-field>
-            </form>
             <div id="scrollable">
                 <mat-accordion>
                     <div *ngFor="let channel of channels">
