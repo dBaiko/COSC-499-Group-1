@@ -50,11 +50,16 @@ it("should create a new channel", async () =>
 });
 it("should retrieve certain information about a channel", async() =>
 {
-
+    const call = await channel.getChannelInfo("testChannel");
+    const item = await ddb.get({TableName: "Channels", Key: {channelId: "testChannel", channelType: "public"}})
+        .promise();
+    expect(item).toEqual(call);
 });
 it("should return a list of all channels", async() =>
 {
-
+    const list = await channel.getAllChannels();
+    const item = await ddb.scan({TableName: "Channels"});
+    expect(item).toEqual(list);
 });
 
 const msg = new MessageDAO(ddb);
@@ -86,6 +91,24 @@ it("should return a list of all users subscribed to a channel", async() =>
 
 });
 it("should return all users and all channels they are subscribed to", async() =>
+{
+
+});
+
+const profile = new ProfileDAO(ddb);
+it("should create a new profile from basic user information", async() =>
+{
+
+});
+it("should return only data marked public in a user's profile", async() =>
+{
+
+});
+it("should return all data in a user's profile", async() =>
+{
+
+});
+it("should update all data in a user's profile", async() =>
 {
 
 });
