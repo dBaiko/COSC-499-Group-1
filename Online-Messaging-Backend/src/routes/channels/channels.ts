@@ -5,7 +5,7 @@ import ChannelDAO from "./ChannelDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import jwkToBuffer, { JWK } from "jwk-to-pem";
 import * as jwt from "jsonwebtoken";
-import { awsCognitoConfig } from "../../config/aws-config";
+import { awsCognitoConfig, UserPoolConfig } from "../../config/aws-config";
 import MessageDAO from "../messages/MessageDAO";
 
 const PATH_GET_ALL_CHANNELS: string = "/";
@@ -14,6 +14,22 @@ const PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL: string = "/:channelId/users";
 const PATH_GET_ALL_MESSAGES_FOR_CHANNEL: string = "/:channelId/messages/";
 const PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL: string = "/:channelId/users";
 const PATH_POST_NEW_CHANNEL: string = "/";
+
+interface decodedCognitoToken {
+    sub: string,
+    email_verified: boolean,
+    iss: string,
+    cognito: { username: string },
+    given_name: string,
+    aud: string,
+    event_id: string,
+    token_use: string,
+    auth_time: number,
+    exp: number,
+    iat: number,
+    family_name: string,
+    email: string
+}
 
 const router = express.Router();
 
@@ -73,8 +89,11 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
         if (token) {
 
             let pem = jwkToBuffer(jwk);
-            jwt.verify(token, pem, { algorithms: ["RS256"] }, (err, decodedToken) => {
+
+            jwt.verify(token, pem, { algorithms: ["RS256"] }, (err, decodedToken: decodedCognitoToken) => {
+
                 if (err) {
+                    console.log("Not verified");
                     res.status(401).send({
                         status: 401,
                         data: { message: "Token is not valid" }
@@ -83,21 +102,65 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
 
                     console.log(JSON.stringify(decodedToken, null, 4));
 
-                    const messageDAO = new MessageDAO();
-                    let channelIdString = req.params.channelId;
-                    messageDAO
-                        .getMessageHistory(channelIdString)
-                        .then((data) => {
-                            res.status(200).send(data);
-                        })
-                        .catch((err) => {
-                            res.status(400).send(err);
+                    if (Date.now() < decodedToken.exp * 1000) {
+
+                        if (decodedToken.aud === UserPoolConfig.ClientId) {
+
+                            let expectedISS = UserPoolConfig.UserPoolURL + UserPoolConfig.UserPoolId;
+                            if (decodedToken.iss === expectedISS) {
+
+                                if (decodedToken.token_use === UserPoolConfig.ExpectedTokenUse) {
+                                    const messageDAO = new MessageDAO();
+                                    let channelIdString = req.params.channelId;
+                                    messageDAO
+                                        .getMessageHistory(channelIdString)
+                                        .then((data) => {
+                                            res.status(200).send(data);
+                                        })
+                                        .catch((err) => {
+                                            res.status(400).send(err);
+                                        });
+                                } else {
+                                    console.log("Bad token use");
+                                    res.status(401).send({
+                                        status: 401,
+                                        data: { message: "Auth token is invalid" }
+                                    });
+                                }
+
+                            } else {
+                                console.log("Bad ISS");
+                                res.status(401).send({
+                                    status: 401,
+                                    data: { message: "Auth token is invalid" }
+                                });
+                            }
+
+
+                        } else {
+                            console.log("Bad aud");
+                            res.status(401).send({
+                                status: 401,
+                                data: { message: "Auth token is invalid" }
+                            });
+                        }
+
+
+                    } else {
+                        console.log("Expired token");
+                        res.status(401).send({
+                            status: 401,
+                            data: { message: "Auth token is expired" }
                         });
+                    }
+
+
                 }
             });
 
 
         } else {
+            console.log("Missing auth token");
             res.status(401).send({
                 status: 401,
                 data: { message: "Auth token is missing" }
@@ -107,6 +170,7 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
 
 
     } else {
+        console.log("Missing auth token");
         res.status(401).send({
             status: 401,
             data: { message: "Auth token is missing" }
