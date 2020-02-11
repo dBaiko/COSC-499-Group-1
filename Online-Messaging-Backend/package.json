@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@shelf/jest-dynamodb": "^1.6.0",
+    "@types/jest": "^25.1.2",
     "@types/socket.io": "^2.1.4",
     "aws-sdk": "^2.605.0",
     "body-parser": "^1.19.0",

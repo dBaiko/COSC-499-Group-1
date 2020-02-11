@@ -8,11 +8,24 @@ import { AuthenticationService } from "../../shared/authentication.service";
 })
 export class HeaderComponent implements OnInit {
     userLoggedIn = false;
+    user;
 
     constructor(private auth: AuthenticationService) {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
     ngOnInit(): void {
+        if (this.userLoggedIn == true) this.user = this.auth.getAuthenticatedUser();
+        console.log(this.user);
+    }
+
+    drop() {
+        let element = document.getElementsByClassName("mat-select-arrow")[0];
+        element.classList.add("dropped");
+    }
+
+    unDrop() {
+        let element = document.getElementsByClassName("mat-select-arrow")[0];
+        element.classList.remove("dropped");
     }
 }

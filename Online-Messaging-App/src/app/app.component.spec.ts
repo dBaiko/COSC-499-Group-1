@@ -3,12 +3,23 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { AppComponent } from "./app.component";
 import { routes } from "./app-routing.module";
 import { HomeModule } from "./home/home.module";
+import { RegisterFormComponent } from "./register/register-form.component";
+import { MaterialModule } from "./material/material.module";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { LoginModule } from "./login/login.module";
 
 describe("AppComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent],
-            imports: [RouterTestingModule.withRoutes(routes), HomeModule]
+            declarations: [AppComponent, RegisterFormComponent],
+            imports: [
+                RouterTestingModule.withRoutes(routes),
+                HomeModule,
+                MaterialModule,
+                FormsModule,
+                ReactiveFormsModule,
+                LoginModule
+            ]
         }).compileComponents();
     }));
 

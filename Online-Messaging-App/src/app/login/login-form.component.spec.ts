@@ -29,4 +29,28 @@ describe("LoginComponent", () => {
     it("should create", () => {
         expect(component).toBeTruthy();
     });
+
+    it("should fail no value username", () => {
+        let username = component.loginForm.controls["username"];
+        expect(username.valid).toBeFalsy();
+    });
+
+    it("should pass username with value", () => {
+        let username = component.loginForm.controls["username"];
+        expect(username.valid).toBeFalsy();
+        username.setValue("test💕");
+        expect(username.valid).toBeTruthy();
+    });
+
+    it("should fail no value password", () => {
+        let password = component.loginForm.controls["password"];
+        expect(password.valid).toBeFalsy();
+    });
+
+    it("should pass password with value", () => {
+        let password = component.loginForm.controls["password"];
+        expect(password.valid).toBeFalsy();
+        password.setValue("test💕");
+        expect(password.valid).toBeTruthy();
+    });
 });

@@ -6,6 +6,8 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { MaterialModule } from "../../material/material.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HomeModule } from "../../home/home.module";
+import { RegisterModule } from "../../register/register.module";
+import { LoginModule } from "../login.module";
 
 describe("RegisterRedirectComponent", () => {
     let component: RegisterRedirectComponent;
@@ -13,13 +15,14 @@ describe("RegisterRedirectComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [RegisterRedirectComponent],
             imports: [
                 RouterTestingModule.withRoutes(routes),
                 MaterialModule,
                 ReactiveFormsModule,
                 FormsModule,
-                HomeModule
+                HomeModule,
+                RegisterModule,
+                LoginModule
             ]
         }).compileComponents();
     }));
