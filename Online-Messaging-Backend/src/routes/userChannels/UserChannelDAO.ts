@@ -1,10 +1,6 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import { awsConfigPath } from "../../config/aws-config";
 
-aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
@@ -13,13 +9,16 @@ class UserChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
     private usernameQueryDeclaration = "username = :username";
 
+    constructor(private docClient: DocumentClient) {
+    }
+
     public getAll(): Promise<any> {
         const params = {
             TableName: USER_CHANNEL_TABLE_NAME
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -50,7 +49,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -72,7 +71,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -95,7 +94,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
