@@ -48,11 +48,44 @@ it("should create a new channel", async () =>
 
     });
 });
+it("should retrieve certain information about a channel", async() =>
+{
+
+});
+it("should return a list of all channels", async() =>
+{
+
+});
 
 const msg = new MessageDAO(ddb);
+it("should retrieve the message history for a given channel", async() =>
+{
 
+});
+it("should get all messages from all channels", async() =>
+{
+
+});
 it("should add a new message to the file", async() =>
 {
     msg.addNewMessage("Lorem Ipsum");
 
-})
+});
+
+const userChannel = new UserChannelDAO(ddb);
+it("should subscribe a user to a channel", async() =>
+{
+
+});
+it("should return a list of channels a user is subscribed to", async() =>
+{
+
+});
+it("should return a list of all users subscribed to a channel", async() =>
+{
+
+});
+it("should return all users and all channels they are subscribed to", async() =>
+{
+
+});
