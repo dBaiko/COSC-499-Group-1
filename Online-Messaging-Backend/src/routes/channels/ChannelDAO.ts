@@ -3,10 +3,9 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import { uuid } from "uuidv4";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
 
 const channelTableName: string = "Channel";
 
@@ -19,6 +18,9 @@ interface ChannelObject {
 class ChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
+    constructor(private docClient: DocumentClient) {
+    }
+
     public getChannelInfo(channelId: number): Promise<any> {
         const params = {
             TableName: channelTableName,
@@ -29,7 +31,7 @@ class ChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -47,7 +49,7 @@ class ChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -69,7 +71,7 @@ class ChannelDAO {
         firstUsername: string,
         firstUserChannelRole: string
     ): Promise<any> {
-        const userChannelDAO = new UserChannelDAO();
+        const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
         const params = {
             Item: {
@@ -80,7 +82,7 @@ class ChannelDAO {
             TableName: channelTableName
         };
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.error("Unable to add new channel. Error JSON: ", JSON.stringify(err, null, 2));
                     reject(err);
