@@ -2,6 +2,7 @@ import MessageDAO from "../routes/messages/MessageDAO";
 import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
+import ProfileDAO from "../routes/profiles/ProfileDAO";
 
 const { DocumentClient } = require("aws-sdk/clients/dynamodb");
 
@@ -62,21 +63,6 @@ it("should return a list of all channels", async() =>
     expect(item).toEqual(list);
 });
 
-const msg = new MessageDAO(ddb);
-it("should retrieve the message history for a given channel", async() =>
-{
-
-});
-it("should get all messages from all channels", async() =>
-{
-
-});
-it("should add a new message to the file", async() =>
-{
-    msg.addNewMessage("Lorem Ipsum");
-
-});
-
 const userChannel = new UserChannelDAO(ddb);
 it("should subscribe a user to a channel", async() =>
 {
@@ -110,5 +96,20 @@ it("should return all data in a user's profile", async() =>
 });
 it("should update all data in a user's profile", async() =>
 {
+
+});
+
+const msg = new MessageDAO(ddb);
+it("should retrieve the message history for a given channel", async() =>
+{
+
+});
+it("should get all messages from all channels", async() =>
+{
+
+});
+it("should add a new message to the file", async() =>
+{
+    msg.addNewMessage("Lorem Ipsum");
 
 });
