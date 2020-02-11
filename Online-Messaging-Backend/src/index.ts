@@ -3,10 +3,15 @@ import express from "express";
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
 import MessageDAO from "./routes/messages/MessageDAO";
+import aws from "aws-sdk";
+import { awsConfigPath } from "./config/aws-config";
 import socket = require("socket.io");
 
 const app = express();
 const port = 8080; // default port to listen
+
+aws.config.loadFromPath(awsConfigPath);
+const docClient = new aws.DynamoDB.DocumentClient();
 
 const server = app.listen(port, () => {
     // tslint:disable-next-line:no-console
@@ -31,7 +36,7 @@ io.on("connection", (socketIO) => {
     socketIO.on("message", (message: any) => {
         if (message.content) {
             io.sockets.emit("broadcast", message);
-            const messageDAO = new MessageDAO();
+            const messageDAO = new MessageDAO(docClient);
             messageDAO.addNewMessage(message);
         }
     });

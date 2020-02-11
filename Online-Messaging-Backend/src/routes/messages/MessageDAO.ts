@@ -1,11 +1,6 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import { awsConfigPath } from "../../config/aws-config";
 import { uuid } from "uuidv4";
-
-aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 interface Message {
     channelId: number;
@@ -19,6 +14,9 @@ const tableName: string = "Messages";
 class MessageDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
+    constructor(private docClient: DocumentClient) {
+    }
+
     public getMessageHistory(channelId: string): Promise<any> {
         const params = {
             TableName: tableName,
@@ -29,7 +27,7 @@ class MessageDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -47,7 +45,7 @@ class MessageDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -76,7 +74,7 @@ class MessageDAO {
             TableName: tableName
         };
 
-        docClient.put(params, (err, data) => {
+        this.docClient.put(params, (err, data) => {
             if (err) {
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
