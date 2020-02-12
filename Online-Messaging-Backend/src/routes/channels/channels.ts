@@ -7,6 +7,7 @@ import jwkToBuffer, { JWK } from "jwk-to-pem";
 import * as jwt from "jsonwebtoken";
 import { awsCognitoConfig, UserPoolConfig } from "../../config/aws-config";
 import MessageDAO from "../messages/MessageDAO";
+import aws from "aws-sdk";
 
 const PATH_GET_ALL_CHANNELS: string = "/";
 const PATH_GET_CHANNEL_BY_ID: string = "/:channelId";
@@ -37,10 +38,13 @@ const numRegExp: RegExp = /^\+?(0|[1-9]\d*)$/i;
 
 const jwk: JWK = awsCognitoConfig;
 
+aws.config.loadFromPath(awsConfigPath);
+const docClient = new aws.DynamoDB.DocumentClient();
+
 router.use(bodyParser());
 
 router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
-    const channelDAO = new ChannelDAO();
+    const channelDAO = new ChannelDAO(docClient);
     channelDAO
         .getAllChannels()
         .then((data) => {
@@ -52,7 +56,7 @@ router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
 });
 
 router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
-    const channelDAO = new ChannelDAO();
+    const channelDAO = new ChannelDAO(docClient);
     let channelIdString = req.params.channelId;
     channelDAO
         .getChannelInfo(Number(channelIdString))
@@ -65,7 +69,7 @@ router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
 });
 
 router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
-    const userChannelDAO = new UserChannelDAO();
+    const userChannelDAO = new UserChannelDAO(docClient);
     let channelId = req.params.channelId;
     userChannelDAO
         .getAllSubscribedUsers(Number(channelId))
@@ -182,7 +186,7 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
     console.log(req.body);
     console.log(req.params.channelId);
-    const userChannelDAO = new UserChannelDAO();
+    const userChannelDAO = new UserChannelDAO(docClient);
     userChannelDAO
         .addNewUserToChannel(
             req.body.username,
@@ -203,7 +207,7 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
 });
 
 router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
-    const channelDAO = new ChannelDAO();
+    const channelDAO = new ChannelDAO(docClient);
     channelDAO
         .addNewChannel(
             req.body.channelName,
