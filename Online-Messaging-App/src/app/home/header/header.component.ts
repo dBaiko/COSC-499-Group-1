@@ -7,7 +7,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
     styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
-    @ViewChild('mySelect') mySelect;
+    @ViewChild('mySelect', {static: false}) mySelect;
     userLoggedIn = false;
     user;
 
