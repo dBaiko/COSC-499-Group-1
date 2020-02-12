@@ -42,16 +42,16 @@ it("should create a new channel", async () =>
 {
    await channel.addNewChannel("testChannel", "public", "testUser",
         "admin");
-    const item = await ddb.get({TableName: "Channels", Key: {channelId: "testChannel", channelType: "public"}})
-        .promise();
+    const item = await ddb.scan({TableName: "Channels",}).promise();
     expect(item).toEqual({
-        channelId: "testChannel",
-
+        channelName: "testChannel",
+        channelType: "public",
     });
 });
 it("should retrieve certain information about a channel", async() =>
 {
-    const call = await channel.getChannelInfo("testChannel");
+    //TODO: fix channelID retrieval
+    const call = await channel.getChannelInfo(111);
     const item = await ddb.get({TableName: "Channels", Key: {channelId: "testChannel", channelType: "public"}})
         .promise();
     expect(item).toEqual(call);
@@ -110,6 +110,6 @@ it("should get all messages from all channels", async() =>
 });
 it("should add a new message to the file", async() =>
 {
-    msg.addNewMessage("Lorem Ipsum");
-
+    //TODO: create message object to pass.
+    await msg.addNewMessage("Lorem Ipsum");
 });
