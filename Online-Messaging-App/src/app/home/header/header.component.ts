@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 
 @Component({
@@ -7,6 +7,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
     styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
+    @ViewChild('mySelect') mySelect;
     userLoggedIn = false;
     user;
 
@@ -27,5 +28,9 @@ export class HeaderComponent implements OnInit {
     unDrop() {
         let element = document.getElementsByClassName("mat-select-arrow")[0];
         element.classList.remove("dropped");
+    }
+
+    triggerSelect() {
+        this.mySelect.toggle();
     }
 }
