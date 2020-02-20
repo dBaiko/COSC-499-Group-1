@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { APIConfig, Constants } from "../../shared/app-config";
 
@@ -61,21 +61,37 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getSubscribedChannels() {
-        this.http
-            .get(
-                this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
-                Constants.HTTP_OPTIONS
-            )
-            .subscribe(
-                (data: Object[]) => {
-                    data.forEach((item: userChannelObject) => {
-                        this.subscribedChannels.push(item.channelId);
-                    });
-                },
-                (err) => {
-                    console.log(err.toString());
-                }
-            );
+
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http
+                    .get(
+                        this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
+                        httpHeaders
+                    )
+                    .subscribe(
+                        (data: Object[]) => {
+                            data.forEach((item: userChannelObject) => {
+                                this.subscribedChannels.push(item.channelId);
+                            });
+                        },
+                        (err) => {
+                            console.log(err.toString());
+                        }
+                    );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+
     }
 
     sendQuery() {
@@ -96,35 +112,61 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getChannels(): void {
-        this.http.get(this.channelsAPI, Constants.HTTP_OPTIONS).subscribe(
-            (data: Object[]) => {
-                this.channels = data;
+
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.channelsAPI, httpHeaders).subscribe(
+                    (data: Object[]) => {
+                        this.channels = data;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
             },
             (err) => {
                 console.log(err);
             }
         );
+
     }
 
-    joinChannel(channel: userChannelObject): Promise<Object> {
+    joinChannel(channel: userChannelObject) {
         this.subscribedChannels.push(channel.channelId);
         this.newChannelIdEvent.emit(channel);
 
-        let user: userChannelObject = {
-            username: this.auth.getAuthenticatedUser().getUsername(),
-            channelId: channel.channelId,
-            userChannelRole: DEFAULT_CHANNEL_ROLE,
-            channelName: channel.channelName,
-            channelType: channel.channelType
-        };
 
-        // TODO: check for errors in responce
-        return this.http
-            .post(
-                this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH,
-                user,
-                Constants.HTTP_OPTIONS
-            )
-            .toPromise();
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                let user: userChannelObject = {
+                    username: this.auth.getAuthenticatedUser().getUsername(),
+                    channelId: channel.channelId,
+                    userChannelRole: DEFAULT_CHANNEL_ROLE,
+                    channelName: channel.channelName,
+                    channelType: channel.channelType
+                };
+
+                // TODO: check for errors in responce
+                this.http.post(this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH, user, httpHeaders);
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+
     }
 }
