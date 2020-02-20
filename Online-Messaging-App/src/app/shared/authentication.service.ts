@@ -119,9 +119,7 @@ export class AuthenticationService {
 
                 observer.next(session.getIdToken());
                 observer.complete();
-
             });
         });
     }
-
 }

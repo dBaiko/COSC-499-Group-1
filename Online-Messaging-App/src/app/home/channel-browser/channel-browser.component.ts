@@ -61,13 +61,12 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getSubscribedChannels() {
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -91,7 +90,6 @@ export class ChannelBrowserComponent implements OnInit {
                 console.log(err);
             }
         );
-
     }
 
     sendQuery() {
@@ -112,13 +110,12 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getChannels(): void {
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -135,20 +132,18 @@ export class ChannelBrowserComponent implements OnInit {
                 console.log(err);
             }
         );
-
     }
 
     joinChannel(channel: userChannelObject) {
         this.subscribedChannels.push(channel.channelId);
         this.newChannelIdEvent.emit(channel);
 
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -161,12 +156,15 @@ export class ChannelBrowserComponent implements OnInit {
                 };
 
                 // TODO: check for errors in responce
-                this.http.post(this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH, user, httpHeaders);
+                this.http.post(
+                    this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH,
+                    user,
+                    httpHeaders
+                );
             },
             (err) => {
                 console.log(err);
             }
         );
-
     }
 }

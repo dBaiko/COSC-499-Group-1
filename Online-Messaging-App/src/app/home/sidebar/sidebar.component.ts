@@ -77,13 +77,12 @@ export class SidebarComponent implements OnInit {
     }
 
     getSubscribedChannels(): void {
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -122,7 +121,6 @@ export class SidebarComponent implements OnInit {
                 console.log(err);
             }
         );
-
     }
 
     selectPublicChannel(): void {

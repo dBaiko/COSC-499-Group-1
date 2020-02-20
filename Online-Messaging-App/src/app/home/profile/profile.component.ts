@@ -20,13 +20,12 @@ export class ProfileComponent implements OnInit {
     }
 
     getUserInfo(): void {
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -43,7 +42,5 @@ export class ProfileComponent implements OnInit {
                 console.log(err);
             }
         );
-
-
     }
 }
