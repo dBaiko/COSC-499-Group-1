@@ -9,7 +9,8 @@ import { JWK } from "jwk-to-pem";
 export const awsCognitoConfig: JWK = {
     e: "AQAB",
     kty: "RSA",
-    n: "g1D17h6URfw7xJcaeryvK4ySkOfKnRf5C3hEHIkF7s0CNHR9oLiLwSsN6zbM3wsa0pWvxND2Cjh-wRuSWcddqvjzqyuNlwasbFiPrQ8k2B9f_7fJV4RJKmI1RvkzuHJRugAHdlxWyTCOkJ2WMRqZmd2OieDQC_TlOF2bCcnGu8_Ai1wTxW8FT7BBgRI2aMAcZ5IPNxHEoJNFR2aZqwSqSi0L8X4rXDHgcCyw4IIOfPpez-ctcj0vSWrNs2vZTZVqKzMPbG8dNDOFcSMX_L8TsJ9uXbxEhOorRBUh49G9fsMIYbsvCI6tMhvuDqeDqu-LQRphJSO83cJql7jOn4QjrQ"
+    n:
+        "g1D17h6URfw7xJcaeryvK4ySkOfKnRf5C3hEHIkF7s0CNHR9oLiLwSsN6zbM3wsa0pWvxND2Cjh-wRuSWcddqvjzqyuNlwasbFiPrQ8k2B9f_7fJV4RJKmI1RvkzuHJRugAHdlxWyTCOkJ2WMRqZmd2OieDQC_TlOF2bCcnGu8_Ai1wTxW8FT7BBgRI2aMAcZ5IPNxHEoJNFR2aZqwSqSi0L8X4rXDHgcCyw4IIOfPpez-ctcj0vSWrNs2vZTZVqKzMPbG8dNDOFcSMX_L8TsJ9uXbxEhOorRBUh49G9fsMIYbsvCI6tMhvuDqeDqu-LQRphJSO83cJql7jOn4QjrQ"
 };
 
 export const UserPoolConfig = {
