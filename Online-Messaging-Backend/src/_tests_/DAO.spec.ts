@@ -28,7 +28,6 @@ const ddb = new DocumentClient(config);
 const user = new UserDAO(ddb);
 
 describe("DAO Spec", () => {
-
     it("should create a new user in the table", async () => {
         await user.createNewUser("testUser", "testUser@nothing.com", "Lorem", "Ipsum");
         const item = await ddb.get({ TableName: "Users", Key: { username: "testUser" } }).promise();
@@ -60,14 +59,14 @@ describe("DAO Spec", () => {
         const item = await ddb.scan({ TableName: "Channel" }).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
-            "Count": 1,
-            "Items": [
+            Count: 1,
+            Items: [
                 {
-                    "channelName": "testChannel",
-                    "channelType": "public"
+                    channelName: "testChannel",
+                    channelType: "public"
                 }
             ],
-            "ScannedCount": 1
+            ScannedCount: 1
         });
     });
 
@@ -79,18 +78,16 @@ describe("DAO Spec", () => {
         const item = await ddb
             .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "testChannel" } })
             .promise();
-        let expectedItem = [
-            item.Item
-        ];
+        let expectedItem = [item.Item];
         expect(call).toEqual(expectedItem);
     });
 
     it("should return a list of all channels", async () => {
         const list = await channel.getAllChannels();
         const item = await ddb.scan({ TableName: "Channel" }).promise();
-        expect(list).toEqual(item.Items.sort((a: ChannelObject, b: ChannelObject) =>
-            a.channelName > b.channelName ? 1 : -1
-        ));
+        expect(list).toEqual(
+            item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
+        );
     });
 
     const userChannel = new UserChannelDAO(ddb);
@@ -117,10 +114,8 @@ describe("DAO Spec", () => {
     });
     it("should get all messages from all channels", async () => {
     });
-// it("should add a new message to the file", async () => {
-//     //TODO: create message object to pass.
-//     await msg.addNewMessage("Lorem Ipsum");
-// });
-
+    // it("should add a new message to the file", async () => {
+    //     //TODO: create message object to pass.
+    //     await msg.addNewMessage("Lorem Ipsum");
+    // });
 });
-
