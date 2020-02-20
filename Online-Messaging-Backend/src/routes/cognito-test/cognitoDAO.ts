@@ -4,7 +4,7 @@ import { UserPoolConfig } from "./../../config/aws-config";
 import Global = NodeJS.Global;
 
 export interface GlobalWithCognitoFix extends Global {
-    fetch: any
+    fetch: any;
 }
 
 declare const global: GlobalWithCognitoFix;
@@ -13,7 +13,6 @@ global.fetch = require("node-fetch");
 const userPool: CognitoUserPool = new CognitoUserPool(UserPoolConfig);
 
 export class CognitoDAO {
-
     constructor() {
     }
 

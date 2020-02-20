@@ -4,9 +4,7 @@ module.exports = {
             TableName: `Users`,
             KeySchema: [{ AttributeName: "username", KeyType: "HASH" }],
             AttributeDefinitions: [
-                { AttributeName: "email", AttributeType: "S" },
-                { AttributeName: "firstName", AttributeType: "S" },
-                { AttributeName: "lastName", AttributeType: "S" }
+                { AttributeName: "username", AttributeType: "S" }
             ],
             ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
         },
@@ -17,9 +15,8 @@ module.exports = {
                 { AttributeName: "insertTime", KeyType: "RANGE" }
             ],
             AttributeDefinitions: [
-                { AttributeName: "content", AttributeType: "S" },
-                { AttributeName: "messageId", AttributeType: "S" },
-                { AttributeName: "username", AttributeType: "S" }
+                { AttributeName: "channelId", AttributeType: "S" },
+                { AttributeName: "insertTime", AttributeType: "N" }
             ],
             ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
         },
@@ -27,10 +24,11 @@ module.exports = {
             TableName: `Channel`,
             KeySchema: [
                 { AttributeName: "channelId", KeyType: "HASH" },
-                { AttributeName: "channelType", KeyType: "RANGE" }
+                { AttributeName: "channelName", KeyType: "RANGE" }
             ],
             AttributeDefinitions: [
-                { AttributeName: "channelType", AttributeType: "S" }
+                { AttributeName: "channelId", AttributeType: "S" },
+                { AttributeName: "channelName", AttributeType: "S" }
             ],
             ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
         },
@@ -41,13 +39,10 @@ module.exports = {
                 { AttributeName: "channelId", KeyType: "RANGE" }
             ],
             AttributeDefinitions: [
-                { AttributeName: "channelType", AttributeType: "S" },
-                { AttributeName: "channelName", AttributeType: "S" },
-                { AttributeName: "userChannelRole", AttributeType: "S" }
+                { AttributeName: "username", AttributeType: "S" },
+                { AttributeName: "channelId", AttributeType: "S" }
             ],
-            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+            ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
         }
     ]
-
 };
-

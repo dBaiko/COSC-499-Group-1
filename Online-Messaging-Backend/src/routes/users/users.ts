@@ -44,7 +44,8 @@ router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
 router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
     const userDAO = new UserDAO(docClient);
     let username = req.params.username;
-    userDAO.getUserInfoByUsername(username)
+    userDAO
+        .getUserInfoByUsername(username)
         .then((data) => {
             res.status(200).send(data);
         })

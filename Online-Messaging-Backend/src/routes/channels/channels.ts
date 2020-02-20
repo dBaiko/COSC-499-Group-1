@@ -66,16 +66,13 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
 });
 
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
-
     let token: string = req.headers["authorization"];
     if (token) {
-
         if (token.startsWith("Bearer ") || token.startsWith("Bearer")) {
             token = token.slice(7, token.length);
         }
 
         if (token) {
-
             let pem = jwkToBuffer(jwk);
             jwt.verify(token, pem, { algorithms: ["RS256"] }, (err, decodedToken) => {
                 if (err) {
@@ -84,7 +81,6 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                         data: { message: "Token is not valid" }
                     });
                 } else {
-
                     console.log(JSON.stringify(decodedToken, null, 4));
 
                     const messageDAO = new MessageDAO(docClient);
@@ -99,24 +95,18 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                         });
                 }
             });
-
-
         } else {
             res.status(401).send({
                 status: 401,
                 data: { message: "Auth token is missing" }
             });
-
         }
-
-
     } else {
         res.status(401).send({
             status: 401,
             data: { message: "Auth token is missing" }
         });
     }
-
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
