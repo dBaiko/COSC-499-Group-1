@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
@@ -77,36 +77,52 @@ export class SidebarComponent implements OnInit {
     }
 
     getSubscribedChannels(): void {
-        this.http
-            .get(
-                this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
-                Constants.HTTP_OPTIONS
-            )
-            .subscribe(
-                (data: Object[]) => {
-                    this.publicChannels = [];
-                    this.privateChannels = [];
-                    this.friendsChannels = [];
-                    this.userSubscribedChannels = data;
-                    this.userSubscribedChannels.forEach((item: userChannelObject) => {
-                        if (item.channelType == PUBLIC) {
-                            this.publicChannels.push(item);
-                        } else if (item.channelType == PRIVATE) {
-                            this.privateChannels.push(item);
-                        } else {
-                            this.friendsChannels.push(item);
+
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http
+                    .get(
+                        this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
+                        httpHeaders
+                    )
+                    .subscribe(
+                        (data: Object[]) => {
+                            this.publicChannels = [];
+                            this.privateChannels = [];
+                            this.friendsChannels = [];
+                            this.userSubscribedChannels = data;
+                            this.userSubscribedChannels.forEach((item: userChannelObject) => {
+                                if (item.channelType == PUBLIC) {
+                                    this.publicChannels.push(item);
+                                } else if (item.channelType == PRIVATE) {
+                                    this.privateChannels.push(item);
+                                } else {
+                                    this.friendsChannels.push(item);
+                                }
+                            });
+                            if (this.userSubscribedChannels.length > 0) {
+                                this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
+                                this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
+                                this.userSubscribedChannels[0][SELECTED] = true;
+                            }
+                        },
+                        (err) => {
+                            console.log(err);
                         }
-                    });
-                    if (this.userSubscribedChannels.length > 0) {
-                        this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
-                        this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
-                        this.userSubscribedChannels[0][SELECTED] = true;
-                    }
-                },
-                (err) => {
-                    console.log(err);
-                }
-            );
+                    );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+
     }
 
     selectPublicChannel(): void {
