@@ -83,7 +83,7 @@ class UserChannelDAO {
         });
     }
 
-    public getAllSubscribedUsers(channelId: number): Promise<any> {
+    public getAllSubscribedUsers(channelId: string): Promise<any> {
         const params = {
             TableName: USER_CHANNEL_TABLE_NAME,
             IndexName: CHANNELID_USERNAME_INDEX,
