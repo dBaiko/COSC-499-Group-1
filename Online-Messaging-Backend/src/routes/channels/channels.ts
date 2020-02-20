@@ -130,26 +130,39 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
-    console.log(req.body);
-    console.log(req.params.channelId);
-    const userChannelDAO = new UserChannelDAO(docClient);
-    userChannelDAO
-        .addNewUserToChannel(
-            req.body.username,
-            req.body.channelId,
-            req.body.userChannelRole,
-            req.body.channelName,
-            req.body.channelType
-        )
-        .then(() => {
-            res.status(200).send({
-                status: 200,
-                data: { message: "New userChannel added successfully" }
-            });
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
+
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+
+            console.log(req.body);
+            console.log(req.params.channelId);
+            const userChannelDAO = new UserChannelDAO(docClient);
+            userChannelDAO
+                .addNewUserToChannel(
+                    req.body.username,
+                    req.body.channelId,
+                    req.body.userChannelRole,
+                    req.body.channelName,
+                    req.body.channelType
+                )
+                .then(() => {
+                    res.status(200).send({
+                        status: 200,
+                        data: { message: "New userChannel added successfully" }
+                    });
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
+
+        },
+        (err: HTTPResponse) => {
+            res.status(err.status).send(err);
+        }
+    );
+
 });
 
 router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
