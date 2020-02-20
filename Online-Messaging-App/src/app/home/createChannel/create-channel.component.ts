@@ -76,7 +76,7 @@ export class CreateChannelComponent implements OnInit {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
-                            "Authorization": "Bearer " + data.getJwtToken()
+                            Authorization: "Bearer " + data.getJwtToken()
                         })
                     };
 
@@ -89,15 +89,12 @@ export class CreateChannelComponent implements OnInit {
                             observer.error(err);
                         }
                     ); // TODO: check for errors in responce
-
                 },
                 (err) => {
                     console.log(err);
                 }
             );
         });
-
-
     }
 
     newChannel(form: FormGroup): void {
@@ -110,7 +107,8 @@ export class CreateChannelComponent implements OnInit {
                 },
                 (err) => {
                     console.log(err);
-                });
+                }
+            );
         }
     }
 

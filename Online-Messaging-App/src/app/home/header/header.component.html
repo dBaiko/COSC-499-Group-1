@@ -3,8 +3,8 @@
         <div>Streamline Athletes</div>
 
         <div *ngIf="userLoggedIn">
-            <div class="headInfo" (click)="triggerSelect()">
-                {{user.username}}
+            <div (click)="triggerSelect()" class="headInfo">
+                {{ user.username }}
                 <mat-select #mySelect (closed)="unDrop()" (opened)="drop()" disableOptionCentering>
                     <mat-option>
                         <logout-form></logout-form>
