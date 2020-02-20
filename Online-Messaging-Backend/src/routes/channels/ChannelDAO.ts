@@ -21,7 +21,7 @@ class ChannelDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public getChannelInfo(channelId: number): Promise<any> {
+    public getChannelInfo(channelId: string): Promise<any> {
         const params = {
             TableName: channelTableName,
             KeyConditionExpression: this.channelIdQueryDeclaration,
