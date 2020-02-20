@@ -14,8 +14,10 @@ export const awsCognitoConfig: JWK = {
 };
 
 export const UserPoolConfig = {
+    UserPoolURL: "https://cognito-idp.ca-central-1.amazonaws.com/",
     UserPoolId: "ca-central-1_6ickHVand",
-    ClientId: "2n7od4b3prkjdc9trthuf3d92q"
+    ClientId: "2n7od4b3prkjdc9trthuf3d92q",
+    ExpectedTokenUse: "id"
 };
 
 export const TestUserData = {
