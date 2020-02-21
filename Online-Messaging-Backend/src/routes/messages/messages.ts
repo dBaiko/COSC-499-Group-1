@@ -4,7 +4,7 @@ import express from "express";
 import MessageDAO from "./MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-import { HTTPResponse, JwtVerificationService } from "../../shared/jwt-verification-service";
+import { JwtVerificationService } from "../../shared/jwt-verification-service";
 
 const router = express.Router();
 const AUTH_KEY = "authorization";
@@ -36,7 +36,7 @@ router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );

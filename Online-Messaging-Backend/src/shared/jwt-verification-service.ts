@@ -9,11 +9,11 @@ const JWK_ALGORITHM = "RS256";
 const BEARER_STRING_A = "Bearer ";
 const BEARER_STRING_B = "Bearer";
 
-interface decodedCognitoToken {
+export interface DecodedCognitoToken {
     sub: string,
     email_verified: boolean,
     iss: string,
-    cognito: { username: string },
+    "cognito:username": string,
     given_name: string,
     aud: string,
     event_id: string,
@@ -25,10 +25,13 @@ interface decodedCognitoToken {
     email: string
 }
 
-export interface HTTPResponse {
-    status: number,
-    data: {
-        message: string
+export interface HTTPResponseAndToken {
+    decodedToken: DecodedCognitoToken,
+    httpResponse: {
+        status: number,
+        data: {
+            message: string
+        }
     }
 }
 
@@ -46,9 +49,9 @@ export class JwtVerificationService {
         return JwtVerificationService.instance;
     }
 
-    public verifyJWTToken(token: string): Observable<HTTPResponse> {
+    public verifyJWTToken(token: string): Observable<HTTPResponseAndToken> {
 
-        return new Observable<HTTPResponse>((observer) => {
+        return new Observable<HTTPResponseAndToken>((observer) => {
 
             if (token) {
 
@@ -58,7 +61,7 @@ export class JwtVerificationService {
 
                 if (token) {
 
-                    jwt.verify(token, pem, { algorithms: [JWK_ALGORITHM] }, (err, decodedToken: decodedCognitoToken) => {
+                    jwt.verify(token, pem, { algorithms: [JWK_ALGORITHM] }, (err, decodedToken: DecodedCognitoToken) => {
 
                         if (err) {
                             console.log("Not verified");
@@ -80,8 +83,11 @@ export class JwtVerificationService {
                                         if (decodedToken.token_use === UserPoolConfig.ExpectedTokenUse) {
 
                                             observer.next({
-                                                status: 200,
-                                                data: { message: "Token is valid" }
+                                                decodedToken: decodedToken,
+                                                httpResponse: {
+                                                    status: 200,
+                                                    data: { message: "Token is valid" }
+                                                }
                                             });
                                             observer.complete();
 

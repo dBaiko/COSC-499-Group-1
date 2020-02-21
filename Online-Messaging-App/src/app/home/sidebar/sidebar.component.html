@@ -9,8 +9,8 @@
             <mat-nav-list>
                 <div *ngFor="let publicChannel of publicChannels">
                     <mat-list-item
-                            (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
-                            [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
+                        [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ publicChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
@@ -27,8 +27,8 @@
             <mat-nav-list>
                 <div *ngFor="let privateChannel of privateChannels">
                     <mat-list-item
-                            (click)="selectChannel(privateChannel.channelId); switchDisplay(chatBox)"
-                            [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="selectChannel(privateChannel.channelId); switchDisplay(chatBox)"
+                        [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ privateChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
@@ -45,8 +45,8 @@
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
-                            (click)="selectChannel(friendChannel.channelId); switchDisplay(chatBox)"
-                            [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="selectChannel(friendChannel.channelId); switchDisplay(chatBox)"
+                        [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ friendChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>

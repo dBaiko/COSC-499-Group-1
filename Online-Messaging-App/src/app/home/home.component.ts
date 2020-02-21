@@ -3,6 +3,8 @@ import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 
+const PROFILE_PAGE = "profile";
+
 interface userChannelObject {
     username: string;
     channelId: number;
@@ -31,6 +33,7 @@ export class HomeComponent implements OnInit {
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
+    profileView: string;
     private scrollContainer: any;
 
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
@@ -63,5 +66,10 @@ export class HomeComponent implements OnInit {
 
     updateDisplay(value: string): void {
         this.display = value;
+    }
+
+    updateProfile(value: string): void {
+        this.profileView = value;
+        this.updateDisplay(PROFILE_PAGE);
     }
 }
