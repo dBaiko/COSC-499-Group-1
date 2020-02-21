@@ -35,3 +35,7 @@ mat-option {
 ::ng-deep .cdk-overlay-pane {
     margin-top: 3rem;
 }
+
+.headInfo:hover {
+    cursor: pointer;
+}

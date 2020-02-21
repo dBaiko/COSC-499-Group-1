@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { APIConfig, Constants } from "../../shared/app-config";
+import { APIConfig } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
     selector: "app-profile",
@@ -20,9 +20,23 @@ export class ProfileComponent implements OnInit {
     }
 
     getUserInfo(): void {
-        this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), Constants.HTTP_OPTIONS).subscribe(
+        this.auth.getCurrentSessionId().subscribe(
             (data) => {
-                this.user = data;
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), httpHeaders).subscribe(
+                    (data) => {
+                        this.user = data;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
             },
             (err) => {
                 console.log(err);
