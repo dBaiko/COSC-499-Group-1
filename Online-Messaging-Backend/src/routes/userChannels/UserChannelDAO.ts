@@ -1,22 +1,24 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
 
-aws.config.loadFromPath(awsConfigPath);
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-const docClient = new aws.DynamoDB.DocumentClient();
-
-const userChannelTableName = "UserChannel";
+const USER_CHANNEL_TABLE_NAME = "UserChannel";
+const CHANNELID_USERNAME_INDEX = "channelId-username-index";
 
 class UserChannelDAO {
+    private channelIdQueryDeclaration = "channelId = :channelId";
+    private usernameQueryDeclaration = "username = :username";
+
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getAll(): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
+            TableName: USER_CHANNEL_TABLE_NAME
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -26,21 +28,28 @@ class UserChannelDAO {
                 }
             });
         });
-
     }
 
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
+    public addNewUserToChannel(
+        username: string,
+        channelId: string,
+        userChannelRole: string,
+        channelName: string,
+        channelType: string
+    ): Promise<any> {
         const params = {
             Item: {
                 username,
                 channelId,
-                userChannelRole
+                userChannelRole,
+                channelName,
+                channelType
             },
-            TableName: userChannelTableName
-        }
+            TableName: USER_CHANNEL_TABLE_NAME
+        };
 
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -48,22 +57,21 @@ class UserChannelDAO {
                     console.log("Added new user subsription: ", JSON.stringify(data, null, 2));
                     resolve();
                 }
-            })
-        })
-
+            });
+        });
     }
 
     public getAllSubscribedChannels(username: string): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
-            KeyConditionExpression: "username = :username",
+            TableName: USER_CHANNEL_TABLE_NAME,
+            KeyConditionExpression: this.usernameQueryDeclaration,
             ExpressionAttributeValues: {
                 ":username": username
             }
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -72,22 +80,21 @@ class UserChannelDAO {
                     resolve(data.Items);
                 }
             });
-
         });
     }
 
-    public getAllSubscribedUsers(channelId: number): Promise<any> {
+    public getAllSubscribedUsers(channelId: string): Promise<any> {
         const params = {
-            TableName: userChannelTableName,
-            IndexName: "channelId-username-index",
-            KeyConditionExpression: "channelId = :channelId",
+            TableName: USER_CHANNEL_TABLE_NAME,
+            IndexName: CHANNELID_USERNAME_INDEX,
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -96,10 +103,8 @@ class UserChannelDAO {
                     resolve(data.Items);
                 }
             });
-
         });
     }
-
 }
 
 export default UserChannelDAO;

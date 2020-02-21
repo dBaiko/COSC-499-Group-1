@@ -14,6 +14,7 @@
         "@angular/animation": "^4.0.0-beta.8",
         "@angular/animations": "^8.2.14",
         "@angular/cdk": "^8.2.3",
+        "@angular/cli": "^8.3.19",
         "@angular/common": "^8.2.14",
         "@angular/compiler": "^8.2.14",
         "@angular/core": "^8.2.14",
@@ -24,15 +25,15 @@
         "@angular/router": "^8.2.14",
         "@material/textfield": "^4.0.0",
         "@types/validator": "^12.0.0",
-        "amazon-cognito-identity-js": "^3.2.0",
+        "amazon-cognito-identity-js": "^3.2.4",
         "express": "^4.17.1",
-        "@angular/cli": "^8.3.19",
+        "jsonwebtoken": "^8.5.1",
         "karma-remap-istanbul": "^0.6.0",
         "karma-requirejs": "^1.1.0",
         "rxjs": "~6.4.0",
         "socket.io": "^2.3.0",
         "tslib": "^1.10.0",
-        "validator": "^12.1.0",
+        "validator": "^12.2.0",
         "zone.js": "~0.9.1"
     },
     "devDependencies": {
@@ -55,9 +56,19 @@
         "karma-sourcemap-loader": "^0.3.7",
         "karma-webpack": "^4.0.2",
         "ngx-socket-io": "^3.0.1",
+        "prettier": "1.19.1",
         "protractor": "^5.4.2",
         "ts-node": "~7.0.0",
         "tslint": "~5.15.0",
         "typescript": "~3.5.3"
+    },
+    "prettier": {
+        "singleQuote": false,
+        "printWidth": 120,
+        "tabWidth": 4,
+        "semi": true,
+        "bracketSpacing": true,
+        "arrowParens": "always",
+        "proseWrap": "always"
     }
 }

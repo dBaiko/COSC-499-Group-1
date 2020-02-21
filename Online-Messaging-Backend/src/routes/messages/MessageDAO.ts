@@ -1,37 +1,33 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
-
-aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
-
-interface MessageObject {
-    username: string;
-    content: string;
-    messageID: number;
-}
+import { uuid } from "uuidv4";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 interface Message {
+    channelId: number;
     username: string;
     content: string;
+    insertTime: number;
 }
 
-const tableName = "Messages";
+const tableName: string = "Messages";
 
 class MessageDAO {
+    private channelIdQueryDeclaration = "channelId = :channelId";
 
-    public getMessageHistory(channelId: number): Promise<any> {
+    constructor(private docClient: DocumentClient) {
+    }
+
+    public getMessageHistory(channelId: string): Promise<any> {
         const params = {
             TableName: tableName,
-            KeyConditionExpression: "channelId = :channelId",
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -40,18 +36,16 @@ class MessageDAO {
                     resolve(data.Items);
                 }
             });
-
         });
-
     }
 
     public getAllMessageHistory(): Promise<any> {
         const params = {
-            TableName: tableName,
+            TableName: tableName
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -60,29 +54,27 @@ class MessageDAO {
                     resolve(data.Items);
                 }
             });
-
         });
-
     }
 
     public addNewMessage(message: Message): void {
-        const channelId = 0; // TODO: change to dynamic channel
-        const messageId = Date.now();
-        console.log(messageId);
+        const channelId = message.channelId;
+        const insertTime = Date.now();
+        const messageId = uuid();
         const username = message.username;
         const content = message.content;
         const params = {
-            Item:
-                {
-                    channelId,
-                    content,
-                    messageId,
-                    username,
-                },
+            Item: {
+                channelId,
+                content,
+                messageId,
+                username,
+                insertTime
+            },
             TableName: tableName
         };
 
-        docClient.put(params, (err, data) => {
+        this.docClient.put(params, (err, data) => {
             if (err) {
                 console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
             } else {
@@ -90,7 +82,6 @@ class MessageDAO {
             }
         });
     }
-
 }
 
 export default MessageDAO;

@@ -1,9 +1,37 @@
-
 mat-toolbar {
     background-color: #282828;
     color: white;
 }
 
-logout-form:hover {
-    color: #138CFA;
+mat-option {
+    background: #000000;
+    color: white;
+    width: 100%;
+}
+
+::ng-deep .mat-select-content {
+    width: 2000px;
+    background-color: red;
+    font-size: 10px;
+}
+
+.mat-select {
+    width: auto;
+    border-radius: 0% !important;
+}
+
+.mat-option {
+    background: #282828;
+    color: white;
+    text-align: center;
+    padding-right: 0.2vw;
+    padding-left: 0.2vw;
+}
+
+.mat-option:hover {
+    background-color: #1f1f1f;
+}
+
+::ng-deep .cdk-overlay-pane {
+    margin-top: 3rem;
 }

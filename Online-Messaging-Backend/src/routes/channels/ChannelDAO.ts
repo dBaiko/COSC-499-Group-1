@@ -1,27 +1,37 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
+import { awsConfigPath } from "../../config/aws-config";
+import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { uuid } from "uuidv4";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
 
-const docClient = new aws.DynamoDB.DocumentClient();
+const channelTableName: string = "Channel";
 
-const channelTableName = "Channel";
-const userChannelTableName = "UserChannel";
+interface ChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+}
 
 class ChannelDAO {
+    private channelIdQueryDeclaration = "channelId = :channelId";
 
-    public getChannelInfo(channelId: number): Promise<any> {
+    constructor(private docClient: DocumentClient) {
+    }
+
+    public getChannelInfo(channelId: string): Promise<any> {
         const params = {
             TableName: channelTableName,
-            KeyConditionExpression: "channelId = :channelId",
+            KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -30,33 +40,39 @@ class ChannelDAO {
                     resolve(data.Items);
                 }
             });
-
         });
-
     }
 
     public getAllChannels(): Promise<any> {
         const params = {
-            TableName: channelTableName,
-
+            TableName: channelTableName
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    resolve(data.Items);
+                    resolve(
+                        data.Items.sort((a: ChannelObject, b: ChannelObject) =>
+                            a.channelName > b.channelName ? 1 : -1
+                        )
+                    );
                 }
             });
         });
-
     }
 
-    public addNewChannel(channelName: string, channelType: string, firstUsername: string, firstUserChannelRole: string): Promise<any> {
-        const channelId = Date.now();
+    public addNewChannel(
+        channelName: string,
+        channelType: string,
+        firstUsername: string,
+        firstUserChannelRole: string
+    ): Promise<any> {
+        const userChannelDAO = new UserChannelDAO(this.docClient);
+        const channelId = uuid();
         const params = {
             Item: {
                 channelId,
@@ -65,77 +81,25 @@ class ChannelDAO {
             },
             TableName: channelTableName
         };
-
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.error("Unable to add new channel. Error JSON: ", JSON.stringify(err, null, 2));
                     reject(err);
                 } else {
                     console.log("Added new:", JSON.stringify(data, null, 2));
-                    this.addFirstUserToChannel(channelId, firstUsername, firstUserChannelRole)
+                    userChannelDAO
+                        .addNewUserToChannel(firstUsername, channelId, firstUserChannelRole, channelName, channelType)
                         .then(() => {
-                            resolve();
+                            resolve(params.Item);
                         })
                         .catch((err) => {
                             reject(err);
                         });
-
                 }
             });
-        })
-
+        });
     }
-
-    public addNewUserToChannel(username: string, channelId: string, userChannelRole: string): Promise<any> {
-        const params = {
-            Item: {
-                username,
-                channelId,
-                userChannelRole
-            },
-            TableName: channelTableName
-        }
-
-        return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    console.log("Added new user subsription: ", JSON.stringify(data, null, 2));
-                    resolve();
-                }
-            })
-        })
-
-    }
-
-    private addFirstUserToChannel(channelId: number, username: string, userChannelRole: string): Promise<any> {
-        const params = {
-            Item: {
-                username,
-                channelId,
-                userChannelRole
-            },
-            TableName: userChannelTableName
-        };
-
-        return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
-                if (err) {
-                    console.error("Unable to add a new item to UserChannel Table. Error JSON: ", JSON.stringify(err, null, 2));
-                    reject(err);
-                } else {
-                    console.log("Added new:", JSON.stringify(data, null, 2));
-                    resolve();
-                }
-            })
-        })
-
-    }
-
-
 }
 
 export default ChannelDAO;

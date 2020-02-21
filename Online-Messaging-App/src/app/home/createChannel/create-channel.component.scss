@@ -1,0 +1,30 @@
+.center {
+    text-align: center;
+}
+
+.leftSide {
+    float: left;
+    margin-top: 0.9em;
+}
+
+.rightSide {
+    float: left;
+    margin-left: 5em;
+}
+
+.bothSides:after {
+    content: "";
+    display: table;
+    clear: both;
+    text-align: center;
+}
+
+mat-radio-button {
+    padding-bottom: 1em;
+    display: block;
+}
+
+button {
+    margin-right: 0.5em;
+    text-align: center;
+}

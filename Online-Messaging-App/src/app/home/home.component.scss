@@ -15,7 +15,7 @@
     width: 250px;
     border: none;
     overflow: hidden;
-
+    margin-top: 10px;
 }
 
 app-header {
@@ -27,15 +27,12 @@ app-header {
     overflow: hidden;
 }
 
-#chatbox {
-    //display: flex;
-    overflow: hidden;
-}
-
 #home {
     overflow: hidden;
 }
 
-.mat-drawer-content {
-    overflow-y: scroll;
+.scrollMe {
+    overflow: hidden;
+    height: 100%;
+    padding: 0px !important;
 }
