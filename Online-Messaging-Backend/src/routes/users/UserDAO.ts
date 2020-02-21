@@ -10,11 +10,12 @@ class UserDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public createNewUser(username: string, email: string): Promise<any> {
-
+    public createNewUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
                 email,
+                firstName,
+                lastName,
                 username
             },
             TableName: USERS_TABLE_NAME
@@ -32,36 +33,30 @@ class UserDAO {
         });
     }
 
-    public updateProfile(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        age: number,
-        school: string,
-        gender: string,
-        activities: string,
-        bio: string
-    ) {
-        const params = {
-            TableName: USERS_TABLE_NAME,
-            Key: {
-                username,
-                email
-            },
-            UpdateExpression:
-                "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
-                "info.activities=:v, info.bio=:b",
-            ExpressionAttributeValues: {
-                ":f": firstName,
-                ":l": lastName,
-                ":a": age,
-                ":s": school,
-                ":g": gender,
-                ":v": activities,
-                ":b": bio
-            }
-        };
+    public updateProfile(username: string, email: string, firstName: string, lastName: string,
+                         age: number, school: string, gender: string, activities: string, bio: string) {
+        const params =
+            {
+                TableName: USERS_TABLE_NAME,
+                Key:
+                    {
+                        username,
+                        email
+                    },
+                UpdateExpression:
+                    "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
+                    "info.activities=:v, info.bio=:b",
+                ExpressionAttributeValues:
+                    {
+                        ":f": firstName,
+                        ":l": lastName,
+                        ":a": age,
+                        ":s": school,
+                        ":g": gender,
+                        ":v": activities,
+                        ":b": bio
+                    }
+            };
 
         console.log("Updating profile for user" + username + "...");
         return new Promise((resolve, reject) => {
@@ -78,13 +73,15 @@ class UserDAO {
     }
 
     public getUserProfile(username: string) {
-        const params = {
-            TableName: USERS_TABLE_NAME,
-            KeyConditionExpression: "username = :username",
-            ExpressionAttributeValues: {
-                ":username": username
-            }
-        };
+        const params =
+            {
+                TableName: USERS_TABLE_NAME,
+                KeyConditionExpression: "username = :username",
+                ExpressionAttributeValues:
+                    {
+                        ":username": username
+                    }
+            };
         return new Promise((resolve, reject) => {
             this.docClient.query(params, (err, data) => {
                 if (err) {
@@ -95,6 +92,7 @@ class UserDAO {
                     resolve(data.Items);
                 }
             });
+
         });
     }
 

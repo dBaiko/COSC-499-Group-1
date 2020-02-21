@@ -48,3 +48,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: dimgrey;
 }
+
+.mat-focused .mat-form-field-label {
+    color: white !important;
+    font-size: 20px;
+}

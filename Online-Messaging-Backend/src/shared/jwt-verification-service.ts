@@ -10,27 +10,28 @@ const BEARER_STRING_A = "Bearer ";
 const BEARER_STRING_B = "Bearer";
 
 interface decodedCognitoToken {
-    sub: string;
-    email_verified: boolean;
-    iss: string;
-    cognito: { username: string };
-    given_name: string;
-    aud: string;
-    event_id: string;
-    token_use: string;
-    auth_time: number;
-    exp: number;
-    iat: number;
-    family_name: string;
-    email: string;
+    sub: string,
+    email_verified: boolean,
+    iss: string,
+    cognito: { username: string },
+    given_name: string,
+    aud: string,
+    event_id: string,
+    token_use: string,
+    auth_time: number,
+    exp: number,
+    iat: number,
+    family_name: string,
+    email: string
 }
 
 export interface HTTPResponse {
-    status: number;
+    status: number,
     data: {
-        message: string;
-    };
+        message: string
+    }
 }
+
 
 export class JwtVerificationService {
     private static instance: JwtVerificationService;
@@ -46,69 +47,83 @@ export class JwtVerificationService {
     }
 
     public verifyJWTToken(token: string): Observable<HTTPResponse> {
+
         return new Observable<HTTPResponse>((observer) => {
+
             if (token) {
+
                 if (token.startsWith(BEARER_STRING_A) || token.startsWith(BEARER_STRING_B)) {
                     token = token.slice(7, token.length);
                 }
 
                 if (token) {
-                    jwt.verify(
-                        token,
-                        pem,
-                        { algorithms: [JWK_ALGORITHM] },
-                        (err, decodedToken: decodedCognitoToken) => {
-                            if (err) {
-                                console.log("Not verified");
-                                observer.error({
-                                    status: 401,
-                                    data: { message: "Token is not valid" }
-                                });
-                            } else {
-                                console.log(JSON.stringify(decodedToken, null, 4));
 
-                                if (Date.now() < decodedToken.exp * 1000) {
-                                    if (decodedToken.aud === UserPoolConfig.ClientId) {
-                                        let expectedISS = UserPoolConfig.UserPoolURL + UserPoolConfig.UserPoolId;
-                                        if (decodedToken.iss === expectedISS) {
-                                            if (decodedToken.token_use === UserPoolConfig.ExpectedTokenUse) {
-                                                observer.next({
-                                                    status: 200,
-                                                    data: { message: "Token is valid" }
-                                                });
-                                                observer.complete();
-                                            } else {
-                                                console.log("Bad token use");
-                                                observer.error({
-                                                    status: 401,
-                                                    data: { message: "Auth token is invalid" }
-                                                });
-                                            }
+                    jwt.verify(token, pem, { algorithms: [JWK_ALGORITHM] }, (err, decodedToken: decodedCognitoToken) => {
+
+                        if (err) {
+                            console.log("Not verified");
+                            observer.error({
+                                status: 401,
+                                data: { message: "Token is not valid" }
+                            });
+                        } else {
+
+                            console.log(JSON.stringify(decodedToken, null, 4));
+
+                            if (Date.now() < decodedToken.exp * 1000) {
+
+                                if (decodedToken.aud === UserPoolConfig.ClientId) {
+
+                                    let expectedISS = UserPoolConfig.UserPoolURL + UserPoolConfig.UserPoolId;
+                                    if (decodedToken.iss === expectedISS) {
+
+                                        if (decodedToken.token_use === UserPoolConfig.ExpectedTokenUse) {
+
+                                            observer.next({
+                                                status: 200,
+                                                data: { message: "Token is valid" }
+                                            });
+                                            observer.complete();
+
                                         } else {
-                                            console.log("Bad ISS");
+                                            console.log("Bad token use");
                                             observer.error({
                                                 status: 401,
                                                 data: { message: "Auth token is invalid" }
                                             });
                                         }
+
                                     } else {
-                                        console.log("Bad aud");
+                                        console.log("Bad ISS");
                                         observer.error({
                                             status: 401,
                                             data: { message: "Auth token is invalid" }
                                         });
                                     }
+
                                 } else {
-                                    console.log("Expired token");
+                                    console.log("Bad aud");
                                     observer.error({
                                         status: 401,
-                                        data: { message: "Auth token is expired" }
+                                        data: { message: "Auth token is invalid" }
                                     });
                                 }
+
+                            } else {
+                                console.log("Expired token");
+                                observer.error({
+                                    status: 401,
+                                    data: { message: "Auth token is expired" }
+                                });
                             }
+
                         }
-                    );
+
+                    });
+
+
                 }
+
             } else {
                 console.log("Auth token is missing");
                 observer.error({
@@ -116,6 +131,9 @@ export class JwtVerificationService {
                     data: { message: "Auth token is missing" }
                 });
             }
+
         });
+
     }
+
 }
