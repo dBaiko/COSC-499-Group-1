@@ -39,6 +39,7 @@ export class SidebarComponent implements OnInit {
     @Output() channelIdEvent = new EventEmitter<string>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
+    @Output() profileViewEvent = new EventEmitter<string>();
     publicChannelSelect: boolean = true;
     privateChannelSelect: boolean = false;
     friendChannelSelect: boolean = false;
@@ -176,5 +177,8 @@ export class SidebarComponent implements OnInit {
 
     switchDisplay(value: string): void {
         this.switchEvent.emit(value);
+        if (value === "profile") {
+            this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
+        }
     }
 }

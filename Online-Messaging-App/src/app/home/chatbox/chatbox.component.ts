@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -6,6 +6,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup } from "@angular/forms";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
+const MESSAGES_URI = "/messages";
 
 @Component({
     selector: "app-chatbox",
@@ -17,6 +18,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     error: string = Constants.EMPTY;
 
     @Input() channelName: string;
+    @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
     private _channelName;
     private url: string = APIConfig.channelsAPI;
@@ -67,7 +69,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http.get(this.url + channelId + "/messages", httpHeaders).subscribe(
+                this.http.get(this.url + channelId + MESSAGES_URI, httpHeaders).subscribe(
                     (data) => {
                         this.chatMessages = data || [];
                     },
@@ -96,11 +98,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } // TODO: add user error message if this is false
     }
 
+    goToProfile(username: string) {
+        this.profileViewEvent.emit(username);
+    }
+
     private onScroll() {
         let element = this.scrollContainer.nativeElement;
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
-        console.log(this.atBottom);
         if (this.atBottom) {
             this.isNearBottom = false;
         } else {

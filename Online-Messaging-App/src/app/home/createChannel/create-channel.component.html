@@ -7,17 +7,17 @@
                     <mat-form-field appearance="fill" color="primary">
                         <mat-label>Channel Name</mat-label>
                         <input
-                                class="form-control"
-                                formControlName="channelName"
-                                id="channelName"
-                                matInput
-                                name="channelName"
-                                required
-                                type="text"
+                            class="form-control"
+                            formControlName="channelName"
+                            id="channelName"
+                            matInput
+                            name="channelName"
+                            required
+                            type="text"
                         />
                         <mat-error *ngFor="let validation of common.validation_methods.channelName">
                             <mat-error
-                                    *ngIf="
+                                *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         newChannelForm,
                                         'channelName',
