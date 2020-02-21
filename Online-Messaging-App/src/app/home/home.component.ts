@@ -31,6 +31,7 @@ export class HomeComponent implements OnInit {
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
+    profileView: string;
     private scrollContainer: any;
 
     constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
@@ -63,5 +64,9 @@ export class HomeComponent implements OnInit {
 
     updateDisplay(value: string): void {
         this.display = value;
+    }
+
+    updateProfile(value: string): void {
+        this.profileView = value;
     }
 }

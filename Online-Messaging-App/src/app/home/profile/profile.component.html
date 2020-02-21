@@ -10,17 +10,19 @@
             <hr/>
             <br/>
 
-            <div class="profileInfo">
+            <div *ngIf="user" class="profileInfo">
                 <mat-icon id="profilePicture" inline="true">person</mat-icon>
 
                 <p><b>Username</b></p>
-                <p>{{ user[0].username }}</p>
-                <p><b>Email</b></p>
-                <p>{{ user[0].email }}</p>
+                <p>{{ user.username }}</p>
+                <div *ngIf="user.email">
+                    <p><b>Email</b></p>
+                    <p>{{ user.email }}</p>
+                </div>
                 <p><b>First Name</b></p>
-                <p>{{ user[0].firstName }}</p>
+                <p>{{ user.firstName }}</p>
                 <p><b>Last Name</b></p>
-                <p>{{ user[0].lastName }}</p>
+                <p>{{ user.lastName }}</p>
             </div>
             <br/>
             <!--edit button for future implementation-->

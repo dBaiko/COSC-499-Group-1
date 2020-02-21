@@ -13,6 +13,7 @@
                 (channelIdEvent)="receiveId($event)"
                 (channelNameEvent)="receiveName($event)"
                 (newChannelEvent)="addNewChannel($event)"
+                (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
                 [subbedChannel]="newSubbedChannel"
             ></app-sidebar>
@@ -36,7 +37,7 @@
                         ></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'" class="scrollMe">
-                        <app-profile></app-profile>
+                        <app-profile [profileView]="profileView"></app-profile>
                     </div>
                 </div>
             </div>
