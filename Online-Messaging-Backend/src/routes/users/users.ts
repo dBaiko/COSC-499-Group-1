@@ -14,6 +14,7 @@ const PATH_POST_NEW_USER = "/";
 const PATH_PUT_USER = "/";
 const PATH_GET_USER_BY_USERNAME = "/:username";
 const AUTH_KEY = "authorization";
+const COGNITO_USERNAME = "cognito:username";
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
 
@@ -78,7 +79,7 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
 
             let username = req.params.username;
 
-            if (username === data.decodedToken["cognito:username"]) {
+            if (username === data.decodedToken[COGNITO_USERNAME]) {
                 userDAO
                     .getUserInfoByUsername(username)
                     .then((data: Array<UserObject>) => {
@@ -93,7 +94,6 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
-
 
         },
         (err) => {
@@ -110,7 +110,7 @@ router.put(PATH_PUT_USER, (req, res) => {
 
             let username = req.params.username;
 
-            if (username === data.decodedToken["cognito:username"]) {
+            if (username === data.decodedToken[COGNITO_USERNAME]) {
                 const userDAO = new UserDAO(docClient);
                 userDAO
                     .updateUser(req.body.username, req.body.email)
