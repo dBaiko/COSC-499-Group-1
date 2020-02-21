@@ -1,6 +1,6 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
-import {awsConfigPath} from "../../config/aws-config";
+import { awsConfigPath } from "../../config/aws-config";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -15,7 +15,7 @@ class ProfileDAO {
                 email,
                 firstName,
                 lastName,
-                username,
+                username
             },
             TableName: table
         };
@@ -31,32 +31,38 @@ class ProfileDAO {
                 }
             });
         });
-    };
+    }
 
-    public updateProfile(username: string, email: string, firstName: string, lastName: string,
-                         age: number, school: string, gender: string, activities: string, bio: string) {
-        const params =
-            {
-                TableName: table,
-                Key:
-                    {
-                        username,
-                        email,
-                    },
-                UpdateExpression:
-                    "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
-                    "info.activities=:v, info.bio=:b",
-                ExpressionAttributeValues:
-                    {
-                        ":f": firstName,
-                        ":l": lastName,
-                        ":a": age,
-                        ":s": school,
-                        ":g": gender,
-                        ":v": activities,
-                        ":b": bio,
-                    }
-            };
+    public updateProfile(
+        username: string,
+        email: string,
+        firstName: string,
+        lastName: string,
+        age: number,
+        school: string,
+        gender: string,
+        activities: string,
+        bio: string
+    ) {
+        const params = {
+            TableName: table,
+            Key: {
+                username,
+                email
+            },
+            UpdateExpression:
+                "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
+                "info.activities=:v, info.bio=:b",
+            ExpressionAttributeValues: {
+                ":f": firstName,
+                ":l": lastName,
+                ":a": age,
+                ":s": school,
+                ":g": gender,
+                ":v": activities,
+                ":b": bio
+            }
+        };
 
         console.log("Updating profile for user" + username + "...");
         return new Promise((resolve, reject) => {
@@ -73,31 +79,23 @@ class ProfileDAO {
     }
 
     public getUserProfile(username: string) {
-        const params =
-            {
-                TableName: table,
-                KeyConditionExpression: "username = :username",
-                ExpressionAttributeValues:
-                    {
-                        ":username": username
-                    }
-            };
-        return new Promise((resolve, reject) =>
-        {
-            docClient.query(params, (err, data) =>
-            {
-                if (err)
-                {
+        const params = {
+            TableName: table,
+            KeyConditionExpression: "username = :username",
+            ExpressionAttributeValues: {
+                ":username": username
+            }
+        };
+        return new Promise((resolve, reject) => {
+            docClient.query(params, (err, data) => {
+                if (err) {
                     console.log(err);
                     reject(err);
+                } else {
+                    console.log("Successfully retrieved profile for user " + username);
+                    resolve(data.Items);
                 }
-                else
-                    {
-                        console.log("Successfully retrieved profile for user "+username);
-                        resolve(data.Items);
-                    }
             });
-
         });
     }
 }

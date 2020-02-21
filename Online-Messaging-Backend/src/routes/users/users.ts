@@ -33,12 +33,10 @@ router.post(PATH_POST_NEW_USER, (req, res) => {
 });
 
 router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const userChannelDAO = new UserChannelDAO(docClient);
             let username = req.params.username;
             userChannelDAO
@@ -49,38 +47,33 @@ router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const userDAO = new UserDAO(docClient);
             let username = req.params.username;
-            userDAO.getUserInfoByUsername(username)
+            userDAO
+                .getUserInfoByUsername(username)
                 .then((data) => {
                     res.status(200).send(data);
                 })
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 export = router;
