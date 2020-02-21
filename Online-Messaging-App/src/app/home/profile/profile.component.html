@@ -1,32 +1,79 @@
-<div *ngIf="user" class="wrapper">
+<div *ngIf="userProfile" class="wrapper">
     <mat-card>
         <div class="icon">
             <mat-card-header>
-                <mat-icon inline="true">account_box</mat-icon>
-                <b id="profileTitle">Profile</b>
+                <img class="profilePicture" inline="true"
+                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                     src="https://i.imgur.com/32SZPXv.png">
+                <b id="profileTitle">{{userProfile.username}}'s Profile</b>
             </mat-card-header>
         </div>
         <mat-card-content>
             <hr/>
             <br/>
+            <p>{{editSaveMessage}}</p>
 
-            <div *ngIf="user" class="profileInfo">
-                <mat-icon id="profilePicture" inline="true">person</mat-icon>
-
+            <div *ngIf="userProfile && !editing" class="profileInfo">
                 <p><b>Username</b></p>
-                <p>{{ user.username }}</p>
-                <div *ngIf="user.email">
+                <p>{{ userProfile.username }}</p>
+                <div *ngIf="userProfile.email">
                     <p><b>Email</b></p>
-                    <p>{{ user.email }}</p>
+                    <p>{{ userProfile.email }}</p>
                 </div>
                 <p><b>First Name</b></p>
-                <p>{{ user.firstName }}</p>
+                <p>{{ userProfile.firstName }}</p>
                 <p><b>Last Name</b></p>
-                <p>{{ user.lastName }}</p>
+                <p>{{ userProfile.lastName }}</p>
             </div>
-            <br/>
-            <!--edit button for future implementation-->
-            <!--            <button mat-button>Edit</button>-->
+            <div
+                *ngIf="userProfile && editing && this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
+                class="profileInfo">
+
+                <p><b>Username</b></p>
+                <p>{{ userProfile.username }}</p>
+                <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm">
+                    <p><b>Email</b></p>
+                    <input autocomplete="off" formControlName="email" id="email"
+                           name="email"
+                           required type="email"/>
+                    <mat-error *ngFor="let validation of common.validation_methods.email">
+                        <mat-error
+                            *ngIf="formValidationService.checkIfFormElementInvalid(editForm,  'email', validation, submitAttempt)">
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <p><b>First Name</b></p>
+                    <input autocomplete="off" formControlName="firstName" id="firstName"
+                           name="firstName"
+                           required type="text"/>
+                    <mat-error *ngFor="let validation of common.validation_methods.firstName">
+                        <mat-error
+                            *ngIf="formValidationService.checkIfFormElementInvalid(editForm,  'firstName', validation, submitAttempt)">
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <p><b>Last Name</b></p>
+                    <input autocomplete="off" formControlName="lastName" id="lastName"
+                           name="lastName"
+                           required type="text"/>
+                    <mat-error *ngFor="let validation of common.validation_methods.lastName">
+                        <mat-error
+                            *ngIf="formValidationService.checkIfFormElementInvalid(editForm,  'lastName', validation, submitAttempt)">
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <button
+                        *ngIf="editing"
+                        mat-button type="submit">
+                        Save
+                    </button>
+                </form>
+            </div>
+            <button (click)="toggleEditing(true)"
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
+                    mat-button>
+                Edit
+            </button>
         </mat-card-content>
     </mat-card>
 </div>

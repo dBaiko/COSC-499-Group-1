@@ -14,9 +14,10 @@ const router = express.Router();
 
 router.use(bodyParser());
 
-const PATH_PUT_PROFILE: string = "/";
+const PATH_PUT_PROFILE: string = "/:username";
 const PATH_GET_PROFILE: string = "/:username";
 const AUTH_KEY = "authorization";
+const COGNITO_USERNAME = "cognito:username";
 
 interface ProfileObject {
     username: string,
@@ -30,18 +31,26 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-            const updateProfile = new ProfileDAO(docClient);
-            updateProfile
-                .updateProfile(req.body.username, req.body.firstName, req.body.lastName)
-                .then(() => {
-                    res.status(200).send({
-                        status: 200,
-                        data: { message: "Profile for user" + req.body.username + "updated successfully" }
+
+            if (req.params.username === data.decodedToken[COGNITO_USERNAME] && req.body.username === data.decodedToken[COGNITO_USERNAME]) {
+                const updateProfile = new ProfileDAO(docClient);
+                updateProfile
+                    .updateProfile(req.body.username, req.body.firstName, req.body.lastName)
+                    .then(() => {
+                        res.status(200).send({
+                            status: 200,
+                            data: { message: "Profile for user" + req.body.username + "updated successfully" }
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
                     });
-                })
-                .catch((err) => {
-                    res.status(400).send(err);
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user profile info" }
                 });
+            }
         },
         (err) => {
             res.status(err.status).send(err);

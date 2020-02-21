@@ -11,7 +11,7 @@ const router = express.Router();
 
 const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
 const PATH_POST_NEW_USER = "/";
-const PATH_PUT_USER = "/";
+const PATH_PUT_USER = "/:username";
 const PATH_GET_USER_BY_USERNAME = "/:username";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
@@ -108,9 +108,9 @@ router.put(PATH_PUT_USER, (req, res) => {
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
 
-            let username = req.params.username;
+            let usernameParam = req.params.username;
 
-            if (username === data.decodedToken[COGNITO_USERNAME]) {
+            if (usernameParam === data.decodedToken[COGNITO_USERNAME] && req.body.username === data.decodedToken[COGNITO_USERNAME]) {
                 const userDAO = new UserDAO(docClient);
                 userDAO
                     .updateUser(req.body.username, req.body.email)

@@ -10,10 +10,11 @@
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
-                    <mat-card-title>
-                        <a (click)="goToProfile(chatMessage.username)">
-                            {{ chatMessage.username }}
-                        </a>
+                    <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                        <img class="messagePicture" inline="true"
+                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                             src="https://i.imgur.com/32SZPXv.png">
+                        {{ chatMessage.username }}
                     </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
