@@ -5,6 +5,7 @@ import UserChannelDAO from "../userChannels/UserChannelDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { HTTPResponse, JwtVerificationService } from "../../shared/jwt-verification-service";
+import ProfileDAO from "../profiles/ProfileDAO";
 
 const router = express.Router();
 
@@ -23,9 +24,17 @@ router.use(bodyParser());
 router.post(PATH_POST_NEW_USER, (req, res) => {
     const userRegistration = new UserDAO(docClient);
     userRegistration
-        .createNewUser(req.body.username, req.body.email, req.body.firstName, req.body.lastName)
+        .createNewUser(req.body.username, req.body.email)
         .then(() => {
-            res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
+            const profileDAO: ProfileDAO = new ProfileDAO(docClient);
+            profileDAO
+                .createProfile(req.body.username, req.body.firstName, req.body.lastName)
+                .then(() => {
+                    res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
         })
         .catch((err) => {
             res.status(400).send(err);

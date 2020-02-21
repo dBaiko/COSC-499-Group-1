@@ -29,7 +29,7 @@ const user = new UserDAO(ddb);
 
 describe("DAO Spec", () => {
     it("should create a new user in the table", async () => {
-        await user.createNewUser("testUser", "testUser@nothing.com", "Lorem", "Ipsum");
+        await user.createNewUser("testUser", "testUser@nothing.com");
         const item = await ddb.get({ TableName: "Users", Key: { username: "testUser" } }).promise();
         expect(item).toEqual({
             Item: {

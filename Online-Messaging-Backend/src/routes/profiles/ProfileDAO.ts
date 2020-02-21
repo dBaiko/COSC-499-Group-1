@@ -1,18 +1,19 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
-
 const table = "Profiles";
 
 class ProfileDAO {
-    public createProfileFromUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
+
+    constructor(private docClient: DocumentClient) {
+    }
+
+    public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
-                email,
                 firstName,
                 lastName,
                 username
@@ -21,7 +22,7 @@ class ProfileDAO {
         };
         console.log("Creating Profile for" + username + "...");
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
                     reject(err);
@@ -66,7 +67,7 @@ class ProfileDAO {
 
         console.log("Updating profile for user" + username + "...");
         return new Promise((resolve, reject) => {
-            docClient.update(params, (err, data) => {
+            this.docClient.update(params, (err, data) => {
                 if (err) {
                     console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
                     reject();
@@ -87,7 +88,7 @@ class ProfileDAO {
             }
         };
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);

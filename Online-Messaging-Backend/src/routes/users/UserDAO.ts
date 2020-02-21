@@ -10,14 +10,11 @@ class UserDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public createNewUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
-        console.log("Called");
+    public createNewUser(username: string, email: string): Promise<any> {
 
         const params = {
             Item: {
                 email,
-                firstName,
-                lastName,
                 username
             },
             TableName: USERS_TABLE_NAME
