@@ -11,32 +11,13 @@ const router = express.Router();
 
 router.use(bodyParser());
 
-router.post("/", (req, res) => {
-    const defaultProfile = new ProfileDAO(docClient);
-    defaultProfile
-        .createProfile(req.body.username, req.body.firstName, req.body.lastName)
-        .then(() => {
-            res.status(200).send({ status: 200, data: { message: "New profile created successfully" } });
-        })
-        .catch((err) => {
-            res.status(400).send(err);
-        });
-});
+const PATH_PUT_PROFILE: string = "/";
+const PATH_GET_PROFILE: string = "/:username";
 
-router.put("/", (req, res) => {
+router.put(PATH_PUT_PROFILE, (req, res) => {
     const updateProfile = new ProfileDAO(docClient);
     updateProfile
-        .updateProfile(
-            req.body.username,
-            req.body.email,
-            req.body.firstName,
-            req.body.lastName,
-            req.body.age,
-            req.body.school,
-            req.body.activities,
-            req.body.gender,
-            req.body.bio
-        )
+        .updateProfile(req.body.username, req.body.firstName, req.body.lastName)
         .then(() => {
             res.status(200).send({
                 status: 200,
@@ -48,7 +29,7 @@ router.put("/", (req, res) => {
         });
 });
 
-router.get("/", (req, res) => {
+router.get(PATH_GET_PROFILE, (req, res) => {
     const getProfile = new ProfileDAO(docClient);
     let username = req.params.username;
 

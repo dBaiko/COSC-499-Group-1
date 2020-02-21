@@ -27,12 +27,10 @@ const docClient = new aws.DynamoDB.DocumentClient();
 router.use(bodyParser());
 
 router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const channelDAO = new ChannelDAO(docClient);
             channelDAO
                 .getAllChannels()
@@ -42,22 +40,18 @@ router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const channelDAO = new ChannelDAO(docClient);
             let channelIdString = req.params.channelId;
             channelDAO
@@ -68,22 +62,18 @@ router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const userChannelDAO = new UserChannelDAO(docClient);
             let channelId = req.params.channelId;
             userChannelDAO
@@ -94,22 +84,18 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const messageDAO = new MessageDAO(docClient);
             let channelIdString = req.params.channelId;
             messageDAO
@@ -120,22 +106,18 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             console.log(req.body);
             console.log(req.params.channelId);
             const userChannelDAO = new UserChannelDAO(docClient);
@@ -156,22 +138,18 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const channelDAO = new ChannelDAO(docClient);
             channelDAO
                 .addNewChannel(
@@ -189,13 +167,11 @@ router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err: HTTPResponse) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 export = router;
