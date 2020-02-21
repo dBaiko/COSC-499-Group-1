@@ -8,7 +8,8 @@ mat-card {
 mat-form-field {
     border-radius: 0.5rem;
     background-color: #282828;
-    width: 100%;
+    width: 86%;
+    margin-right: 50vh;
     color: #f8f8f8;
 }
 
@@ -28,8 +29,6 @@ mat-card-title {
 .headerTop {
     background-color: #282828;
     width: 100%;
-    position: fixed;
-    top: 4rem;
 }
 
 mat-card-footer {
@@ -51,4 +50,7 @@ mat-label {
 
 .container {
     height: 100%;
+    margin-top: 1vh;
+    margin-left: 1vh;
+    margin-right: 1vh;
 }

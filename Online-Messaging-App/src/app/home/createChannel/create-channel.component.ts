@@ -1,11 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { APIConfig, Constants } from "../../shared/app-config";
+import { APIConfig } from "../../shared/app-config";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { CommonService } from "../../shared/common.service";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { MatDialogRef } from "@angular/material/dialog";
+import { Observable } from "rxjs";
 
 interface ChannelAndFirstUser {
     channelName: string;
@@ -61,7 +62,7 @@ export class CreateChannelComponent implements OnInit {
         });
     }
 
-    newChannelEntry(channelName: string, channelType: string): Promise<Object> {
+    newChannelEntry(channelName: string, channelType: string): Observable<Object> {
         let newChannel: ChannelAndFirstUser = {
             channelName: channelName,
             channelType: channelType,
@@ -69,20 +70,45 @@ export class CreateChannelComponent implements OnInit {
             firstUserChannelRole: defaultFirstChannelRole
         };
 
-        return this.http.post(this.channelAPI, newChannel, Constants.HTTP_OPTIONS).toPromise(); // TODO: check for errors in responce
+        return new Observable<Object>((observer) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.post(this.channelAPI, newChannel, httpHeaders).subscribe(
+                        (data) => {
+                            observer.next(data);
+                            observer.complete();
+                        },
+                        (err) => {
+                            observer.error(err);
+                        }
+                    ); // TODO: check for errors in responce
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
     }
 
     newChannel(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.newChannelForm.valid) {
-            this.newChannelEntry(form.value.channelName, form.value.channelType)
-                .then((result: newChannelResponse) => {
+            this.newChannelEntry(form.value.channelName, form.value.channelType).subscribe(
+                (result: newChannelResponse) => {
                     this.data = result.data.newChannel;
                     this.onClose();
-                })
-                .catch((err) => {
+                },
+                (err) => {
                     console.log(err);
-                });
+                }
+            );
         }
     }
 

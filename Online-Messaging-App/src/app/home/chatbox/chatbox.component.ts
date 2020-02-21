@@ -58,13 +58,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     getMessages(channelId: string): void {
-
         this.authService.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer " + data.getJwtToken()
+                        Authorization: "Bearer " + data.getJwtToken()
                     })
                 };
 
@@ -81,7 +80,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
-
     }
 
     sendMessage(form: FormGroup): void {

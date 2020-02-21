@@ -1,27 +1,27 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
-
-const table = "Profiles";
+const PROFILES_TABLE_NAME = "Profiles";
 
 class ProfileDAO {
-    public createProfileFromUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
+    constructor(private docClient: DocumentClient) {
+    }
+
+    public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
-                email,
                 firstName,
                 lastName,
                 username
             },
-            TableName: table
+            TableName: PROFILES_TABLE_NAME
         };
         console.log("Creating Profile for" + username + "...");
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
                     reject(err);
@@ -33,45 +33,27 @@ class ProfileDAO {
         });
     }
 
-    public updateProfile(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        age: number,
-        school: string,
-        gender: string,
-        activities: string,
-        bio: string
-    ) {
+    public updateProfile(username: string, firstName: string, lastName: string) {
         const params = {
-            TableName: table,
+            TableName: PROFILES_TABLE_NAME,
             Key: {
-                username,
-                email
+                username: username
             },
-            UpdateExpression:
-                "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
-                "info.activities=:v, info.bio=:b",
+            UpdateExpression: "SET firstName = :f, lastName=:l",
             ExpressionAttributeValues: {
                 ":f": firstName,
-                ":l": lastName,
-                ":a": age,
-                ":s": school,
-                ":g": gender,
-                ":v": activities,
-                ":b": bio
+                ":l": lastName
             }
         };
 
-        console.log("Updating profile for user" + username + "...");
+        console.log("Updating profile for user " + username + "...");
         return new Promise((resolve, reject) => {
-            docClient.update(params, (err, data) => {
+            this.docClient.update(params, (err, data) => {
                 if (err) {
-                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
                     reject();
                 } else {
-                    console.log("Item updated successfully:", JSON.stringify(data, null, 2));
+                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
                     resolve();
                 }
             });
@@ -80,14 +62,14 @@ class ProfileDAO {
 
     public getUserProfile(username: string) {
         const params = {
-            TableName: table,
+            TableName: PROFILES_TABLE_NAME,
             KeyConditionExpression: "username = :username",
             ExpressionAttributeValues: {
                 ":username": username
             }
         };
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);

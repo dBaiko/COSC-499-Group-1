@@ -10,14 +10,10 @@ class UserDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public createNewUser(username: string, email: string, firstName: string, lastName: string): Promise<any> {
-        console.log("Called");
-
+    public createNewUser(username: string, email: string): Promise<any> {
         const params = {
             Item: {
                 email,
-                firstName,
-                lastName,
                 username
             },
             TableName: USERS_TABLE_NAME
@@ -35,45 +31,26 @@ class UserDAO {
         });
     }
 
-    public updateProfile(
-        username: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        age: number,
-        school: string,
-        gender: string,
-        activities: string,
-        bio: string
-    ) {
+    public updateUser(username: string, email: string) {
         const params = {
             TableName: USERS_TABLE_NAME,
             Key: {
-                username,
-                email
+                username: username
             },
-            UpdateExpression:
-                "set info.firstName=:f, info.lastName=:l, info.age=:a, info.school=:s, info.gender=:g, " +
-                "info.activities=:v, info.bio=:b",
+            UpdateExpression: "SET email = :e",
             ExpressionAttributeValues: {
-                ":f": firstName,
-                ":l": lastName,
-                ":a": age,
-                ":s": school,
-                ":g": gender,
-                ":v": activities,
-                ":b": bio
+                ":e": email
             }
         };
 
-        console.log("Updating profile for user" + username + "...");
+        console.log("Updating profile for user " + username + "...");
         return new Promise((resolve, reject) => {
             this.docClient.update(params, (err, data) => {
                 if (err) {
-                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
                     reject();
                 } else {
-                    console.log("Item updated successfully:", JSON.stringify(data, null, 2));
+                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
                     resolve();
                 }
             });
