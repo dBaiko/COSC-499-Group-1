@@ -1,25 +1,25 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-const USERS_TABLE_NAME = "Users";
+aws.config.loadFromPath(awsConfigPath);
+const PROFILES_TABLE_NAME = "Profiles";
 
-class UserDAO {
-    private usernameQueryDeclaration = "username = :username";
-
+class ProfileDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public createNewUser(username: string, email: string): Promise<any> {
+    public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         const params = {
             Item: {
-                email,
+                firstName,
+                lastName,
                 username
             },
-            TableName: USERS_TABLE_NAME
+            TableName: PROFILES_TABLE_NAME
         };
+        console.log("Creating Profile for" + username + "...");
         return new Promise((resolve, reject) => {
             this.docClient.put(params, (err, data) => {
                 if (err) {
@@ -33,15 +33,16 @@ class UserDAO {
         });
     }
 
-    public updateUser(username: string, email: string) {
+    public updateProfile(username: string, firstName: string, lastName: string) {
         const params = {
-            TableName: USERS_TABLE_NAME,
+            TableName: PROFILES_TABLE_NAME,
             Key: {
                 username: username
             },
-            UpdateExpression: "SET email = :e",
+            UpdateExpression: "SET firstName = :f, lastName=:l",
             ExpressionAttributeValues: {
-                ":e": email
+                ":f": firstName,
+                ":l": lastName
             }
         };
 
@@ -61,7 +62,7 @@ class UserDAO {
 
     public getUserProfile(username: string) {
         const params = {
-            TableName: USERS_TABLE_NAME,
+            TableName: PROFILES_TABLE_NAME,
             KeyConditionExpression: "username = :username",
             ExpressionAttributeValues: {
                 ":username": username
@@ -79,28 +80,6 @@ class UserDAO {
             });
         });
     }
-
-    public getUserInfoByUsername(username: string) {
-        const params = {
-            TableName: USERS_TABLE_NAME,
-            KeyConditionExpression: this.usernameQueryDeclaration,
-            ExpressionAttributeValues: {
-                ":username": username
-            }
-        };
-
-        return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
-                if (err) {
-                    console.log(err);
-                    reject(err);
-                } else {
-                    console.log("Query for " + username + " Succeeded");
-                    resolve(data.Items);
-                }
-            });
-        });
-    }
 }
 
-export default UserDAO;
+export default ProfileDAO;

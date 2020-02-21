@@ -10,7 +10,7 @@ aws.config.loadFromPath(awsConfigPath);
 const channelTableName: string = "Channel";
 
 interface ChannelObject {
-    channelId: number;
+    channelId: string;
     channelName: string;
     channelType: string;
 }
