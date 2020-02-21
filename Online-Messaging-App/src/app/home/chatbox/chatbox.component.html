@@ -10,7 +10,11 @@
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
-                    <mat-card-title>{{ chatMessage.username }}</mat-card-title>
+                    <mat-card-title>
+                        <a (click)="goToProfile(chatMessage.username)">
+                            {{ chatMessage.username }}
+                        </a>
+                    </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>

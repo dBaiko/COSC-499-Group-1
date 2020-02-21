@@ -6,7 +6,7 @@ import UserChannelDAO from "../userChannels/UserChannelDAO";
 import { awsConfigPath } from "../../config/aws-config";
 import MessageDAO from "../messages/MessageDAO";
 import aws from "aws-sdk";
-import { HTTPResponse, JwtVerificationService } from "../../shared/jwt-verification-service";
+import { JwtVerificationService } from "../../shared/jwt-verification-service";
 
 const PATH_GET_ALL_CHANNELS: string = "/";
 const PATH_GET_CHANNEL_BY_ID: string = "/:channelId";
@@ -44,7 +44,7 @@ router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -70,7 +70,7 @@ router.get(PATH_GET_CHANNEL_BY_ID, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -96,7 +96,7 @@ router.get(PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -122,7 +122,7 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -158,7 +158,7 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -191,7 +191,7 @@ router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
                 });
 
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );

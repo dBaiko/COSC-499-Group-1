@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 
-
 const MY_SELECT_CHILD: string = "mySelect";
 const MAT_SELECT_ARROW: string = "mat-select-arrow";
 const CLASS_DROPPED: string = "dropped";
