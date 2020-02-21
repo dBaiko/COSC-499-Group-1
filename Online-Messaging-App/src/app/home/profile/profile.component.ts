@@ -49,7 +49,6 @@ export class ProfileComponent implements OnInit {
     }
 
     ngOnInit() {
-        //this.getUserInfo();
     }
 
     getUserInfo(username: string): void {
@@ -65,24 +64,21 @@ export class ProfileComponent implements OnInit {
                 this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
                     (data: Array<ProfileObject>) => {
                         let profile: ProfileObject = data[0];
+                        this.user = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null
+                        };
 
                         if (username === this.auth.getAuthenticatedUser().getUsername()) {
                             this.http.get(this.usersAPI + username, httpHeaders).subscribe(
                                 (data: Array<UserObject>) => {
                                     let user: UserObject = data[0];
-                                    let email;
-                                    if (user === null) {
-                                        email = null;
-                                    } else {
-                                        email = user.email;
+                                    if (user) {
+                                        this.user.email = user.email;
                                     }
 
-                                    this.user = {
-                                        username: profile.username,
-                                        firstName: profile.firstName,
-                                        lastName: profile.lastName,
-                                        email: email
-                                    };
                                 },
                                 (err) => {
                                     console.log(err);

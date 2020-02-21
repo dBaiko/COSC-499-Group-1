@@ -31,8 +31,8 @@
                     </div>
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
                         <app-chatbox
-                            [channelId]="selectedChannelId"
-                            [channelName]="selectedChannelName"
+                            (profileViewEvent)="updateProfile($event)"
+                            [channelId]="selectedChannelId" [channelName]="selectedChannelName"
                             class="scrollMe"
                         ></app-chatbox>
                     </div>

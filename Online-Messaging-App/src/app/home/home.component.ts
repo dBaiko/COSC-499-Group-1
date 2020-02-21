@@ -3,6 +3,8 @@ import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 
+const PROFILE_PAGE = "profile";
+
 interface userChannelObject {
     username: string;
     channelId: number;
@@ -68,5 +70,6 @@ export class HomeComponent implements OnInit {
 
     updateProfile(value: string): void {
         this.profileView = value;
+        this.updateDisplay(PROFILE_PAGE);
     }
 }
