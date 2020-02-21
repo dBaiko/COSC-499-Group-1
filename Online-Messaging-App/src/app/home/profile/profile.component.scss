@@ -12,7 +12,7 @@ mat-icon {
     font-size: 64px;
 }
 
-#profilePicture {
+.profilePicture {
     float: right;
     margin-right: 5vh;
     border-style: solid;
@@ -22,6 +22,7 @@ mat-icon {
     height: auto;
     overflow: visible;
     white-space: normal;
+    width: 10%;
 }
 
 .wrapper {
@@ -42,6 +43,7 @@ button {
     font-size: 48px;
     margin-left: 1vh;
 }
+
 .wrapper {
     margin-top: 5vh;
 }
