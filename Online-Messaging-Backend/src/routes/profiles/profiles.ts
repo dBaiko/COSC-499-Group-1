@@ -3,7 +3,7 @@ import express from "express";
 import ProfileDAO from "./ProfileDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-import { HTTPResponse, JwtVerificationService } from "../../shared/jwt-verification-service";
+import { JwtVerificationService } from "../../shared/jwt-verification-service";
 
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
@@ -17,6 +17,12 @@ router.use(bodyParser());
 const PATH_PUT_PROFILE: string = "/";
 const PATH_GET_PROFILE: string = "/:username";
 const AUTH_KEY = "authorization";
+
+interface ProfileObject {
+    username: string,
+    firstName: string,
+    lastName: string
+}
 
 router.put(PATH_PUT_PROFILE, (req, res) => {
 
@@ -37,7 +43,7 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
                     res.status(400).send(err);
                 });
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -52,16 +58,16 @@ router.get(PATH_GET_PROFILE, (req, res) => {
             const getProfile = new ProfileDAO(docClient);
             let username = req.params.username;
 
-            const response = getProfile
+            getProfile
                 .getUserProfile(username)
-                .then((data) => {
+                .then((data: Array<ProfileObject>) => {
                     res.status(200).send(data);
                 })
                 .catch((err) => {
                     res.status(400).send(err);
                 });
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );

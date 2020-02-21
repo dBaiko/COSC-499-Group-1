@@ -4,7 +4,7 @@ import UserDAO from "./UserDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-import { HTTPResponse, JwtVerificationService } from "../../shared/jwt-verification-service";
+import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import ProfileDAO from "../profiles/ProfileDAO";
 
 const router = express.Router();
@@ -21,6 +21,11 @@ aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
 
 router.use(bodyParser());
+
+interface UserObject {
+    username: string,
+    email: string
+}
 
 router.post(PATH_POST_NEW_USER, (req, res) => {
     const userRegistration = new UserDAO(docClient);
@@ -58,7 +63,7 @@ router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
                     res.status(400).send(err);
                 });
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -68,19 +73,30 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
+        (data: HTTPResponseAndToken) => {
             const userDAO = new UserDAO(docClient);
+
             let username = req.params.username;
-            userDAO
-                .getUserInfoByUsername(username)
-                .then((data) => {
-                    res.status(200).send(data);
-                })
-                .catch((err) => {
-                    res.status(400).send(err);
+
+            if (username === data.decodedToken["cognito:username"]) {
+                userDAO
+                    .getUserInfoByUsername(username)
+                    .then((data: Array<UserObject>) => {
+                        res.status(200).send(data);
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user info" }
                 });
+            }
+
+
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
@@ -90,21 +106,33 @@ router.put(PATH_PUT_USER, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
-            const userDAO = new UserDAO(docClient);
-            userDAO
-                .updateUser(req.body.username, req.body.email)
-                .then(() => {
-                    res.status(200).send({
-                        status: 200,
-                        data: { message: "User " + req.body.username + " updated successfully" }
+        (data: HTTPResponseAndToken) => {
+
+            let username = req.params.username;
+
+            if (username === data.decodedToken["cognito:username"]) {
+                const userDAO = new UserDAO(docClient);
+                userDAO
+                    .updateUser(req.body.username, req.body.email)
+                    .then(() => {
+                        res.status(200).send({
+                            status: 200,
+                            data: { message: "User " + req.body.username + " updated successfully" }
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
                     });
-                })
-                .catch((err) => {
-                    res.status(400).send(err);
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user info" }
                 });
+            }
+
+
         },
-        (err: HTTPResponse) => {
+        (err) => {
             res.status(err.status).send(err);
         }
     );
