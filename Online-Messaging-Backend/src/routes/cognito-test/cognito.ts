@@ -14,7 +14,6 @@ router.get(PATH_GET_JWT, (req, res) => {
     let adminPassword = req.headers["authorization"];
 
     if (adminPassword) {
-
         if (adminPassword.startsWith("Bearer ") || adminPassword.startsWith("Bearer")) {
             adminPassword = adminPassword.slice(7, adminPassword.length);
         }
@@ -22,7 +21,8 @@ router.get(PATH_GET_JWT, (req, res) => {
         if (adminPassword === TestUserData.correctAdminPassword) {
             const cognitoDAO = new CognitoDAO();
             cognitoDAO
-                .login(TestUserData.testUsername, TestUserData.testPassword).toPromise()
+                .login(TestUserData.testUsername, TestUserData.testPassword)
+                .toPromise()
                 .then((data) => {
                     let sendData = {
                         jwt: data
@@ -39,17 +39,12 @@ router.get(PATH_GET_JWT, (req, res) => {
                 data: { message: "Admin password is invalid" }
             });
         }
-
-
     } else {
         res.status(401).send({
             status: 401,
             data: { message: "Admin password is missing" }
         });
     }
-
-
 });
-
 
 export = router;
