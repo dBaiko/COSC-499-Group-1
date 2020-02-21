@@ -34,11 +34,10 @@ class ProfileDAO {
     }
 
     public updateProfile(username: string, firstName: string, lastName: string) {
-
         const params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {
-                "username": username
+                username: username
             },
             UpdateExpression: "SET firstName = :f, lastName=:l",
             ExpressionAttributeValues: {

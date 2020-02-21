@@ -35,7 +35,7 @@ class UserDAO {
         const params = {
             TableName: USERS_TABLE_NAME,
             Key: {
-                "username": username
+                username: username
             },
             UpdateExpression: "SET email = :e",
             ExpressionAttributeValues: {

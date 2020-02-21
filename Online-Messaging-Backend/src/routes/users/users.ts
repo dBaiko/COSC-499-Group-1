@@ -87,7 +87,6 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
 });
 
 router.put(PATH_PUT_USER, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
