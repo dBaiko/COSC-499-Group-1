@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { NotificationService } from "../shared/notification.service";
 
 const PROFILE_PAGE = "profile";
 
@@ -36,13 +37,15 @@ export class HomeComponent implements OnInit {
     profileView: string;
     private scrollContainer: any;
 
-    constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder) {
+    constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder, private notificationService: NotificationService) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
             bottom: 0,
             fixed: false,
             top: 0
         });
+        this.notificationService = NotificationService.getInstance();
+        this.notificationService.getSocket();
     }
 
     ngOnInit(): void {
