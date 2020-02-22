@@ -89,6 +89,9 @@ mat-expansion-panel {
 mat-expansion-panel:hover {
     background-color: var(--primary-color);
 }
+mat-expansion-panel.mat-expanded {
+    background-color: var(--primary-color);
+}
 
 mat-panel-title,
 mat-panel-description {

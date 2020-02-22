@@ -79,7 +79,7 @@ h2 {
 }
 
 .channelRan:hover {
-    background-color: #1a1a1a;
+    background-color: var(--primary-color);
 }
 
 .channelSelector {
@@ -161,4 +161,8 @@ mat-button-toggle-group {
 
 .mat-drawer-content {
     overflow: hidden !important;
+}
+a:hover {
+    padding-top: 2vh;
+    background-color: var(--primary-color);
 }

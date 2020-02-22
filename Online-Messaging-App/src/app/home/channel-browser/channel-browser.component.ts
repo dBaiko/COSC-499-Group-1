@@ -39,8 +39,7 @@ export class ChannelBrowserComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {
-    }
+    constructor(private http: HttpClient, private auth: AuthenticationService) {}
 
     private _newChannel: ChannelObject;
 
@@ -112,7 +111,6 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getChannels(): void {
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -165,17 +163,14 @@ export class ChannelBrowserComponent implements OnInit {
                 };
 
                 // TODO: check for errors in responce
-                this.http.post(
-                    this.channelsAPI + channel.channelId + Constants.USERS_PATH,
-                    user,
-                    httpHeaders
-                ).subscribe(
-                    () => {
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
+                this.http
+                    .post(this.channelsAPI + channel.channelId + Constants.USERS_PATH, user, httpHeaders)
+                    .subscribe(
+                        () => {},
+                        (err) => {
+                            console.log(err);
+                        }
+                    );
             },
             (err) => {
                 console.log(err);

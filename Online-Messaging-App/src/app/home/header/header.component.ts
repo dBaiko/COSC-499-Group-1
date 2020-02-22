@@ -36,6 +36,4 @@ export class HeaderComponent implements OnInit {
     triggerSelect() {
         this.mySelect.toggle();
     }
-
-
 }

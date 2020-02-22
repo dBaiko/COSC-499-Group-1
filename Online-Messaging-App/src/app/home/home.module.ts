@@ -18,6 +18,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";
 import { NotificationService } from "../shared/notification.service";
+import { CookieService } from "ngx-cookie-service";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -54,8 +55,7 @@ const socketConfig: SocketIoConfig = {
         FooterComponent,
         ChatboxComponent
     ],
-    providers: [MessengerService, AuthenticationService, CommonService, NotificationService],
+    providers: [MessengerService, CookieService, AuthenticationService, CommonService, NotificationService],
     entryComponents: [CreateChannelComponent]
 })
-export class HomeModule {
-}
+export class HomeModule {}
