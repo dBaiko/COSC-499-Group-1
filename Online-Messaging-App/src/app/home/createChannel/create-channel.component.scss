@@ -1,15 +1,23 @@
+
 .center {
     text-align: center;
 }
 
-.leftSide {
-    float: left;
-    margin-top: 0.9em;
+//.leftSide {
+//    float: left;
+//    margin-top: 0.9em;
+//}
+//
+//.rightSide {
+//    float: left;
+//    margin-left: 5em;
+//}
+.channelName {
+
 }
 
-.rightSide {
-    float: left;
-    margin-left: 5em;
+mat-form-field {
+    width: 20em;
 }
 
 .bothSides:after {
@@ -25,6 +33,19 @@ mat-radio-button {
 }
 
 button {
+    margin-top: 1em;
     margin-right: 0.5em;
     text-align: center;
+}
+
+.channelType {
+    text-align: center;
+}
+
+mat-radio-group {
+    display: inline-block;
+}
+
+p {
+    font-size: 1.2em;
 }
