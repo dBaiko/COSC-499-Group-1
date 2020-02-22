@@ -37,7 +37,6 @@ const SUCCESS_MESSAGE = "You edit was saved correctly";
     styleUrls: ["./profile.component.scss"]
 })
 export class ProfileComponent implements OnInit {
-
     userProfile: UserProfileObject;
     editForm: FormGroup;
 
@@ -48,8 +47,12 @@ export class ProfileComponent implements OnInit {
     private usersAPI = APIConfig.usersAPI;
     private profilesAPI = APIConfig.profilesAPI;
 
-    constructor(private auth: AuthenticationService, private http: HttpClient, private common: CommonService, private formValidationService: FormValidationService) {
-    }
+    constructor(
+        private auth: AuthenticationService,
+        private http: HttpClient,
+        private common: CommonService,
+        private formValidationService: FormValidationService
+    ) {}
 
     private _profileView: string;
 
@@ -66,10 +69,7 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit() {
         this.editForm = new FormGroup({
-            email: new FormControl(
-                "",
-                Validators.compose([Validators.required, Validators.email])
-            ),
+            email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 "",
                 Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
@@ -79,7 +79,6 @@ export class ProfileComponent implements OnInit {
                 Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
             )
         });
-
     }
 
     getUserInfo(username: string): void {
@@ -109,7 +108,6 @@ export class ProfileComponent implements OnInit {
                                     if (user) {
                                         this.userProfile.email = user.email;
                                     }
-
                                 },
                                 (err) => {
                                     console.log(err);
@@ -156,7 +154,6 @@ export class ProfileComponent implements OnInit {
             lastName: lastName
         };
 
-
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -185,13 +182,10 @@ export class ProfileComponent implements OnInit {
                         console.log(err);
                     }
                 );
-
             },
             (err) => {
                 console.log(err);
             }
         );
-
     }
-
 }

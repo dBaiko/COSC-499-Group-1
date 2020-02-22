@@ -10,17 +10,17 @@
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>
                             <input
-                                    class="form-control"
-                                    formControlName="username"
-                                    id="username"
-                                    matInput
-                                    name="username"
-                                    required
-                                    type="text"
+                                class="form-control"
+                                formControlName="username"
+                                id="username"
+                                matInput
+                                name="username"
+                                required
+                                type="text"
                             />
                             <mat-error *ngFor="let validation of common.validation_methods.username">
                                 <mat-error
-                                        *ngIf="
+                                    *ngIf="
                                         formValidationService.checkIfFormElementInvalid(
                                             registerForm,
                                             'username',
@@ -28,7 +28,7 @@
                                             submitAttempt
                                         )
                                     "
-                                >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                 >
                             </mat-error>
                         </mat-form-field>
@@ -37,18 +37,18 @@
                                 <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Password</mat-label>
                                     <input
-                                            class="form-control"
-                                            formControlName="password"
-                                            id="password"
-                                            matInput
-                                            name="password"
-                                            required
-                                            type="password"
+                                        class="form-control"
+                                        formControlName="password"
+                                        id="password"
+                                        matInput
+                                        name="password"
+                                        required
+                                        type="password"
                                     />
                                     <mat-hint>Minimum 8 Characters</mat-hint>
                                     <mat-error *ngFor="let validation of common.validation_methods.password">
                                         <mat-error
-                                                *ngIf="
+                                            *ngIf="
                                                 formValidationService.checkIfFormElementInvalid(
                                                     matchingPasswordForm,
                                                     'password',
@@ -56,7 +56,7 @@
                                                     submitAttempt
                                                 )
                                             "
-                                        >{{ validation.message }}</mat-error
+                                            >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -65,24 +65,24 @@
                                 <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Confirm Password</mat-label>
                                     <input
-                                            [errorStateMatcher]="matcher"
-                                            class="form-control"
-                                            formControlName="confirmPassword"
-                                            id="confirmPassword"
-                                            matInput
-                                            name="confirmPassword"
-                                            required
-                                            type="password"
+                                        [errorStateMatcher]="matcher"
+                                        class="form-control"
+                                        formControlName="confirmPassword"
+                                        id="confirmPassword"
+                                        matInput
+                                        name="confirmPassword"
+                                        required
+                                        type="password"
                                     />
                                     <mat-error *ngFor="let validation of common.validation_methods.confirmPassword">
                                         <mat-error
-                                                *ngIf="
+                                            *ngIf="
                                                 matchingPasswordForm.get('confirmPassword').hasError(validation.type) ||
                                                 (matchingPasswordForm.hasError(validation.type) &&
                                                     (matchingPasswordForm.get('confirmPassword').dirty ||
                                                         matchingPasswordForm.get('confirmPassword').touched))
                                             "
-                                        >{{ validation.message }}</mat-error
+                                            >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -94,17 +94,17 @@
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>First Name</mat-label>
                                 <input
-                                        class="form-control"
-                                        formControlName="firstName"
-                                        id="firstName"
-                                        matInput
-                                        name="firstName"
-                                        required
-                                        type="text"
+                                    class="form-control"
+                                    formControlName="firstName"
+                                    id="firstName"
+                                    matInput
+                                    name="firstName"
+                                    required
+                                    type="text"
                                 />
                                 <mat-error *ngFor="let validation of common.validation_methods.firstName">
                                     <mat-error
-                                            *ngIf="
+                                        *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
                                                 registerForm,
                                                 'firstName',
@@ -112,7 +112,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                    >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -121,17 +121,17 @@
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>Last Name</mat-label>
                                 <input
-                                        class="form-control"
-                                        formControlName="lastName"
-                                        id="lastName"
-                                        matInput
-                                        name="lastName"
-                                        required
-                                        type="text"
+                                    class="form-control"
+                                    formControlName="lastName"
+                                    id="lastName"
+                                    matInput
+                                    name="lastName"
+                                    required
+                                    type="text"
                                 />
                                 <mat-error *ngFor="let validation of common.validation_methods.lastName">
                                     <mat-error
-                                            *ngIf="
+                                        *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
                                                 registerForm,
                                                 'lastName',
@@ -139,7 +139,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                    >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -148,17 +148,17 @@
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>Email</mat-label>
                                 <input
-                                        class="form-control"
-                                        formControlName="email"
-                                        id="email"
-                                        matInput
-                                        name="email"
-                                        required
-                                        type="email"
+                                    class="form-control"
+                                    formControlName="email"
+                                    id="email"
+                                    matInput
+                                    name="email"
+                                    required
+                                    type="email"
                                 />
                                 <mat-error *ngFor="let validation of common.validation_methods.email">
                                     <mat-error
-                                            *ngIf="
+                                        *ngIf="
                                             formValidationService.checkIfFormElementInvalid(
                                                 registerForm,
                                                 'email',
@@ -166,7 +166,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                    >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>

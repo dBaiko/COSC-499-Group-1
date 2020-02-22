@@ -30,8 +30,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private messagerService: MessengerService,
         private http: HttpClient,
         private authService: AuthenticationService
-    ) {
-    }
+    ) {}
 
     private _channelId;
 
