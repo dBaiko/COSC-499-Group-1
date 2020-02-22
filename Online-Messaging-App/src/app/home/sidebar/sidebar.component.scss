@@ -128,7 +128,7 @@ mat-button-toggle-group {
 
 .joinCreate {
     width: 100%;
-    background-color: grey;
+    background-color: var(--soft-black);
     border: none;
     color: white;
     padding: 15px 32px;
@@ -162,7 +162,7 @@ mat-button-toggle-group {
 .mat-drawer-content {
     overflow: hidden !important;
 }
-a:hover {
+.icon>a:hover {
     padding-top: 2vh;
     background-color: var(--primary-color);
 }
