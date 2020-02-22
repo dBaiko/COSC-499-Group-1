@@ -35,7 +35,27 @@ mat-option {
 ::ng-deep .cdk-overlay-pane {
     margin-top: 3rem;
 }
-
+.headInfo {
+    display: inline;
+}
 .headInfo:hover {
     cursor: pointer;
 }
+#notification {
+    display: inline;
+    margin-left: 1vw;
+}
+#notificationBell {
+    position: absolute;
+    right: 0.95vw;
+    top: 2vh;
+}
+
+#notification {
+    ::ng-deep {
+        .mat-select-arrow {
+            visibility: hidden;
+        }
+    }
+}
+
