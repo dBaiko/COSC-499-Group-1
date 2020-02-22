@@ -20,6 +20,7 @@ interface ChannelObject {
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
 const DEFAULT_CHANNEL_ROLE: string = "user";
+const PRIVATE_CHANNEL_TYPE: string = "private";
 
 @Component({
     selector: "app-channel-browser",
@@ -28,7 +29,8 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 })
 export class ChannelBrowserComponent implements OnInit {
     subscribedChannels: string[] = [];
-    channels: Object[] = [];
+    channels: Array<ChannelObject> = [];
+    count = 0;
 
     search = Constants.EMPTY;
 
@@ -110,6 +112,7 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     getChannels(): void {
+
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -120,8 +123,14 @@ export class ChannelBrowserComponent implements OnInit {
                 };
 
                 this.http.get(this.channelsAPI, httpHeaders).subscribe(
-                    (data: Object[]) => {
+                    (data: Array<ChannelObject>) => {
                         this.channels = data;
+                        for (let i = 0; i<this.channels.length; i++) {
+                            if (this.channels[i].channelType == PRIVATE_CHANNEL_TYPE) {
+                                this.channels.splice(i, 1);
+                                i--;
+                            }
+                        }
                     },
                     (err) => {
                         console.log(err);
