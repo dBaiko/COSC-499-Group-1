@@ -125,7 +125,7 @@ export class ChannelBrowserComponent implements OnInit {
                 this.http.get(this.channelsAPI, httpHeaders).subscribe(
                     (data: Array<ChannelObject>) => {
                         this.channels = data;
-                        for (let i = 0; i<this.channels.length; i++) {
+                        for (let i = 0; i < this.channels.length; i++) {
                             if (this.channels[i].channelType == PRIVATE_CHANNEL_TYPE) {
                                 this.channels.splice(i, 1);
                                 i--;
@@ -166,9 +166,15 @@ export class ChannelBrowserComponent implements OnInit {
 
                 // TODO: check for errors in responce
                 this.http.post(
-                    this.channelsAPI + Constants.SLASH + channel.channelId + Constants.USERS_PATH,
+                    this.channelsAPI + channel.channelId + Constants.USERS_PATH,
                     user,
                     httpHeaders
+                ).subscribe(
+                    () => {
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
                 );
             },
             (err) => {
