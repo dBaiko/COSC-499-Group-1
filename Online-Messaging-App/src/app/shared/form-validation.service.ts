@@ -13,8 +13,7 @@ const alphanumRegex: RegExp = /^[a-z0-9]+$/i;
 
 @Injectable()
 export class FormValidationService {
-    constructor() {
-    }
+    constructor() {}
 
     public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
         if (!alphanumRegex.test(control.value)) {

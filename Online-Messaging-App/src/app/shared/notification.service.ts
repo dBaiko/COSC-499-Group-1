@@ -2,14 +2,14 @@ import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
 
 export interface UserSocket {
-    id: string,
-    username: string
+    id: string;
+    username: string;
 }
 
 export interface NotificationObject {
-    fromUser: UserSocket,
-    toUser: UserSocket,
-    message: object
+    fromUser: UserSocket;
+    toUser: UserSocket;
+    message: object;
 }
 
 const USERNAME_EVENT = "username";
@@ -25,15 +25,13 @@ export class NotificationService {
     private static socket;
     private static onlineUsers: Array<UserSocket> = [];
 
-    constructor() {
-    }
+    constructor() {}
 
     public static getInstance(): NotificationService {
         if (!NotificationService.instance) {
             NotificationService.instance = new NotificationService();
         }
         return NotificationService.instance;
-
     }
 
     public getSocket(): void {
@@ -73,5 +71,4 @@ export class NotificationService {
         NotificationService.socket.emit(EXIT_EVENT, username);
         NotificationService.socket.disconnect();
     }
-
 }

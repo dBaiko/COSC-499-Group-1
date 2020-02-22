@@ -38,8 +38,7 @@ export class RegisterFormComponent implements OnInit {
         private http: HttpClient,
         public common: CommonService,
         private formValidationService: FormValidationService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup(
