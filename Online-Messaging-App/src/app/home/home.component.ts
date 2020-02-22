@@ -3,8 +3,11 @@ import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NotificationService } from "../shared/notification.service";
+import { CookieService } from "ngx-cookie-service";
 
 const PROFILE_PAGE = "profile";
+const CHANNEL_BROWSER = "channelBrowser";
+const CHAT_BOX = "chatBox;";
 
 interface userChannelObject {
     username: string;
@@ -29,15 +32,21 @@ export class HomeComponent implements OnInit {
     userLoggedIn = false;
     options: FormGroup;
 
-    display: string = "channelBrowser";
-    selectedChannelId: number;
+    display: string = CHANNEL_BROWSER;
+    selectedChannelId: string;
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
     profileView: string;
     private scrollContainer: any;
 
-    constructor(private auth: AuthenticationService, public common: CommonService, fb: FormBuilder, private notificationService: NotificationService) {
+    constructor(
+        private auth: AuthenticationService,
+        public common: CommonService,
+        fb: FormBuilder,
+        private cookieService: CookieService,
+        private notificationService: NotificationService
+    ) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
             bottom: 0,
@@ -49,6 +58,12 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        if (this.cookieService.get("lastChannelID")) {
+            this.selectedChannelId = this.cookieService.get("lastChannelID");
+            this.display = "chatBox";
+        } else {
+            this.display = CHANNEL_BROWSER;
+        }
     }
 
     receiveId($event) {

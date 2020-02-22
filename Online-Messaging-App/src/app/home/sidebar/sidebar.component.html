@@ -9,9 +9,9 @@
             <mat-nav-list>
                 <div *ngFor="let publicChannel of publicChannels">
                     <mat-list-item
-                        (click)="selectChannel(publicChannel.channelId); switchDisplay(chatBox)"
+                        (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
-                    ><h3 matLine>{{ publicChannel.channelName }}</h3>
+                        ><h3 matLine>{{ publicChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -27,9 +27,9 @@
             <mat-nav-list>
                 <div *ngFor="let privateChannel of privateChannels">
                     <mat-list-item
-                        (click)="selectChannel(privateChannel.channelId); switchDisplay(chatBox)"
+                        (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
-                    ><h3 matLine>{{ privateChannel.channelName }}</h3>
+                        ><h3 matLine>{{ privateChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -45,9 +45,9 @@
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
-                        (click)="selectChannel(friendChannel.channelId); switchDisplay(chatBox)"
+                        (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
-                    ><h3 matLine>{{ friendChannel.channelName }}</h3>
+                        ><h3 matLine>{{ friendChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -59,14 +59,14 @@
             </mat-nav-list>
         </div>
     </div>
-    <br/>
+    <br />
     <div>
         <button (click)="joinChannel()" class="joinCreate">Create Channel</button>
     </div>
 
     <div class="icon">
         <a (click)="switchDisplay(channelBrowser)" routerLink="home">
-            <mat-icon inline="true">home</mat-icon>
+            <mat-icon inline="true">search</mat-icon>
         </a>
         <a (click)="switchDisplay(profile)" routerLink="profile">
             <mat-icon inline="true">account_box</mat-icon>
