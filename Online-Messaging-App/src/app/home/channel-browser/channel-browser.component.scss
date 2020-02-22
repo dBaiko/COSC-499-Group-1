@@ -8,7 +8,7 @@ mat-card {
 }
 
 mat-form-field {
-    background-color: #282828;
+    background-color: var(--soft-black);
     width: 100%;
     color: #f8f8f8;
     left: 0vh;
@@ -38,7 +38,7 @@ mat-card-title {
 }
 
 .headerTop {
-    background-color: #282828;
+    background-color: var(--soft-black);
     top: 4rem;
     margin-top: 1vh !important;
 }
@@ -82,9 +82,12 @@ mat-label {
 }
 
 mat-expansion-panel {
-    background-color: #282828;
+    background-color: var(--soft-black);
     color: #f8f8f8;
     border-radius: 0 !important;
+}
+mat-expansion-panel:hover {
+    background-color: var(--primary-color);
 }
 
 mat-panel-title,

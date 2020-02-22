@@ -50,7 +50,7 @@ mat-icon {
 }
 
 mat-sidenav-container {
-    background-color: #282828;
+    background-color: var(--soft-black);
     height: 100%;
 }
 
@@ -71,11 +71,11 @@ h2 {
 }
 
 .channelHeader:hover {
-    background-color: #1f1f1f;
+    background-color: var(--primary-color);
 }
 
 .channelRan {
-    background-color: #1a1a1a;
+    background-color: var(--primary-color);
 }
 
 .channelRan:hover {
@@ -93,13 +93,13 @@ h2 {
 
 mat-button-toggle {
     border-radius: 0px !important;
-    background-color: grey;
+    background-color: var(--soft-black);
     color: white;
     border: 0px;
 }
 
 mat-button-toggle:hover {
-    background-color: #696969;
+    background-color: var(--primary-color);
 }
 
 mat-button-toggle-group {
@@ -108,7 +108,7 @@ mat-button-toggle-group {
 }
 
 .mat-button-toggle-checked {
-    background-color: #282828;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     box-shadow: none !important;
@@ -116,14 +116,14 @@ mat-button-toggle-group {
 }
 
 .mat-button-toggle-checked:hover {
-    background-color: #282828;
+    background-color: var(--primary-color);
     color: white;
     border: none;
 }
 
 .mat-button-toggle-checked,
 .mat-button-toggle-focus-overlay {
-    border-bottom-color: #282828;
+    border-bottom-color: var(--soft-black);
 }
 
 .joinCreate {
@@ -148,7 +148,7 @@ mat-button-toggle-group {
 }
 
 .joinCreate:hover {
-    background-color: #696969;
+    background-color: var(--primary-color);
 }
 
 .mat-flat-button {

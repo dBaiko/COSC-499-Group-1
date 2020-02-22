@@ -1,5 +1,5 @@
 mat-card {
-    background-color: #282828;
+    background-color: var(--soft-black);
     border-radius: 0px;
     border-top: 1px solid #f8f8f8;
     height: 100%;
@@ -7,7 +7,7 @@ mat-card {
 
 mat-form-field {
     border-radius: 0.5rem;
-    background-color: #282828;
+    background-color: var(--soft-black);
     width: 86%;
     margin-right: 50vh;
     color: #f8f8f8;
@@ -35,7 +35,7 @@ mat-card-title {
 }
 
 .headerTop {
-    background-color: #282828;
+    background-color: var(--soft-black);
     width: 100%;
 }
 

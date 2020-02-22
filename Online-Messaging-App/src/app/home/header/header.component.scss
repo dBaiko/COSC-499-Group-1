@@ -1,5 +1,5 @@
 mat-toolbar {
-    background-color: #282828;
+    background-color: var(--soft-black);
     color: white;
 }
 
@@ -21,7 +21,7 @@ mat-option {
 }
 
 .mat-option {
-    background: #282828;
+    background: var(--soft-black);
     color: white;
     text-align: center;
     padding-right: 0.2vw;
@@ -29,7 +29,7 @@ mat-option {
 }
 
 .mat-option:hover {
-    background-color: #1f1f1f;
+    background-color: var(--primary-color);
 }
 
 ::ng-deep .cdk-overlay-pane {

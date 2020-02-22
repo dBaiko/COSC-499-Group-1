@@ -14,12 +14,24 @@
             <div id="notification">
                 <mat-icon id="notificationBell">notifications</mat-icon>
             <mat-select>
-                Public Notifications
-                <mat-option>Notification 1</mat-option>
-                Private Notifications
-                <mat-option>Notification 2</mat-option>
-                Friend Notifications
-                <mat-option>Notification 2</mat-option>
+                Public Invites
+                <mat-option>Invite 1
+                    <a routerLink="/delete">
+                        <mat-icon>clear</mat-icon>
+                    </a>
+                </mat-option>
+                Private Invites
+                <mat-option>Invite 2
+                    <a routerLink="/delete">
+                        <mat-icon>clear</mat-icon>
+                    </a>
+                </mat-option>
+                Friend Invites
+                <mat-option>Invite 3
+                    <a routerLink="/delete">
+                        <mat-icon>clear</mat-icon>
+                    </a>
+                </mat-option>
             </mat-select>
             </div>
         </div>
