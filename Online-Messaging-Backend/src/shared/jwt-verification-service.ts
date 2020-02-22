@@ -71,8 +71,6 @@ export class JwtVerificationService {
                             });
                         } else {
 
-                            console.log(JSON.stringify(decodedToken, null, 4));
-
                             if (Date.now() < decodedToken.exp * 1000) {
 
                                 if (decodedToken.aud === UserPoolConfig.ClientId) {
