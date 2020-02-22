@@ -10,12 +10,15 @@ import { NotificationService } from "../../shared/notification.service";
     styleUrls: ["./logout-form.component.scss"]
 })
 export class LogoutFormComponent implements OnInit {
-    constructor(private auth: AuthenticationService, public common: CommonService, private notificationService: NotificationService) {
+    constructor(
+        private auth: AuthenticationService,
+        public common: CommonService,
+        private notificationService: NotificationService
+    ) {
         this.notificationService = NotificationService.getInstance();
     }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 
     logout(): void {
         this.notificationService.exitSocket(this.auth.getAuthenticatedUser().getUsername());
