@@ -12,6 +12,7 @@ const router = express.Router();
 
 const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
 const PATH_POST_NEW_USER = "/";
+const PATH_GET_ALL_USERS = "/";
 const PATH_PUT_USER = "/:username";
 const PATH_GET_USER_BY_USERNAME = "/:username";
 const PATH_GET_ALL_NOTIFICATIONS_FOR_USER = "/:username/notifications";
@@ -172,6 +173,30 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
         }
     );
 });
+
+
+router.get(PATH_GET_ALL_USERS, ((req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+
+            const usersDAO = new UserDAO(docClient);
+            usersDAO
+                .getAllUsers()
+                .then((data) => {
+                    res.status(200).send(data);
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
+
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+}));
 
 
 export = router;

@@ -4,6 +4,8 @@ import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { APIConfig } from "../shared/app-config";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
@@ -23,6 +25,11 @@ interface ChannelObject {
     channelType: string;
 }
 
+interface UserObject {
+    username: string,
+    email: string
+}
+
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
@@ -38,6 +45,8 @@ export class HomeComponent implements OnInit {
     newAddedChannel: ChannelObject;
     newSubbedChannel: userChannelObject;
     profileView: string;
+    usersUrl: string = APIConfig.usersAPI;
+    userList: Array<UserObject> = [];
     private scrollContainer: any;
 
     constructor(
@@ -45,7 +54,8 @@ export class HomeComponent implements OnInit {
         public common: CommonService,
         fb: FormBuilder,
         private cookieService: CookieService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private http: HttpClient
     ) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
@@ -64,6 +74,7 @@ export class HomeComponent implements OnInit {
         } else {
             this.display = CHANNEL_BROWSER;
         }
+        this.getUsers();
     }
 
     receiveId($event) {
@@ -90,4 +101,32 @@ export class HomeComponent implements OnInit {
         this.profileView = value;
         this.updateDisplay(PROFILE_PAGE);
     }
+
+    private getUsers(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.usersUrl, httpHeaders).subscribe(
+                    (data: Array<UserObject>) => {
+                        this.userList = data;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+
+
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+    }
+
 }

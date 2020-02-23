@@ -1,12 +1,31 @@
 <div class="container">
     <mat-card class="scrollMe">
         <div class="headerTop">
-            <mat-card-header>
-                <mat-card-title>{{ channelName }}</mat-card-title>
+            <mat-card-header class="chat-box-header">
+                <mat-card-title class="chat-box-title">{{ channelName }}</mat-card-title>
+                <div class="invite">
+                    <button (click)="toggleInviting()" *ngIf="!inviting" class="inviteButton" mat-button>Send Invite
+                    </button>
+                    <button (click)="toggleInviting()" *ngIf="inviting" class="inviteButton" mat-button>Cancel
+                    </button>
+                    <div *ngIf="inviting" class="search">
+                        <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
+                            <mat-form-field>
+                                <mat-label>Search for person to invite</mat-label>
+                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users">
+                            </mat-form-field>
+                        </form>
+                        <div *ngFor="let user of inviteSearchList">
+                            <mat-card>
+                                <mat-card-title>{{user.username}}</mat-card-title>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
             </mat-card-header>
         </div>
         <p>{{ error }}</p>
-        <hr />
+        <hr/>
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
@@ -23,16 +42,16 @@
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
-                <hr />
+                <hr/>
             </div>
         </div>
-        <br /><br />
+        <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
                 <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <input matInput name="content" ngModel placeholder="Enter Message" />
+                        <input matInput name="content" ngModel placeholder="Enter Message"/>
                     </mat-form-field>
                 </form>
             </mat-card-footer>

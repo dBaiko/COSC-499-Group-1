@@ -8,6 +8,11 @@ import { FormGroup } from "@angular/forms";
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
 
+interface UserObject {
+    username: string,
+    email: string
+}
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
@@ -17,7 +22,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages;
     error: string = Constants.EMPTY;
 
+    inviting: boolean = false;
+    inviteSearch: string = Constants.EMPTY;
+
+    inviteSearchList: Array<UserObject> = [];
+
     @Input() channelName: string;
+    @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
     private _channelName;
@@ -30,7 +41,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private messagerService: MessengerService,
         private http: HttpClient,
         private authService: AuthenticationService
-    ) {}
+    ) {
+    }
 
     private _channelId;
 
@@ -99,6 +111,40 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     goToProfile(username: string) {
         this.profileViewEvent.emit(username);
+    }
+
+    toggleInviting(): void {
+        this.inviteSearchList = [];
+        if (this.inviting) {
+            this.inviting = false;
+        } else {
+            this.inviting = true;
+        }
+    }
+
+    inviteFormSubmit() {
+        if (this.inviteSearch == Constants.EMPTY) {
+            this.inviteSearchList = [];
+        } else {
+            for (let i in this.userList) {
+                if (this.userList[i].username.includes(this.inviteSearch)) {
+                    if (this.inviteSearchList.indexOf(this.userList[i]) === -1) {
+                        this.inviteSearchList.push(this.userList[i]);
+                    }
+                } else {
+                    if (this.inviteSearchList[this.inviteSearchList.indexOf(this.userList[i])]) {
+                        this.inviteSearchList.splice(this.inviteSearchList.indexOf(this.userList[i]), 1);
+                    }
+                }
+            }
+        }
+    }
+
+    onKey($event: Event) {
+        //set search value as whatever is entered on search bar every keystroke
+        this.inviteSearch = ($event.target as HTMLInputElement).value;
+
+        this.inviteFormSubmit();
     }
 
     private onScroll() {

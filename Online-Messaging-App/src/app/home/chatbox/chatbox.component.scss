@@ -62,3 +62,44 @@ mat-label {
     margin-left: 1vh;
     margin-right: 1vh;
 }
+
+.chat-box-header {
+    width: 100%;
+}
+
+.invite {
+    color: white;
+    border-radius: 0px;
+    position: absolute;
+    right: 1.1%;
+}
+
+.inviteButton {
+    border-radius: 0px;
+}
+
+.inviteButton:hover {
+    background-color: var(--primary-color);
+}
+
+.inviteSearch {
+    color: white;
+}
+
+.invite mat-card {
+    background-color: var(--soft-black);
+    width: 92%;
+    margin-top: 0%;
+}
+
+.invite mat-form-field {
+    border-radius: 0%;
+    width: 100%;
+    margin-right: 20vh;
+    margin-bottom: 0%;
+}
+
+.search {
+    background-color: var(--soft-black);
+    border: 1px solid black;
+}
