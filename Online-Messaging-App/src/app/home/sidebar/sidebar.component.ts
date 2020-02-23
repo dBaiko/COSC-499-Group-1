@@ -5,7 +5,6 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
-import { promisify } from "util";
 
 interface userChannelObject {
     username: string;
@@ -55,7 +54,8 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {}
+    ) {
+    }
 
     private _subbedChannel: userChannelObject;
 
@@ -191,6 +191,7 @@ export class SidebarComponent implements OnInit {
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
+        dialogConfig.panelClass = "dialog-class";
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
