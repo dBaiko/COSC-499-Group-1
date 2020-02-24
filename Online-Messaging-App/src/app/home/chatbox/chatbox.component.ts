@@ -4,9 +4,27 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup } from "@angular/forms";
+import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import { ChannelObject } from "../sidebar/sidebar.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
+const USERS_URI = "/users";
+const NOTIFICATIONS_URI = "/notifications";
+const NOTIFICATION_MESSAGE = "You have been invited to join ";
+
+interface UserObject {
+    username: string;
+    email: string;
+}
+
+interface UserChannelObject {
+    username: string;
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    userChannelRole: string;
+}
 
 @Component({
     selector: "app-chatbox",
@@ -17,38 +35,51 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages;
     error: string = Constants.EMPTY;
 
+    inviting: boolean = false;
+    inviteSearch: string = Constants.EMPTY;
+
+    inviteSearchList: Array<UserObject> = [];
+
+    subscribedUsers: Array<UserChannelObject> = [];
+    subscribedUsersUsernames: Array<string> = [];
+
+    channelNotifications: Array<NotificationObject> = [];
+    channelNotificationsUsernames: Array<string> = [];
+
     @Input() channelName: string;
+    @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
-    private _channelName;
-    private url: string = APIConfig.channelsAPI;
-    private called: boolean = true;
+    private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
 
     constructor(
         private messagerService: MessengerService,
         private http: HttpClient,
-        private authService: AuthenticationService
-    ) {}
+        private auth: AuthenticationService,
+        private notificationService: NotificationService
+    ) {
+    }
 
-    private _channelId;
+    private _currentChannel: ChannelObject;
 
-    get channelId(): any {
-        this.scrollToBottom();
-        return this._channelId;
+    get currentChannel(): ChannelObject {
+        return this._currentChannel;
     }
 
     @Input()
-    set channelId(value: any) {
-        this._channelId = value;
-        this.getMessages(this._channelId);
+    set currentChannel(value: ChannelObject) {
+        this._currentChannel = value;
+        this.getMessages(this._currentChannel.channelId);
         this.isNearBottom = false;
+        this.getSubcribedUsers();
+        this.getChannelNotifications();
     }
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            if (data.channelId == this.channelId) {
+            if (data.channelId == this.currentChannel.channelId) {
                 this.chatMessages.push(data);
             }
         });
@@ -59,7 +90,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     getMessages(channelId: string): void {
-        this.authService.getCurrentSessionId().subscribe(
+        this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
@@ -68,7 +99,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http.get(this.url + channelId + MESSAGES_URI, httpHeaders).subscribe(
+                this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
                     (data) => {
                         this.chatMessages = data || [];
                     },
@@ -88,8 +119,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
             let chatMessage = {
-                channelId: this._channelId,
-                username: this.authService.getAuthenticatedUser().getUsername(),
+                channelId: this.currentChannel.channelId,
+                username: this.auth.getAuthenticatedUser().getUsername(),
                 content: value.content
             };
             this.isNearBottom = false;
@@ -101,7 +132,147 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.profileViewEvent.emit(username);
     }
 
-    private onScroll() {
+    toggleInviting(): void {
+        this.inviteSearchList = [];
+        if (this.inviting) {
+            this.inviting = false;
+        } else {
+            this.inviting = true;
+            this.getChannelNotifications();
+            this.getSubcribedUsers();
+        }
+    }
+
+    inviteFormSubmit() {
+        if (this.inviteSearch == Constants.EMPTY) {
+            this.inviteSearchList = [];
+        } else {
+            for (let i in this.userList) {
+                if (this.searchStrings(this.userList[i].username.toLowerCase(), this.inviteSearch.toLowerCase())) {
+                    if (this.inviteSearchList.indexOf(this.userList[i]) === -1) {
+                        this.inviteSearchList.push(this.userList[i]);
+                    }
+                } else {
+                    if (this.inviteSearchList[this.inviteSearchList.indexOf(this.userList[i])]) {
+                        this.inviteSearchList.splice(this.inviteSearchList.indexOf(this.userList[i]), 1);
+                    }
+                }
+            }
+        }
+    }
+
+    onKey($event: Event) {
+        //set search value as whatever is entered on search bar every keystroke
+        this.inviteSearch = ($event.target as HTMLInputElement).value;
+        this.inviteFormSubmit();
+    }
+
+    sendInvite(username: string): void {
+        let notification: NotificationSocketObject = {
+            fromUser: {
+                username: this.auth.getAuthenticatedUser().getUsername(),
+                id: this.notificationService.getSocketId()
+            },
+            toUser: this.notificationService.getOnlineUserByUsername(username),
+            notification: {
+                channelId: this.currentChannel.channelId,
+                channelName: this.currentChannel.channelName,
+                message: NOTIFICATION_MESSAGE + this.currentChannel.channelName,
+                type: this.currentChannel.channelType,
+                username: username,
+                notificationId: null,
+                insertedTime: null
+            }
+        };
+
+        this.notificationService.sendNotification(notification);
+        this.channelNotificationsUsernames.push(username);
+    }
+
+    private searchStrings(match: string, search: string): boolean {
+        if (search === match) {
+            return true;
+        }
+        if (search.length > match.length) {
+            return false;
+        }
+        if (match.substring(0, search.length) == search) {
+            return true;
+        }
+        return false;
+    }
+
+    private getSubcribedUsers(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.get(this.channelsURL + this.currentChannel.channelId + USERS_URI, httpHeaders).subscribe(
+                        (data: Array<UserChannelObject>) => {
+                            this.subscribedUsers = data;
+                            let usernames: Array<string> = [];
+                            for (let i in data) {
+                                usernames.push(data[i].username);
+                            }
+                            this.subscribedUsersUsernames = usernames;
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private getChannelNotifications(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .get(this.channelsURL + this.currentChannel.channelId + NOTIFICATIONS_URI, httpHeaders)
+                        .subscribe(
+                            (data: Array<NotificationObject>) => {
+                                this.channelNotifications = data;
+                                let usernames: Array<string> = [];
+                                for (let i in data) {
+                                    usernames.push(data[i].username);
+                                }
+                                this.channelNotificationsUsernames = usernames;
+                                resolve();
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private onScroll(): void {
         let element = this.scrollContainer.nativeElement;
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);

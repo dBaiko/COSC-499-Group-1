@@ -11,6 +11,7 @@
         "quotemark": [
             true,
             "double"
-        ]
+        ],
+        "eofline": false
     }
 }
