@@ -7,25 +7,36 @@ export interface UserSocket {
 }
 
 export interface NotificationObject {
+    channelId: string;
+    channelName: string;
+    message: string;
+    type: string;
+    username: string;
+    notificationId: string;
+    insertedTime: number;
+}
+
+export interface NotificationSocketObject {
     fromUser: UserSocket;
     toUser: UserSocket;
-    message: object;
+    notification: NotificationObject;
 }
 
 const USERNAME_EVENT = "username";
 const EXIT_EVENT = "exit";
 const USER_LIST_EVENT = "userList";
 const NOTIFICATION_EVENT = "notification";
-const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Injectable()
 export class NotificationService {
+    private static socket;
     private static instance: NotificationService;
     private static url = "http://localhost:8080";
-    private static socket;
     private static onlineUsers: Array<UserSocket> = [];
+    private static socketId: string;
 
-    constructor() {}
+    constructor() {
+    }
 
     public static getInstance(): NotificationService {
         if (!NotificationService.instance) {
@@ -34,22 +45,24 @@ export class NotificationService {
         return NotificationService.instance;
     }
 
-    public getSocket(): void {
+    public getSocket(username: string): void {
         NotificationService.onlineUsers = [];
         NotificationService.socket = Socket(NotificationService.url);
         NotificationService.socket.on(USER_LIST_EVENT, (userList: Array<UserSocket>) => {
             NotificationService.onlineUsers = userList;
         });
-        NotificationService.socket.on(BROADCAST_NOTIFICATION_EVENT, (newNotification: NotificationObject) => {
-            console.log(newNotification);
+
+        NotificationService.socket.on("connect", () => {
+            NotificationService.socketId = NotificationService.socket.id;
+            NotificationService.socket.emit(USERNAME_EVENT, {
+                username: username,
+                id: NotificationService.socket.id
+            });
+            console.log(NotificationService.socketId);
         });
     }
 
-    subscribeToSocket(username: string): void {
-        NotificationService.socket.emit(USERNAME_EVENT, username);
-    }
-
-    sendNotification(notification: NotificationObject): void {
+    sendNotification(notification: NotificationSocketObject): void {
         NotificationService.socket.emit(NOTIFICATION_EVENT, notification);
     }
 
@@ -57,8 +70,7 @@ export class NotificationService {
         return NotificationService.socket.id;
     }
 
-    getOnlineUserByUsername(username: string) {
-        console.log(NotificationService.onlineUsers);
+    getOnlineUserByUsername(username: string): UserSocket {
         for (let i = 0; i < NotificationService.onlineUsers.length; i++) {
             if (NotificationService.onlineUsers[i].username === username) {
                 return NotificationService.onlineUsers[i];
@@ -70,5 +82,11 @@ export class NotificationService {
     exitSocket(username: string) {
         NotificationService.socket.emit(EXIT_EVENT, username);
         NotificationService.socket.disconnect();
+    }
+
+    addSocketListener(eventName: string, callback: (sentObject: Object) => any) {
+        NotificationService.socket.on(eventName, (notification: Object) => {
+            callback(notification);
+        });
     }
 }

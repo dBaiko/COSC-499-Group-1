@@ -5,7 +5,6 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
-import { promisify } from "util";
 
 interface userChannelObject {
     username: string;
@@ -15,7 +14,7 @@ interface userChannelObject {
     channelName: string;
 }
 
-interface ChannelObject {
+export interface ChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
@@ -36,14 +35,13 @@ export class SidebarComponent implements OnInit {
     friendsChannels = [];
     userSubscribedChannels = [];
 
-    @Output() channelNameEvent = new EventEmitter<string>();
-    @Output() channelIdEvent = new EventEmitter<string>();
+    @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
-    publicChannelSelect: boolean = true;
-    privateChannelSelect: boolean = false;
-    friendChannelSelect: boolean = false;
+    publicChannelSelect: boolean;
+    privateChannelSelect: boolean;
+    friendChannelSelect: boolean;
     list;
     private chatBox = "chatBox";
     private channelBrowser = "channelBrowser";
@@ -55,7 +53,8 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {}
+    ) {
+    }
 
     private _subbedChannel: userChannelObject;
 
@@ -65,16 +64,27 @@ export class SidebarComponent implements OnInit {
 
     @Input()
     set subbedChannel(value: userChannelObject) {
+        console.log("%" + value);
         if (value) {
             this._subbedChannel = value;
             this.userSubscribedChannels.push(value);
             if (value.channelType == PUBLIC) {
                 this.publicChannels.push(value);
+                this.selectPublicChannel();
             } else if (value.channelType == PRIVATE) {
                 this.privateChannels.push(value);
+                this.selectPrivateChannel();
             } else {
                 this.friendsChannels.push(value);
+                this.selectFriend();
             }
+            this.switchDisplay("chatBox");
+            this.selectChannel(value.channelId, value.channelType);
+            this.channelEvent.emit({
+                channelName: value.channelName,
+                channelType: value.channelType,
+                channelId: value.channelId
+            });
         }
     }
 
@@ -134,8 +144,7 @@ export class SidebarComponent implements OnInit {
                                     }
                                 });
                                 if (this.userSubscribedChannels.length > 0) {
-                                    this.channelIdEvent.emit(this.userSubscribedChannels[0].channelId);
-                                    this.channelNameEvent.emit(this.userSubscribedChannels[0].channelName);
+                                    this.channelEvent.emit(this.userSubscribedChannels[0]);
                                     this.userSubscribedChannels[0][SELECTED] = true;
                                 }
                                 resolve();
@@ -175,8 +184,11 @@ export class SidebarComponent implements OnInit {
     selectChannel(id: string, type: string) {
         this.userSubscribedChannels.forEach((item: userChannelObject) => {
             if (item.channelId == id) {
-                this.channelIdEvent.emit(id.toString());
-                this.channelNameEvent.emit(item.channelName);
+                this.channelEvent.emit({
+                    channelId: item.channelId,
+                    channelName: item.channelName,
+                    channelType: item.channelType
+                });
                 item[SELECTED] = true;
                 this.cookieService.set("lastChannelID", id);
                 this.cookieService.set("lastChannelType", type);
@@ -192,17 +204,27 @@ export class SidebarComponent implements OnInit {
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((result) => {
+        dialogRef.afterClosed().subscribe((result: userChannelObject) => {
             if (result) {
                 this.newChannelEvent.emit(result);
                 this.userSubscribedChannels.push(result);
                 if (result.channelType == PUBLIC) {
                     this.publicChannels.push(result);
+                    this.selectPublicChannel();
                 } else if (result.channelType == PRIVATE) {
                     this.privateChannels.push(result);
+                    this.selectPrivateChannel();
                 } else {
                     this.friendsChannels.push(result);
+                    this.selectFriend();
                 }
+                this.switchDisplay("chatBox");
+                this.selectChannel(result.channelId, result.channelType);
+                this.channelEvent.emit({
+                    channelName: result.channelName,
+                    channelType: result.channelType,
+                    channelId: result.channelId
+                });
             }
         });
     }

@@ -10,7 +10,8 @@ export const APIConfig = {
     usersAPI: "http://localhost:8080/users/",
     messagesAPI: "http://localhost:8080/messages/",
     channelsAPI: "http://localhost:8080/channels/",
-    profilesAPI: "http://localhost:8080/profiles/"
+    profilesAPI: "http://localhost:8080/profiles/",
+    notificationsAPI: "http://localhost:8080/notifications/"
 };
 
 export const Constants = {
