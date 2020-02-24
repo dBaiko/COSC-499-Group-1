@@ -1,5 +1,5 @@
 <div id="home">
-    <app-header></app-header>
+    <app-header (newChannelEvent)="receiveNewSubbedChannel($event)"></app-header>
     <mat-sidenav-container class="container">
         <mat-sidenav
             [fixedBottomGap]="options.value.bottom"
@@ -10,8 +10,7 @@
             opened
         >
             <app-sidebar
-                (channelIdEvent)="receiveId($event)"
-                (channelNameEvent)="receiveName($event)"
+                (channelEvent)="receiveId($event)"
                 (newChannelEvent)="addNewChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
@@ -32,8 +31,7 @@
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
                         <app-chatbox
                             (profileViewEvent)="updateProfile($event)"
-                            [channelId]="selectedChannelId"
-                            [channelName]="selectedChannelName"
+                            [currentChannel]="selectedChannelId"
                             [userList]="userList"
                             class="scrollMe"
                         ></app-chatbox>

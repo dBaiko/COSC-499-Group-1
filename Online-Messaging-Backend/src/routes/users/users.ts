@@ -27,8 +27,8 @@ const docClient = new aws.DynamoDB.DocumentClient();
 router.use(bodyParser());
 
 interface UserObject {
-    username: string,
-    email: string
+    username: string;
+    email: string;
 }
 
 router.post(PATH_POST_NEW_USER, (req, res) => {
@@ -97,7 +97,6 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
-
         },
         (err) => {
             res.status(err.status).send(err);
@@ -110,10 +109,12 @@ router.put(PATH_PUT_USER, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
-
             let usernameParam = req.params.username;
 
-            if (usernameParam === data.decodedToken[COGNITO_USERNAME] && req.body.username === data.decodedToken[COGNITO_USERNAME]) {
+            if (
+                usernameParam === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
                 const userDAO = new UserDAO(docClient);
                 userDAO
                     .updateUser(req.body.username, req.body.email)
@@ -132,8 +133,6 @@ router.put(PATH_PUT_USER, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
-
-
         },
         (err) => {
             res.status(err.status).send(err);
@@ -141,13 +140,11 @@ router.put(PATH_PUT_USER, (req, res) => {
     );
 });
 
-
 router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
-
             let usernameParam = req.params.username;
 
             if (usernameParam === data.decodedToken[COGNITO_USERNAME]) {
@@ -166,7 +163,6 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
-
         },
         (err) => {
             res.status(err.status).send(err);
@@ -174,13 +170,11 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
     );
 });
 
-
-router.get(PATH_GET_ALL_USERS, ((req, res) => {
+router.get(PATH_GET_ALL_USERS, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
-
             const usersDAO = new UserDAO(docClient);
             usersDAO
                 .getAllUsers()
@@ -190,13 +184,11 @@ router.get(PATH_GET_ALL_USERS, ((req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err) => {
             res.status(err.status).send(err);
         }
     );
-}));
-
+});
 
 export = router;

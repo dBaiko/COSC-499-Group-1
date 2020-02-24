@@ -2,22 +2,45 @@
     <mat-card class="scrollMe">
         <div class="headerTop">
             <mat-card-header class="chat-box-header">
-                <mat-card-title class="chat-box-title">{{ channelName }}</mat-card-title>
+                <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>
+                <!-- TODO: remove this in friends channels -->
                 <div class="invite">
-                    <button (click)="toggleInviting()" *ngIf="!inviting" class="inviteButton" mat-button>Send Invite
+                    <button (click)="toggleInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
+                        Send Invite
                     </button>
-                    <button (click)="toggleInviting()" *ngIf="inviting" class="inviteButton" mat-button>Cancel
-                    </button>
+                    <button (click)="toggleInviting()" *ngIf="inviting" class="inviteButton" mat-button>Cancel</button>
                     <div *ngIf="inviting" class="search">
                         <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
                             <mat-form-field>
                                 <mat-label>Search for person to invite</mat-label>
-                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users">
+                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users"/>
                             </mat-form-field>
                         </form>
                         <div *ngFor="let user of inviteSearchList">
-                            <mat-card>
-                                <mat-card-title>{{user.username}}</mat-card-title>
+                            <mat-card *ngIf="user.username != auth.getAuthenticatedUser().getUsername()">
+                                <mat-card-title>{{ user.username }}</mat-card-title>
+                                <mat-card-content>
+                                    <div
+                                        *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
+                                        class="subedOrSent"
+                                    >
+                                        Subscribed
+                                    </div>
+                                    <ng-template #elseBlock1>
+                                        <div
+                                            *ngIf="
+                                                this.channelNotificationsUsernames.includes(user.username);
+                                                else elseBlock2
+                                            "
+                                            class="subedOrSent"
+                                        >
+                                            Invite Sent
+                                        </div>
+                                        <ng-template #elseBlock2>
+                                            <button (click)="sendInvite(user.username)" mat-button>Send Invite</button>
+                                        </ng-template>
+                                    </ng-template>
+                                </mat-card-content>
                             </mat-card>
                         </div>
                     </div>

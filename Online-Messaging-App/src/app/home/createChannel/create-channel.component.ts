@@ -49,7 +49,8 @@ export class CreateChannelComponent implements OnInit {
         public common: CommonService,
         private formValidationService: FormValidationService,
         public dialogRef: MatDialogRef<CreateChannelComponent>
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.newChannelForm = new FormGroup({
@@ -103,6 +104,7 @@ export class CreateChannelComponent implements OnInit {
                 (result: newChannelResponse) => {
                     this.data = result.data.newChannel;
                     this.onClose();
+                    this.newChannelEvent.emit(result.data.newChannel);
                 },
                 (err) => {
                     console.log(err);

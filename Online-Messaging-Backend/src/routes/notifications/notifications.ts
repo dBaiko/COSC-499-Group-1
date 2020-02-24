@@ -4,10 +4,10 @@ import { awsConfigPath } from "../../config/aws-config";
 import aws from "aws-sdk";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
 import { NotificationObject, NotificationsDAO } from "./NotificationsDAO";
+import { uuid } from "uuidv4";
 
 const PATH_POST_NEW_NOTIFICATION: string = "/";
-const PATH_DELETE_NOTIFICATION: string = "/:notificationId";
-
+const PATH_DELETE_NOTIFICATION: string = "/:notificationId/insertedTime/:insertedTime";
 
 const AUTH_KEY = "authorization";
 
@@ -20,26 +20,25 @@ const docClient = new aws.DynamoDB.DocumentClient();
 
 router.use(bodyParser());
 
-router.post(PATH_POST_NEW_NOTIFICATION, ((req, res) => {
+router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
             let newNotification: NotificationObject = {
-                notificationId: null,
                 channelId: req.body.channelId,
                 channelName: req.body.channelName,
                 username: req.body.username,
                 message: req.body.message,
-                insertedTime: null,
-                type: req.body.type
+                type: req.body.type,
+                notificationId: uuid(),
+                insertedTime: Date.now()
             };
 
-
-            notificationsDAO.createNewNotification(newNotification)
+            notificationsDAO
+                .createNewNotification(newNotification)
                 .then(() => {
                     res.status(200).send({
                         status: 200,
@@ -50,22 +49,21 @@ router.post(PATH_POST_NEW_NOTIFICATION, ((req, res) => {
                     console.log(err);
                     res.status(400).send(err);
                 });
-
         },
         (err) => {
             res.status(err.status).send(err);
         }
     );
-}));
+});
 
-router.delete(PATH_DELETE_NOTIFICATION, ((req, res) => {
+router.delete(PATH_DELETE_NOTIFICATION, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
-            notificationsDAO.deleteNotification(req.params.notificationId, req.body.insertedTime)
+            notificationsDAO
+                .deleteNotification(req.params.notificationId, Number(req.params.insertedTime))
                 .then(() => {
                     res.status(200).send({
                         status: 200,
@@ -75,13 +73,11 @@ router.delete(PATH_DELETE_NOTIFICATION, ((req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err) => {
             res.status(err.status).send(err);
         }
     );
-}));
-
+});
 
 export = router;

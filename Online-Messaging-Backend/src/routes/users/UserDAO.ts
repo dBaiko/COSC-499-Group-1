@@ -4,8 +4,8 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 const USERS_TABLE_NAME = "Users";
 
 interface UserObject {
-    username: string,
-    email: string
+    username: string;
+    email: string;
 }
 
 class UserDAO {
@@ -116,16 +116,11 @@ class UserDAO {
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    resolve(
-                        data.Items.sort((a: UserObject, b: UserObject) =>
-                            a.username > b.username ? 1 : -1
-                        )
-                    );
+                    resolve(data.Items.sort((a: UserObject, b: UserObject) => (a.username > b.username ? 1 : -1)));
                 }
             });
         });
     }
-
 }
 
 export default UserDAO;

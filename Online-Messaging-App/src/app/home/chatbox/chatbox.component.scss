@@ -31,7 +31,7 @@ hr {
 }
 
 mat-card-title {
-    color: #f8f8f8;
+    color: white;
 }
 
 .headerTop {
@@ -90,6 +90,21 @@ mat-label {
     background-color: var(--soft-black);
     width: 92%;
     margin-top: 0%;
+    color: white;
+}
+
+.search mat-card-content {
+    position: absolute;
+    right: 1%;
+    top: 25%;
+}
+
+.search button {
+    border-radius: 0%;
+}
+
+.search button:hover {
+    background-color: var(--primary-color);
 }
 
 .invite mat-form-field {
@@ -102,4 +117,9 @@ mat-label {
 .search {
     background-color: var(--soft-black);
     border: 1px solid black;
+    padding: 1px;
+}
+
+.subedOrSent {
+    margin-right: 1.25rem;
 }

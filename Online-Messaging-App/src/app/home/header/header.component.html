@@ -1,48 +1,80 @@
 <header>
-    <mat-toolbar class="navbar">
-        <div>Streamline Athletes</div>
+    <div id="title">Streamline Athletes</div>
 
-        <div *ngIf="userLoggedIn">
-            <div (click)="triggerSelect()" class="headInfo">
-                {{ user.username }}
-                <mat-select
-                    (click)="triggerSelect()"
-                    #mySelect
-                    (closed)="unDrop()"
-                    (opened)="drop()"
-                    disableOptionCentering
-                >
-                    <mat-option>
-                        <logout-form></logout-form>
-                    </mat-option>
-                </mat-select>
-            </div>
-            <div id="notification">
-                <mat-icon id="notificationBell">notifications</mat-icon>
-                <mat-select>
-                    Public Invites
-                    <mat-option
-                        >Invite 1
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
-                        </a>
-                    </mat-option>
-                    Private Invites
-                    <mat-option
-                        >Invite 2
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
-                        </a>
-                    </mat-option>
-                    Friend Invites
-                    <mat-option
-                        >Invite 3
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
-                        </a>
-                    </mat-option>
-                </mat-select>
+    <div *ngIf="userLoggedIn">
+        <div (click)="triggerSelect()" class="headInfo">
+            <button [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
+            <mat-menu
+                #mySelect
+                #userMenu="matMenu"
+                (click)="triggerSelect()"
+                (closed)="unDrop()"
+                (drop)="drop()"
+                class="menuList"
+                disableOptionCentering
+                disabled
+                xPosition="after"
+            >
+                <div class="userMenu" mat-menu-item>
+                    <logout-form></logout-form>
+                </div>
+            </mat-menu>
+        </div>
+        <div class="userMenu" id="notification">
+            <button (click)="toggleOpen()" mat-button>
+                <mat-icon>notifications</mat-icon>
+                <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
+            </button>
+        </div>
+    </div>
+</header>
+<div *ngIf="open" id="notificationList">
+    <div *ngIf="publicInvites.length > 0">
+        <span class="title">Public Invites</span>
+        <div *ngFor="let notification of publicInvites">
+            <div class="notificationOption">
+                <mat-card>
+                    <mat-card-title>{{ notification.message }}</mat-card-title>
+                    <br/>
+                    <div class="inviteButtons">
+                        <button class="inviteButton" mat-button>Accept</button>
+                        <button class="inviteButton" mat-button>Deny</button>
+                    </div>
+                </mat-card>
             </div>
         </div>
-    </mat-toolbar>
-</header>
+    </div>
+    <div *ngIf="privateInvites.length > 0">
+        <span class="title">Private Invites</span>
+        <div *ngFor="let notification of privateInvites">
+            <div class="notificationOption">
+                <mat-card>
+                    <mat-card-title>{{ notification.message }}</mat-card-title>
+                    <br/>
+                    <div class="inviteButtons">
+                        <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
+                        <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="friendInvites.length > 0">
+        <span class="title">Friend Invites</span>
+        <div *ngFor="let notification of friendInvites">
+            <div class="notificationOption">
+                <mat-card>
+                    <mat-card-title>{{ notification.message }}</mat-card-title>
+                    <br/>
+                    <div class="inviteButtons">
+                        <button class="inviteButton" mat-button>Accept</button>
+                        <button class="inviteButton" mat-button>Deny</button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <mat-card *ngIf="privateInvites.length == 0 && publicInvites.length == 0 && friendInvites.length == 0" disabled>
+        <mat-card-title>No notifications</mat-card-title>
+    </mat-card>
+</div>

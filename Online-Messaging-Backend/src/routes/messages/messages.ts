@@ -19,12 +19,10 @@ const docClient = new aws.DynamoDB.DocumentClient();
 router.use(bodyParser());
 
 router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             const messageDAO = new MessageDAO(docClient);
             messageDAO
                 .getAllMessageHistory()
@@ -34,13 +32,11 @@ router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
                 .catch((err) => {
                     res.status(400).send(err);
                 });
-
         },
         (err) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 export = router;

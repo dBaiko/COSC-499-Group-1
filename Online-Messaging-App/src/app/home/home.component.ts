@@ -26,8 +26,8 @@ interface ChannelObject {
 }
 
 interface UserObject {
-    username: string,
-    email: string
+    username: string;
+    email: string;
 }
 
 @Component({
@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
             top: 0
         });
         this.notificationService = NotificationService.getInstance();
-        this.notificationService.getSocket();
+        this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
     }
 
     ngOnInit(): void {
@@ -120,13 +120,10 @@ export class HomeComponent implements OnInit {
                         console.log(err);
                     }
                 );
-
-
             },
             (err) => {
                 console.log(err);
             }
         );
     }
-
 }
