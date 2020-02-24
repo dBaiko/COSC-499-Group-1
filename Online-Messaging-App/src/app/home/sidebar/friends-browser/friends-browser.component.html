@@ -1,1 +1,50 @@
-<p>friends-browser works!</p>
+<div class="container">
+    <div class="searchbar">
+        <form #messageForm="ngForm" autocomplete="off">
+            <mat-form-field>
+                <mat-label>Add Friends...</mat-label>
+                <input (input)="onKey($event)" matInput name="content"/>
+            </mat-form-field>
+            <div *ngIf="searching" class="overlapper">
+                <p>{{value}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+                <p>{{value1}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+                <p>{{value2}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+            </div>
+        </form>
+    </div>
+
+
+    <!--            <div *ngFor="let channel of channels">-->
+    <!--                <div *ngIf="channel.filtered == false || channel.filtered == null">-->
+    <!--                    <mat-expansion-panel>-->
+    <!--                        <mat-expansion-panel-header>-->
+    <!--                            <mat-panel-title>-->
+    <!--                                {{ channel.channelName }}-->
+    <!--                            </mat-panel-title>-->
+    <!--                            <mat-panel-description> {{ channel.channelName }} tags</mat-panel-description>-->
+    <!--                        </mat-expansion-panel-header>-->
+    <!--                        <p>Description of the channel</p>-->
+    <!--                        <mat-action-row>-->
+    <!--                            <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">-->
+    <!--                                <button (click)="joinChannel(channel)" class="join" mat-button>-->
+    <!--                                    Join Channel-->
+    <!--                                </button>-->
+    <!--                            </div>-->
+    <!--                            <ng-template #joined>-->
+    <!--                                <mat-label class="joined">Joined</mat-label>-->
+    <!--                            </ng-template>-->
+    <!--                        </mat-action-row>-->
+    <!--                    </mat-expansion-panel>-->
+    <!--                </div>-->
+    <!--            </div>-->
+
+</div>
