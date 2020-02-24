@@ -32,7 +32,7 @@ class MessageDAO {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + " Succeeded");
+                    console.log("Query for " + channelId + "'s messages Succeeded");
                     resolve(data.Items);
                 }
             });

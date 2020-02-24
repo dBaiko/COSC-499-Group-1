@@ -20,19 +20,20 @@ const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
 
 interface ProfileObject {
-    username: string,
-    firstName: string,
-    lastName: string
+    username: string;
+    firstName: string;
+    lastName: string;
 }
 
 router.put(PATH_PUT_PROFILE, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
-            if (req.params.username === data.decodedToken[COGNITO_USERNAME] && req.body.username === data.decodedToken[COGNITO_USERNAME]) {
+            if (
+                req.params.username === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
                 const updateProfile = new ProfileDAO(docClient);
                 updateProfile
                     .updateProfile(req.body.username, req.body.firstName, req.body.lastName)
@@ -59,7 +60,6 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
 });
 
 router.get(PATH_GET_PROFILE, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(

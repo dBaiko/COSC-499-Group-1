@@ -162,7 +162,8 @@ mat-button-toggle-group {
 .mat-drawer-content {
     overflow: hidden !important;
 }
-.icon>a:hover {
+
+.icon > a:hover {
     padding-top: 2vh;
     background-color: var(--primary-color);
 }
