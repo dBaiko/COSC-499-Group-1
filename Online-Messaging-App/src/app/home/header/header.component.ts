@@ -119,6 +119,21 @@ export class HeaderComponent implements OnInit {
                     .post(this.channelsAPI + notification.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
                         () => {
+                            this.http
+                                .delete(
+                                    this.notificationsURL +
+                                    notification.notificationId +
+                                    INSERTED_TIME_URI +
+                                    notification.insertedTime,
+                                    httpHeaders
+                                )
+                                .subscribe(
+                                    () => {
+                                    },
+                                    (err) => {
+                                        console.log(err);
+                                    }
+                                );
                         },
                         (err) => {
                             console.log(err);
