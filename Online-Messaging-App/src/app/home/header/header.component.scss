@@ -49,25 +49,33 @@ header {
     bottom: 1rem;
 }
 
-.headInfo:hover {
-    background-color: var(--primary-color);
-}
+
 
 #notification {
     position: relative;
-    left: 95%;
+    left: 94%;
     bottom: 1rem;
     width: 4000px;
+    margin-left: 1vw;
+
 }
 
-#notification:hover {
-    background-color: var(--primary-color);
+#username {
+    margin-right: 1vw;
+    z-index: 1;
 }
-
 .userMenu {
     background-color: var(--soft-black);
     color: white;
     border-radius: 0%;
+}
+button {
+    margin-left: 1vw;
+    margin-right: 1vw;
+}
+button:hover {
+    background-color: var(--primary-color);
+    border-radius: 0;
 }
 
 ::ng-deep .mat-menu-panel {

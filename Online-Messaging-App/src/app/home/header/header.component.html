@@ -1,9 +1,9 @@
-<header>
+<header (click)="toggleOpen()">
     <div id="title">Streamline Athletes</div>
 
     <div *ngIf="userLoggedIn">
         <div (click)="triggerSelect()" class="headInfo">
-            <button [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
+            <button id="username" [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
             <mat-menu
                 #mySelect
                 #userMenu="matMenu"

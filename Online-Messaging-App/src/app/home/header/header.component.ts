@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
-import { AuthenticationService } from "../../shared/authentication.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import {Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild} from "@angular/core";
+import {AuthenticationService} from "../../shared/authentication.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
+import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
 
 interface UserChannelObject {
     username: string;
@@ -24,12 +24,14 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
+
     selector: "app-header",
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.scss"]
+
 })
 export class HeaderComponent implements OnInit {
-    @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
+    @ViewChild(MY_SELECT_CHILD, {static: false}) mySelect;
     userLoggedIn = false;
     user;
 
@@ -38,6 +40,16 @@ export class HeaderComponent implements OnInit {
     notificationCount: number = 0;
 
     open: boolean = false;
+
+    @HostListener('document:click', ['$event']) clickout(event) {
+
+        if (this._eref.nativeElement.contains(event.target)) {
+            this.toggleOpen();
+        } else {
+            this.open = false;
+
+        }
+    }
 
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
 
@@ -48,6 +60,7 @@ export class HeaderComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
 
     constructor(
+        private _eref: ElementRef,
         private auth: AuthenticationService,
         private notificationService: NotificationService,
         private http: HttpClient
@@ -88,6 +101,7 @@ export class HeaderComponent implements OnInit {
 
     triggerSelect() {
         this.mySelect.toggle();
+
     }
 
     toggleOpen(): void {
@@ -122,13 +136,14 @@ export class HeaderComponent implements OnInit {
                             this.http
                                 .delete(
                                     this.notificationsURL +
-                                        notification.notificationId +
-                                        INSERTED_TIME_URI +
-                                        notification.insertedTime,
+                                    notification.notificationId +
+                                    INSERTED_TIME_URI +
+                                    notification.insertedTime,
                                     httpHeaders
                                 )
                                 .subscribe(
-                                    () => {},
+                                    () => {
+                                    },
                                     (err) => {
                                         console.log(err);
                                     }
@@ -159,13 +174,14 @@ export class HeaderComponent implements OnInit {
                 this.http
                     .delete(
                         this.notificationsURL +
-                            notification.notificationId +
-                            INSERTED_TIME_URI +
-                            notification.insertedTime,
+                        notification.notificationId +
+                        INSERTED_TIME_URI +
+                        notification.insertedTime,
                         httpHeaders
                     )
                     .subscribe(
-                        () => {},
+                        () => {
+                        },
                         (err) => {
                             console.log(err);
                         }
