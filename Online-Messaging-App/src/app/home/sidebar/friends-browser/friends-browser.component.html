@@ -1,6 +1,32 @@
-<form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
-    <mat-form-field>
-        <mat-label>Search...</mat-label>
-        <input (input)="onKey($event)" matInput name="content" />
-    </mat-form-field>
-</form>
+<div class="container">
+    <div class="searchbar">
+        <form #messageForm="ngForm" autocomplete="off">
+            <mat-form-field>
+                <mat-label>Add Friends...</mat-label>
+                <input (input)="onKey($event)" matInput name="content"/>
+            </mat-form-field>
+            <div *ngIf="searching" class="overlapper">
+                <p>{{value}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+                <p>{{value1}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+                <p>{{value2}}
+                    <mat-icon>checkmark</mat-icon>
+                    <mat-icon>clear</mat-icon>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
+        <mat-form-field>
+            <mat-label>Search...</mat-label>
+            <input (input)="onKey($event)" matInput name="content" />
+        </mat-form-field>
+    </form>
+
+</div>

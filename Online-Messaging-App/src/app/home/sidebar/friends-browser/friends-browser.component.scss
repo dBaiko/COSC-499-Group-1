@@ -1,0 +1,27 @@
+mat-form-field {
+    color: white;
+    width: 100%;
+    margin-left: 0.5em;
+}
+
+mat-label {
+    color: white;
+}
+
+p {
+    margin-left: 0.5em;
+    color: white;
+}
+
+.overlapper {
+    background-color: var(--soft-black);
+    z-index: 10;
+    width: 100%;
+    position: absolute;
+}
+
+mat-icon {
+    float: right;
+    padding-right: 1em;
+
+}
