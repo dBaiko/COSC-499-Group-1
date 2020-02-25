@@ -61,6 +61,11 @@ body {
     --tertiary-color: #ff7733;
     --soft-black: #282828;
 }
+
 * {
     font-family: "Open Sans";
+}
+
+.dialog-class .mat-dialog-container {
+    background: var(--soft-black);
 }
