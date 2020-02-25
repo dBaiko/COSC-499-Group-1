@@ -166,6 +166,12 @@ export class SidebarComponent implements OnInit {
         });
     }
 
+    parseFriendChannelName(channelName: string): string {
+        let users = channelName.split("-", 2);
+        if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
+        else return users[0];
+    }
+
     selectPublicChannel(): void {
         this.publicChannelSelect = true;
         this.privateChannelSelect = false;

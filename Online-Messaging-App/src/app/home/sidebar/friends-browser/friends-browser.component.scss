@@ -25,8 +25,42 @@ mat-icon {
     padding-right: 1em;
     color: white;
     display: inline !important;
-
 }
 .inline {
     display: inline !important;
+}
+span {
+    color: white;
+}
+.right {
+    position: absolute;
+    right: 3%;
+    top: 20%;
+}
+button {
+    color: white;
+    border-radius: 0;
+    background-color: var(--soft-black);
+}
+button:hover {
+    background-color: var(--primary-color);
+}
+mat-card {
+    background-color: var(--soft-black);
+    border-radius: 0;
+    color: white;
+    font-size: 1em;
+}
+mat-card-title {
+    font-size: 1em;
+}
+.noClick {
+    background-color: var(--soft-black);
+    pointer-events: none;
+    cursor: not-allowed;
+}
+.noClick:hover {
+    background-color: var(--soft-black);
+    pointer-events: none;
+    cursor: not-allowed;
 }

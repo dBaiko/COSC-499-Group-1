@@ -38,8 +38,7 @@ export interface HTTPResponseAndToken {
 export class JwtVerificationService {
     private static instance: JwtVerificationService;
 
-    constructor() {
-    }
+    constructor() {}
 
     public static getInstance(): JwtVerificationService {
         if (!JwtVerificationService.instance) {

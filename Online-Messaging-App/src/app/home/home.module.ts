@@ -19,7 +19,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
-import { FriendsBrowserComponent } from './sidebar/friends-browser/friends-browser.component';
+import { FriendsBrowserComponent } from "./sidebar/friends-browser/friends-browser.component";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",

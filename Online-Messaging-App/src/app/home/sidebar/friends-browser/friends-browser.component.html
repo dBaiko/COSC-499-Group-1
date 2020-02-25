@@ -3,23 +3,41 @@
         <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
             <mat-form-field>
                 <mat-label>Search...</mat-label>
-                <input (input)="onKey($event)" matInput name="content"/>
+                <input (input)="onKey($event)" matInput name="content" />
             </mat-form-field>
         </form>
         <div *ngIf="searching" class="overlapper">
             <div *ngFor="let friend of inviteSearchList">
-                <span>{{friend.username}}</span>
-                <div *ngIf="!this.friendList.includes(friend.username); else joined">
-                    <mat-icon (click)="sendInvite(friend.username)">checkmark</mat-icon>
+                <div *ngIf="friend.username != auth.getAuthenticatedUser().getUsername()">
+                    <mat-card>
+                        <mat-card-title>{{ friend.username }}</mat-card-title>
+                        <div *ngIf="this.friendNotifcationUsernames.includes(friend.username); else noFriend">
+                            <button mat-button style="display: block;" class="right noClick">Pending</button>
+                        </div>
+
+                        <ng-template #noFriend>
+                            <div
+                                style="display: inline"
+                                *ngIf="this.findFriendChannel(friend.username); else notPending"
+                            >
+                                <button mat-button style="display: block;" class="right noClick">
+                                    Already Friends
+                                </button>
+                            </div>
+                            <ng-template style="display: inline" #notPending>
+                                <button
+                                    mat-button
+                                    style="display: block;"
+                                    class="right"
+                                    (click)="sendInvite(friend.username)"
+                                >
+                                    Send Invite
+                                </button>
+                            </ng-template>
+                        </ng-template>
+                    </mat-card>
                 </div>
-                <ng-template #joined>
-                    <div *ngIf="!this.friendRequest.isPending(); else noFriend">
-                    <mat-icon>clear</mat-icon>
-                    </div>
-                </ng-template>
             </div>
         </div>
     </div>
-
-
 </div>

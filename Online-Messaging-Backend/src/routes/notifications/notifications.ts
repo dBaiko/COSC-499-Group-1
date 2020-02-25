@@ -34,6 +34,7 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
                 username: req.body.username,
                 message: req.body.message,
                 type: req.body.type,
+                fromFriend: req.body.fromFriend,
                 notificationId: uuid(),
                 insertedTime: Date.now()
             };
