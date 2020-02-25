@@ -3,14 +3,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-
-interface UserChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelName: string;
-    channelType: string;
-}
+import { UserChannelObject } from "../home.component";
 
 const MY_SELECT_CHILD: string = "mySelect";
 const MAT_SELECT_ARROW: string = "mat-select-arrow";
@@ -102,7 +95,7 @@ export class HeaderComponent implements OnInit {
             channelName: notification.channelName,
             channelType: notification.type
         };
-
+        console.log(user);
         this.newChannelEvent.emit(user);
 
         this.auth.getCurrentSessionId().subscribe(
@@ -122,13 +115,14 @@ export class HeaderComponent implements OnInit {
                             this.http
                                 .delete(
                                     this.notificationsURL +
-                                        notification.notificationId +
-                                        INSERTED_TIME_URI +
-                                        notification.insertedTime,
+                                    notification.notificationId +
+                                    INSERTED_TIME_URI +
+                                    notification.insertedTime,
                                     httpHeaders
                                 )
                                 .subscribe(
-                                    () => {},
+                                    () => {
+                                    },
                                     (err) => {
                                         console.log(err);
                                     }
@@ -159,13 +153,14 @@ export class HeaderComponent implements OnInit {
                 this.http
                     .delete(
                         this.notificationsURL +
-                            notification.notificationId +
-                            INSERTED_TIME_URI +
-                            notification.insertedTime,
+                        notification.notificationId +
+                        INSERTED_TIME_URI +
+                        notification.insertedTime,
                         httpHeaders
                     )
                     .subscribe(
-                        () => {},
+                        () => {
+                        },
                         (err) => {
                             console.log(err);
                         }

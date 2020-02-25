@@ -5,14 +5,8 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
+import { UserChannelObject } from "../home.component";
 
-interface userChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelType: string;
-    channelName: string;
-}
 interface UserObject {
     username: string;
     email: string;
@@ -57,17 +51,17 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {}
+    ) {
+    }
 
-    private _subbedChannel: userChannelObject;
+    private _subbedChannel: UserChannelObject;
 
-    get subbedChannel(): userChannelObject {
+    get subbedChannel(): UserChannelObject {
         return this._subbedChannel;
     }
 
     @Input()
-    set subbedChannel(value: userChannelObject) {
-        console.log("%" + value);
+    set subbedChannel(value: UserChannelObject) {
         if (value) {
             this._subbedChannel = value;
             this.userSubscribedChannels.push(value);
@@ -83,11 +77,6 @@ export class SidebarComponent implements OnInit {
             }
             this.switchDisplay("chatBox");
             this.selectChannel(value.channelId, value.channelType);
-            this.channelEvent.emit({
-                channelName: value.channelName,
-                channelType: value.channelType,
-                channelId: value.channelId
-            });
         }
     }
 
@@ -108,6 +97,9 @@ export class SidebarComponent implements OnInit {
                     if (this.cookieService.get("lastChannelType") == "public") {
                         this.selectPublicChannel();
                     }
+                } else {
+                    this.selectPublicChannel();
+                    this.selectChannel(this.publicChannels[0].channelId, "public");
                 }
             })
             .catch((err) => {
@@ -137,7 +129,7 @@ export class SidebarComponent implements OnInit {
                                 this.privateChannels = [];
                                 this.friendsChannels = [];
                                 this.userSubscribedChannels = data;
-                                this.userSubscribedChannels.forEach((item: userChannelObject) => {
+                                this.userSubscribedChannels.forEach((item: UserChannelObject) => {
                                     if (item.channelType == PUBLIC) {
                                         this.publicChannels.push(item);
                                     } else if (item.channelType == PRIVATE) {
@@ -191,7 +183,7 @@ export class SidebarComponent implements OnInit {
     }
 
     selectChannel(id: string, type: string) {
-        this.userSubscribedChannels.forEach((item: userChannelObject) => {
+        this.userSubscribedChannels.forEach((item: UserChannelObject) => {
             if (item.channelId == id) {
                 this.channelEvent.emit({
                     channelId: item.channelId,
@@ -201,6 +193,7 @@ export class SidebarComponent implements OnInit {
                 item[SELECTED] = true;
                 this.cookieService.set("lastChannelID", id);
                 this.cookieService.set("lastChannelType", type);
+                console.log(item);
             } else {
                 item[SELECTED] = false;
             }
@@ -213,7 +206,7 @@ export class SidebarComponent implements OnInit {
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((result: userChannelObject) => {
+        dialogRef.afterClosed().subscribe((result: UserChannelObject) => {
             if (result) {
                 this.newChannelEvent.emit(result);
                 this.userSubscribedChannels.push(result);
@@ -229,11 +222,6 @@ export class SidebarComponent implements OnInit {
                 }
                 this.switchDisplay("chatBox");
                 this.selectChannel(result.channelId, result.channelType);
-                this.channelEvent.emit({
-                    channelName: result.channelName,
-                    channelType: result.channelType,
-                    channelId: result.channelId
-                });
             }
         });
     }
