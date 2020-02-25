@@ -3,22 +3,23 @@
         <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
             <mat-form-field>
                 <mat-label>Search...</mat-label>
-                <input (input)="onKey($event)" matInput name="content" />
+                <input (input)="onKey($event)" matInput name="content"/>
             </mat-form-field>
         </form>
-            <div *ngIf="searching" class="overlapper">
-                <div *ngFor="let friend of inviteSearchList">
-                <p>{{friend.username}}
-                    <div *ngIf="!this.friendList.username.includes(friend.username); else joined"
-                    <mat-icon (click)="sendInvite(friend.username)">clear</mat-icon>
-                    <ng-template #joined>
-                    <mat-icon>checkmark</mat-icon>
-                    </ng-template>
-                </p>
+        <div *ngIf="searching" class="overlapper">
+            <div *ngFor="let friend of inviteSearchList">
+                <span>{{friend.username}}</span>
+                <div *ngIf="!this.friendList.includes(friend.username); else joined">
+                    <mat-icon (click)="sendInvite(friend.username)">checkmark</mat-icon>
                 </div>
+                <ng-template #joined>
+                    <div *ngIf="!this.friendRequest.isPending(); else noFriend">
+                    <mat-icon>clear</mat-icon>
+                    </div>
+                </ng-template>
             </div>
+        </div>
     </div>
-
 
 
 </div>

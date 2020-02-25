@@ -18,7 +18,7 @@ interface UserChannelObject {
 }
 
 
-const NOTIFICATIONS_URI = "/notifications";
+const NOTIFICATIONS_URI = "/notifications/fromFriend/";
 
 @Component({
   selector: 'app-friends-browser',
@@ -101,7 +101,7 @@ export class FriendsBrowserComponent implements OnInit {
                     };
 
                     this.http
-                        .get(this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI, httpHeaders)
+                        .get(this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI + this.auth.getAuthenticatedUser().getUsername(), httpHeaders)
                         .subscribe(
                             (data: Array<NotificationObject>) => {
                                 this.userNotification = data;
