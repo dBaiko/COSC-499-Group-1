@@ -1,8 +1,18 @@
 <mat-sidenav-container>
-    <mat-button-toggle-group class="channelSelector mat-elevation-z0">
+    <mat-button-toggle-group *ngIf="publicChannelSelect" class="channelSelector mat-elevation-z0">
         <mat-button-toggle (click)="selectPublicChannel()" checked>Public</mat-button-toggle>
         <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
         <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
+    </mat-button-toggle-group>
+    <mat-button-toggle-group *ngIf="privateChannelSelect" class="channelSelector mat-elevation-z0">
+        <mat-button-toggle (click)="selectPublicChannel()">Public</mat-button-toggle>
+        <mat-button-toggle (click)="selectPrivateChannel()" checked>Private</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
+    </mat-button-toggle-group>
+    <mat-button-toggle-group *ngIf="friendChannelSelect" class="channelSelector mat-elevation-z0">
+        <mat-button-toggle (click)="selectPublicChannel()">Public</mat-button-toggle>
+        <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" checked>Friend</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="scrollable">
         <div *ngIf="publicChannelSelect">
@@ -42,12 +52,13 @@
         </div>
 
         <div *ngIf="friendChannelSelect">
+            <app-friends-browser [userList]="userList" [friendList]="friendsChannels"> </app-friends-browser>
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ friendChannel.channelName }}</h3>
+                        ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>

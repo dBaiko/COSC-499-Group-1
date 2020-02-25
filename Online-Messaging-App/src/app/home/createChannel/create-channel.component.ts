@@ -103,6 +103,7 @@ export class CreateChannelComponent implements OnInit {
                 (result: newChannelResponse) => {
                     this.data = result.data.newChannel;
                     this.onClose();
+                    this.newChannelEvent.emit(result.data.newChannel);
                 },
                 (err) => {
                     console.log(err);

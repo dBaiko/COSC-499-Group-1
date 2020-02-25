@@ -55,7 +55,7 @@ mat-sidenav-container {
 }
 
 .scrollable {
-    height: 74vh;
+    height: 75%;
     overflow-y: auto;
     margin-top: 1%;
     margin-right: 1%;
@@ -162,7 +162,13 @@ mat-button-toggle-group {
 .mat-drawer-content {
     overflow: hidden !important;
 }
-.icon>a:hover {
+
+.icon > a:hover {
     padding-top: 2vh;
     background-color: var(--primary-color);
+}
+
+p {
+    color: white;
+    text-align: center;
 }

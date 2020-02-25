@@ -1,54 +1,141 @@
-mat-toolbar {
+header {
+    background-color: var(--soft-black);
+    color: white;
+    vertical-align: center;
+}
+
+#title {
+    vertical-align: center;
+    margin-left: 0.5rem;
+    font-size: 1em;
+    display: inline;
+    position: relative;
+    top: 1rem;
+}
+
+//mat-option {
+//    background: #000000;
+//    color: white;
+//    width: 100%;
+//}
+//
+//::ng-deep .mat-select-content {
+//    width: 2000px;
+//    background-color: red;
+//    font-size: 10px;
+//}
+//
+//.mat-select {
+//    width: auto;
+//    border-radius: 0% !important;
+//}
+//
+//.mat-option {
+//    background: var(--soft-black);
+//    color: white;
+//    text-align: center;
+//    padding-right: 0.2vw;
+//    padding-left: 0.2vw;
+//}
+//
+//::ng-deep .cdk-overlay-pane {
+//    margin-top: 3rem;
+//}
+
+.headInfo {
+    display: inline;
+    position: absolute;
+    left: 90%;
+    bottom: 1rem;
+}
+
+.headInfo:hover {
+    background-color: var(--primary-color);
+}
+
+#notification {
+    position: relative;
+    left: 95%;
+    bottom: 1rem;
+    width: 4000px;
+}
+
+#notification:hover {
+    background-color: var(--primary-color);
+}
+
+.userMenu {
+    background-color: var(--soft-black);
+    color: white;
+    border-radius: 0%;
+}
+
+::ng-deep .mat-menu-panel {
+    background-color: var(--soft-black);
+    border-radius: 0px !important;
+    color: white;
+    padding: 0px !important;
+    max-width: none !important;
+    overflow: scroll;
+}
+
+::ng-deep .mat-menu-item {
+    overflow: scroll;
+}
+
+::ng-deep .mat-menu-item {
+    padding: 0px !important;
+    background-color: var(--soft-black);
+}
+
+.notificationOption mat-card {
+    background-color: var(--soft-black);
+    color: white;
+    border-radius: 0%;
+}
+
+#notificationList {
+    max-height: 25rem;
+    overflow: auto;
+    z-index: 100;
+    position: fixed;
+    right: 0%;
+    width: 21rem;
+    background-color: var(--soft-black);
+    font-size: 1rem;
+}
+
+#notificationList mat-card .mat-card-title {
+    font-size: 0.75rem;
+}
+
+#notificationList mat-card {
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    border-radius: 0%;
     background-color: var(--soft-black);
     color: white;
 }
 
-mat-option {
-    background: #000000;
-    color: white;
-    width: 100%;
+.inviteButtons {
+    position: absolute;
+    right: 1%;
+    top: 48%;
+    font-size: 0.75rem;
 }
 
-::ng-deep .mat-select-content {
-    width: 2000px;
-    background-color: red;
-    font-size: 10px;
+.inviteButton {
+    font-size: 0.75rem;
+    border-radius: 0%;
 }
 
-.mat-select {
-    width: auto;
-    border-radius: 0% !important;
-}
-
-.mat-option {
-    background: var(--soft-black);
-    color: white;
-    text-align: center;
-    padding-right: 0.2vw;
-    padding-left: 0.2vw;
-}
-
-.mat-option:hover {
+.inviteButton:hover {
     background-color: var(--primary-color);
 }
 
-::ng-deep .cdk-overlay-pane {
-    margin-top: 3rem;
-}
-.headInfo {
-    display: inline;
-}
-.headInfo:hover {
-    cursor: pointer;
-}
-#notification {
-    display: inline;
-    margin-left: 1vw;
-}
-#notificationBell {
-    position: absolute;
-    right: 0.95vw;
-    top: 2vh;
+.title {
+    margin-left: 10px;
+    color: white;
 }
 
 #notification {
