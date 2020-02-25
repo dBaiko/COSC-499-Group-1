@@ -14,8 +14,7 @@ const tableName: string = "Messages";
 class MessageDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public getMessageHistory(channelId: string): Promise<any> {
         const params = {
