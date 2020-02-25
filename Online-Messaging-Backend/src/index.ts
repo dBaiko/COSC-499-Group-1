@@ -5,17 +5,29 @@ import routes from "./routes";
 import MessageDAO from "./routes/messages/MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "./config/aws-config";
+import { NotificationsDAO } from "./routes/notifications/NotificationsDAO";
+import { uuid } from "uuidv4";
 import socket = require("socket.io");
 
-interface UserSocket {
-    id: string,
-    username: string
+export interface UserSocket {
+    id: string;
+    username: string;
 }
 
-interface NotificationObject {
-    fromUser: UserSocket,
-    toUser: UserSocket,
-    message: object
+export interface NotificationObject {
+    channelId: string;
+    channelName: string;
+    message: string;
+    type: string;
+    username: string;
+    notificationId: string;
+    insertedTime: number;
+}
+
+export interface NotificationSocketObject {
+    fromUser: UserSocket;
+    toUser: UserSocket;
+    notification: NotificationObject;
 }
 
 const app = express();
@@ -41,6 +53,8 @@ app.get("/", (req, res) => {
 
 const users: Array<UserSocket> = [];
 
+const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
+
 app.use("/", routes);
 io.origins("http://localhost:4200");
 io.on("connection", (socketIO) => {
@@ -55,21 +69,22 @@ io.on("connection", (socketIO) => {
         }
     });
 
-    socketIO.on("username", (username: string) => {
-        console.log(username + " Added");
-        users.push({
-            id: socketIO.id,
-            username: username
-        });
+    socketIO.on("username", (user: UserSocket) => {
+        addUser(user, socketIO.id);
         console.log(users);
-
         socketIO.emit("userList", users);
-
     });
 
-    socketIO.on("notification", (notificationObject: NotificationObject) => {
-        console.log(JSON.stringify(notificationObject, null, 4));
-        socketIO.broadcast.to(notificationObject.toUser.id).emit("broadcastNotification", notificationObject);
+    socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
+        notificationSocketObject.notification.notificationId = uuid();
+        notificationSocketObject.notification.insertedTime = Date.now();
+        console.log(users);
+        if (notificationSocketObject.toUser != null) {
+            socketIO.broadcast
+                .to(notificationSocketObject.toUser.id)
+                .emit("broadcastNotification", notificationSocketObject);
+        }
+        notificationsDAO.socketCreateNewNotification(notificationSocketObject);
     });
 
     socketIO.on("exit", (username: string) => {
@@ -81,5 +96,16 @@ io.on("connection", (socketIO) => {
             }
         }
     });
-
 });
+
+function addUser(user: UserSocket, id: string): void {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].username == user.username) {
+            users.splice(i, 1);
+        }
+    }
+    users.push({
+        username: user.username,
+        id: id
+    });
+}

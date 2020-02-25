@@ -26,12 +26,6 @@ export class FriendsBrowserComponent implements OnInit {
         this.sendQuery();
     }
     sendQuery() {
-        for (let i in this.friends) {
-            if (this.friends[i][CHANNEL_NAME].includes(this.search.toString())) {
-                this.friends[i][FILTERED] = false;
-            } else {
-                this.friends[i][FILTERED] = true;
-            }
-        }
+
     }
 }

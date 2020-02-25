@@ -42,23 +42,24 @@
         </div>
 
         <div *ngIf="friendChannelSelect">
-<!--            <mat-nav-list>-->
-<!--                <div *ngFor="let friendChannel of friendsChannels">-->
-<!--                    <mat-list-item-->
-<!--                        (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"-->
-<!--                        [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"-->
-<!--                        ><h3 matLine>{{ friendChannel.channelName }}</h3>-->
-<!--                        <a routerLink="/chat">-->
-<!--                            <mat-icon>settings</mat-icon>-->
-<!--                        </a>-->
-<!--                        <a routerLink="/delete">-->
-<!--                            <mat-icon>clear</mat-icon>-->
-<!--                        </a>-->
-<!--                    </mat-list-item>-->
-<!--                </div>-->
-<!--            </mat-nav-list>-->
-
             <app-friends-browser></app-friends-browser>
+            <mat-nav-list>
+                <div *ngFor="let friendChannel of friendsChannels">
+                    <mat-list-item
+                        (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
+                        [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
+                        ><h3 matLine>{{ friendChannel.channelName }}</h3>
+                        <a routerLink="/chat">
+                            <mat-icon>settings</mat-icon>
+                        </a>
+                        <a routerLink="/delete">
+                            <mat-icon>clear</mat-icon>
+                        </a>
+                    </mat-list-item>
+                </div>
+            </mat-nav-list>
+
+
         </div>
     </div>
     <br />
