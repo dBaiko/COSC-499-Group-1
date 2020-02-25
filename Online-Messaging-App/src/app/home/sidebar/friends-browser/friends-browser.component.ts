@@ -1,36 +1,37 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
+import {Constants} from "../../../shared/app-config";
+
+interface friendObject {
+    friendId: string;
+    fUserName: string;
+}
 
 @Component({
-    selector: "app-friends-browser",
-    templateUrl: "./friends-browser.component.html",
-    styleUrls: ["./friends-browser.component.scss"]
+  selector: 'app-friends-browser',
+  templateUrl: './friends-browser.component.html',
+  styleUrls: ['./friends-browser.component.scss']
 })
 export class FriendsBrowserComponent implements OnInit {
-    value = " ";
-    value1 = " ";
-    value2 = " ";
-    searching = false;
+    friends: Array<friendObject> = [];
+    search = Constants.EMPTY;
+  constructor() { }
 
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
+  ngOnInit() {
+  }
 
     onKey($event: Event) {
-        // this.search = ($event.target as HTMLInputElement).value;
-        if (($event.target as HTMLInputElement).value == "") {
-            this.searching = false;
-            this.value = "";
-            this.value1 = "";
-            this.value2 = "";
-        } else {
-            this.searching = true;
-            this.value = "Dylan";
-            this.value1 = "Karanmeet";
-            this.value2 = "Wiliam";
-        }
+        //set search value as whatever is entered on search bar every keystroke
+        this.search = ($event.target as HTMLInputElement).value;
 
+        this.sendQuery();
     }
-
+    sendQuery() {
+        for (let i in this.friends) {
+            if (this.friends[i][CHANNEL_NAME].includes(this.search.toString())) {
+                this.friends[i][FILTERED] = false;
+            } else {
+                this.friends[i][FILTERED] = true;
+            }
+        }
+    }
 }
