@@ -205,6 +205,7 @@ export class SidebarComponent implements OnInit {
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
+        dialogConfig.panelClass = "dialog-class";
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: UserChannelObject) => {
             if (result) {

@@ -1,15 +1,37 @@
+.container {
+    color: white;
+}
+
 .center {
     text-align: center;
 }
 
-.leftSide {
-    float: left;
-    margin-top: 0.9em;
+//.leftSide {
+//    float: left;
+//    margin-top: 0.9em;
+//}
+//
+//.rightSide {
+//    float: left;
+//    margin-left: 5em;
+//}
+.channelName {
+
 }
 
-.rightSide {
-    float: left;
-    margin-left: 5em;
+.form-control {
+    color: white;
+
+}
+
+mat-label {
+    color: white;
+
+}
+
+mat-form-field {
+    width: 20em;
+    color: var(--primary-color);
 }
 
 .bothSides:after {
@@ -22,9 +44,28 @@
 mat-radio-button {
     padding-bottom: 1em;
     display: block;
+
 }
 
+
 button {
+    color: white;
+    margin-top: 1em;
     margin-right: 0.5em;
     text-align: center;
+    background-color: var(--primary-color);
+
+
+}
+
+.channelType {
+    text-align: center;
+}
+
+mat-radio-group {
+    display: inline-block;
+}
+
+p {
+    font-size: 1.2em;
 }
