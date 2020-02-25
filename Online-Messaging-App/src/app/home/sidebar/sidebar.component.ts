@@ -57,8 +57,7 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     private _subbedChannel: userChannelObject;
 
