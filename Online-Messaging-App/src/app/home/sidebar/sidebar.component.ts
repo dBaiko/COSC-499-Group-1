@@ -13,6 +13,10 @@ interface userChannelObject {
     channelType: string;
     channelName: string;
 }
+interface UserObject {
+    username: string;
+    email: string;
+}
 
 export interface ChannelObject {
     channelId: string;
@@ -34,7 +38,7 @@ export class SidebarComponent implements OnInit {
     privateChannels = [];
     friendsChannels = [];
     userSubscribedChannels = [];
-
+    @Input() userList: Array<UserObject>;
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -160,6 +164,12 @@ export class SidebarComponent implements OnInit {
                 }
             );
         });
+    }
+
+    parseFriendChannelName(channelName: string): string {
+        let users = channelName.split("-", 2);
+        if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
+        else return users[0];
     }
 
     selectPublicChannel(): void {

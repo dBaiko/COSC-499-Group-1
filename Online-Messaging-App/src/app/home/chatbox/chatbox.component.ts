@@ -59,8 +59,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private http: HttpClient,
         private auth: AuthenticationService,
         private notificationService: NotificationService
-    ) {
-    }
+    ) {}
 
     private _currentChannel: ChannelObject;
 
@@ -177,6 +176,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             notification: {
                 channelId: this.currentChannel.channelId,
                 channelName: this.currentChannel.channelName,
+                fromFriend: null,
                 message: NOTIFICATION_MESSAGE + this.currentChannel.channelName,
                 type: this.currentChannel.channelType,
                 username: username,
@@ -187,6 +187,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
         this.notificationService.sendNotification(notification);
         this.channelNotificationsUsernames.push(username);
+    }
+
+    parseFriendChannelName(channelName: string): string {
+        let users = channelName.split("-", 2);
+        if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
+        else return users[0];
     }
 
     private searchStrings(match: string, search: string): boolean {

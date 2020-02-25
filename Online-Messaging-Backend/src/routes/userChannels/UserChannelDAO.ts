@@ -9,8 +9,7 @@ class UserChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public getAll(): Promise<any> {
         const params = {

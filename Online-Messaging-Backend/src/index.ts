@@ -22,6 +22,7 @@ export interface NotificationObject {
     username: string;
     notificationId: string;
     insertedTime: number;
+    fromFriend: string;
 }
 
 export interface NotificationSocketObject {
@@ -78,6 +79,8 @@ io.on("connection", (socketIO) => {
     socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
         notificationSocketObject.notification.notificationId = uuid();
         notificationSocketObject.notification.insertedTime = Date.now();
+        if (notificationSocketObject.notification.fromFriend == null)
+            notificationSocketObject.notification.fromFriend = "%";
         console.log(users);
         if (notificationSocketObject.toUser != null) {
             socketIO.broadcast
