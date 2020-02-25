@@ -19,7 +19,8 @@ const FAMILY_NAME: string = "family_name";
 export class AuthenticationService {
     cognitoUser: CognitoUser;
 
-    constructor() {}
+    constructor() {
+    }
 
     public register(
         username: string,
@@ -109,16 +110,18 @@ export class AuthenticationService {
     }
 
     getCurrentSessionId(): Observable<CognitoIdToken> {
-        return new Observable<CognitoIdToken>((observer) => {
-            userPool.getCurrentUser().getSession((error: Error, session: CognitoUserSession) => {
-                if (error) {
-                    console.log(error);
-                    observer.error(error);
-                }
+        if (this.isLoggedIn()) {
+            return new Observable<CognitoIdToken>((observer) => {
+                userPool.getCurrentUser().getSession((error: Error, session: CognitoUserSession) => {
+                    if (error) {
+                        console.log(error);
+                        observer.error(error);
+                    }
 
-                observer.next(session.getIdToken());
-                observer.complete();
+                    observer.next(session.getIdToken());
+                    observer.complete();
+                });
             });
-        });
+        }
     }
 }

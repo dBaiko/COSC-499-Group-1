@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { APIConfig, Constants } from "../../../shared/app-config";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../../shared/authentication.service";
@@ -8,7 +8,6 @@ import {
     NotificationSocketObject
 } from "../../../shared/notification.service";
 import { ChannelObject } from "../sidebar.component";
-import { Observable } from "rxjs";
 
 interface UserObject {
     username: string;
@@ -29,10 +28,12 @@ interface UserChannelObject {
     channelType: string;
     userChannelRole: string;
 }
+
 interface NewChannelResponse {
     channelId: string;
     channelName: string;
 }
+
 interface HttpResponse {
     status: number;
     data: {
@@ -55,17 +56,20 @@ export class FriendsBrowserComponent implements OnInit {
     friendNotifcationUsernames: Array<string>;
     search: string = Constants.EMPTY;
     searching: boolean = false;
-    private notificationsURL: string = APIConfig.notificationsAPI;
-    private channelsURL: string = APIConfig.channelsAPI;
     @Input() userList: Array<UserObject>;
     @Input() friendList: Array<ChannelObject> = [];
+    @Output() newFriendChannelEvent = new EventEmitter();
+    @ViewChild("inputForm", { static: false }) inputForm: ElementRef;
+    private notificationsURL: string = APIConfig.notificationsAPI;
+    private channelsURL: string = APIConfig.channelsAPI;
     private NOTIFICATION_MESSAGE: string = " is requesting to direct message you!";
 
     constructor(
         private auth: AuthenticationService,
         private http: HttpClient,
         private notificationService: NotificationService
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.getFriendNotifications();
@@ -77,6 +81,7 @@ export class FriendsBrowserComponent implements OnInit {
         this.searching = true;
         this.sendQuery();
     }
+
     sendQuery() {
         if (this.search == Constants.EMPTY) {
             this.inviteSearchList = [];
@@ -104,6 +109,9 @@ export class FriendsBrowserComponent implements OnInit {
     }
 
     sendInvite(username: string): void {
+        this.searching = false;
+        this.search = Constants.EMPTY;
+        this.inputForm.nativeElement.value = Constants.EMPTY;
         let newChannel: ChannelAndFirstUser = {
             channelName: this.auth.getAuthenticatedUser().getUsername() + "-" + username,
             channelType: "friend",
@@ -139,6 +147,12 @@ export class FriendsBrowserComponent implements OnInit {
                                 insertedTime: null
                             }
                         };
+
+                        this.newFriendChannelEvent.emit({
+                            channelId: data.data.newChannel.channelId,
+                            channelName: data.data.newChannel.channelName,
+                            channelType: "friend"
+                        });
 
                         this.notificationService.sendNotification(notification);
                         this.friendNotifcationUsernames.push(username);

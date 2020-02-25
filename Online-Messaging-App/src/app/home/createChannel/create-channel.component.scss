@@ -6,15 +6,6 @@
     text-align: center;
 }
 
-//.leftSide {
-//    float: left;
-//    margin-top: 0.9em;
-//}
-//
-//.rightSide {
-//    float: left;
-//    margin-left: 5em;
-//}
 .channelName {
 
 }
@@ -68,4 +59,13 @@ mat-radio-group {
 
 p {
     font-size: 1.2em;
+}
+
+button {
+    border-radius: 0;
+    background-color: var(--soft-black);
+}
+
+button:hover {
+    background-color: var(--primary-color);
 }

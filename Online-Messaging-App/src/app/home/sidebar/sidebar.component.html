@@ -21,7 +21,7 @@
                     <mat-list-item
                         (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ publicChannel.channelName }}</h3>
+                    ><h3 matLine>{{ publicChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -39,7 +39,7 @@
                     <mat-list-item
                         (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ privateChannel.channelName }}</h3>
+                    ><h3 matLine>{{ privateChannel.channelName }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -52,13 +52,14 @@
         </div>
 
         <div *ngIf="friendChannelSelect">
-            <app-friends-browser [userList]="userList" [friendList]="friendsChannels"> </app-friends-browser>
+            <app-friends-browser (newFriendChannelEvent)="setNewChannel($event)" [friendList]="friendsChannels"
+                                 [userList]="userList"></app-friends-browser>
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
+                    ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
                         <a routerLink="/chat">
                             <mat-icon>settings</mat-icon>
                         </a>
@@ -70,7 +71,7 @@
             </mat-nav-list>
         </div>
     </div>
-    <br />
+    <br/>
     <div>
         <button (click)="joinChannel()" class="joinCreate">Create Channel</button>
     </div>

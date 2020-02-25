@@ -53,20 +53,22 @@ export class HeaderComponent implements OnInit {
             this.user = this.auth.getAuthenticatedUser();
         }
         this.getNotifications();
-        this.notificationService.addSocketListener(
-            BROADCAST_NOTIFICATION_EVENT,
-            (notificationSocketObject: NotificationSocketObject) => {
-                let notification: NotificationObject = notificationSocketObject.notification;
-                if (notification.type == PUBLIC_NOTIFICATION) {
-                    this.publicInvites.push(notification);
-                } else if (notification.type == PRIVATE_NOTIFICATION) {
-                    this.privateInvites.push(notification);
-                } else if (notification.type == FRIEND_NOTIFICATION) {
-                    this.friendInvites.push(notification);
+        if (this.auth.isLoggedIn()) {
+            this.notificationService.addSocketListener(
+                BROADCAST_NOTIFICATION_EVENT,
+                (notificationSocketObject: NotificationSocketObject) => {
+                    let notification: NotificationObject = notificationSocketObject.notification;
+                    if (notification.type == PUBLIC_NOTIFICATION) {
+                        this.publicInvites.push(notification);
+                    } else if (notification.type == PRIVATE_NOTIFICATION) {
+                        this.privateInvites.push(notification);
+                    } else if (notification.type == FRIEND_NOTIFICATION) {
+                        this.friendInvites.push(notification);
+                    }
+                    this.notificationCount++;
                 }
-                this.notificationCount++;
-            }
-        );
+            );
+        }
     }
 
     drop() {
@@ -174,48 +176,50 @@ export class HeaderComponent implements OnInit {
     }
 
     private getNotifications(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
+        if (this.auth.isLoggedIn()) {
+            return new Promise<any>((resolve, reject) => {
+                this.auth.getCurrentSessionId().subscribe(
+                    (data) => {
+                        let httpHeaders = {
+                            headers: new HttpHeaders({
+                                "Content-Type": "application/json",
+                                Authorization: "Bearer " + data.getJwtToken()
+                            })
+                        };
 
-                    this.http
-                        .get(
-                            this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI,
-                            httpHeaders
-                        )
-                        .subscribe(
-                            (data: Array<NotificationObject>) => {
-                                this.publicInvites = [];
-                                this.privateInvites = [];
-                                this.friendInvites = [];
-                                for (let i = 0; i < data.length; i++) {
-                                    if (data[i].type == PUBLIC_NOTIFICATION) {
-                                        this.publicInvites.push(data[i]);
-                                    } else if (data[i].type == PRIVATE_NOTIFICATION) {
-                                        this.privateInvites.push(data[i]);
-                                    } else if (data[i].type == FRIEND_NOTIFICATION) {
-                                        this.friendInvites.push(data[i]);
+                        this.http
+                            .get(
+                                this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI,
+                                httpHeaders
+                            )
+                            .subscribe(
+                                (data: Array<NotificationObject>) => {
+                                    this.publicInvites = [];
+                                    this.privateInvites = [];
+                                    this.friendInvites = [];
+                                    for (let i = 0; i < data.length; i++) {
+                                        if (data[i].type == PUBLIC_NOTIFICATION) {
+                                            this.publicInvites.push(data[i]);
+                                        } else if (data[i].type == PRIVATE_NOTIFICATION) {
+                                            this.privateInvites.push(data[i]);
+                                        } else if (data[i].type == FRIEND_NOTIFICATION) {
+                                            this.friendInvites.push(data[i]);
+                                        }
                                     }
-                                }
 
-                                this.notificationCount = data.length;
-                            },
-                            (err) => {
-                                console.log(err);
-                            }
-                        );
-                },
-                (err) => {
-                    reject(err);
-                }
-            );
-        });
+                                    this.notificationCount = data.length;
+                                },
+                                (err) => {
+                                    console.log(err);
+                                }
+                            );
+                    },
+                    (err) => {
+                        reject(err);
+                    }
+                );
+            });
+        }
     }
 
     private removeNotification(notification: NotificationObject): void {

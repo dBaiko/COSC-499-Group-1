@@ -54,31 +54,17 @@ export class SidebarComponent implements OnInit {
     ) {
     }
 
-    private _subbedChannel: UserChannelObject;
+    private _subbedChannel: ChannelObject;
 
-    get subbedChannel(): UserChannelObject {
+    get subbedChannel(): ChannelObject {
         return this._subbedChannel;
     }
 
     @Input()
-    set subbedChannel(value: UserChannelObject) {
-        if (value) {
-            this._subbedChannel = value;
-            this.userSubscribedChannels.push(value);
-            if (value.channelType == PUBLIC) {
-                this.publicChannels.push(value);
-                this.selectPublicChannel();
-            } else if (value.channelType == PRIVATE) {
-                this.privateChannels.push(value);
-                this.selectPrivateChannel();
-            } else {
-                this.friendsChannels.push(value);
-                this.selectFriend();
-            }
-            this.switchDisplay("chatBox");
-            this.selectChannel(value.channelId, value.channelType);
-        }
+    set subbedChannel(value: ChannelObject) {
+        this.setNewChannel(value);
     }
+
 
     ngOnInit(): void {
         this.getSubscribedChannels()
@@ -193,7 +179,6 @@ export class SidebarComponent implements OnInit {
                 item[SELECTED] = true;
                 this.cookieService.set("lastChannelID", id);
                 this.cookieService.set("lastChannelType", type);
-                console.log(item);
             } else {
                 item[SELECTED] = false;
             }
@@ -232,6 +217,25 @@ export class SidebarComponent implements OnInit {
 
         if (value === "profile") {
             this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
+        }
+    }
+
+    private setNewChannel(value: ChannelObject) {
+        if (value) {
+            this._subbedChannel = value;
+            this.userSubscribedChannels.push(value);
+            if (value.channelType == PUBLIC) {
+                this.publicChannels.push(value);
+                this.selectPublicChannel();
+            } else if (value.channelType == PRIVATE) {
+                this.privateChannels.push(value);
+                this.selectPrivateChannel();
+            } else {
+                this.friendsChannels.push(value);
+                this.selectFriend();
+            }
+            this.switchDisplay("chatBox");
+            this.selectChannel(value.channelId, value.channelType);
         }
     }
 }

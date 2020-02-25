@@ -58,13 +58,15 @@ export class HomeComponent implements OnInit {
         private http: HttpClient
     ) {
         this.userLoggedIn = auth.isLoggedIn();
-        this.options = fb.group({
-            bottom: 0,
-            fixed: false,
-            top: 0
-        });
-        this.notificationService = NotificationService.getInstance();
-        this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+        if (this.userLoggedIn) {
+            this.options = fb.group({
+                bottom: 0,
+                fixed: false,
+                top: 0
+            });
+            this.notificationService = NotificationService.getInstance();
+            this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+        }
     }
 
     ngOnInit(): void {
