@@ -18,8 +18,7 @@ interface ChannelObject {
 class ChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public getChannelInfo(channelId: string): Promise<any> {
         const params = {

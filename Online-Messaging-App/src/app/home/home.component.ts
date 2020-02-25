@@ -4,14 +4,16 @@ import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { APIConfig } from "../shared/app-config";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
 const CHAT_BOX = "chatBox;";
 
-interface userChannelObject {
+export interface UserChannelObject {
     username: string;
-    channelId: number;
+    channelId: string;
     userChannelRole: string;
     channelName: string;
     channelType: string;
@@ -21,6 +23,11 @@ interface ChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
+}
+
+interface UserObject {
+    username: string;
+    email: string;
 }
 
 @Component({
@@ -36,8 +43,10 @@ export class HomeComponent implements OnInit {
     selectedChannelId: string;
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
-    newSubbedChannel: userChannelObject;
+    newSubbedChannel: ChannelObject;
     profileView: string;
+    usersUrl: string = APIConfig.usersAPI;
+    userList: Array<UserObject> = [];
     private scrollContainer: any;
 
     constructor(
@@ -45,7 +54,8 @@ export class HomeComponent implements OnInit {
         public common: CommonService,
         fb: FormBuilder,
         private cookieService: CookieService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private http: HttpClient
     ) {
         this.userLoggedIn = auth.isLoggedIn();
         this.options = fb.group({
@@ -54,7 +64,7 @@ export class HomeComponent implements OnInit {
             top: 0
         });
         this.notificationService = NotificationService.getInstance();
-        this.notificationService.getSocket();
+        this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
     }
 
     ngOnInit(): void {
@@ -64,6 +74,7 @@ export class HomeComponent implements OnInit {
         } else {
             this.display = CHANNEL_BROWSER;
         }
+        this.getUsers();
     }
 
     receiveId($event) {
@@ -74,8 +85,8 @@ export class HomeComponent implements OnInit {
         this.selectedChannelName = $event;
     }
 
-    receiveNewSubbedChannel($event) {
-        this.newSubbedChannel = $event;
+    receiveNewSubbedChannel(event: ChannelObject) {
+        this.newSubbedChannel = event;
     }
 
     addNewChannel($event) {
@@ -89,5 +100,30 @@ export class HomeComponent implements OnInit {
     updateProfile(value: string): void {
         this.profileView = value;
         this.updateDisplay(PROFILE_PAGE);
+    }
+
+    private getUsers(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.usersUrl, httpHeaders).subscribe(
+                    (data: Array<UserObject>) => {
+                        this.userList = data;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 }

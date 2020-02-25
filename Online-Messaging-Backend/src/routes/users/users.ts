@@ -6,13 +6,17 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import ProfileDAO from "../profiles/ProfileDAO";
+import { NotificationsDAO } from "../notifications/NotificationsDAO";
 
 const router = express.Router();
 
 const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
 const PATH_POST_NEW_USER = "/";
+const PATH_GET_ALL_USERS = "/";
 const PATH_PUT_USER = "/:username";
 const PATH_GET_USER_BY_USERNAME = "/:username";
+const PATH_GET_ALL_NOTIFICATIONS_FOR_USER = "/:username/notifications";
+const PATH_GET_ALL_FRIEND_INVITES_FOR_USER = "/:username/notifications/fromFriend/:fromFriend";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
 
@@ -24,8 +28,8 @@ const docClient = new aws.DynamoDB.DocumentClient();
 router.use(bodyParser());
 
 interface UserObject {
-    username: string,
-    email: string
+    username: string;
+    email: string;
 }
 
 router.post(PATH_POST_NEW_USER, (req, res) => {
@@ -94,7 +98,6 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
-
         },
         (err) => {
             res.status(err.status).send(err);
@@ -107,10 +110,12 @@ router.put(PATH_PUT_USER, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
-
             let usernameParam = req.params.username;
 
-            if (usernameParam === data.decodedToken[COGNITO_USERNAME] && req.body.username === data.decodedToken[COGNITO_USERNAME]) {
+            if (
+                usernameParam === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
                 const userDAO = new UserDAO(docClient);
                 userDAO
                     .updateUser(req.body.username, req.body.email)
@@ -129,8 +134,57 @@ router.put(PATH_PUT_USER, (req, res) => {
                     data: { message: "Unauthorized to access user info" }
                 });
             }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
 
+router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
 
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            let usernameParam = req.params.username;
+
+            if (usernameParam === data.decodedToken[COGNITO_USERNAME]) {
+                const notificationsDAO = new NotificationsDAO(docClient);
+                notificationsDAO
+                    .getAllNotificationsForUser(req.params.username)
+                    .then((data) => {
+                        res.status(200).send(data);
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user info" }
+                });
+            }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.get(PATH_GET_ALL_USERS, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            const usersDAO = new UserDAO(docClient);
+            usersDAO
+                .getAllUsers()
+                .then((data) => {
+                    res.status(200).send(data);
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
         },
         (err) => {
             res.status(err.status).send(err);

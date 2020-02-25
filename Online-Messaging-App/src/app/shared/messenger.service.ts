@@ -6,7 +6,7 @@ const BROADCAST: string = "broadcast";
 const MESSAGE: string = "message";
 
 export interface ChatMessage {
-    channelId: number;
+    channelId: string;
     username: string;
     content: string;
 }

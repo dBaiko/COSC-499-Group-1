@@ -1,16 +1,17 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import { awsConfigPath } from "../../config/aws-config";
-
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 const USERS_TABLE_NAME = "Users";
 
+interface UserObject {
+    username: string;
+    email: string;
+}
+
 class UserDAO {
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public createNewUser(username: string, email: string): Promise<any> {
         const params = {
@@ -97,6 +98,24 @@ class UserDAO {
                 } else {
                     console.log("Query for " + username + " Succeeded");
                     resolve(data.Items);
+                }
+            });
+        });
+    }
+
+    public getAllUsers(): Promise<any> {
+        const params = {
+            TableName: USERS_TABLE_NAME
+        };
+
+        return new Promise((resolve, reject) => {
+            this.docClient.scan(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query Succeeded");
+                    resolve(data.Items.sort((a: UserObject, b: UserObject) => (a.username > b.username ? 1 : -1)));
                 }
             });
         });
