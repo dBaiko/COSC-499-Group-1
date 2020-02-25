@@ -19,7 +19,6 @@ import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
-import { FriendsComponent } from './sidebar/friends/friends.component';
 import { FriendsBrowserComponent } from './sidebar/friends-browser/friends-browser.component';
 
 const socketConfig: SocketIoConfig = {
@@ -38,7 +37,6 @@ const socketConfig: SocketIoConfig = {
         SidebarComponent,
         CreateChannelComponent,
         ProfileComponent,
-        FriendsComponent,
         FriendsBrowserComponent
     ],
     imports: [
