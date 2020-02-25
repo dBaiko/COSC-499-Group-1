@@ -1,1 +1,6 @@
-<p>friends-browser works!</p>
+<form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
+    <mat-form-field>
+        <mat-label>Search...</mat-label>
+        <input (input)="onKey($event)" matInput name="content" />
+    </mat-form-field>
+</form>
