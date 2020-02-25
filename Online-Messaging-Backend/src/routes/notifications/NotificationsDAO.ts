@@ -3,7 +3,7 @@ import { UserSocket } from "../../index";
 
 const NOTIFICATIONS_TABLE_NAME = "Notifications";
 const NOTIFICATIONS_USER_INDEX = "username-insertedTime-index";
-const NOTIFICATIONS_FRIENDS_INDEX = "fromFriend-username-index";
+const NOTIFICATIONS_FRIENDS_INDEX = "fromFriend-index";
 const NOTIFICATIONS_CHANNEL_INDEX = "channelId-insertedTime-index";
 
 export interface NotificationDBObject {
@@ -35,7 +35,7 @@ export interface NotificationSocketObject {
 export class NotificationsDAO {
     private usernameQueryDeclaration = "username = :username";
     private channelIdQueryDeclaration = "channelId = :channelId";
-    private friendQueryDeclaration = "fromFriend = :fromFriend and username = :username";
+    private friendQueryDeclaration = "fromFriend = :fromFriend";
 
     constructor(private docClient: DocumentClient) {
     }
@@ -63,13 +63,12 @@ export class NotificationsDAO {
         });
     }
 
-    public getAllFriendRequestsFromUser(fromFriend: string, username: string): Promise<any> {
+    public getAllFriendRequestsFromUser(fromFriend: string): Promise<any> {
         const params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             IndexName: NOTIFICATIONS_FRIENDS_INDEX,
             KeyConditionExpression: this.friendQueryDeclaration,
             ExpressionAttributeValues: {
-                ":username": username,
                 ":fromFriend": fromFriend
             }
         };
@@ -80,7 +79,7 @@ export class NotificationsDAO {
                     console.log(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + username + "'s notifications succeeded");
+                    console.log("Query for " + fromFriend + "'s notifications succeeded");
                     resolve(data.Items);
                 }
             });
