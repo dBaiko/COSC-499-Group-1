@@ -2,12 +2,13 @@ import bodyParser from "body-parser";
 import express from "express";
 import { awsConfigPath } from "../../config/aws-config";
 import aws from "aws-sdk";
-import { JwtVerificationService } from "../../shared/jwt-verification-service";
+import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import { NotificationObject, NotificationsDAO } from "./NotificationsDAO";
 import { uuid } from "uuidv4";
 
 const PATH_POST_NEW_NOTIFICATION: string = "/";
 const PATH_DELETE_NOTIFICATION: string = "/:notificationId/insertedTime/:insertedTime";
+const PATH_GET_ALL_FRIEND_INVITES_FROM_USER: string = "/fromFriend/:fromFriend";
 
 const AUTH_KEY = "authorization";
 
@@ -70,6 +71,29 @@ router.delete(PATH_DELETE_NOTIFICATION, (req, res) => {
                         status: 200,
                         data: { message: "Notification deleted successfully" }
                     });
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.get(PATH_GET_ALL_FRIEND_INVITES_FROM_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            let fromFriendParam = req.params.fromFriend;
+
+            const notificationsDAO = new NotificationsDAO(docClient);
+            notificationsDAO
+                .getAllFriendRequestsFromUser(fromFriendParam)
+                .then((data) => {
+                    res.status(200).send(data);
                 })
                 .catch((err) => {
                     res.status(400).send(err);
