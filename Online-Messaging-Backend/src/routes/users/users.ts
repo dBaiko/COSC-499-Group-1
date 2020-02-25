@@ -171,30 +171,6 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
     );
 });
 
-router.get(PATH_GET_ALL_FRIEND_INVITES_FOR_USER, (req, res) => {
-    let token: string = req.headers[AUTH_KEY];
-
-    jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data: HTTPResponseAndToken) => {
-            let usernameParam = req.params.username;
-            let fromFriendParam = req.params.fromFriend;
-
-            const notificationsDAO = new NotificationsDAO(docClient);
-            notificationsDAO
-                .getAllFriendRequestsFromUser(fromFriendParam, usernameParam)
-                .then((data) => {
-                    res.status(200).send(data);
-                })
-                .catch((err) => {
-                    res.status(400).send(err);
-                });
-        },
-        (err) => {
-            res.status(err.status).send(err);
-        }
-    );
-});
-
 router.get(PATH_GET_ALL_USERS, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
