@@ -42,7 +42,9 @@
         </div>
 
         <div *ngIf="friendChannelSelect">
-            <app-friends-browser></app-friends-browser>
+            <app-friends-browser
+                [userList]="userList">
+            </app-friends-browser>
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item

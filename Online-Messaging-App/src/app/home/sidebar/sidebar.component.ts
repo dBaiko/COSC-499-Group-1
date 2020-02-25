@@ -13,6 +13,10 @@ interface userChannelObject {
     channelType: string;
     channelName: string;
 }
+interface UserObject {
+    username: string;
+    email: string;
+}
 
 export interface ChannelObject {
     channelId: string;
@@ -34,7 +38,7 @@ export class SidebarComponent implements OnInit {
     privateChannels = [];
     friendsChannels = [];
     userSubscribedChannels = [];
-
+    @Input() userList: Array<UserObject>;
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
