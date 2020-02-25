@@ -7,8 +7,7 @@ aws.config.loadFromPath(awsConfigPath);
 const PROFILES_TABLE_NAME = "Profiles";
 
 class ProfileDAO {
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         const params = {

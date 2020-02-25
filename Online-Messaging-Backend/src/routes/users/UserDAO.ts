@@ -11,8 +11,7 @@ interface UserObject {
 class UserDAO {
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public createNewUser(username: string, email: string): Promise<any> {
         const params = {

@@ -14,6 +14,7 @@ export interface NotificationObject {
     username: string;
     notificationId: string;
     insertedTime: number;
+    fromFriend: string;
 }
 
 export interface NotificationSocketObject {
