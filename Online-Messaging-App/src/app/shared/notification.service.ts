@@ -35,8 +35,7 @@ export class NotificationService {
     private static onlineUsers: Array<UserSocket> = [];
     private static socketId: string;
 
-    constructor() {
-    }
+    constructor() {}
 
     public static getInstance(): NotificationService {
         if (!NotificationService.instance) {
