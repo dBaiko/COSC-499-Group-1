@@ -37,8 +37,8 @@
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
                     <div class="inviteButtons">
-                        <button class="inviteButton" mat-button>Accept</button>
-                        <button class="inviteButton" mat-button>Deny</button>
+                        <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
+                        <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
                     </div>
                 </mat-card>
             </div>
@@ -67,8 +67,8 @@
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
                     <div class="inviteButtons">
-                        <button class="inviteButton" mat-button>Accept</button>
-                        <button class="inviteButton" mat-button>Deny</button>
+                        <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
+                        <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
                     </div>
                 </mat-card>
             </div>
