@@ -27,7 +27,7 @@
                         <!--                            <mat-icon>settings</mat-icon>-->
                         <!--                        </a>-->
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(publicChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -46,7 +46,7 @@
                         <!--                            <mat-icon>settings</mat-icon>-->
                         <!--                        </a>-->
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(privateChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -67,7 +67,7 @@
                         <!--                            <mat-icon>settings</mat-icon>-->
                         <!--                        </a>-->
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(friendChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>

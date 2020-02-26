@@ -23,6 +23,8 @@ const PRIVATE: string = "private";
 const PUBLIC: string = "public";
 const SELECTED: string = "selected";
 
+const CHANNELS_URI = "/channels/";
+
 @Component({
     selector: "app-sidebar",
     templateUrl: "./sidebar.component.html",
@@ -111,7 +113,7 @@ export class SidebarComponent implements OnInit {
                             httpHeaders
                         )
                         .subscribe(
-                            (data: Object[]) => {
+                            (data: Array<UserChannelObject>) => {
                                 this.publicChannels = [];
                                 this.privateChannels = [];
                                 this.friendsChannels = [];
@@ -213,7 +215,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    confirmUnsubscribe(): void {
+    confirmUnsubscribe(channelId: string): void {
         let dialogConfig: MatDialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
@@ -222,7 +224,50 @@ export class SidebarComponent implements OnInit {
         let dialogRef = this.dialog.open(UnsubscribeConfirmComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result) {
-                console.log(result);
+                this.auth.getCurrentSessionId().subscribe(
+                    (data) => {
+                        let httpHeaders = {
+                            headers: new HttpHeaders({
+                                "Content-Type": "application/json",
+                                Authorization: "Bearer " + data.getJwtToken()
+                            })
+                        };
+
+                        this.http.delete(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + CHANNELS_URI + channelId, httpHeaders).subscribe(
+                            (data) => {
+                                for (let i = 0; i < this.userSubscribedChannels.length; i++) {
+                                    if (this.userSubscribedChannels[i].channelId == channelId) {
+                                        this.userSubscribedChannels.splice(i, 1);
+                                    }
+                                }
+                                for (let i = 0; i < this.publicChannels.length; i++) {
+                                    if (this.publicChannels[i].channelId == channelId) {
+                                        this.publicChannels.splice(i, 1);
+                                    }
+                                }
+                                for (let i = 0; i < this.privateChannels.length; i++) {
+                                    if (this.privateChannels[i].channelId == channelId) {
+                                        this.privateChannels.splice(i, 1);
+                                    }
+                                }
+                                for (let i = 0; i < this.friendsChannels.length; i++) {
+                                    if (this.friendsChannels[i].channelId == channelId) {
+                                        this.friendsChannels.splice(i, 1);
+                                    }
+                                }
+                                this.selectPublicChannel();
+                                this.selectChannel(this.publicChannels[0].channelId, "public");
+                            },
+                            (err) => {
+                                console.log(err);
+                            }
+                        );
+
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
             }
         });
 
