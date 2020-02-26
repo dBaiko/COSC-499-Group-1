@@ -2,6 +2,7 @@
 
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import ChannelDAO from "../channels/ChannelDAO";
+import MessageDAO from "../messages/MessageDAO";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
@@ -143,6 +144,8 @@ class UserChannelDAO {
                                 let channelDAO = new ChannelDAO(this.docClient);
                                 channelDAO.deleteChannel(channelId)
                                     .then(() => {
+                                        let messageDAO = new MessageDAO(this.docClient);
+                                        messageDAO.deleteAllMessagesForChannel(channelId);
                                         resolve();
                                     })
                                     .catch((err) => {
