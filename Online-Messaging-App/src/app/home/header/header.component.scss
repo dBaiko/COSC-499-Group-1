@@ -41,33 +41,47 @@ header {
 //::ng-deep .cdk-overlay-pane {
 //    margin-top: 3rem;
 //}
-
+.floater {
+    float: right;
+    width: 20%;
+    min-width: 50px;
+}
 .headInfo {
     display: inline;
-    position: absolute;
-    left: 90%;
+    position: relative;
     bottom: 1rem;
+    width: 5%;
+    margin-left: 7vw;
 }
 
-.headInfo:hover {
-    background-color: var(--primary-color);
-}
 
 #notification {
+    display: inline;
     position: relative;
-    left: 95%;
     bottom: 1rem;
-    width: 4000px;
+    width: 1%;
+    background-color: var(--soft-black);
 }
 
-#notification:hover {
-    background-color: var(--primary-color);
+#username {
+    margin-right: 1vw;
+    z-index: 1;
 }
-
 .userMenu {
     background-color: var(--soft-black);
     color: white;
     border-radius: 0%;
+}
+.wrapButton {
+    width: 95%;
+    float: right;
+}
+button {
+    margin-left: 1vw;
+}
+button:hover {
+    background-color: var(--primary-color);
+    border-radius: 0;
 }
 
 ::ng-deep .mat-menu-panel {
@@ -97,6 +111,7 @@ header {
 #notificationList {
     max-height: 25rem;
     overflow: auto;
+    top: 5vh;
     z-index: 100;
     position: fixed;
     right: 0%;

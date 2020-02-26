@@ -1,9 +1,16 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
-import { AuthenticationService } from "../../shared/authentication.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { UserChannelObject } from "../home.component";
+import {Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild} from "@angular/core";
+import {AuthenticationService} from "../../shared/authentication.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
+import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
+
+interface UserChannelObject {
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+}
 
 const MY_SELECT_CHILD: string = "mySelect";
 const MAT_SELECT_ARROW: string = "mat-select-arrow";
@@ -17,12 +24,14 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
+
     selector: "app-header",
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.scss"]
+
 })
 export class HeaderComponent implements OnInit {
-    @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
+    @ViewChild(MY_SELECT_CHILD, {static: false}) mySelect;
     userLoggedIn = false;
     user;
 
@@ -31,6 +40,16 @@ export class HeaderComponent implements OnInit {
     notificationCount: number = 0;
 
     open: boolean = false;
+
+    @HostListener('document:click', ['$event']) clickout(event) {
+
+        if (this._eref.nativeElement.contains(event.target)) {
+            this.toggleOpen();
+        } else {
+            this.open = false;
+
+        }
+    }
 
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
 
@@ -41,6 +60,7 @@ export class HeaderComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
 
     constructor(
+        private _eref: ElementRef,
         private auth: AuthenticationService,
         private notificationService: NotificationService,
         private http: HttpClient
@@ -53,22 +73,20 @@ export class HeaderComponent implements OnInit {
             this.user = this.auth.getAuthenticatedUser();
         }
         this.getNotifications();
-        if (this.auth.isLoggedIn()) {
-            this.notificationService.addSocketListener(
-                BROADCAST_NOTIFICATION_EVENT,
-                (notificationSocketObject: NotificationSocketObject) => {
-                    let notification: NotificationObject = notificationSocketObject.notification;
-                    if (notification.type == PUBLIC_NOTIFICATION) {
-                        this.publicInvites.push(notification);
-                    } else if (notification.type == PRIVATE_NOTIFICATION) {
-                        this.privateInvites.push(notification);
-                    } else if (notification.type == FRIEND_NOTIFICATION) {
-                        this.friendInvites.push(notification);
-                    }
-                    this.notificationCount++;
+        this.notificationService.addSocketListener(
+            BROADCAST_NOTIFICATION_EVENT,
+            (notificationSocketObject: NotificationSocketObject) => {
+                let notification: NotificationObject = notificationSocketObject.notification;
+                if (notification.type == PUBLIC_NOTIFICATION) {
+                    this.publicInvites.push(notification);
+                } else if (notification.type == PRIVATE_NOTIFICATION) {
+                    this.privateInvites.push(notification);
+                } else if (notification.type == FRIEND_NOTIFICATION) {
+                    this.friendInvites.push(notification);
                 }
-            );
-        }
+                this.notificationCount++;
+            }
+        );
     }
 
     drop() {
@@ -83,6 +101,7 @@ export class HeaderComponent implements OnInit {
 
     triggerSelect() {
         this.mySelect.toggle();
+
     }
 
     toggleOpen(): void {
@@ -97,7 +116,7 @@ export class HeaderComponent implements OnInit {
             channelName: notification.channelName,
             channelType: notification.type
         };
-        console.log(user);
+
         this.newChannelEvent.emit(user);
 
         this.auth.getCurrentSessionId().subscribe(
@@ -176,50 +195,48 @@ export class HeaderComponent implements OnInit {
     }
 
     private getNotifications(): Promise<any> {
-        if (this.auth.isLoggedIn()) {
-            return new Promise<any>((resolve, reject) => {
-                this.auth.getCurrentSessionId().subscribe(
-                    (data) => {
-                        let httpHeaders = {
-                            headers: new HttpHeaders({
-                                "Content-Type": "application/json",
-                                Authorization: "Bearer " + data.getJwtToken()
-                            })
-                        };
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                        this.http
-                            .get(
-                                this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI,
-                                httpHeaders
-                            )
-                            .subscribe(
-                                (data: Array<NotificationObject>) => {
-                                    this.publicInvites = [];
-                                    this.privateInvites = [];
-                                    this.friendInvites = [];
-                                    for (let i = 0; i < data.length; i++) {
-                                        if (data[i].type == PUBLIC_NOTIFICATION) {
-                                            this.publicInvites.push(data[i]);
-                                        } else if (data[i].type == PRIVATE_NOTIFICATION) {
-                                            this.privateInvites.push(data[i]);
-                                        } else if (data[i].type == FRIEND_NOTIFICATION) {
-                                            this.friendInvites.push(data[i]);
-                                        }
+                    this.http
+                        .get(
+                            this.usersURL + this.auth.getAuthenticatedUser().getUsername() + NOTIFICATIONS_URI,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            (data: Array<NotificationObject>) => {
+                                this.publicInvites = [];
+                                this.privateInvites = [];
+                                this.friendInvites = [];
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i].type == PUBLIC_NOTIFICATION) {
+                                        this.publicInvites.push(data[i]);
+                                    } else if (data[i].type == PRIVATE_NOTIFICATION) {
+                                        this.privateInvites.push(data[i]);
+                                    } else if (data[i].type == FRIEND_NOTIFICATION) {
+                                        this.friendInvites.push(data[i]);
                                     }
-
-                                    this.notificationCount = data.length;
-                                },
-                                (err) => {
-                                    console.log(err);
                                 }
-                            );
-                    },
-                    (err) => {
-                        reject(err);
-                    }
-                );
-            });
-        }
+
+                                this.notificationCount = data.length;
+                            },
+                            (err) => {
+                                console.log(err);
+                            }
+                        );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
     }
 
     private removeNotification(notification: NotificationObject): void {
