@@ -41,23 +41,26 @@ header {
 //::ng-deep .cdk-overlay-pane {
 //    margin-top: 3rem;
 //}
-
+.floater {
+    float: right;
+    width: 20%;
+    min-width: 50px;
+}
 .headInfo {
     display: inline;
-    position: absolute;
-    left: 90%;
+    position: relative;
     bottom: 1rem;
+    width: 5%;
+    margin-left: 7vw;
 }
 
 
-
 #notification {
+    display: inline;
     position: relative;
-    left: 94%;
     bottom: 1rem;
-    width: 4000px;
-    margin-left: 1vw;
-
+    width: 1%;
+    background-color: var(--soft-black);
 }
 
 #username {
@@ -69,9 +72,12 @@ header {
     color: white;
     border-radius: 0%;
 }
+.wrapButton {
+    width: 95%;
+    float: right;
+}
 button {
     margin-left: 1vw;
-    margin-right: 1vw;
 }
 button:hover {
     background-color: var(--primary-color);
@@ -105,6 +111,7 @@ button:hover {
 #notificationList {
     max-height: 25rem;
     overflow: auto;
+    top: 5vh;
     z-index: 100;
     position: fixed;
     right: 0%;
