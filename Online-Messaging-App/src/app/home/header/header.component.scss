@@ -46,12 +46,14 @@ header {
     width: 20%;
     min-width: 50px;
 }
+
 .headInfo {
     display: inline;
     position: relative;
     bottom: 1rem;
     width: 5%;
     margin-left: 7vw;
+    margin-right: -2.5%;
 }
 
 
@@ -67,18 +69,22 @@ header {
     margin-right: 1vw;
     z-index: 1;
 }
+
 .userMenu {
     background-color: var(--soft-black);
     color: white;
     border-radius: 0%;
 }
+
 .wrapButton {
     width: 95%;
     float: right;
 }
+
 button {
     margin-left: 1vw;
 }
+
 button:hover {
     background-color: var(--primary-color);
     border-radius: 0;

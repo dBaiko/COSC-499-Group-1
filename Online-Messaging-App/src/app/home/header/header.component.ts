@@ -1,8 +1,8 @@
-import {Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild} from "@angular/core";
-import {AuthenticationService} from "../../shared/authentication.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {APIConfig, Constants} from "../../shared/app-config";
-import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
+import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { APIConfig, Constants } from "../../shared/app-config";
+import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 
 interface UserChannelObject {
     username: string;
@@ -31,7 +31,7 @@ export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 })
 export class HeaderComponent implements OnInit {
-    @ViewChild(MY_SELECT_CHILD, {static: false}) mySelect;
+    @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
     userLoggedIn = false;
     user;
 
@@ -40,23 +40,10 @@ export class HeaderComponent implements OnInit {
     notificationCount: number = 0;
 
     open: boolean = false;
-
-    @HostListener('document:click', ['$event']) clickout(event) {
-
-        if (this._eref.nativeElement.contains(event.target)) {
-            this.toggleOpen();
-        } else {
-            this.open = false;
-
-        }
-    }
-
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
-
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
-
     private channelsAPI = APIConfig.channelsAPI;
 
     constructor(
@@ -68,25 +55,36 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
+    @HostListener("document:click", ["$event"]) clickout(event) {
+
+        if (this._eref.nativeElement.contains(event.target)) {
+            this.toggleOpen();
+        } else {
+            this.open = false;
+
+        }
+    }
+
     ngOnInit(): void {
         if (this.userLoggedIn == true) {
             this.user = this.auth.getAuthenticatedUser();
-        }
-        this.getNotifications();
-        this.notificationService.addSocketListener(
-            BROADCAST_NOTIFICATION_EVENT,
-            (notificationSocketObject: NotificationSocketObject) => {
-                let notification: NotificationObject = notificationSocketObject.notification;
-                if (notification.type == PUBLIC_NOTIFICATION) {
-                    this.publicInvites.push(notification);
-                } else if (notification.type == PRIVATE_NOTIFICATION) {
-                    this.privateInvites.push(notification);
-                } else if (notification.type == FRIEND_NOTIFICATION) {
-                    this.friendInvites.push(notification);
+
+            this.getNotifications();
+            this.notificationService.addSocketListener(
+                BROADCAST_NOTIFICATION_EVENT,
+                (notificationSocketObject: NotificationSocketObject) => {
+                    let notification: NotificationObject = notificationSocketObject.notification;
+                    if (notification.type == PUBLIC_NOTIFICATION) {
+                        this.publicInvites.push(notification);
+                    } else if (notification.type == PRIVATE_NOTIFICATION) {
+                        this.privateInvites.push(notification);
+                    } else if (notification.type == FRIEND_NOTIFICATION) {
+                        this.friendInvites.push(notification);
+                    }
+                    this.notificationCount++;
                 }
-                this.notificationCount++;
-            }
-        );
+            );
+        }
     }
 
     drop() {

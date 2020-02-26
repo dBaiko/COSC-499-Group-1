@@ -1,14 +1,4 @@
-import {
-    AfterViewChecked,
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnInit,
-    Output,
-    ViewChild
-} from "@angular/core";
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -95,10 +85,26 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         }
                     }
                     if (notFound) {
-                        this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has not yet accepted your request and will not see these messages until they accept";
+                        this.getChannelNotifications()
+                            .then((data: Array<NotificationObject>) => {
+                                let inviteSent = false;
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
+                                        inviteSent = true;
+                                    }
+                                }
+                                if (inviteSent) {
+                                    this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has not yet accepted your request and will not see these messages until they accept";
+                                } else {
+                                    this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has left the channel";
+                                }
+                            });
+
                     } else {
                         this.friendMessage = null;
                     }
+                } else {
+                    this.friendMessage = null;
                 }
             })
             .catch((err) => {
@@ -295,7 +301,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     usernames.push(data[i].username);
                                 }
                                 this.channelNotificationsUsernames = usernames;
-                                resolve();
+                                resolve(data);
                             },
                             (err) => {
                                 reject(err);

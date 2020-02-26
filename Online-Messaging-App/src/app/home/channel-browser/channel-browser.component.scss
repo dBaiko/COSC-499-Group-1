@@ -86,9 +86,11 @@ mat-expansion-panel {
     color: #f8f8f8;
     border-radius: 0 !important;
 }
+
 mat-expansion-panel:hover {
     background-color: var(--primary-color);
 }
+
 mat-expansion-panel.mat-expanded {
     background-color: var(--primary-color);
 }
@@ -107,7 +109,7 @@ mat-panel-title {
 }
 
 #scrollable {
-    height: 85%;
+    height: 82%;
     overflow-y: auto;
     z-index: 5;
     padding: 0px;
