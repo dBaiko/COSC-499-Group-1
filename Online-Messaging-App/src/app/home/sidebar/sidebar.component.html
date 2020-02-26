@@ -21,12 +21,13 @@
                     <mat-list-item
                         (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ publicChannel.channelName }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                    ><h3 matLine>{{ publicChannel.channelName }}</h3>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe(publicChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -39,12 +40,13 @@
                     <mat-list-item
                         (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ privateChannel.channelName }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                    ><h3 matLine>{{ privateChannel.channelName }}</h3>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe(privateChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -52,25 +54,27 @@
         </div>
 
         <div *ngIf="friendChannelSelect">
-            <app-friends-browser [userList]="userList" [friendList]="friendsChannels"> </app-friends-browser>
+            <app-friends-browser (newFriendChannelEvent)="setNewChannel($event)" [friendList]="friendsChannels"
+                                 [userList]="userList"></app-friends-browser>
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                    ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe(friendChannel.channelId)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
             </mat-nav-list>
         </div>
     </div>
-    <br />
+    <br/>
     <div>
         <button (click)="joinChannel()" class="joinCreate">Create Channel</button>
     </div>

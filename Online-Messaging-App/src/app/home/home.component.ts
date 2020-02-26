@@ -11,9 +11,9 @@ const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
 const CHAT_BOX = "chatBox;";
 
-interface userChannelObject {
+export interface UserChannelObject {
     username: string;
-    channelId: number;
+    channelId: string;
     userChannelRole: string;
     channelName: string;
     channelType: string;
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
     selectedChannelId: string;
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
-    newSubbedChannel: userChannelObject;
+    newSubbedChannel: ChannelObject;
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
@@ -58,13 +58,15 @@ export class HomeComponent implements OnInit {
         private http: HttpClient
     ) {
         this.userLoggedIn = auth.isLoggedIn();
-        this.options = fb.group({
-            bottom: 0,
-            fixed: false,
-            top: 0
-        });
-        this.notificationService = NotificationService.getInstance();
-        this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+        if (this.userLoggedIn) {
+            this.options = fb.group({
+                bottom: 0,
+                fixed: false,
+                top: 0
+            });
+            this.notificationService = NotificationService.getInstance();
+            this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+        }
     }
 
     ngOnInit(): void {
@@ -85,8 +87,8 @@ export class HomeComponent implements OnInit {
         this.selectedChannelName = $event;
     }
 
-    receiveNewSubbedChannel($event) {
-        this.newSubbedChannel = $event;
+    receiveNewSubbedChannel(event: ChannelObject) {
+        this.newSubbedChannel = event;
     }
 
     addNewChannel($event) {

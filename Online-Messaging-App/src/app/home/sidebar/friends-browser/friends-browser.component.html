@@ -2,8 +2,8 @@
     <div class="searchbar">
         <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
             <mat-form-field>
-                <mat-label>Search...</mat-label>
-                <input (input)="onKey($event)" matInput name="content" />
+                <mat-label>Add Friend...</mat-label>
+                <input #inputForm (input)="onKey($event)" matInput name="content"/>
             </mat-form-field>
         </form>
         <div *ngIf="searching" class="overlapper">
@@ -12,24 +12,24 @@
                     <mat-card>
                         <mat-card-title>{{ friend.username }}</mat-card-title>
                         <div *ngIf="this.friendNotifcationUsernames.includes(friend.username); else noFriend">
-                            <button mat-button style="display: block;" class="right noClick">Pending</button>
+                            <button class="right noClick" mat-button style="display: block;">Pending</button>
                         </div>
 
                         <ng-template #noFriend>
                             <div
-                                style="display: inline"
                                 *ngIf="this.findFriendChannel(friend.username); else notPending"
+                                style="display: inline"
                             >
-                                <button mat-button style="display: block;" class="right noClick">
+                                <button class="right noClick" mat-button style="display: block;">
                                     Already Friends
                                 </button>
                             </div>
-                            <ng-template style="display: inline" #notPending>
+                            <ng-template #notPending style="display: inline">
                                 <button
+                                    (click)="sendInvite(friend.username)"
+                                    class="right"
                                     mat-button
                                     style="display: block;"
-                                    class="right"
-                                    (click)="sendInvite(friend.username)"
                                 >
                                     Send Invite
                                 </button>

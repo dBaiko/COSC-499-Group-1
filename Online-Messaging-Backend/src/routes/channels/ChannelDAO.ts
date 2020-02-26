@@ -7,7 +7,7 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
 
-const channelTableName: string = "Channel";
+const CHANNEL_TABLE_NAME: string = "Channel";
 
 interface ChannelObject {
     channelId: string;
@@ -18,11 +18,12 @@ interface ChannelObject {
 class ChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getChannelInfo(channelId: string): Promise<any> {
         const params = {
-            TableName: channelTableName,
+            TableName: CHANNEL_TABLE_NAME,
             KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
@@ -36,7 +37,7 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query for " + channelId + " Succeeded");
-                    resolve(data.Items);
+                    resolve(data.Items[0]);
                 }
             });
         });
@@ -44,7 +45,7 @@ class ChannelDAO {
 
     public getAllChannels(): Promise<any> {
         const params = {
-            TableName: channelTableName
+            TableName: CHANNEL_TABLE_NAME
         };
 
         return new Promise((resolve, reject) => {
@@ -78,7 +79,7 @@ class ChannelDAO {
                 channelName,
                 channelType
             },
-            TableName: channelTableName
+            TableName: CHANNEL_TABLE_NAME
         };
         return new Promise((resolve, reject) => {
             this.docClient.put(params, (err, data) => {
@@ -99,6 +100,42 @@ class ChannelDAO {
             });
         });
     }
+
+    public deleteChannel(channelId: string): Promise<any> {
+        return new Promise<any>(((resolve, reject) => {
+            this.getChannelInfo(channelId)
+                .then((data: ChannelObject) => {
+
+                    let deleteObject = {
+                        TableName: CHANNEL_TABLE_NAME,
+                        Key: {
+                            channelId: channelId,
+                            channelName: data.channelName
+                        },
+                        ConditionExpression: "channelId = :id and channelName = :n",
+                        ExpressionAttributeValues: {
+                            ":id": channelId,
+                            ":n": data.channelName
+                        }
+                    };
+
+                    this.docClient.delete(deleteObject, (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                    reject(err);
+                });
+        }));
+    }
+
 }
 
 export default ChannelDAO;

@@ -1,12 +1,20 @@
+mat-card {
+    background: var(--soft-black);
+}
+
 mat-card-content {
     margin-left: 1vh;
     margin-right: 1vh;
-    margin-top: 1vh;
     padding-bottom: 3vh;
+    color: white;
+}
+
+mat-card-header {
+    color: white;
 }
 
 mat-icon {
-    margin-bottom: 1vh;
+    margin-bottom: 0.5vh;
 }
 
 .icon {
@@ -17,7 +25,7 @@ mat-icon {
     float: right;
     margin-right: 1vh;
     border-style: solid;
-    border-color: black;
+    border-color: var(--soft-black);
     border-radius: 0.5vh;
     font-size: 128px;
     height: auto;
@@ -35,8 +43,7 @@ button {
     float: right;
     margin-right: 5vh;
     color: white;
-    background-color: black;
-    margin-bottom: 1vh;
+    background-color: var(--soft-black);
     width: 14vh;
 }
 
@@ -46,5 +53,31 @@ button {
 }
 
 .wrapper {
-    margin-top: 5vh;
+    margin-top: 2vh;
 }
+
+.nameHeaders {
+    font-size: 1.1em;
+}
+
+input {
+    width: 70%;
+    padding: 5px 5px;
+    border-radius: 1px;
+    border: 2px solid white;
+
+}
+
+input:focus {
+    border: 2px solid var(--soft-black);
+}
+
+button {
+    border-radius: 0;
+}
+
+button:hover {
+    background-color: var(--primary-color);
+}
+
+

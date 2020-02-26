@@ -1,4 +1,4 @@
-<div id="home">
+<div *ngIf="userLoggedIn; else elseBlock" id="home">
     <app-header (newChannelEvent)="receiveNewSubbedChannel($event)"></app-header>
     <mat-sidenav-container class="container">
         <mat-sidenav
@@ -20,7 +20,7 @@
         </mat-sidenav>
 
         <mat-sidenav-content [formGroup]="options" class="scrollMe">
-            <div *ngIf="userLoggedIn; else elseBlock" class="scrollMe">
+            <div class="scrollMe">
                 <div [ngSwitch]="display" class="scrollMe">
                     <div *ngSwitchCase="'channelBrowser'" class="scrollMe">
                         <app-channel-browser
@@ -43,7 +43,8 @@
                 </div>
             </div>
 
-            <ng-template #elseBlock>{{ common.routeTo("/login") }}</ng-template>
+
         </mat-sidenav-content>
     </mat-sidenav-container>
 </div>
+<ng-template #elseBlock>{{ common.routeTo("/login") }}</ng-template>

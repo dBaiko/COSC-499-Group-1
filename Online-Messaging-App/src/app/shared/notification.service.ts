@@ -36,7 +36,8 @@ export class NotificationService {
     private static onlineUsers: Array<UserSocket> = [];
     private static socketId: string;
 
-    constructor() {}
+    constructor() {
+    }
 
     public static getInstance(): NotificationService {
         if (!NotificationService.instance) {
@@ -58,7 +59,6 @@ export class NotificationService {
                 username: username,
                 id: NotificationService.socket.id
             });
-            console.log(NotificationService.socketId);
         });
     }
 

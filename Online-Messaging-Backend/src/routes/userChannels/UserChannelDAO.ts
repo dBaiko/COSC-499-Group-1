@@ -1,15 +1,26 @@
 /* tslint:disable:no-console */
 
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import ChannelDAO from "../channels/ChannelDAO";
+import MessageDAO from "../messages/MessageDAO";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
+
+interface UserChannelObject {
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+}
 
 class UserChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getAll(): Promise<any> {
         const params = {
@@ -104,6 +115,59 @@ class UserChannelDAO {
             });
         });
     }
+
+    public deleteChannelSubscription(username: string, channelId: string): Promise<any> {
+        const deleteObject = {
+            TableName: USER_CHANNEL_TABLE_NAME,
+            Key: {
+                username: username,
+                channelId: channelId
+            },
+            ConditionExpression: "username = :u and channelId = :c",
+            ExpressionAttributeValues: {
+                ":u": username,
+                ":c": channelId
+            }
+        };
+
+        return new Promise<any>(((resolve, reject) => {
+            this.docClient.delete(deleteObject, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Deleted user subscription successfully");
+                    this.getAllSubscribedUsers(channelId)
+                        .then((data: Array<UserChannelObject>) => {
+                            if (data.length == 0) {
+                                console.log("No more users in: " + channelId + " deleting channel");
+                                let channelDAO = new ChannelDAO(this.docClient);
+                                channelDAO.deleteChannel(channelId)
+                                    .then(() => {
+                                        let messageDAO = new MessageDAO(this.docClient);
+                                        messageDAO.deleteAllMessagesForChannel(channelId);
+                                        resolve();
+                                    })
+                                    .catch((err) => {
+                                        reject(err);
+                                    });
+                            } else {
+                                resolve();
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            reject(err);
+                        });
+
+
+                }
+            });
+        }));
+
+    }
+
+
 }
 
 export default UserChannelDAO;

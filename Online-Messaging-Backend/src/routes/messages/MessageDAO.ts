@@ -9,12 +9,19 @@ interface Message {
     insertTime: number;
 }
 
+interface ChannelObject {
+    channelId: string,
+    channelName: string,
+    channelType: string
+}
+
 const tableName: string = "Messages";
 
 class MessageDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getMessageHistory(channelId: string): Promise<any> {
         const params = {
@@ -81,6 +88,37 @@ class MessageDAO {
             }
         });
     }
+
+    public deleteAllMessagesForChannel(channelId: string): void {
+        this.getMessageHistory(channelId)
+            .then((data: Array<Message>) => {
+                for (let i = 0; i < data.length; i++) {
+                    let deleteObject = {
+                        TableName: tableName,
+                        Key: {
+                            channelId: data[i].channelId,
+                            insertTime: data[i].insertTime
+                        },
+                        ConditionExpression: "channelId = :c and insertTime = :i",
+                        ExpressionAttributeValues: {
+                            ":c": channelId,
+                            ":i": data[i].insertTime
+                        }
+                    };
+
+                    this.docClient.delete(deleteObject, ((err, data1) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }));
+                }
+                console.log("All messages for " + channelId + " deleted successfully");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
 }
 
 export default MessageDAO;

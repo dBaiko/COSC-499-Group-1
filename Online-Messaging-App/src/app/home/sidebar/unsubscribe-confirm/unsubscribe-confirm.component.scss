@@ -1,0 +1,17 @@
+.center {
+    text-align: center;
+    color: white;
+}
+
+button {
+    background-color: #1b1b1b;
+    border-radius: 0;
+}
+
+button:hover {
+    background-color: var(--primary-color);
+}
+
+.button {
+    margin-right: 1rem;
+}

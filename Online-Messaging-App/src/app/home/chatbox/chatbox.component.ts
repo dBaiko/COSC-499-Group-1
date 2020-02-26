@@ -56,6 +56,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     channelNotifications: Array<NotificationObject> = [];
     channelNotificationsUsernames: Array<string> = [];
 
+    friendMessage: string = null;
+
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
@@ -69,7 +71,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private http: HttpClient,
         private auth: AuthenticationService,
         private notificationService: NotificationService
-    ) {}
+    ) {
+    }
 
     private _currentChannel: ChannelObject;
 
@@ -82,7 +85,25 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this._currentChannel = value;
         this.getMessages(this._currentChannel.channelId);
         this.isNearBottom = false;
-        this.getSubcribedUsers();
+        this.getSubcribedUsers()
+            .then((data: Array<UserChannelObject>) => {
+                if (this.currentChannel.channelType == "friend") {
+                    let notFound = true;
+                    for (let i in data) {
+                        if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
+                            notFound = false;
+                        }
+                    }
+                    if (notFound) {
+                        this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has not yet accepted your request and will not see these messages until they accept";
+                    } else {
+                        this.friendMessage = null;
+                    }
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         this.getChannelNotifications();
     }
 
@@ -237,7 +258,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
-                            resolve();
+                            resolve(data);
                         },
                         (err) => {
                             console.log(err);
