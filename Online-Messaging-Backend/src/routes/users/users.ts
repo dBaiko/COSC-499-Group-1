@@ -11,6 +11,7 @@ import { NotificationsDAO } from "../notifications/NotificationsDAO";
 const router = express.Router();
 
 const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
+const PATH_DELETE_USER_SUBSCRIPTION = "/:username/channels/:channelId";
 const PATH_POST_NEW_USER = "/";
 const PATH_GET_ALL_USERS = "/";
 const PATH_PUT_USER = "/:username";
@@ -184,6 +185,31 @@ router.get(PATH_GET_ALL_USERS, (req, res) => {
                 })
                 .catch((err) => {
                     res.status(400).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.delete(PATH_DELETE_USER_SUBSCRIPTION, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            let userChannelDAO = new UserChannelDAO(docClient);
+            userChannelDAO.deleteChannelSubscription(req.params.username, req.params.channelId)
+                .then(() => {
+                    res.status(200).send({
+                        status: 200,
+                        data: {
+                            message: "User subscription deleted successfully"
+                        }
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).send(err);
                 });
         },
         (err) => {
