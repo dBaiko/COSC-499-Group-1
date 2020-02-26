@@ -6,6 +6,7 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
 import { UserChannelObject } from "../home.component";
+import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm/unsubscribe-confirm.component";
 
 interface UserObject {
     username: string;
@@ -210,6 +211,21 @@ export class SidebarComponent implements OnInit {
                 this.selectChannel(result.channelId, result.channelType);
             }
         });
+    }
+
+    confirmUnsubscribe(): void {
+        let dialogConfig: MatDialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = "35%";
+        dialogConfig.panelClass = "dialog-class";
+        let dialogRef = this.dialog.open(UnsubscribeConfirmComponent, dialogConfig);
+        dialogRef.afterClosed().subscribe((result: boolean) => {
+            if (result) {
+                console.log(result);
+            }
+        });
+
     }
 
     switchDisplay(value: string): void {

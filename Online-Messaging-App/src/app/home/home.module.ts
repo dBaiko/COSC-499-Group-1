@@ -20,6 +20,7 @@ import { ProfileComponent } from "./profile/profile.component";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
 import { FriendsBrowserComponent } from "./sidebar/friends-browser/friends-browser.component";
+import { UnsubscribeConfirmComponent } from "./sidebar/unsubscribe-confirm/unsubscribe-confirm.component";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -37,7 +38,8 @@ const socketConfig: SocketIoConfig = {
         SidebarComponent,
         CreateChannelComponent,
         ProfileComponent,
-        FriendsBrowserComponent
+        FriendsBrowserComponent,
+        UnsubscribeConfirmComponent
     ],
     imports: [
         CommonModule,
@@ -58,6 +60,7 @@ const socketConfig: SocketIoConfig = {
         ChatboxComponent
     ],
     providers: [MessengerService, CookieService, AuthenticationService, CommonService, NotificationService],
-    entryComponents: [CreateChannelComponent]
+    entryComponents: [CreateChannelComponent, UnsubscribeConfirmComponent]
 })
-export class HomeModule {}
+export class HomeModule {
+}

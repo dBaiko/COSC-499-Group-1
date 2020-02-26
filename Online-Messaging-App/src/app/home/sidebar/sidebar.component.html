@@ -22,11 +22,12 @@
                         (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ publicChannel.channelName }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -40,11 +41,12 @@
                         (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ privateChannel.channelName }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -60,11 +62,12 @@
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
-                        <a routerLink="/chat">
-                            <mat-icon>settings</mat-icon>
-                        </a>
-                        <a routerLink="/delete">
-                            <mat-icon>clear</mat-icon>
+                        <!-- Hidden until functional -->
+                        <!--                        <a>-->
+                        <!--                            <mat-icon>settings</mat-icon>-->
+                        <!--                        </a>-->
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe()">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
