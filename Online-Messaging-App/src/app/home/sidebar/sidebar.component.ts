@@ -272,6 +272,7 @@ export class SidebarComponent implements OnInit {
                                             this.friendsChannels.splice(i, 1);
                                         }
                                     }
+                                    //TODO: reduce this, or at least move to a method
                                     if (this.publicChannelSelect) {
                                         if (this.publicChannels.length > 0) {
                                             this.selectPublicChannel();
