@@ -114,7 +114,7 @@ export class HeaderComponent implements OnInit {
     switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
-        if (value === "profile") {
+        if (value === this.profile) {
             this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
         }
     }
