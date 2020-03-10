@@ -4,16 +4,17 @@
             <mat-card-header class="chat-box-header">
                 <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
                     <img
-                        class="messagePicture"
-                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                        src="https://i.imgur.com/32SZPXv.png"
-                        style="display: inline"
+                            class="messagePicture"
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="https://i.imgur.com/32SZPXv.png"
+                            style="display: inline"
                     />
-                    <mat-card-title (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
-                                    class="clickable"
-                                    style="display: inline">{{
-                        parseFriendChannelName(currentChannel.channelName)
-                        }}</mat-card-title>
+                    <mat-card-title
+                            (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
+                            class="clickable"
+                            style="display: inline"
+                    >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
+                    >
                 </div>
                 <ng-template #notFriend>
                     <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>
@@ -32,26 +33,32 @@
                         </form>
                         <div *ngFor="let user of inviteSearchList">
                             <mat-card *ngIf="user.username != auth.getAuthenticatedUser().getUsername()">
-                                <mat-card-title>{{ user.username }}</mat-card-title>
+                                <mat-card-title class="usernameInvite">{{ user.username }}</mat-card-title>
                                 <mat-card-content>
                                     <div
-                                        *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
-                                        class="subedOrSent"
+                                            *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
+                                            class="subedOrSent"
                                     >
                                         Subscribed
                                     </div>
                                     <ng-template #elseBlock1>
                                         <div
-                                            *ngIf="
+                                                *ngIf="
                                                 this.channelNotificationsUsernames.includes(user.username);
                                                 else elseBlock2
                                             "
-                                            class="subedOrSent"
+                                                class="subedOrSent"
                                         >
                                             Invite Sent
                                         </div>
                                         <ng-template #elseBlock2>
-                                            <button (click)="sendInvite(user.username)" mat-button>Send Invite</button>
+                                            <button
+                                                    (click)="sendInvite(user.username)"
+                                                    class="sendInviteButton"
+                                                    mat-button
+                                            >
+                                                Send Invite
+                                            </button>
                                         </ng-template>
                                     </ng-template>
                                 </mat-card-content>
@@ -63,16 +70,16 @@
         </div>
         <p>{{ error }}</p>
         <hr/>
-        <i class="errorMessage">{{friendMessage}}</i>
+        <i class="errorMessage">{{ friendMessage }}</i>
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
                 <mat-card-header>
                     <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                         <img
-                            class="messagePicture"
-                            inline="true"
-                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="https://i.imgur.com/32SZPXv.png"
+                                class="messagePicture"
+                                inline="true"
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="https://i.imgur.com/32SZPXv.png"
                         />
                         {{ chatMessage.username }}
                     </mat-card-title>

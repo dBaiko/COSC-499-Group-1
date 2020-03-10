@@ -21,6 +21,8 @@ import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
 import { FriendsBrowserComponent } from "./sidebar/friends-browser/friends-browser.component";
 import { UnsubscribeConfirmComponent } from "./sidebar/unsubscribe-confirm/unsubscribe-confirm.component";
+import { SettingsComponent } from "./settings/settings.component";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -39,7 +41,8 @@ const socketConfig: SocketIoConfig = {
         CreateChannelComponent,
         ProfileComponent,
         FriendsBrowserComponent,
-        UnsubscribeConfirmComponent
+        UnsubscribeConfirmComponent,
+        SettingsComponent
     ],
     imports: [
         CommonModule,
@@ -48,7 +51,8 @@ const socketConfig: SocketIoConfig = {
         ReactiveFormsModule,
         SocketIoModule.forRoot(socketConfig),
         MatSelectModule,
-        MatRadioModule
+        MatRadioModule,
+        MatSlideToggleModule
     ],
     exports: [
         HeaderComponent,

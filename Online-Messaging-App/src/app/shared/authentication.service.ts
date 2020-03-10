@@ -19,8 +19,7 @@ const FAMILY_NAME: string = "family_name";
 export class AuthenticationService {
     cognitoUser: CognitoUser;
 
-    constructor() {
-    }
+    constructor() {}
 
     public register(
         username: string,

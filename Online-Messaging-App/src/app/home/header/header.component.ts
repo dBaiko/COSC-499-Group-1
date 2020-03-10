@@ -3,6 +3,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import { ChannelObject } from "../sidebar/sidebar.component";
 
 interface UserChannelObject {
     username: string;
@@ -24,11 +25,9 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
-
     selector: "app-header",
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.scss"]
-
 })
 export class HeaderComponent implements OnInit {
     @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
@@ -41,10 +40,16 @@ export class HeaderComponent implements OnInit {
 
     open: boolean = false;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
+    @Output() channelEvent = new EventEmitter<ChannelObject>();
+    @Output() switchEvent = new EventEmitter<string>();
+    @Output() profileViewEvent = new EventEmitter<string>();
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
     private channelsAPI = APIConfig.channelsAPI;
+    private channelBrowser = "channelBrowser";
+    private profile = "profile";
+    private settings = "settings";
 
     constructor(
         private _eref: ElementRef,
@@ -56,12 +61,10 @@ export class HeaderComponent implements OnInit {
     }
 
     @HostListener("document:click", ["$event"]) clickout(event) {
-
         if (this._eref.nativeElement.contains(event.target)) {
             this.toggleOpen();
         } else {
             this.open = false;
-
         }
     }
 
@@ -99,11 +102,18 @@ export class HeaderComponent implements OnInit {
 
     triggerSelect() {
         this.mySelect.toggle();
-
     }
 
     toggleOpen(): void {
         this.open = !this.open;
+    }
+
+    switchDisplay(value: string): void {
+        this.switchEvent.emit(value);
+
+        if (value === this.profile) {
+            this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
+        }
     }
 
     acceptInvite(notification: NotificationObject): void {

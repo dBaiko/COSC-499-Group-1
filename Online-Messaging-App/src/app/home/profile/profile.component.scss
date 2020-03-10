@@ -1,83 +1,79 @@
 mat-card {
-    background: var(--soft-black);
+  background: var(--element-color);
 }
 
 mat-card-content {
-    margin-left: 1vh;
-    margin-right: 1vh;
-    padding-bottom: 3vh;
-    color: white;
+  margin-left: 1vh;
+  margin-right: 1vh;
+  padding-bottom: 3vh;
+  color: var(--primary-text-color);
 }
 
 mat-card-header {
-    color: white;
+  color: var(--primary-color);
 }
 
 mat-icon {
-    margin-bottom: 0.5vh;
+  margin-bottom: 0.5vh;
 }
 
 .icon {
-    font-size: 64px;
+  font-size: 64px;
 }
 
 .profilePicture {
-    float: right;
-    margin-right: 1vh;
-    border-style: solid;
-    border-color: var(--soft-black);
-    border-radius: 0.5vh;
-    font-size: 128px;
-    height: auto;
-    overflow: visible;
-    white-space: normal;
-    width: 10%;
+  float: right;
+  margin-right: 1vh;
+  border-style: solid;
+  border-color: var(--soft-black);
+  border-radius: 0.5vh;
+  font-size: 128px;
+  height: auto;
+  overflow: visible;
+  white-space: normal;
+  width: 10%;
 }
 
 .wrapper {
-    width: 60%;
-    margin: auto;
+  width: 60%;
+  margin: auto;
 }
 
 button {
-    float: right;
-    margin-right: 5vh;
-    color: white;
-    background-color: var(--soft-black);
-    width: 14vh;
+  float: right;
+  margin-right: 5vh;
+  color: var(--primary-text-color);
+  background-color: var(--element-color);
+  width: 14vh;
 }
 
-#profileTitle {
-    font-size: 48px;
-    margin-left: 1vh;
+#settingsTitle {
+  font-size: 43px;
+  margin-left: 1vh;
 }
 
 .wrapper {
-    margin-top: 2vh;
+  margin-top: 2vh;
 }
 
 .nameHeaders {
-    font-size: 1.1em;
+  font-size: 1.1em;
 }
 
 input {
-    width: 70%;
-    padding: 5px 5px;
-    border-radius: 1px;
-    border: 2px solid white;
-
+  width: 70%;
+  padding: 10px 10px;
+  border-radius: 1px;
+  border: 2px solid white;
+  background-color: var(--element-hover-color);
 }
 
 input:focus {
-    border: 2px solid var(--soft-black);
+  border: 2px solid var(--element-hover-color);
 }
 
 button {
-    border-radius: 0;
+  border-radius: 3px;
+  background-color: var(--primary-color);
+  color: white;
 }
-
-button:hover {
-    background-color: var(--primary-color);
-}
-
-

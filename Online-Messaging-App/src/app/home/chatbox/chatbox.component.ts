@@ -61,8 +61,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private http: HttpClient,
         private auth: AuthenticationService,
         private notificationService: NotificationService
-    ) {
-    }
+    ) {}
 
     private _currentChannel: ChannelObject;
 
@@ -85,21 +84,23 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         }
                     }
                     if (notFound) {
-                        this.getChannelNotifications()
-                            .then((data: Array<NotificationObject>) => {
-                                let inviteSent = false;
-                                for (let i = 0; i < data.length; i++) {
-                                    if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
-                                        inviteSent = true;
-                                    }
+                        this.getChannelNotifications().then((data: Array<NotificationObject>) => {
+                            let inviteSent = false;
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
+                                    inviteSent = true;
                                 }
-                                if (inviteSent) {
-                                    this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has not yet accepted your request and will not see these messages until they accept";
-                                } else {
-                                    this.friendMessage = this.parseFriendChannelName(this.currentChannel.channelName) + " has left the channel";
-                                }
-                            });
-
+                            }
+                            if (inviteSent) {
+                                this.friendMessage =
+                                    this.parseFriendChannelName(this.currentChannel.channelName) +
+                                    " has not yet accepted your request and will not see these messages until they accept";
+                            } else {
+                                this.friendMessage =
+                                    this.parseFriendChannelName(this.currentChannel.channelName) +
+                                    " has left the channel";
+                            }
+                        });
                     } else {
                         this.friendMessage = null;
                     }

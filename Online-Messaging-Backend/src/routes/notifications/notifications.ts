@@ -59,7 +59,6 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
 });
 
 router.delete(PATH_DELETE_NOTIFICATION, (req, res) => {
-    console.log("here");
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(

@@ -10,9 +10,9 @@ interface Message {
 }
 
 interface ChannelObject {
-    channelId: string,
-    channelName: string,
-    channelType: string
+    channelId: string;
+    channelName: string;
+    channelType: string;
 }
 
 const tableName: string = "Messages";
@@ -106,11 +106,11 @@ class MessageDAO {
                         }
                     };
 
-                    this.docClient.delete(deleteObject, ((err, data1) => {
+                    this.docClient.delete(deleteObject, (err, data1) => {
                         if (err) {
                             console.log(err);
                         }
-                    }));
+                    });
                 }
                 console.log("All messages for " + channelId + " deleted successfully");
             })
@@ -118,7 +118,6 @@ class MessageDAO {
                 console.log(err);
             });
     }
-
 }
 
 export default MessageDAO;

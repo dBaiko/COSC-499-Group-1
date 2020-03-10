@@ -6,10 +6,15 @@ import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig } from "../shared/app-config";
+import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
 const CHAT_BOX = "chatBox;";
+const DARK = "dark";
+const LIGHT = "light";
+
+const SETTINGS_URI = "/settings";
 
 export interface UserChannelObject {
     username: string;
@@ -17,6 +22,11 @@ export interface UserChannelObject {
     userChannelRole: string;
     channelName: string;
     channelType: string;
+}
+
+export interface SettingsObject {
+    username: string;
+    theme: string;
 }
 
 interface ChannelObject {
@@ -47,6 +57,7 @@ export class HomeComponent implements OnInit {
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
+    currentTheme: string;
     private scrollContainer: any;
 
     constructor(
@@ -78,6 +89,7 @@ export class HomeComponent implements OnInit {
         }
         if (this.auth.isLoggedIn()) {
             this.getUsers();
+            this.getSettings();
         }
     }
 
@@ -129,5 +141,53 @@ export class HomeComponent implements OnInit {
                 console.log(err);
             }
         );
+    }
+
+    private getSettings(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http
+                    .get(this.usersUrl + this.auth.getAuthenticatedUser().getUsername() + SETTINGS_URI, httpHeaders)
+                    .subscribe(
+                        (data: SettingsObject) => {
+                            this.changeTheme(data[0].theme);
+                        },
+                        (err) => {
+                            console.log(err);
+                        }
+                    );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+    }
+
+    private changeTheme(themeString: string): void {
+        this.currentTheme = themeString;
+        if (themeString == LIGHT) {
+            this.setTheme(LightThemeColors);
+        } else if (themeString == DARK) {
+            this.setTheme(DarkThemeColors);
+        }
+    }
+
+    private setTheme(theme: ColorScheme): void {
+        document.documentElement.style.setProperty("--primary-color", theme["primary-color"]);
+        document.documentElement.style.setProperty("--secondary-color", theme["secondary-color"]);
+        document.documentElement.style.setProperty("--tertiary-color", theme["tertiary-color"]);
+        document.documentElement.style.setProperty("--primary-text-color", theme["primary-text-color"]);
+        document.documentElement.style.setProperty("--soft-black", theme["soft-black"]);
+        document.documentElement.style.setProperty("--background-color", theme["background-color"]);
+        document.documentElement.style.setProperty("--element-color", theme["element-color"]);
+        document.documentElement.style.setProperty("--hover-color", theme["hover-color"]);
+        document.documentElement.style.setProperty("--element-hover-color", theme["element-hover-color"]);
     }
 }

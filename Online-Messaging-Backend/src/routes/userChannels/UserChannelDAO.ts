@@ -130,7 +130,7 @@ class UserChannelDAO {
             }
         };
 
-        return new Promise<any>(((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             this.docClient.delete(deleteObject, (err, data) => {
                 if (err) {
                     console.log(err);
@@ -142,7 +142,8 @@ class UserChannelDAO {
                             if (data.length == 0) {
                                 console.log("No more users in: " + channelId + " deleting channel");
                                 let channelDAO = new ChannelDAO(this.docClient);
-                                channelDAO.deleteChannel(channelId)
+                                channelDAO
+                                    .deleteChannel(channelId)
                                     .then(() => {
                                         let messageDAO = new MessageDAO(this.docClient);
                                         messageDAO.deleteAllMessagesForChannel(channelId);
@@ -159,15 +160,10 @@ class UserChannelDAO {
                             console.log(err);
                             reject(err);
                         });
-
-
                 }
             });
-        }));
-
+        });
     }
-
-
 }
 
 export default UserChannelDAO;

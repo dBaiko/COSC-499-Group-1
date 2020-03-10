@@ -4,7 +4,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #5280e9;
+    background-color: var(--background-color);
     overflow: hidden;
 }
 
@@ -15,7 +15,6 @@
     width: 250px;
     border: none;
     overflow: hidden;
-    margin-top: 10px;
 }
 
 app-header {
@@ -25,7 +24,8 @@ app-header {
     left: 0;
     z-index: 2;
     overflow: hidden;
-    background-color: var(--soft-black);
+    background-color: var(--primary-color);
+    height: 6.1vh;
 }
 
 #home {

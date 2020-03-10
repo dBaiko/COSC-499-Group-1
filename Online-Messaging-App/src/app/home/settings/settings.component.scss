@@ -1,0 +1,40 @@
+mat-card {
+    background: var(--element-color);
+}
+
+mat-card-content {
+    margin-left: 1vh;
+    margin-right: 1vh;
+    padding-bottom: 3vh;
+    color: var(--primary-text-color);
+}
+
+mat-card-header {
+    color: var(--primary-color);
+}
+
+mat-icon {
+    margin-bottom: 0.5vh;
+}
+
+.wrapper {
+    width: 60%;
+    margin: auto;
+}
+
+#settingsTitle {
+    font-size: 43px;
+    margin-left: 1vh;
+}
+
+.wrapper {
+    margin-top: 2vh;
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: var(--primary-color);
+}
+
+::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: #9e9e9e;
+}

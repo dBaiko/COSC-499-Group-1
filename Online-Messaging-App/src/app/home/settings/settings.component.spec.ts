@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm.component";
+import { SettingsComponent } from "./settings.component";
 
-describe("UnsubscribeConfirmComponent", () => {
-    let component: UnsubscribeConfirmComponent;
-    let fixture: ComponentFixture<UnsubscribeConfirmComponent>;
+describe("SettingsComponent", () => {
+    let component: SettingsComponent;
+    let fixture: ComponentFixture<SettingsComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [UnsubscribeConfirmComponent]
+            declarations: [SettingsComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(UnsubscribeConfirmComponent);
+        fixture = TestBed.createComponent(SettingsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

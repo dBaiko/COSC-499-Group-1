@@ -68,8 +68,7 @@ export class FriendsBrowserComponent implements OnInit {
         private auth: AuthenticationService,
         private http: HttpClient,
         private notificationService: NotificationService
-    ) {
-    }
+    ) {}
 
     ngOnInit() {
         this.getFriendNotifications();

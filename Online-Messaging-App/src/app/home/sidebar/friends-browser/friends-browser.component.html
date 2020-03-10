@@ -3,7 +3,7 @@
         <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
             <mat-form-field>
                 <mat-label>Add Friend...</mat-label>
-                <input #inputForm (input)="onKey($event)" matInput name="content"/>
+                <input #inputForm (input)="onKey($event)" matInput name="content" />
             </mat-form-field>
         </form>
         <div *ngIf="searching" class="overlapper">
