@@ -62,5 +62,4 @@ const socketConfig: SocketIoConfig = {
     providers: [MessengerService, CookieService, AuthenticationService, CommonService, NotificationService],
     entryComponents: [CreateChannelComponent, UnsubscribeConfirmComponent]
 })
-export class HomeModule {
-}
+export class HomeModule {}

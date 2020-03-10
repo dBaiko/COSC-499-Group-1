@@ -43,8 +43,8 @@ header {
 //}
 .floater {
     float: right;
-    width: 20%;
     min-width: 50px;
+    display: inline;
 }
 
 .headInfo {
@@ -55,7 +55,6 @@ header {
     margin-left: 7vw;
     margin-right: -2.5%;
 }
-
 
 #notification {
     display: inline;
@@ -74,6 +73,15 @@ header {
     background-color: var(--primary-color);
     color: white;
     border-radius: 0%;
+    left: 0 !important;
+    height: 22vh;
+}
+a {
+    width: 100%;
+}
+a:hover {
+    background-color: var(--primary-color);
+    border-radius: inherit;
     margin-right: 2rem;
 }
 
@@ -98,6 +106,8 @@ button:hover {
     padding: 0px !important;
     max-width: none !important;
     overflow: scroll;
+    position: absolute;
+    right: 5rem;
 }
 
 ::ng-deep .mat-menu-item {

@@ -7,14 +7,11 @@ import { MatDialogRef } from "@angular/material/dialog";
     styleUrls: ["./unsubscribe-confirm.component.scss"]
 })
 export class UnsubscribeConfirmComponent implements OnInit {
-    constructor(public dialogRef: MatDialogRef<UnsubscribeConfirmComponent>) {
-    }
+    constructor(public dialogRef: MatDialogRef<UnsubscribeConfirmComponent>) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     onClose(value: boolean) {
         this.dialogRef.close(value);
     }
-
 }

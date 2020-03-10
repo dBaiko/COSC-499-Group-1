@@ -1,33 +1,35 @@
 <header (click)="toggleOpen()">
     <div id="title">Streamline Athletes</div>
 
-    <div *ngIf="userLoggedIn" class="wrapButton">
+    <div class="wrapButton" *ngIf="userLoggedIn">
         <div class="floater">
-            <div style="width: 1000px">
-                <div (click)="triggerSelect()" class="headInfo">
-                    <button [mat-menu-trigger-for]="userMenu" id="username" mat-button>{{ user.username }}</button>
-                    <mat-menu
-                        #mySelect
-                        #userMenu="matMenu"
-                        (click)="triggerSelect()"
-                        (closed)="unDrop()"
-                        (drop)="drop()"
-                        class="menuList"
-                        disableOptionCentering
-                        disabled
-                        xPosition="after"
-                    >
-                        <div class="userMenu" mat-menu-item>
-                            <logout-form></logout-form>
-                        </div>
-                    </mat-menu>
-                </div>
-                <div class="userMenu" id="notification">
-                    <button (click)="toggleOpen()" class="notifications" mat-button>
-                        <mat-icon>notifications</mat-icon>
-                        <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
-                    </button>
-                </div>
+            <!--            <div style="width: 1000px float:right margin:auto">-->
+            <div (click)="triggerSelect()" class="headInfo">
+                <button id="username" [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
+                <mat-menu
+                    #mySelect
+                    #userMenu="matMenu"
+                    (click)="triggerSelect()"
+                    (closed)="unDrop()"
+                    (drop)="drop()"
+                    class="menuList"
+                    disableOptionCentering
+                    disabled
+                    xPosition="after"
+                >
+                    <div class="userMenu" mat-menu-item>
+                        <a (click)="switchDisplay(channelBrowser)" mat-button type="submit">Browse Channels</a> <br />
+                        <a (click)="switchDisplay(profile)" mat-button type="submit">Profile</a> <br />
+                        <a (click)="switchDisplay(channelBrowser)" mat-button type="submit">Settings</a> <br />
+                        <logout-form></logout-form>
+                    </div>
+                </mat-menu>
+            </div>
+            <div class="userMenu" id="notification">
+                <button (click)="toggleOpen()" mat-button>
+                    <mat-icon>notifications</mat-icon>
+                    <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
+                </button>
             </div>
         </div>
     </div>

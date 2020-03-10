@@ -54,8 +54,7 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {
-    }
+    ) {}
 
     private _subbedChannel: ChannelObject;
 
@@ -67,7 +66,6 @@ export class SidebarComponent implements OnInit {
     set subbedChannel(value: ChannelObject) {
         this.setNewChannel(value);
     }
-
 
     ngOnInit(): void {
         this.getSubscribedChannels()
@@ -236,36 +234,43 @@ export class SidebarComponent implements OnInit {
                             })
                         };
 
-                        this.http.delete(this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + CHANNELS_URI + channelId, httpHeaders).subscribe(
-                            (data) => {
-                                for (let i = 0; i < this.userSubscribedChannels.length; i++) {
-                                    if (this.userSubscribedChannels[i].channelId == channelId) {
-                                        this.userSubscribedChannels.splice(i, 1);
+                        this.http
+                            .delete(
+                                this.usersAPI +
+                                    this.auth.getAuthenticatedUser().getUsername() +
+                                    CHANNELS_URI +
+                                    channelId,
+                                httpHeaders
+                            )
+                            .subscribe(
+                                (data) => {
+                                    for (let i = 0; i < this.userSubscribedChannels.length; i++) {
+                                        if (this.userSubscribedChannels[i].channelId == channelId) {
+                                            this.userSubscribedChannels.splice(i, 1);
+                                        }
                                     }
-                                }
-                                for (let i = 0; i < this.publicChannels.length; i++) {
-                                    if (this.publicChannels[i].channelId == channelId) {
-                                        this.publicChannels.splice(i, 1);
+                                    for (let i = 0; i < this.publicChannels.length; i++) {
+                                        if (this.publicChannels[i].channelId == channelId) {
+                                            this.publicChannels.splice(i, 1);
+                                        }
                                     }
-                                }
-                                for (let i = 0; i < this.privateChannels.length; i++) {
-                                    if (this.privateChannels[i].channelId == channelId) {
-                                        this.privateChannels.splice(i, 1);
+                                    for (let i = 0; i < this.privateChannels.length; i++) {
+                                        if (this.privateChannels[i].channelId == channelId) {
+                                            this.privateChannels.splice(i, 1);
+                                        }
                                     }
-                                }
-                                for (let i = 0; i < this.friendsChannels.length; i++) {
-                                    if (this.friendsChannels[i].channelId == channelId) {
-                                        this.friendsChannels.splice(i, 1);
+                                    for (let i = 0; i < this.friendsChannels.length; i++) {
+                                        if (this.friendsChannels[i].channelId == channelId) {
+                                            this.friendsChannels.splice(i, 1);
+                                        }
                                     }
+                                    this.selectPublicChannel();
+                                    this.selectChannel(this.publicChannels[0].channelId, "public");
+                                },
+                                (err) => {
+                                    console.log(err);
                                 }
-                                this.selectPublicChannel();
-                                this.selectChannel(this.publicChannels[0].channelId, "public");
-                            },
-                            (err) => {
-                                console.log(err);
-                            }
-                        );
-
+                            );
                     },
                     (err) => {
                         console.log(err);
@@ -273,13 +278,12 @@ export class SidebarComponent implements OnInit {
                 );
             }
         });
-
     }
 
     switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
-        if (value === "profile") {
+        if (value === this.profile) {
             this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
         }
     }
