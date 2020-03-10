@@ -3,7 +3,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import {ChannelObject} from "../sidebar/sidebar.component";
+import { ChannelObject } from "../sidebar/sidebar.component";
 
 interface UserChannelObject {
     username: string;
@@ -25,11 +25,9 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
-
     selector: "app-header",
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.scss"]
-
 })
 export class HeaderComponent implements OnInit {
     @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
@@ -61,12 +59,10 @@ export class HeaderComponent implements OnInit {
     }
 
     @HostListener("document:click", ["$event"]) clickout(event) {
-
         if (this._eref.nativeElement.contains(event.target)) {
             this.toggleOpen();
         } else {
             this.open = false;
-
         }
     }
 
@@ -104,7 +100,6 @@ export class HeaderComponent implements OnInit {
 
     triggerSelect() {
         this.mySelect.toggle();
-
     }
 
     toggleOpen(): void {
@@ -147,14 +142,13 @@ export class HeaderComponent implements OnInit {
                             this.http
                                 .delete(
                                     this.notificationsURL +
-                                    notification.notificationId +
-                                    INSERTED_TIME_URI +
-                                    notification.insertedTime,
+                                        notification.notificationId +
+                                        INSERTED_TIME_URI +
+                                        notification.insertedTime,
                                     httpHeaders
                                 )
                                 .subscribe(
-                                    () => {
-                                    },
+                                    () => {},
                                     (err) => {
                                         console.log(err);
                                     }
@@ -185,14 +179,13 @@ export class HeaderComponent implements OnInit {
                 this.http
                     .delete(
                         this.notificationsURL +
-                        notification.notificationId +
-                        INSERTED_TIME_URI +
-                        notification.insertedTime,
+                            notification.notificationId +
+                            INSERTED_TIME_URI +
+                            notification.insertedTime,
                         httpHeaders
                     )
                     .subscribe(
-                        () => {
-                        },
+                        () => {},
                         (err) => {
                             console.log(err);
                         }

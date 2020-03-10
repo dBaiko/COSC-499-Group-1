@@ -1,8 +1,9 @@
 <div *ngIf="userLoggedIn; else elseBlock" id="home">
-    <app-header (newChannelEvent)="receiveNewSubbedChannel($event)"
-                (profileViewEvent)="updateProfile($event)"
-                (switchEvent)="updateDisplay($event)">
-
+    <app-header
+        (newChannelEvent)="receiveNewSubbedChannel($event)"
+        (profileViewEvent)="updateProfile($event)"
+        (switchEvent)="updateDisplay($event)"
+    >
     </app-header>
     <mat-sidenav-container class="container">
         <mat-sidenav
@@ -46,8 +47,6 @@
                     </div>
                 </div>
             </div>
-
-
         </mat-sidenav-content>
     </mat-sidenav-container>
 </div>

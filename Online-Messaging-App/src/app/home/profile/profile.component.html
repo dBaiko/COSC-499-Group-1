@@ -12,25 +12,25 @@
             </mat-card-header>
         </div>
         <mat-card-content>
-            <hr/>
-            <br/>
+            <hr />
+            <br />
             <p>{{ editSaveMessage }}</p>
 
             <div *ngIf="userProfile && !editing" class="profileInfo">
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr/>
+                <hr />
                 <div *ngIf="userProfile.email">
                     <p class="nameHeaders"><b>Email</b></p>
                     <p>{{ userProfile.email }}</p>
                 </div>
-                <hr/>
+                <hr />
                 <p class="nameHeaders"><b>First Name</b></p>
                 <p>{{ userProfile.firstName }}</p>
-                <hr/>
+                <hr />
                 <p class="nameHeaders"><b>Last Name</b></p>
                 <p>{{ userProfile.lastName }}</p>
-                <hr/>
+                <hr />
             </div>
             <div
                 *ngIf="
@@ -42,10 +42,10 @@
             >
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr/>
+                <hr />
                 <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm">
                     <p class="nameHeaders"><b>Email</b></p>
-                    <input autocomplete="off" formControlName="email" id="email" name="email" required type="email"/>
+                    <input autocomplete="off" formControlName="email" id="email" name="email" required type="email" />
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
                             *ngIf="
@@ -60,7 +60,7 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <p class="nameHeaders"><b>First Name</b></p>
                     <input
                         autocomplete="off"
@@ -84,7 +84,7 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <p class="nameHeaders"><b>Last Name</b></p>
                     <input
                         autocomplete="off"
@@ -108,7 +108,7 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <button *ngIf="editing" mat-button type="submit">
                         Save
                     </button>
