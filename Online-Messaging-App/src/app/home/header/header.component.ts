@@ -3,6 +3,7 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import {ChannelObject} from "../sidebar/sidebar.component";
 
 interface UserChannelObject {
     username: string;
@@ -41,11 +42,15 @@ export class HeaderComponent implements OnInit {
 
     open: boolean = false;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
+    @Output() channelEvent = new EventEmitter<ChannelObject>();
+    @Output() switchEvent = new EventEmitter<string>();
+    @Output() profileViewEvent = new EventEmitter<string>();
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
     private channelsAPI = APIConfig.channelsAPI;
-
+    private channelBrowser = "channelBrowser";
+    private profile = "profile";
     constructor(
         private _eref: ElementRef,
         private auth: AuthenticationService,
@@ -104,6 +109,14 @@ export class HeaderComponent implements OnInit {
 
     toggleOpen(): void {
         this.open = !this.open;
+    }
+
+    switchDisplay(value: string): void {
+        this.switchEvent.emit(value);
+
+        if (value === "profile") {
+            this.profileViewEvent.emit(this.auth.getAuthenticatedUser().getUsername());
+        }
     }
 
     acceptInvite(notification: NotificationObject): void {

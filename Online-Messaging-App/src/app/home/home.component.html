@@ -1,5 +1,9 @@
 <div *ngIf="userLoggedIn; else elseBlock" id="home">
-    <app-header (newChannelEvent)="receiveNewSubbedChannel($event)"></app-header>
+    <app-header (newChannelEvent)="receiveNewSubbedChannel($event)"
+                (profileViewEvent)="updateProfile($event)"
+                (switchEvent)="updateDisplay($event)">
+
+    </app-header>
     <mat-sidenav-container class="container">
         <mat-sidenav
             [fixedBottomGap]="options.value.bottom"

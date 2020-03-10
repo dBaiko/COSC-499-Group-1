@@ -43,8 +43,9 @@ header {
 //}
 .floater {
     float: right;
-    width: 20%;
+    //width: 20%;
     min-width: 50px;
+    display: inline;
 }
 
 .headInfo {
@@ -74,6 +75,15 @@ header {
     background-color: var(--soft-black);
     color: white;
     border-radius: 0%;
+    left: 0 !important;
+    height: 22vh;
+}
+a {
+    width: 100%;
+}
+a:hover {
+    background-color: var(--primary-color);
+    border-radius: inherit;
 }
 
 .wrapButton {
@@ -97,6 +107,8 @@ button:hover {
     padding: 0px !important;
     max-width: none !important;
     overflow: scroll;
+    position: absolute;
+    right: 5rem;
 }
 
 ::ng-deep .mat-menu-item {
@@ -166,3 +178,4 @@ button:hover {
         }
     }
 }
+
