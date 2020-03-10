@@ -1,5 +1,5 @@
 .container {
-    color: white;
+    color: var(--soft-black);
 }
 
 .center {
@@ -7,17 +7,14 @@
 }
 
 .channelName {
-
 }
 
 .form-control {
     color: var(--soft-black);
-
 }
 
 mat-label {
     color: var(--soft-black);
-
 }
 
 mat-form-field {
@@ -35,9 +32,7 @@ mat-form-field {
 mat-radio-button {
     padding-bottom: 1em;
     display: block;
-
 }
-
 
 button {
     color: var(--element-color);
@@ -45,8 +40,6 @@ button {
     margin-right: 0.5em;
     text-align: center;
     background-color: var(--primary-color);
-
-
 }
 
 .channelType {

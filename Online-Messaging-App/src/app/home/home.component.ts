@@ -66,6 +66,7 @@ export class HomeComponent implements OnInit {
             });
             this.notificationService = NotificationService.getInstance();
             this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+            this.setInitialTheme();
         }
     }
 
@@ -130,4 +131,8 @@ export class HomeComponent implements OnInit {
             }
         );
     }
+
+    private setInitialTheme(): void {
+    }
+
 }

@@ -76,9 +76,11 @@ header {
     left: 0 !important;
     height: 22vh;
 }
+
 a {
     width: 100%;
 }
+
 a:hover {
     background-color: var(--primary-color);
     border-radius: inherit;
@@ -136,7 +138,6 @@ button:hover {
     background-color: var(--primary-color);
     font-size: 1rem;
     border-top: 1px solid black;
-
 }
 
 #notificationList mat-card .mat-card-title {
@@ -180,7 +181,6 @@ button:hover {
     }
 }
 
-
 mat-label {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
@@ -188,7 +188,7 @@ mat-label {
     font-size: 1rem;
     color: #fff;
     text-align: center;
-    background: var(--secondary-color)
+    background: var(--secondary-color);
 }
 
 mat-icon {

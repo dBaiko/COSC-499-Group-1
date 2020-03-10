@@ -10,7 +10,7 @@ mat-form-field {
     background-color: var(--element-color);
     width: 86%;
     margin-right: 50vh;
-    color: var(--soft-black)
+    color: var(--primary-text-color);
 }
 
 #scrollable {
@@ -25,7 +25,7 @@ mat-form-field {
 
 .clickable {
     cursor: pointer;
-    color: var(--primary-color)
+    color: var(--primary-text-color);
 }
 
 hr {
@@ -33,7 +33,7 @@ hr {
 }
 
 mat-card-title {
-    color: var(--primary-color);
+    color: var(--primary-text-color);
 }
 
 .headerTop {
@@ -50,11 +50,11 @@ mat-card-footer {
 }
 
 p {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
 }
 
 mat-label {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
 
@@ -68,7 +68,7 @@ mat-label {
 }
 
 .invite {
-    color: var(--element-color);
+    color: var(--primary-text-color);
     border-radius: 0px;
     position: absolute;
     right: 1.1%;
@@ -77,7 +77,6 @@ mat-label {
 .inviteButton {
     border-radius: 0px;
     background-color: var(--primary-color);
-
 }
 
 .inviteButton:hover {
@@ -85,14 +84,14 @@ mat-label {
 }
 
 .inviteSearch {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
 }
 
 .invite mat-card {
     background-color: var(--primary-color);
     width: 92%;
     margin-top: 0%;
-    color: var(--element-color);
+    color: var(--primary-text-color);
 }
 
 .search mat-card-content {
@@ -131,7 +130,7 @@ mat-label {
 }
 
 .usernameInvite {
-    color: var(--element-color);
+    color: var(--primary-text-color);
 }
 
 ::placeholder {
