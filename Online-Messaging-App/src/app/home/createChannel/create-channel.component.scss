@@ -1,5 +1,9 @@
 .container {
-    color: white;
+    color: var(--soft-black);
+}
+
+h2 {
+    color: var(--primary-color);
 }
 
 .center {
@@ -10,16 +14,16 @@
 }
 
 .form-control {
-    color: white;
+    color: var(--primary-text-color);
 }
 
 mat-label {
-    color: white;
+    color: var(--primary-text-color);
 }
 
 mat-form-field {
     width: 20em;
-    color: var(--primary-color);
+    color: var(--primary-text-color);
 }
 
 .bothSides:after {
@@ -44,6 +48,7 @@ button {
 
 .channelType {
     text-align: center;
+    color: var(--primary-text-color);
 }
 
 mat-radio-group {
@@ -52,11 +57,12 @@ mat-radio-group {
 
 p {
     font-size: 1.2em;
+    color: var(--primary-text-color);
 }
 
 button {
     border-radius: 0;
-    background-color: var(--soft-black);
+    background-color: var(--primary-color);
 }
 
 button:hover {

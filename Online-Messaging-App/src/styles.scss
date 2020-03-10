@@ -60,7 +60,12 @@ body {
     --primary-color: #0060c6;
     --secondary-color: #fb3640;
     --tertiary-color: #ff7733;
-    --soft-black: #282828;
+    --primary-text-color: #424242;
+    --soft-black: #424242;
+    --background-color: #f8f8f8;
+    --element-color: #ffffff;
+    --hover-color: #3f3f3f;
+    --element-hover-color: #f5f5f5;
 }
 
 * {
@@ -68,5 +73,5 @@ body {
 }
 
 .dialog-class .mat-dialog-container {
-    background: var(--soft-black);
+    background: var(--background-color);
 }
