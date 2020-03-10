@@ -81,15 +81,18 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        if (this.cookieService.get("lastChannelID")) {
-            this.selectedChannelId = this.cookieService.get("lastChannelID");
-            this.display = "chatBox";
-        } else {
-            this.display = CHANNEL_BROWSER;
-        }
         if (this.auth.isLoggedIn()) {
-            this.getUsers();
-            this.getSettings();
+            let user: string = this.auth.getAuthenticatedUser().getUsername();
+            if (this.cookieService.get(user)) {
+                this.selectedChannelId = JSON.parse(this.cookieService.get(user)).lastChannelID;
+                this.display = CHAT_BOX;
+            } else {
+                this.display = CHANNEL_BROWSER;
+            }
+            if (this.auth.isLoggedIn()) {
+                this.getUsers();
+                this.getSettings();
+            }
         }
     }
 

@@ -21,6 +21,7 @@ export interface ChannelObject {
 
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
+const FRIEND: string = "friend";
 const SELECTED: string = "selected";
 
 const CHANNELS_URI = "/channels/";
@@ -54,7 +55,8 @@ export class SidebarComponent implements OnInit {
         private cookieService: CookieService,
         private auth: AuthenticationService,
         private dialog: MatDialog
-    ) {}
+    ) {
+    }
 
     private _subbedChannel: ChannelObject;
 
@@ -68,28 +70,29 @@ export class SidebarComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let user: string = this.auth.getAuthenticatedUser().getUsername();
         this.getSubscribedChannels()
             .then((data: Array<UserChannelObject>) => {
-                if (this.cookieService.get("lastChannelID")) {
+                if (this.cookieService.get(user)) {
                     this.selectChannel(
-                        this.cookieService.get("lastChannelID"),
-                        this.cookieService.get("lastChannelType")
+                        JSON.parse(this.cookieService.get(user)).lastChannelID,
+                        JSON.parse(this.cookieService.get(user)).lastChannelType
                     );
-                    if (this.cookieService.get("lastChannelType") == "friend") {
+                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == FRIEND) {
                         this.selectFriend();
                     }
-                    if (this.cookieService.get("lastChannelType") == "private") {
+                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == PRIVATE) {
                         this.selectPrivateChannel();
                     }
-                    if (this.cookieService.get("lastChannelType") == "public") {
+                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == PUBLIC) {
                         this.selectPublicChannel();
                     }
                 } else if (data.length == 0) {
-                    this.switchDisplay("channelBrowser");
+                    this.switchDisplay(this.channelBrowser);
                     this.selectPublicChannel();
                 } else {
                     this.selectPublicChannel();
-                    this.selectChannel(this.publicChannels[0].channelId, "public");
+                    this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
                 }
             })
             .catch((err) => {
@@ -181,8 +184,13 @@ export class SidebarComponent implements OnInit {
                     channelType: item.channelType
                 });
                 item[SELECTED] = true;
-                this.cookieService.set("lastChannelID", id);
-                this.cookieService.set("lastChannelType", type);
+                this.cookieService.set(
+                    this.auth.getAuthenticatedUser().getUsername(),
+                    JSON.stringify({
+                        lastChannelID: id,
+                        lastChannelType: type
+                    })
+                );
             } else {
                 item[SELECTED] = false;
             }
@@ -210,7 +218,7 @@ export class SidebarComponent implements OnInit {
                     this.friendsChannels.push(result);
                     this.selectFriend();
                 }
-                this.switchDisplay("chatBox");
+                this.switchDisplay(this.chatBox);
                 this.selectChannel(result.channelId, result.channelType);
             }
         });
@@ -237,9 +245,9 @@ export class SidebarComponent implements OnInit {
                         this.http
                             .delete(
                                 this.usersAPI +
-                                    this.auth.getAuthenticatedUser().getUsername() +
-                                    CHANNELS_URI +
-                                    channelId,
+                                this.auth.getAuthenticatedUser().getUsername() +
+                                CHANNELS_URI +
+                                channelId,
                                 httpHeaders
                             )
                             .subscribe(
@@ -264,8 +272,53 @@ export class SidebarComponent implements OnInit {
                                             this.friendsChannels.splice(i, 1);
                                         }
                                     }
-                                    this.selectPublicChannel();
-                                    this.selectChannel(this.publicChannels[0].channelId, "public");
+                                    //TODO: reduce this, or at least move to a method
+                                    if (this.publicChannelSelect) {
+                                        if (this.publicChannels.length > 0) {
+                                            this.selectPublicChannel();
+                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                                        } else if (this.privateChannels.length > 0) {
+                                            this.selectPrivateChannel();
+                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                                        } else if (this.friendsChannels.length > 0) {
+                                            this.selectFriend();
+                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                                        } else {
+                                            this.selectPublicChannel();
+                                            this.switchDisplay(this.channelBrowser);
+                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                                        }
+                                    } else if (this.privateChannelSelect) {
+                                        if (this.privateChannels.length > 0) {
+                                            this.selectPrivateChannel();
+                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                                        } else if (this.publicChannels.length > 0) {
+                                            this.selectPublicChannel();
+                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                                        } else if (this.friendsChannels.length > 0) {
+                                            this.selectFriend();
+                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                                        } else {
+                                            this.selectPublicChannel();
+                                            this.switchDisplay(this.channelBrowser);
+                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                                        }
+                                    } else if (this.friendChannelSelect) {
+                                        if (this.friendsChannels.length > 0) {
+                                            this.selectFriend();
+                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                                        } else if (this.publicChannels.length > 0) {
+                                            this.selectPublicChannel();
+                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                                        } else if (this.privateChannels.length > 0) {
+                                            this.selectPrivateChannel();
+                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                                        } else {
+                                            this.selectPublicChannel();
+                                            this.switchDisplay(this.channelBrowser);
+                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                                        }
+                                    }
                                 },
                                 (err) => {
                                     console.log(err);
@@ -302,7 +355,7 @@ export class SidebarComponent implements OnInit {
                 this.friendsChannels.push(value);
                 this.selectFriend();
             }
-            this.switchDisplay("chatBox");
+            this.switchDisplay(this.chatBox);
             this.selectChannel(value.channelId, value.channelType);
         }
     }
