@@ -129,3 +129,8 @@ mat-label {
 .errorMessage {
     color: dimgrey;
 }
+
+::placeholder {
+    color: white;
+    opacity: 1;
+}
