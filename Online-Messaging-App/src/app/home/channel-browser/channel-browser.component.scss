@@ -10,7 +10,7 @@ mat-card {
 mat-form-field {
     background-color: var(--element-color);
     width: 100%;
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     left: 0vh;
     margin-bottom: 1vh;
     margin-top: 1vh;
@@ -22,6 +22,11 @@ hr {
 
 .mat-card-title .mat-card-header {
     margin-bottom: 0px !important;
+    color: var(--primary-text-color);
+}
+
+.mat-card-title {
+    color: var(--primary-color);
 }
 
 .mat-card-header {
@@ -33,7 +38,7 @@ hr {
 }
 
 mat-card-title {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     padding: 10px 0px 10px 0px;
 }
 
@@ -44,7 +49,7 @@ mat-card-title {
 }
 
 mat-label {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
 
@@ -62,14 +67,14 @@ mat-label {
 .join {
     background-color: var(--primary-color);
     margin-right: 5vh;
-    color: var(--element-color);
+    color: var(--primary-text-color);
     text-align: center;
     cursor: pointer;
 }
 
 .joined {
     margin-right: 5vh;
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     text-align: center;
 }
 
@@ -83,7 +88,7 @@ mat-label {
 
 mat-expansion-panel {
     background-color: var(--element-color);
-    color: var(--soft-black);
+    color: var(--primary-text-color);
     border-radius: 0 !important;
 }
 
@@ -97,7 +102,7 @@ mat-expansion-panel.mat-expanded {
 
 mat-panel-title,
 mat-panel-description {
-    color: var(--soft-black);
+    color: var(--primary-text-color);
 }
 
 mat-panel-title {

@@ -6,6 +6,7 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import ProfileDAO from "../profiles/ProfileDAO";
+import SettingsDAO from "../settings/settingsDAO";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
 
 const router = express.Router();
@@ -18,6 +19,8 @@ const PATH_PUT_USER = "/:username";
 const PATH_GET_USER_BY_USERNAME = "/:username";
 const PATH_GET_ALL_NOTIFICATIONS_FOR_USER = "/:username/notifications";
 const PATH_GET_ALL_FRIEND_INVITES_FOR_USER = "/:username/notifications/fromFriend/:fromFriend";
+const PATH_GET_SETTINGS_INFO_FOR_USER = "/:username/settings/";
+const PATH_PUT_SETTINGS_FOR_USER = "/:username/settings/";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
 
@@ -33,6 +36,8 @@ interface UserObject {
     email: string;
 }
 
+const DEFAULT_THEME: string = "light";
+
 router.post(PATH_POST_NEW_USER, (req, res) => {
     const userRegistration = new UserDAO(docClient);
     userRegistration
@@ -42,7 +47,15 @@ router.post(PATH_POST_NEW_USER, (req, res) => {
             profileDAO
                 .createProfile(req.body.username, req.body.firstName, req.body.lastName)
                 .then(() => {
-                    res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
+                    const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
+                    settingsDAO
+                        .createSettingsInfo(req.body.username, DEFAULT_THEME)
+                        .then(() => {
+                            res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
+                        })
+                        .catch((err) => {
+                            res.status(400).send(err);
+                        });
                 })
                 .catch((err) => {
                     res.status(400).send(err);
@@ -199,7 +212,8 @@ router.delete(PATH_DELETE_USER_SUBSCRIPTION, (req, res) => {
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data: HTTPResponseAndToken) => {
             let userChannelDAO = new UserChannelDAO(docClient);
-            userChannelDAO.deleteChannelSubscription(req.params.username, req.params.channelId)
+            userChannelDAO
+                .deleteChannelSubscription(req.params.username, req.params.channelId)
                 .then(() => {
                     res.status(200).send({
                         status: 200,
@@ -211,6 +225,71 @@ router.delete(PATH_DELETE_USER_SUBSCRIPTION, (req, res) => {
                 .catch((err) => {
                     res.status(500).send(err);
                 });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.get(PATH_GET_SETTINGS_INFO_FOR_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
+
+            let username = req.params.username;
+
+            if (username === data.decodedToken[COGNITO_USERNAME]) {
+                settingsDAO
+                    .getSettingsInfoByUsername(username)
+                    .then((data: Array<UserObject>) => {
+                        res.status(200).send(data);
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user info" }
+                });
+            }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.put(PATH_PUT_SETTINGS_FOR_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            if (
+                req.params.username === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
+                const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
+                settingsDAO
+                    .updateSettings(req.body.username, req.body.theme)
+                    .then(() => {
+                        res.status(200).send({
+                            status: 200,
+                            data: { message: "Settings for user" + req.body.username + "updated successfully" }
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(400).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user settings info" }
+                });
+            }
         },
         (err) => {
             res.status(err.status).send(err);

@@ -49,6 +49,8 @@ export class HeaderComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
     private channelBrowser = "channelBrowser";
     private profile = "profile";
+    private settings = "settings";
+
     constructor(
         private _eref: ElementRef,
         private auth: AuthenticationService,
@@ -142,13 +144,14 @@ export class HeaderComponent implements OnInit {
                             this.http
                                 .delete(
                                     this.notificationsURL +
-                                        notification.notificationId +
-                                        INSERTED_TIME_URI +
-                                        notification.insertedTime,
+                                    notification.notificationId +
+                                    INSERTED_TIME_URI +
+                                    notification.insertedTime,
                                     httpHeaders
                                 )
                                 .subscribe(
-                                    () => {},
+                                    () => {
+                                    },
                                     (err) => {
                                         console.log(err);
                                     }
@@ -179,13 +182,14 @@ export class HeaderComponent implements OnInit {
                 this.http
                     .delete(
                         this.notificationsURL +
-                            notification.notificationId +
-                            INSERTED_TIME_URI +
-                            notification.insertedTime,
+                        notification.notificationId +
+                        INSERTED_TIME_URI +
+                        notification.insertedTime,
                         httpHeaders
                     )
                     .subscribe(
-                        () => {},
+                        () => {
+                        },
                         (err) => {
                             console.log(err);
                         }

@@ -1,11 +1,12 @@
 .center {
     text-align: center;
-    color: white;
+    color: var(--primary-text-color);
 }
 
 button {
-    background-color: #1b1b1b;
+    background-color: var(--primary-color);
     border-radius: 0;
+    color: white;
 }
 
 button:hover {

@@ -102,10 +102,9 @@ class ChannelDAO {
     }
 
     public deleteChannel(channelId: string): Promise<any> {
-        return new Promise<any>(((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             this.getChannelInfo(channelId)
                 .then((data: ChannelObject) => {
-
                     let deleteObject = {
                         TableName: CHANNEL_TABLE_NAME,
                         Key: {
@@ -127,15 +126,13 @@ class ChannelDAO {
                             resolve();
                         }
                     });
-
                 })
                 .catch((err) => {
                     console.log(err);
                     reject(err);
                 });
-        }));
+        });
     }
-
 }
 
 export default ChannelDAO;

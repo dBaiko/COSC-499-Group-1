@@ -25,7 +25,7 @@ mat-form-field {
 
 .clickable {
     cursor: pointer;
-    color: var(--primary-text-color);
+    color: var(--primary-color);
 }
 
 hr {
@@ -33,7 +33,7 @@ hr {
 }
 
 mat-card-title {
-    color: var(--primary-text-color);
+    color: var(--primary-color);
 }
 
 .headerTop {
@@ -77,6 +77,7 @@ mat-label {
 .inviteButton {
     border-radius: 0px;
     background-color: var(--primary-color);
+    color: white;
 }
 
 .inviteButton:hover {
@@ -123,6 +124,11 @@ mat-label {
 
 .subedOrSent {
     margin-right: 1.25rem;
+    color: white;
+}
+
+.sendInviteButton {
+    color: white;
 }
 
 .errorMessage {
@@ -130,7 +136,7 @@ mat-label {
 }
 
 .usernameInvite {
-    color: var(--primary-text-color);
+    color: white;
 }
 
 ::placeholder {
