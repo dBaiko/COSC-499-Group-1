@@ -9,7 +9,9 @@
                         src="https://i.imgur.com/32SZPXv.png"
                         style="display: inline"
                     />
-                    <mat-card-title class="chat-box-title" style="display: inline">{{
+                    <mat-card-title (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
+                                    class="clickable"
+                                    style="display: inline">{{
                         parseFriendChannelName(currentChannel.channelName)
                         }}</mat-card-title>
                 </div>

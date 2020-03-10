@@ -19,6 +19,7 @@ mat-form-field {
     margin-top: 1rem;
 }
 
+
 .messagePicture {
     width: 5%;
 }
@@ -127,4 +128,9 @@ mat-label {
 
 .errorMessage {
     color: dimgrey;
+}
+
+::placeholder {
+    color: white;
+    opacity: 1;
 }
