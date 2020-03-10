@@ -30,7 +30,7 @@
                         </form>
                         <div *ngFor="let user of inviteSearchList">
                             <mat-card *ngIf="user.username != auth.getAuthenticatedUser().getUsername()">
-                                <mat-card-title>{{ user.username }}</mat-card-title>
+                                <mat-card-title class="usernameInvite">{{ user.username }}</mat-card-title>
                                 <mat-card-content>
                                     <div
                                         *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"

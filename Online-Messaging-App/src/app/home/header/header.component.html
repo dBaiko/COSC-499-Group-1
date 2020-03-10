@@ -1,33 +1,33 @@
 <header (click)="toggleOpen()">
     <div id="title">Streamline Athletes</div>
 
-    <div class="wrapButton" *ngIf="userLoggedIn">
+    <div *ngIf="userLoggedIn" class="wrapButton">
         <div class="floater">
             <div style="width: 1000px">
-        <div (click)="triggerSelect()" class="headInfo">
-            <button id="username" [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
-            <mat-menu
-                #mySelect
-                #userMenu="matMenu"
-                (click)="triggerSelect()"
-                (closed)="unDrop()"
-                (drop)="drop()"
-                class="menuList"
-                disableOptionCentering
-                disabled
-                xPosition="after"
-            >
-                <div class="userMenu" mat-menu-item>
-                    <logout-form></logout-form>
+                <div (click)="triggerSelect()" class="headInfo">
+                    <button [mat-menu-trigger-for]="userMenu" id="username" mat-button>{{ user.username }}</button>
+                    <mat-menu
+                        #mySelect
+                        #userMenu="matMenu"
+                        (click)="triggerSelect()"
+                        (closed)="unDrop()"
+                        (drop)="drop()"
+                        class="menuList"
+                        disableOptionCentering
+                        disabled
+                        xPosition="after"
+                    >
+                        <div class="userMenu" mat-menu-item>
+                            <logout-form></logout-form>
+                        </div>
+                    </mat-menu>
                 </div>
-            </mat-menu>
-        </div>
-        <div class="userMenu" id="notification">
-            <button (click)="toggleOpen()" mat-button>
-                <mat-icon>notifications</mat-icon>
-                <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
-            </button>
-        </div>
+                <div class="userMenu" id="notification">
+                    <button (click)="toggleOpen()" class="notifications" mat-button>
+                        <mat-icon>notifications</mat-icon>
+                        <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br />
+                    <br/>
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
@@ -54,7 +54,7 @@
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br />
+                    <br/>
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
@@ -69,7 +69,7 @@
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br />
+                    <br/>
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>

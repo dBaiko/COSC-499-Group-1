@@ -1,5 +1,5 @@
 .container {
-    color: white;
+    color: var(--soft-black);
 }
 
 .center {
@@ -11,12 +11,12 @@
 }
 
 .form-control {
-    color: white;
+    color: var(--soft-black);
 
 }
 
 mat-label {
-    color: white;
+    color: var(--soft-black);
 
 }
 
@@ -40,7 +40,7 @@ mat-radio-button {
 
 
 button {
-    color: white;
+    color: var(--element-color);
     margin-top: 1em;
     margin-right: 0.5em;
     text-align: center;
@@ -63,7 +63,7 @@ p {
 
 button {
     border-radius: 0;
-    background-color: var(--soft-black);
+    background-color: var(--primary-color);
 }
 
 button:hover {

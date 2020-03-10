@@ -1,23 +1,23 @@
 mat-card {
-    background-color: #5280e9;
+    background-color: var(--element-color);
     border-radius: 0vh;
     height: 100%;
-    margin-right: 5px;
-    margin-top: 1px;
-    margin-left: 5px;
+    margin-right: 1vh;
+    margin-top: 1vh;
+    margin-left: 1vh;
 }
 
 mat-form-field {
-    background-color: var(--soft-black);
+    background-color: var(--element-color);
     width: 100%;
-    color: #f8f8f8;
+    color: var(--soft-black);
     left: 0vh;
     margin-bottom: 1vh;
     margin-top: 1vh;
 }
 
 hr {
-    border: 1px solid #f8f8f8;
+    border: 1px solid var(--background-color);
 }
 
 .mat-card-title .mat-card-header {
@@ -33,18 +33,18 @@ hr {
 }
 
 mat-card-title {
-    color: #f8f8f8;
+    color: var(--soft-black);
     padding: 10px 0px 10px 0px;
 }
 
 .headerTop {
-    background-color: var(--soft-black);
+    background-color: var(--element-color);
     top: 4rem;
     margin-top: 1vh !important;
 }
 
 mat-label {
-    color: #f8f8f8;
+    color: var(--soft-black);
     padding-left: 0.5rem;
 }
 
@@ -60,16 +60,16 @@ mat-label {
 }
 
 .join {
-    background-color: grey;
+    background-color: var(--primary-color);
     margin-right: 5vh;
-    color: white;
+    color: var(--element-color);
     text-align: center;
     cursor: pointer;
 }
 
 .joined {
     margin-right: 5vh;
-    color: white;
+    color: var(--soft-black);
     text-align: center;
 }
 
@@ -78,26 +78,26 @@ mat-label {
 }
 
 .joinCreate:hover {
-    background-color: #696969;
+    background-color: var(--element-hover-color);
 }
 
 mat-expansion-panel {
-    background-color: var(--soft-black);
-    color: #f8f8f8;
+    background-color: var(--element-color);
+    color: var(--soft-black);
     border-radius: 0 !important;
 }
 
 mat-expansion-panel:hover {
-    background-color: var(--primary-color);
+    background-color: var(--element-hover-color);
 }
 
 mat-expansion-panel.mat-expanded {
-    background-color: var(--primary-color);
+    background-color: var(--element-hover-color);
 }
 
 mat-panel-title,
 mat-panel-description {
-    color: #f8f8f8;
+    color: var(--soft-black);
 }
 
 mat-panel-title {

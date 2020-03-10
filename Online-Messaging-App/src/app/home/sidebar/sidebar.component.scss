@@ -72,7 +72,7 @@ h2 {
 }
 
 .channelHeader:hover {
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
 }
 
 .channelRan {
@@ -86,6 +86,7 @@ h2 {
 .channelSelector {
     width: auto;
     display: flex;
+    margin-top: 8px;
 }
 
 .channelSelector > mat-button-toggle {
@@ -100,7 +101,7 @@ mat-button-toggle {
 }
 
 mat-button-toggle:hover {
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
 }
 
 mat-button-toggle-group {
@@ -149,7 +150,7 @@ mat-button-toggle-group {
 }
 
 .joinCreate:hover {
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
 }
 
 .mat-flat-button {
@@ -166,7 +167,7 @@ mat-button-toggle-group {
 
 .icon > a:hover {
     padding-top: 2vh;
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
 }
 
 p {

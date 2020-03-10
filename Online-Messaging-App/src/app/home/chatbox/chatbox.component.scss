@@ -1,16 +1,15 @@
 mat-card {
-    background-color: var(--soft-black);
+    background-color: var(--element-color);
     border-radius: 0px;
-    border-top: 1px solid #f8f8f8;
     height: 100%;
 }
 
 mat-form-field {
     border-radius: 0.5rem;
-    background-color: var(--soft-black);
+    background-color: var(--element-color);
     width: 86%;
     margin-right: 50vh;
-    color: #f8f8f8;
+    color: var(--soft-black)
 }
 
 #scrollable {
@@ -25,18 +24,19 @@ mat-form-field {
 
 .clickable {
     cursor: pointer;
+    color: var(--primary-color)
 }
 
 hr {
-    border: 1px solid #f8f8f8;
+    border: 1px solid #ececec;
 }
 
 mat-card-title {
-    color: white;
+    color: var(--primary-color);
 }
 
 .headerTop {
-    background-color: var(--soft-black);
+    background-color: var(--element-color);
     width: 100%;
 }
 
@@ -49,19 +49,17 @@ mat-card-footer {
 }
 
 p {
-    color: #f8f8f8;
+    color: var(--soft-black);
 }
 
 mat-label {
-    color: #f8f8f8;
+    color: var(--soft-black);
     padding-left: 0.5rem;
 }
 
 .container {
     height: 100%;
-    margin-top: 1vh;
-    margin-left: 1vh;
-    margin-right: 1vh;
+    margin: 1vh;
 }
 
 .chat-box-header {
@@ -69,7 +67,7 @@ mat-label {
 }
 
 .invite {
-    color: white;
+    color: var(--element-color);
     border-radius: 0px;
     position: absolute;
     right: 1.1%;
@@ -77,6 +75,8 @@ mat-label {
 
 .inviteButton {
     border-radius: 0px;
+    background-color: var(--primary-color);
+
 }
 
 .inviteButton:hover {
@@ -84,14 +84,14 @@ mat-label {
 }
 
 .inviteSearch {
-    color: white;
+    color: var(--soft-black);
 }
 
 .invite mat-card {
-    background-color: var(--soft-black);
+    background-color: var(--primary-color);
     width: 92%;
     margin-top: 0%;
-    color: white;
+    color: var(--element-color);
 }
 
 .search mat-card-content {
@@ -127,4 +127,8 @@ mat-label {
 
 .errorMessage {
     color: dimgrey;
+}
+
+.usernameInvite {
+    color: var(--element-color);
 }
