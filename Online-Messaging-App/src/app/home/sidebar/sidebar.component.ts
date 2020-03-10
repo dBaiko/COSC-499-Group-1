@@ -71,7 +71,7 @@ export class SidebarComponent implements OnInit {
 
     ngOnInit(): void {
         this.getSubscribedChannels()
-            .then(() => {
+            .then((data: Array<UserChannelObject>) => {
                 if (this.cookieService.get("lastChannelID")) {
                     this.selectChannel(
                         this.cookieService.get("lastChannelID"),
@@ -86,6 +86,9 @@ export class SidebarComponent implements OnInit {
                     if (this.cookieService.get("lastChannelType") == "public") {
                         this.selectPublicChannel();
                     }
+                } else if (data.length == 0) {
+                    this.switchDisplay("channelBrowser");
+                    this.selectPublicChannel();
                 } else {
                     this.selectPublicChannel();
                     this.selectChannel(this.publicChannels[0].channelId, "public");
@@ -131,7 +134,7 @@ export class SidebarComponent implements OnInit {
                                     this.channelEvent.emit(this.userSubscribedChannels[0]);
                                     this.userSubscribedChannels[0][SELECTED] = true;
                                 }
-                                resolve();
+                                resolve(data);
                             },
                             (err) => {
                                 console.log(err);

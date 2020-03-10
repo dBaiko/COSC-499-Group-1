@@ -76,7 +76,9 @@ export class HomeComponent implements OnInit {
         } else {
             this.display = CHANNEL_BROWSER;
         }
-        this.getUsers();
+        if (this.auth.isLoggedIn()) {
+            this.getUsers();
+        }
     }
 
     receiveId($event) {

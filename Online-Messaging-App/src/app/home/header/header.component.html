@@ -1,9 +1,11 @@
-<header>
+<header (click)="toggleOpen()">
     <div id="title">Streamline Athletes</div>
 
-    <div *ngIf="userLoggedIn">
+    <div class="wrapButton" *ngIf="userLoggedIn">
+        <div class="floater">
+            <div style="width: 1000px">
         <div (click)="triggerSelect()" class="headInfo">
-            <button [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
+            <button id="username" [mat-menu-trigger-for]="userMenu" mat-button>{{ user.username }}</button>
             <mat-menu
                 #mySelect
                 #userMenu="matMenu"
@@ -25,6 +27,8 @@
                 <mat-icon>notifications</mat-icon>
                 <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
             </button>
+        </div>
+            </div>
         </div>
     </div>
 </header>
