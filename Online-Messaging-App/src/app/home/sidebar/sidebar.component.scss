@@ -55,7 +55,7 @@ mat-sidenav-container {
 }
 
 .scrollable {
-    height: 75%;
+    height: 87%;
     overflow-y: auto;
     margin-top: 1%;
     margin-right: 1%;
@@ -141,7 +141,7 @@ mat-button-toggle-group {
     cursor: pointer;
     position: absolute;
     left: 0;
-    bottom: 10vh;
+    bottom: 0vh;
 }
 
 .joinCreate:focus {
@@ -173,3 +173,4 @@ p {
     color: white;
     text-align: center;
 }
+

@@ -1,3 +1,11 @@
 .mat-button {
     position: unset;
 }
+
+a {
+    width: 100%;
+}
+a:hover {
+    background-color: var(--primary-color);
+    border-radius: inherit;
+}

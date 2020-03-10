@@ -20,14 +20,14 @@
                             <mat-error *ngFor="let validation of common.validation_methods.channelName">
                                 <mat-error
                                     *ngIf="
-                                    formValidationService.checkIfFormElementInvalid(
-                                        newChannelForm,
-                                        'channelName',
-                                        validation,
-                                        submitAttempt
-                                    )
-                                "
-                                >{{ validation.message }}
+                                        formValidationService.checkIfFormElementInvalid(
+                                            newChannelForm,
+                                            'channelName',
+                                            validation,
+                                            submitAttempt
+                                        )
+                                    "
+                                    >{{ validation.message }}
                                 </mat-error>
                             </mat-error>
                         </mat-form-field>
