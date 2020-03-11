@@ -69,7 +69,8 @@ class ChannelDAO {
         channelName: string,
         channelType: string,
         firstUsername: string,
-        firstUserChannelRole: string
+        firstUserChannelRole: string,
+        inviteStatus: string
     ): Promise<any> {
         const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
@@ -77,7 +78,8 @@ class ChannelDAO {
             Item: {
                 channelId,
                 channelName,
-                channelType
+                channelType,
+                inviteStatus
             },
             TableName: CHANNEL_TABLE_NAME
         };
@@ -96,6 +98,33 @@ class ChannelDAO {
                         .catch((err) => {
                             reject(err);
                         });
+                }
+            });
+        });
+    }
+
+    public updateChannel(channelId: string, channelName: string, inviteStatus: string): Promise<any> {
+        const params = {
+            TableName: CHANNEL_TABLE_NAME,
+            Key: {
+                channelId: channelId,
+                channelName: channelName
+            },
+            UpdateExpression: "SET inviteStatus = :i",
+            ExpressionAttributeValues: {
+                ":i": inviteStatus
+            }
+        };
+
+        console.log("Updating settings for user " + channelId + "...");
+        return new Promise((resolve, reject) => {
+            this.docClient.update(params, (err, data) => {
+                if (err) {
+                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
+                    reject();
+                } else {
+                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
+                    resolve();
                 }
             });
         });

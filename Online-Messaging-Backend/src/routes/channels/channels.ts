@@ -15,6 +15,7 @@ const PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL: string = "/:channelId/users";
 const PATH_GET_ALL_MESSAGES_FOR_CHANNEL: string = "/:channelId/messages/";
 const PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL: string = "/:channelId/users";
 const PATH_POST_NEW_CHANNEL: string = "/";
+const PATH_PUT_CHANNEL: string = "/:channelId/";
 const PATH_GET_ALL_NOTIFICATIONS_FOR_CHANNEL = "/:channelId/notifications";
 
 const AUTH_KEY = "authorization";
@@ -158,12 +159,38 @@ router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
                     req.body.channelName,
                     req.body.channelType,
                     req.body.firstUsername,
-                    req.body.firstUserChannelRole
+                    req.body.firstUserChannelRole,
+                    req.body.inviteStatus
                 )
                 .then((data) => {
                     res.status(200).send({
                         status: 200,
                         data: { message: "New channel added successfully", newChannel: data }
+                    });
+                })
+                .catch((err) => {
+                    res.status(400).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.put(PATH_PUT_CHANNEL, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            const channelDAO: ChannelDAO = new ChannelDAO(docClient);
+            channelDAO
+                .updateChannel(req.body.channelId, req.body.channelName, req.body.inviteStatus)
+                .then(() => {
+                    console.log("Channel updated successfully");
+                    res.status(200).send({
+                        status: 200,
+                        data: { message: "Channel for" + req.body.channelId + "updated successfully" }
                     });
                 })
                 .catch((err) => {
