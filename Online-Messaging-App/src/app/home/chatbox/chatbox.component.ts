@@ -26,6 +26,13 @@ interface UserChannelObject {
     userChannelRole: string;
 }
 
+interface InviteChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    inviteStatus: string;
+}
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
@@ -85,21 +92,24 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         }
                     }
                     if (notFound) {
-                        this.getChannelNotifications().then((data: Array<NotificationObject>) => {
-                            let inviteSent = false;
-                            for (let i = 0; i < data.length; i++) {
-                                if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
-                                    inviteSent = true;
-                                }
-                            }
-                            if (inviteSent) {
+                        this.getChannelInfo().then((data: InviteChannelObject) => {
+                            let inviteStatus: string = data.inviteStatus;
+                            let friendName: string = this.friendMessage =
+                                this.parseFriendChannelName(this.currentChannel.channelName);
+                            if (inviteStatus == "pending") {
                                 this.friendMessage =
-                                    this.parseFriendChannelName(this.currentChannel.channelName) +
+                                    friendName +
                                     " has not yet accepted your request and will not see these messages until they accept";
-                            } else {
+                            } else if (inviteStatus == "denied") {
                                 this.friendMessage =
-                                    this.parseFriendChannelName(this.currentChannel.channelName) +
-                                    " has left the channel";
+                                    friendName +
+                                    " has denied your friend request. You can continue to view the message history," +
+                                    " but you will have to leave this channel and make a new friend request to talk to them again";
+                            } else if (inviteStatus == "accepted") {
+                                this.friendMessage =
+                                    friendName +
+                                    " has left the channel. You can continue to view the message history," +
+                                    " but you will have to leave this channel and make a new friend request to talk to them again";
                             }
                         });
                     } else {
@@ -303,6 +313,35 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     usernames.push(data[i].username);
                                 }
                                 this.channelNotificationsUsernames = usernames;
+                                resolve(data);
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private getChannelInfo(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .get(this.channelsURL + this.currentChannel.channelId, httpHeaders)
+                        .subscribe(
+                            (data: InviteChannelObject) => {
                                 resolve(data);
                             },
                             (err) => {
