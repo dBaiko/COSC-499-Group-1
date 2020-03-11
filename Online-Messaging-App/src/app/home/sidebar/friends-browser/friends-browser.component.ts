@@ -19,6 +19,7 @@ interface ChannelAndFirstUser {
     channelType: string;
     firstUsername: string;
     firstUserChannelRole: string;
+    inviteStatus: string;
 }
 
 interface UserChannelObject {
@@ -68,7 +69,8 @@ export class FriendsBrowserComponent implements OnInit {
         private auth: AuthenticationService,
         private http: HttpClient,
         private notificationService: NotificationService
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.getFriendNotifications();
@@ -115,7 +117,8 @@ export class FriendsBrowserComponent implements OnInit {
             channelName: this.auth.getAuthenticatedUser().getUsername() + "-" + username,
             channelType: "friend",
             firstUsername: this.auth.getAuthenticatedUser().getUsername(),
-            firstUserChannelRole: "friend"
+            firstUserChannelRole: "friend",
+            inviteStatus: "pending"
         };
 
         this.auth.getCurrentSessionId().subscribe(
