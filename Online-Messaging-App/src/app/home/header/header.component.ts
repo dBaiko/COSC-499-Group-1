@@ -67,13 +67,6 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
-    @HostListener("document:click", ["$event"]) clickout(event) {
-        if (this._eref.nativeElement.contains(event.target)) {
-            this.toggleOpen();
-        } else {
-            this.open = false;
-        }
-    }
 
     ngOnInit(): void {
         if (this.userLoggedIn == true) {
@@ -95,20 +88,6 @@ export class HeaderComponent implements OnInit {
                 }
             );
         }
-    }
-
-    drop() {
-        let element = document.getElementsByClassName(MAT_SELECT_ARROW)[0];
-        element.classList.add(CLASS_DROPPED);
-    }
-
-    unDrop() {
-        let element = document.getElementsByClassName(MAT_SELECT_ARROW)[0];
-        element.classList.remove(CLASS_DROPPED);
-    }
-
-    triggerSelect() {
-        this.mySelect.toggle();
     }
 
     toggleOpen(): void {

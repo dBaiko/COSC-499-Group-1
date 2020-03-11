@@ -20,11 +20,10 @@
                     <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>
                 </ng-template>
                 <div *ngIf="currentChannel.channelType != 'friend'" class="invite">
-                    <button (click)="toggleInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
+                    <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
                         Send Invite
                     </button>
-                    <button (click)="toggleInviting()" *ngIf="inviting" class="inviteButton" mat-button>Cancel</button>
-                    <div *ngIf="inviting" class="search">
+                    <div (clickOutside)="closeInviting()" *ngIf="inviting" delayClickOutsideInit="true" id="inviteWindow" class="search">
                         <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
                             <mat-form-field>
                                 <mat-label>Search for person to invite</mat-label>
