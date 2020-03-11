@@ -23,6 +23,7 @@ import { FriendsBrowserComponent } from "./sidebar/friends-browser/friends-brows
 import { UnsubscribeConfirmComponent } from "./sidebar/unsubscribe-confirm/unsubscribe-confirm.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import {ClickOutsideModule} from "ng-click-outside";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -47,6 +48,7 @@ const socketConfig: SocketIoConfig = {
     imports: [
         CommonModule,
         MaterialModule,
+        ClickOutsideModule,
         FormsModule,
         ReactiveFormsModule,
         SocketIoModule.forRoot(socketConfig),

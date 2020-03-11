@@ -1,11 +1,21 @@
-import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { MessengerService } from "../../shared/messenger.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { AuthenticationService } from "../../shared/authentication.service";
-import { FormGroup } from "@angular/forms";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { ChannelObject } from "../sidebar/sidebar.component";
+import {
+    AfterViewChecked,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from "@angular/core";
+import {MessengerService} from "../../shared/messenger.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
+import {AuthenticationService} from "../../shared/authentication.service";
+import {FormGroup} from "@angular/forms";
+import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
+import {ChannelObject} from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
@@ -61,7 +71,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
-    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
+    @ViewChild("scrollframe", {static: false}) scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
@@ -183,15 +193,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.profileViewEvent.emit(username);
     }
 
-    toggleInviting(): void {
+    closeInviting(): void {
+        this.inviting = false;
+    }
+
+    openInviting(): void {
         this.inviteSearchList = [];
-        if (this.inviting) {
-            this.inviting = false;
-        } else {
-            this.inviting = true;
-            this.getChannelNotifications();
-            this.getSubcribedUsers();
-        }
+        this.inviting = true;
+        this.getChannelNotifications();
+        this.getSubcribedUsers();
     }
 
     inviteFormSubmit() {
