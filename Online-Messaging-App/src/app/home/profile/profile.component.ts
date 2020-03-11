@@ -52,7 +52,8 @@ export class ProfileComponent implements OnInit {
         private http: HttpClient,
         private common: CommonService,
         private formValidationService: FormValidationService
-    ) {}
+    ) {
+    }
 
     private _profileView: string;
 
@@ -72,11 +73,11 @@ export class ProfileComponent implements OnInit {
             email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             )
         });
     }

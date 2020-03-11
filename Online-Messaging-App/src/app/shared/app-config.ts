@@ -40,11 +40,19 @@ export const VALIDATION_MESSAGES = {
         },
         {
             type: "pattern",
-            message: "Username must only contain letters and characters"
+            message: "Username must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "Username cannot be more than 30 characters"
         },
         {
             type: "invalidLogin",
             message: "Username or password is incorrect, please try again."
+        },
+        {
+            type: "badWord",
+            message: "Username cannot contain swears"
         }
     ],
     email: [
@@ -66,14 +74,44 @@ export const VALIDATION_MESSAGES = {
         { type: "required", message: "First name is required" },
         {
             type: "pattern",
-            message: "First name must only contain letters and numbers"
+            message: "First name must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "First name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "First name cannot contain swears"
         }
     ],
     lastName: [
         { type: "required", message: "Last Name is required" },
         {
             type: "pattern",
-            message: "Last Name must only contain letters and numbers"
+            message: "Last Name must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "Last name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "Last name cannot contain swears"
         }
+    ],
+    channelName: [
+        { type: "required", message: "Channel name is required" },
+        {
+            type: "maxlength",
+            message: "Channel name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "Channel name cannot contain swears"
+        }
+    ],
+    channelType: [
+        { type: "required", message: "Channel type is required" }
     ]
 };

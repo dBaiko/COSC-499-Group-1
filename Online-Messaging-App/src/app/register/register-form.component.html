@@ -4,7 +4,7 @@
     <div class="mat-display-2">Streamline Athletes</div>
     <div class="row">
         <div class="col-lg-4">
-            <form (ngSubmit)="registerSubmit(registerForm)" [formGroup]="registerForm">
+            <form (ngSubmit)="registerSubmit(registerForm)" [formGroup]="registerForm" autocomplete="off">
                 <div class="random">
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
@@ -28,7 +28,7 @@
                                             submitAttempt
                                         )
                                     "
-                                    >{{ validation.message }}</mat-error
+                                >{{ validation.message }}</mat-error
                                 >
                             </mat-error>
                         </mat-form-field>
@@ -56,7 +56,7 @@
                                                     submitAttempt
                                                 )
                                             "
-                                            >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -82,7 +82,7 @@
                                                     (matchingPasswordForm.get('confirmPassword').dirty ||
                                                         matchingPasswordForm.get('confirmPassword').touched))
                                             "
-                                            >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -112,7 +112,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -139,7 +139,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -166,7 +166,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>

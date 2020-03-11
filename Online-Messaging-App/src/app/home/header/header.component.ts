@@ -13,6 +13,13 @@ interface UserChannelObject {
     channelType: string;
 }
 
+interface InviteChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    inviteStatus: string;
+}
+
 const MY_SELECT_CHILD: string = "mySelect";
 const MAT_SELECT_ARROW: string = "mat-select-arrow";
 const CLASS_DROPPED: string = "dropped";
@@ -60,13 +67,6 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
-    @HostListener("document:click", ["$event"]) clickout(event) {
-        if (this._eref.nativeElement.contains(event.target)) {
-            this.toggleOpen();
-        } else {
-            this.open = false;
-        }
-    }
 
     ngOnInit(): void {
         if (this.userLoggedIn == true) {
@@ -88,20 +88,6 @@ export class HeaderComponent implements OnInit {
                 }
             );
         }
-    }
-
-    drop() {
-        let element = document.getElementsByClassName(MAT_SELECT_ARROW)[0];
-        element.classList.add(CLASS_DROPPED);
-    }
-
-    unDrop() {
-        let element = document.getElementsByClassName(MAT_SELECT_ARROW)[0];
-        element.classList.remove(CLASS_DROPPED);
-    }
-
-    triggerSelect() {
-        this.mySelect.toggle();
     }
 
     toggleOpen(): void {
@@ -151,6 +137,25 @@ export class HeaderComponent implements OnInit {
                                 )
                                 .subscribe(
                                     () => {
+                                        if (notification.type == "friend") {
+
+                                            let channel: InviteChannelObject = {
+                                                channelId: notification.channelId,
+                                                channelName: notification.channelName,
+                                                channelType: notification.type,
+                                                inviteStatus: "accepted"
+                                            };
+
+                                            this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
+                                                () => {
+                                                    console.log("success");
+                                                },
+                                                (err) => {
+                                                    console.log(err);
+                                                }
+                                            );
+
+                                        }
                                     },
                                     (err) => {
                                         console.log(err);
@@ -189,6 +194,23 @@ export class HeaderComponent implements OnInit {
                     )
                     .subscribe(
                         () => {
+
+                            let channel: InviteChannelObject = {
+                                channelId: notification.channelId,
+                                channelName: notification.channelName,
+                                channelType: notification.type,
+                                inviteStatus: "denied"
+                            };
+
+                            this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
+                                () => {
+                                    console.log("success");
+                                },
+                                (err) => {
+                                    console.log(err);
+                                }
+                            );
+
                         },
                         (err) => {
                             console.log(err);

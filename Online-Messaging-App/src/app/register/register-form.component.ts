@@ -38,7 +38,8 @@ export class RegisterFormComponent implements OnInit {
         private http: HttpClient,
         public common: CommonService,
         private formValidationService: FormValidationService
-    ) {}
+    ) {
+    }
 
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup(
@@ -51,16 +52,16 @@ export class RegisterFormComponent implements OnInit {
         this.registerForm = new FormGroup({
             username: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             ),
             matchingPasswords: this.matchingPasswordForm,
             firstName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             ),
             email: new FormControl("", Validators.compose([Validators.required, Validators.email]))
         });

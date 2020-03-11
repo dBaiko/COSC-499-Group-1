@@ -1,26 +1,22 @@
-<header (click)="toggleOpen()">
+<header>
     <div id="title">Streamline Athletes</div>
 
     <div *ngIf="userLoggedIn" class="wrapButton">
         <div class="floater">
             <!--            <div style="width: 1000px float:right margin:auto">-->
-            <div (click)="triggerSelect()" class="headInfo">
+            <div class="headInfo">
                 <button [mat-menu-trigger-for]="userMenu" id="username" mat-button>{{ user.username }}</button>
                 <mat-menu
-                    #mySelect
                     #userMenu="matMenu"
-                    (click)="triggerSelect()"
-                    (closed)="unDrop()"
-                    (drop)="drop()"
                     class="menuList"
                     disableOptionCentering
                     disabled
                     xPosition="after"
                 >
-                    <div class="userMenu" mat-menu-item>
-                        <a (click)="switchDisplay(channelBrowser)" mat-button type="submit">Browse Channels</a> <br/>
-                        <a (click)="switchDisplay(profile)" mat-button type="submit">Profile</a> <br/>
-                        <a (click)="switchDisplay(settings)" mat-button type="submit">Settings</a> <br/>
+                    <div class="userMenu">
+                        <a (click)="switchDisplay(channelBrowser)"  type="submit">Browse Channels</a> <br />
+                        <a (click)="switchDisplay(profile)"  type="submit">Profile</a> <br />
+                        <a (click)="switchDisplay(settings)"  type="submit">Settings</a> <br />
                         <logout-form></logout-form>
                     </div>
                 </mat-menu>
@@ -34,14 +30,14 @@
         </div>
     </div>
 </header>
-<div *ngIf="open" id="notificationList">
+<div (clickOutside)="toggleOpen()" delayClickOutsideInit="true" *ngIf="open" id="notificationList">
     <div *ngIf="publicInvites.length > 0">
         <span class="title">Public Invites</span>
         <div *ngFor="let notification of publicInvites">
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br/>
+                    <br />
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
@@ -56,7 +52,7 @@
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br/>
+                    <br />
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>
@@ -71,7 +67,7 @@
             <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
-                    <br/>
+                    <br />
                     <div class="inviteButtons">
                         <button (click)="acceptInvite(notification)" class="inviteButton" mat-button>Accept</button>
                         <button (click)="denyInvite(notification)" class="inviteButton" mat-button>Deny</button>

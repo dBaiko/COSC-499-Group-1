@@ -1,17 +1,30 @@
-import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { MessengerService } from "../../shared/messenger.service";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { AuthenticationService } from "../../shared/authentication.service";
-import { FormGroup } from "@angular/forms";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { ChannelObject } from "../sidebar/sidebar.component";
+import {
+    AfterViewChecked,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+} from "@angular/core";
+import {MessengerService} from "../../shared/messenger.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {APIConfig, Constants} from "../../shared/app-config";
+import {AuthenticationService} from "../../shared/authentication.service";
+import {FormGroup} from "@angular/forms";
+import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
+import {ChannelObject} from "../sidebar/sidebar.component";
+import * as Filter from "bad-words";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
 const USERS_URI = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE = "You have been invited to join ";
+
+const filter = new Filter();
 
 interface UserObject {
     username: string;
@@ -24,6 +37,13 @@ interface UserChannelObject {
     channelName: string;
     channelType: string;
     userChannelRole: string;
+}
+
+interface InviteChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    inviteStatus: string;
 }
 
 @Component({
@@ -51,7 +71,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
-    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
+    @ViewChild("scrollframe", {static: false}) scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
@@ -61,7 +81,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private http: HttpClient,
         private auth: AuthenticationService,
         private notificationService: NotificationService
-    ) {}
+    ) {
+    }
 
     private _currentChannel: ChannelObject;
 
@@ -84,21 +105,24 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         }
                     }
                     if (notFound) {
-                        this.getChannelNotifications().then((data: Array<NotificationObject>) => {
-                            let inviteSent = false;
-                            for (let i = 0; i < data.length; i++) {
-                                if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
-                                    inviteSent = true;
-                                }
-                            }
-                            if (inviteSent) {
+                        this.getChannelInfo().then((data: InviteChannelObject) => {
+                            let inviteStatus: string = data.inviteStatus;
+                            let friendName: string = this.friendMessage =
+                                this.parseFriendChannelName(this.currentChannel.channelName);
+                            if (inviteStatus == "pending") {
                                 this.friendMessage =
-                                    this.parseFriendChannelName(this.currentChannel.channelName) +
+                                    friendName +
                                     " has not yet accepted your request and will not see these messages until they accept";
-                            } else {
+                            } else if (inviteStatus == "denied") {
                                 this.friendMessage =
-                                    this.parseFriendChannelName(this.currentChannel.channelName) +
-                                    " has left the channel";
+                                    friendName +
+                                    " has denied your friend request. You can continue to view the message history," +
+                                    " but you will have to leave this channel and make a new friend request to talk to them again";
+                            } else if (inviteStatus == "accepted") {
+                                this.friendMessage =
+                                    friendName +
+                                    " has left the channel. You can continue to view the message history," +
+                                    " but you will have to leave this channel and make a new friend request to talk to them again";
                             }
                         });
                     } else {
@@ -158,7 +182,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: value.content
+                content: filter.clean(value.content)
             };
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
@@ -169,15 +193,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.profileViewEvent.emit(username);
     }
 
-    toggleInviting(): void {
+    closeInviting(): void {
+        this.inviting = false;
+    }
+
+    openInviting(): void {
         this.inviteSearchList = [];
-        if (this.inviting) {
-            this.inviting = false;
-        } else {
-            this.inviting = true;
-            this.getChannelNotifications();
-            this.getSubcribedUsers();
-        }
+        this.inviting = true;
+        this.getChannelNotifications();
+        this.getSubcribedUsers();
     }
 
     inviteFormSubmit() {
@@ -302,6 +326,35 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     usernames.push(data[i].username);
                                 }
                                 this.channelNotificationsUsernames = usernames;
+                                resolve(data);
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private getChannelInfo(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .get(this.channelsURL + this.currentChannel.channelId, httpHeaders)
+                        .subscribe(
+                            (data: InviteChannelObject) => {
                                 resolve(data);
                             },
                             (err) => {

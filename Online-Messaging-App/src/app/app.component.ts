@@ -10,6 +10,7 @@ export interface ColorScheme {
     "element-color": string;
     "hover-color": string;
     "element-hover-color": string;
+    "scroll-background": string
 }
 
 export const LightThemeColors: ColorScheme = {
@@ -21,20 +22,23 @@ export const LightThemeColors: ColorScheme = {
     "background-color": "#f8f8f8",
     "element-color": "#ffffff",
     "hover-color": "#393939",
-    "element-hover-color": "#f5f5f5"
+    "element-hover-color": "#f5f5f5",
+    "scroll-background": "#d1d1d1"
 };
 
 export const DarkThemeColors: ColorScheme = {
-    "primary-color": "#0060c6",
-    "secondary-color": "#fb3640",
-    "tertiary-color": "#ff7733",
-    "primary-text-color": "#FFFFFF",
-    "soft-black": "#424242",
-    "background-color": "#181818",
-    "element-color": "#282828",
-    "hover-color": "#393939",
-    "element-hover-color": "#3f3f3f"
-};
+        "primary-color": "#0060c6",
+        "secondary-color": "#fb3640",
+        "tertiary-color": "#ff7733",
+        "primary-text-color": "#FFFFFF",
+        "soft-black": "#424242",
+        "background-color": "#181818",
+        "element-color": "#282828",
+        "hover-color": "#393939",
+        "element-hover-color": "#3f3f3f",
+        "scroll-background": "#424242"
+    }
+;
 
 @Component({
     selector: "app-root",

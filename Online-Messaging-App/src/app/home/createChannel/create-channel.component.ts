@@ -49,13 +49,14 @@ export class CreateChannelComponent implements OnInit {
         public common: CommonService,
         private formValidationService: FormValidationService,
         public dialogRef: MatDialogRef<CreateChannelComponent>
-    ) {}
+    ) {
+    }
 
     ngOnInit() {
         this.newChannelForm = new FormGroup({
             channelName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.isAlphanumericValidator])
+                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noBadWordsValidator])
             ),
             channelType: new FormControl("", Validators.compose([Validators.required]))
         });

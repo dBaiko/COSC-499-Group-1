@@ -46,17 +46,16 @@ header {
     color: white;
     border-radius: 0%;
     left: 0 !important;
-    height: 22vh;
 }
 
 a {
     width: 100%;
+    background-color: var(--primary-color);
 }
 
 a:hover {
     background-color: var(--primary-color);
     border-radius: inherit;
-    margin-right: 2rem;
 }
 
 .wrapButton {
@@ -163,5 +162,22 @@ mat-label {
     background: var(--secondary-color);
 }
 
-mat-icon {
+
+.userMenu:hover {
+    cursor: pointer;
 }
+.userMenu a {
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
+
+}
+.userMenu {
+    text-align: center;
+    width: 15vw;
+}
+.userMenu a:hover {
+    background-color: #005cbe;
+}
+

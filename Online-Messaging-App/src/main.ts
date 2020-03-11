@@ -11,5 +11,6 @@ if (environment.production) {
 // noinspection JSUnusedLocalSymbols
 platformBrowserDynamic()
     .bootstrapModule(AppModule)
-    .then((success) => console.log(`Bootstrap success`))
+    .then((success) => {
+    })
     .catch((err) => console.error(err));
