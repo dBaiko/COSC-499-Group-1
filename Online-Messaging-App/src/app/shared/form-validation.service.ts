@@ -9,13 +9,14 @@ interface ValidationMethod {
     message: string;
 }
 
-const alphanumRegex: RegExp = /^[a-z0-9]+$/i;
+const alphanumRegex: RegExp = /^[^\s\\]+$/i;
 
 @Injectable()
 export class FormValidationService {
-    constructor() {}
+    constructor() {
+    }
 
-    public isAlphanumericValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    public noWhitespaceValidator(control: AbstractControl): { [key: string]: boolean } | null {
         if (!alphanumRegex.test(control.value)) {
             return { pattern: true };
         }

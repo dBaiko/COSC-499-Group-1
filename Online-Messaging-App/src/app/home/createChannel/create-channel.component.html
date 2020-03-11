@@ -27,7 +27,7 @@
                                             submitAttempt
                                         )
                                     "
-                                    >{{ validation.message }}
+                                >{{ validation.message }}
                                 </mat-error>
                             </mat-error>
                         </mat-form-field>
@@ -38,6 +38,19 @@
                             <mat-radio-button value="public">Public</mat-radio-button>
                             <mat-radio-button value="private">Private</mat-radio-button>
                         </mat-radio-group>
+                        <mat-error *ngFor="let validation of common.validation_methods.channelType">
+                            <mat-error
+                                *ngIf="
+                                        formValidationService.checkIfFormElementInvalid(
+                                            newChannelForm,
+                                            'channelType',
+                                            validation,
+                                            submitAttempt
+                                        )
+                                    "
+                            >{{ validation.message }}
+                            </mat-error>
+                        </mat-error>
                     </div>
                 </div>
             </div>

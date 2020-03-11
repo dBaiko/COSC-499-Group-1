@@ -40,7 +40,11 @@ export const VALIDATION_MESSAGES = {
         },
         {
             type: "pattern",
-            message: "Username must only contain letters and characters"
+            message: "Username must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "Username cannot be more than 30 characters"
         },
         {
             type: "invalidLogin",
@@ -66,14 +70,32 @@ export const VALIDATION_MESSAGES = {
         { type: "required", message: "First name is required" },
         {
             type: "pattern",
-            message: "First name must only contain letters and numbers"
+            message: "First name must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "First name cannot be more than 30 characters"
         }
     ],
     lastName: [
         { type: "required", message: "Last Name is required" },
         {
             type: "pattern",
-            message: "Last Name must only contain letters and numbers"
+            message: "Last Name must not contain whitespace"
+        },
+        {
+            type: "maxlength",
+            message: "Last name cannot be more than 30 characters"
         }
+    ],
+    channelName: [
+        { type: "required", message: "Channel name is required" },
+        {
+            type: "maxlength",
+            message: "Channel name cannot be more than 30 characters"
+        }
+    ],
+    channelType: [
+        { type: "required", message: "Channel type is required" }
     ]
 };
