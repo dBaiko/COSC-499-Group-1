@@ -190,7 +190,12 @@ export class SidebarComponent implements OnInit {
                     JSON.stringify({
                         lastChannelID: id,
                         lastChannelType: type
-                    })
+                    }),
+                    null,
+                    null,
+                    null,
+                    null,
+                    "Lax"
                 );
             } else {
                 item[SELECTED] = false;
