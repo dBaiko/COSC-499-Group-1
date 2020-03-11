@@ -61,7 +61,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private http: HttpClient,
         private auth: AuthenticationService,
         private notificationService: NotificationService
-    ) {}
+    ) {
+    }
 
     private _currentChannel: ChannelObject;
 
