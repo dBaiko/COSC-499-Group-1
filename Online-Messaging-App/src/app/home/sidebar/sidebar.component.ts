@@ -74,6 +74,7 @@ export class SidebarComponent implements OnInit {
         this.getSubscribedChannels()
             .then((data: Array<UserChannelObject>) => {
                 if (this.cookieService.get(user)) {
+                    this.switchDisplay(this.chatBox);
                     this.selectChannel(
                         JSON.parse(this.cookieService.get(user)).lastChannelID,
                         JSON.parse(this.cookieService.get(user)).lastChannelType
