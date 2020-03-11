@@ -73,11 +73,11 @@ export class ProfileComponent implements OnInit {
             email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator])
+                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator])
+                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
             )
         });
     }

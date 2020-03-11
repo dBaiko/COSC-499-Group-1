@@ -49,6 +49,10 @@ export const VALIDATION_MESSAGES = {
         {
             type: "invalidLogin",
             message: "Username or password is incorrect, please try again."
+        },
+        {
+            type: "badWord",
+            message: "Username cannot contain swears"
         }
     ],
     email: [
@@ -75,6 +79,10 @@ export const VALIDATION_MESSAGES = {
         {
             type: "maxlength",
             message: "First name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "First name cannot contain swears"
         }
     ],
     lastName: [
@@ -86,6 +94,10 @@ export const VALIDATION_MESSAGES = {
         {
             type: "maxlength",
             message: "Last name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "Last name cannot contain swears"
         }
     ],
     channelName: [
@@ -93,6 +105,10 @@ export const VALIDATION_MESSAGES = {
         {
             type: "maxlength",
             message: "Channel name cannot be more than 30 characters"
+        },
+        {
+            type: "badWord",
+            message: "Channel name cannot contain swears"
         }
     ],
     channelType: [

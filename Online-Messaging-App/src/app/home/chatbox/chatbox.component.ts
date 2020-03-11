@@ -6,12 +6,15 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
+import * as Filter from "bad-words";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
 const USERS_URI = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE = "You have been invited to join ";
+
+const filter = new Filter();
 
 interface UserObject {
     username: string;
@@ -159,7 +162,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: value.content
+                content: filter.clean(value.content)
             };
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);

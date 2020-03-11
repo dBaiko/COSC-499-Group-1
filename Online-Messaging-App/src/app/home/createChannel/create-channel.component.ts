@@ -56,7 +56,7 @@ export class CreateChannelComponent implements OnInit {
         this.newChannelForm = new FormGroup({
             channelName: new FormControl(
                 "",
-                Validators.compose([Validators.required, Validators.maxLength(30)])
+                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noBadWordsValidator])
             ),
             channelType: new FormControl("", Validators.compose([Validators.required]))
         });
