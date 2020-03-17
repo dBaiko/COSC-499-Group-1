@@ -45,7 +45,8 @@ class UserChannelDAO {
         channelId: string,
         userChannelRole: string,
         channelName: string,
-        channelType: string
+        channelType: string,
+        profileImage: string
     ): Promise<any> {
         const params = {
             Item: {
@@ -53,7 +54,8 @@ class UserChannelDAO {
                 channelId,
                 userChannelRole,
                 channelName,
-                channelType
+                channelType,
+                profileImage
             },
             TableName: USER_CHANNEL_TABLE_NAME
         };

@@ -12,7 +12,6 @@ interface ValidationMethod {
     message: string;
 }
 
-
 const alphanumRegex: RegExp = /^[^\s\\]+$/i;
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
@@ -11,6 +11,14 @@ interface UserChannelObject {
     userChannelRole: string;
     channelName: string;
     channelType: string;
+    profileImage: string;
+}
+
+interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
 }
 
 interface InviteChannelObject {
@@ -18,6 +26,14 @@ interface InviteChannelObject {
     channelName: string;
     channelType: string;
     inviteStatus: string;
+}
+
+interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
 }
 
 const MY_SELECT_CHILD: string = "mySelect";
@@ -41,10 +57,10 @@ export class HeaderComponent implements OnInit {
     userLoggedIn = false;
     user;
 
+    userProfile: UserProfileObject;
     usersURL: string = APIConfig.usersAPI;
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
-
     open: boolean = false;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
@@ -53,6 +69,7 @@ export class HeaderComponent implements OnInit {
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
+    private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
     private channelBrowser = "channelBrowser";
     private profile = "profile";
@@ -66,7 +83,6 @@ export class HeaderComponent implements OnInit {
     ) {
         this.userLoggedIn = auth.isLoggedIn();
     }
-
 
     ngOnInit(): void {
         if (this.userLoggedIn == true) {
@@ -87,6 +103,7 @@ export class HeaderComponent implements OnInit {
                     this.notificationCount++;
                 }
             );
+            this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
         }
     }
 
@@ -108,7 +125,8 @@ export class HeaderComponent implements OnInit {
             channelId: notification.channelId,
             userChannelRole: DEFAULT_CHANNEL_ROLE,
             channelName: notification.channelName,
-            channelType: notification.type
+            channelType: notification.type,
+            profileImage: this.userProfile.profileImage
         };
 
         this.newChannelEvent.emit(user);
@@ -138,7 +156,6 @@ export class HeaderComponent implements OnInit {
                                 .subscribe(
                                     () => {
                                         if (notification.type == "friend") {
-
                                             let channel: InviteChannelObject = {
                                                 channelId: notification.channelId,
                                                 channelName: notification.channelName,
@@ -146,15 +163,16 @@ export class HeaderComponent implements OnInit {
                                                 inviteStatus: "accepted"
                                             };
 
-                                            this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
-                                                () => {
-                                                    console.log("success");
-                                                },
-                                                (err) => {
-                                                    console.log(err);
-                                                }
-                                            );
-
+                                            this.http
+                                                .put(this.channelsAPI + notification.channelId, channel, httpHeaders)
+                                                .subscribe(
+                                                    () => {
+                                                        console.log("success");
+                                                    },
+                                                    (err) => {
+                                                        console.log(err);
+                                                    }
+                                                );
                                         }
                                     },
                                     (err) => {
@@ -194,7 +212,6 @@ export class HeaderComponent implements OnInit {
                     )
                     .subscribe(
                         () => {
-
                             let channel: InviteChannelObject = {
                                 channelId: notification.channelId,
                                 channelName: notification.channelName,
@@ -210,7 +227,6 @@ export class HeaderComponent implements OnInit {
                                     console.log(err);
                                 }
                             );
-
                         },
                         (err) => {
                             console.log(err);
@@ -278,5 +294,37 @@ export class HeaderComponent implements OnInit {
             this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
         }
         this.notificationCount--;
+    }
+
+    private getUserInfo(username: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        let profile: ProfileObject = data[0];
+                        this.userProfile = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null,
+                            profileImage: profile.profileImage
+                        };
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 }
