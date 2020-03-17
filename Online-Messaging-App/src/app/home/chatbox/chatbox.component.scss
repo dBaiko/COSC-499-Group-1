@@ -148,3 +148,9 @@ app-channel-user-list {
     height: 100%;
     overflow: hidden;
 }
+.container {
+    ::ng-deep mat-sidenav-container{
+        height: 50%;
+    }
+
+}

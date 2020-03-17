@@ -371,6 +371,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     private onScroll(): void {
         let element = this.scrollContainer.nativeElement;
+        console.log(element);
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
         if (this.atBottom) {
@@ -381,6 +382,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private scrollToBottom(): void {
+        console.log(this.scrollContainer);
         if (this.isNearBottom) {
             return;
         }
