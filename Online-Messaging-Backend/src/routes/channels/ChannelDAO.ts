@@ -70,7 +70,8 @@ class ChannelDAO {
         channelType: string,
         firstUsername: string,
         firstUserChannelRole: string,
-        inviteStatus: string
+        inviteStatus: string,
+        profileImage: string
     ): Promise<any> {
         const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
@@ -91,7 +92,14 @@ class ChannelDAO {
                 } else {
                     console.log("Added new:", JSON.stringify(data, null, 2));
                     userChannelDAO
-                        .addNewUserToChannel(firstUsername, channelId, firstUserChannelRole, channelName, channelType)
+                        .addNewUserToChannel(
+                            firstUsername,
+                            channelId,
+                            firstUserChannelRole,
+                            channelName,
+                            channelType,
+                            profileImage
+                        )
                         .then(() => {
                             resolve(params.Item);
                         })

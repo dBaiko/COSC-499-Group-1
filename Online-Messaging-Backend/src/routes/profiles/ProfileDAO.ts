@@ -1,20 +1,31 @@
 /* tslint:disable:no-console */
 import aws from "aws-sdk";
+import fs from "fs";
 import { awsConfigPath } from "../../config/aws-config";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
+import SendData = ManagedUpload.SendData;
 
 aws.config.loadFromPath(awsConfigPath);
 const PROFILES_TABLE_NAME = "Profiles";
 
+const PROFILE_IMAGE_S3_PREFIX: string =
+    "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
+const DEFAULT_PROFILE_IMAGE: string = "default.png";
+
 class ProfileDAO {
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
+        let profileImage = PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE;
+
         const params = {
             Item: {
                 firstName,
                 lastName,
-                username
+                username,
+                profileImage
             },
             TableName: PROFILES_TABLE_NAME
         };
@@ -54,6 +65,57 @@ class ProfileDAO {
                 } else {
                     console.log("Item updated successfully:", JSON.stringify(data, null, 4));
                     resolve();
+                }
+            });
+        });
+    }
+
+    public updateProfileImage(file: Express.Multer.File, username: string): Promise<any> {
+        let path = "./src/routes/profiles/temp/" + file.filename;
+
+        let s3 = new aws.S3({ endpoint: "s3.ca-central-1.amazonaws.com" });
+
+        let profileImageFilename = username + ".png";
+
+        let param = {
+            Bucket: "streamline-athletes-messaging-app",
+            Body: fs.createReadStream(path),
+            Key: "user-profile-images/" + profileImageFilename
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            s3.upload(param, (err: Error, data: SendData) => {
+                if (err) {
+                    console.log(err);
+                    fs.unlink(path, () => {
+                        console.log(err);
+                    });
+                    reject(err);
+                } else {
+                    fs.unlink(path, () => {
+                        console.log(err);
+                    });
+
+                    const params = {
+                        TableName: PROFILES_TABLE_NAME,
+                        Key: {
+                            username: username
+                        },
+                        UpdateExpression: "SET profileImage = :p",
+                        ExpressionAttributeValues: {
+                            ":p": PROFILE_IMAGE_S3_PREFIX + profileImageFilename
+                        }
+                    };
+
+                    this.docClient.update(params, (err, data) => {
+                        if (err) {
+                            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
+                            reject();
+                        } else {
+                            console.log("Item updated successfully:", JSON.stringify(data, null, 4));
+                            resolve(profileImageFilename);
+                        }
+                    });
                 }
             });
         });

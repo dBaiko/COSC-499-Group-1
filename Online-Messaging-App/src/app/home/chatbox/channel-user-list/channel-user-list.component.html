@@ -5,25 +5,21 @@
             <hr>
         </mat-card-title>
     </div>
-    <div class="onlineUsers">
-        <mat-card-title>
-            Online
-            <hr>
-        </mat-card-title>
-        <div>
-
-        </div>
-
-    </div>
-    <div class="offlineUsers">
-        <mat-card-title>
-            Offline
-            <hr>
-
-        </mat-card-title>
-        <div *ngFor="let user of subscribedUsers">
+    <div *ngFor="let user of onlineUsers" class="onlineUsers">
+        <mat-card>
+            <mat-card-title>Online
+                <hr>
+            </mat-card-title>
             {{user.username}}
-        </div>
+        </mat-card>
+    </div>
+    <div *ngFor="let user of offlineUsers" class="offlineUsers">
+        <mat-card>
+            <mat-card-title>Offline
+                <hr>
+            </mat-card-title>
+            {{user.username}}
+        </mat-card>
     </div>
 
 </mat-card>

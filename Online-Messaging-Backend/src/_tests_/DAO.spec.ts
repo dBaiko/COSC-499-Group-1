@@ -55,7 +55,7 @@ describe("DAO Spec", () => {
 
     const channel = new ChannelDAO(ddb);
     it("should create a new channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null);
+        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null);
         const item = await ddb.scan({ TableName: "Channel" }).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
@@ -71,7 +71,7 @@ describe("DAO Spec", () => {
     });
 
     it("should retrieve certain information about a channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null);
+        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null);
         const testChannel = await ddb.scan({ TableName: "Channel" }).promise();
         let channelId = testChannel.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
