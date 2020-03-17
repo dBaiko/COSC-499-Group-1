@@ -1,43 +1,55 @@
 mat-card {
-    background-color: #5280e9;
-    height: 34rem;
-    position: relative;
+    background-color: var(--element-color);
     border-radius: 0vh;
     height: 100%;
-    padding: 0vh;
-    padding-left: 1vh;
+    margin-right: 1vh;
+    margin-top: 1vh;
+    margin-left: 1vh;
 }
 
 mat-form-field {
-    background-color: #282828;
+    background-color: var(--element-color);
     width: 100%;
-    color: #f8f8f8;
+    color: var(--primary-text-color);
     left: 0vh;
     margin-bottom: 1vh;
-    margin-top: 4vh;
-    padding-right: 10vh !important;
+    margin-top: 1vh;
 }
 
 hr {
-    border: 1px solid #f8f8f8;
+    border: 1px solid var(--background-color);
+}
+
+.mat-card-title .mat-card-header {
+    margin-bottom: 0px !important;
+    color: var(--primary-text-color);
+}
+
+.mat-card-title {
+    color: var(--primary-color);
+}
+
+.mat-card-header {
+    margin-bottom: 0px !important;
+}
+
+.mat-card-title {
+    margin-bottom: 0px !important;
 }
 
 mat-card-title {
-    color: #f8f8f8;
-    padding-top: 1px;
+    color: var(--primary-text-color);
+    padding: 10px 0px 10px 0px;
 }
 
 .headerTop {
-    background-color: #282828;
-    width: 100%;
-    position: fixed;
+    background-color: var(--element-color);
     top: 4rem;
     margin-top: 1vh !important;
-    margin-right: 1vh !important;
 }
 
 mat-label {
-    color: #f8f8f8;
+    color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
 
@@ -45,15 +57,15 @@ mat-label {
     height: 100%;
 }
 
-.searchBar {
+#searchBar {
     width: 100%;
-    position: absolute;
-    margin-top: 1.4rem;
-    margin-left: 0;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .join {
-    background-color: grey;
+    background-color: var(--primary-color);
     margin-right: 5vh;
     color: white;
     text-align: center;
@@ -62,7 +74,7 @@ mat-label {
 
 .joined {
     margin-right: 5vh;
-    color: white;
+    color: var(--primary-text-color);
     text-align: center;
 }
 
@@ -71,21 +83,39 @@ mat-label {
 }
 
 .joinCreate:hover {
-    background-color: #696969;
-}
-
-mat-card-footer {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+    background-color: var(--element-hover-color);
 }
 
 mat-expansion-panel {
-    background-color: #282828;
-    color: #f8f8f8;
+    background-color: var(--element-color);
+    color: var(--primary-text-color);
+    border-radius: 0 !important;
+}
+
+mat-expansion-panel:hover {
+    background-color: var(--element-hover-color);
+}
+
+mat-expansion-panel.mat-expanded {
+    background-color: var(--element-hover-color);
 }
 
 mat-panel-title,
 mat-panel-description {
-    color: #f8f8f8;
+    color: var(--primary-text-color);
+}
+
+mat-panel-title {
+    width: 20vh;
+}
+
+.mat-card {
+    padding: 0px;
+}
+
+#scrollable {
+    height: 82%;
+    overflow-y: auto;
+    z-index: 5;
+    padding: 0px;
 }

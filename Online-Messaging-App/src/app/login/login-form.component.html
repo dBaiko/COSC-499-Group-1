@@ -3,13 +3,13 @@
         {{ common.moveToHome() }}
     </div>
     <ng-template #elseBlock>
-        <app-header></app-header>
+        <app-header class="header"></app-header>
         <div class="mat-display-2">
             Log in to Streamline Athletes Chat Service
         </div>
         <div class="row">
             <div class="col-lg-4">
-                <form (ngSubmit)="loginSubmit(loginForm)" [formGroup]="loginForm">
+                <form (ngSubmit)="loginSubmit(loginForm)" [formGroup]="loginForm" autocomplete="off">
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>

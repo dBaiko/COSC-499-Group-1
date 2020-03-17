@@ -1,10 +1,10 @@
 .container {
     position: absolute;
-    top: 60px;
+    top: 6vh;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #5280e9;
+    background-color: var(--background-color);
     overflow: hidden;
 }
 
@@ -24,35 +24,15 @@ app-header {
     left: 0;
     z-index: 2;
     overflow: hidden;
-}
-
-#chatbox {
-    //display: flex;
-    overflow: hidden;
+    background-color: var(--primary-color);
 }
 
 #home {
     overflow: hidden;
 }
 
-.mat-drawer-content {
-    overflow-y: scroll;
-}
-
-#tempMessage {
-    right: 1vh;
-    position: absolute;
-    bottom: 0vh;
-    background-color: black;
-    color: white;
-}
-
-#tempChannelBrowser {
-    margin: 1vh;
-    right: 1vh;
-    z-index: 1;
-    position: absolute;
-    top: 0vh;
-    background-color: black;
-    color: white;
+.scrollMe {
+    overflow: hidden;
+    height: 100%;
+    padding: 0px !important;
 }

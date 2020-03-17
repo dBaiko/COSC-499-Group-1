@@ -6,9 +6,7 @@ import { Component, OnInit } from "@angular/core";
     styleUrls: ["./register-redirect.component.scss"]
 })
 export class RegisterRedirectComponent implements OnInit {
-    constructor() {
-    }
+    constructor() {}
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 }

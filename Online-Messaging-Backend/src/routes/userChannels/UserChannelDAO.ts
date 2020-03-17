@@ -1,17 +1,26 @@
 /* tslint:disable:no-console */
-import aws from "aws-sdk";
-import { awsConfigPath } from "../../config/aws-config";
 
-aws.config.loadFromPath(awsConfigPath);
-
-const docClient = new aws.DynamoDB.DocumentClient();
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import ChannelDAO from "../channels/ChannelDAO";
+import MessageDAO from "../messages/MessageDAO";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
 
+interface UserChannelObject {
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+}
+
 class UserChannelDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
     private usernameQueryDeclaration = "username = :username";
+
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getAll(): Promise<any> {
         const params = {
@@ -19,7 +28,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.scan(params, (err, data) => {
+            this.docClient.scan(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -50,7 +59,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -72,7 +81,7 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -84,7 +93,7 @@ class UserChannelDAO {
         });
     }
 
-    public getAllSubscribedUsers(channelId: number): Promise<any> {
+    public getAllSubscribedUsers(channelId: string): Promise<any> {
         const params = {
             TableName: USER_CHANNEL_TABLE_NAME,
             IndexName: CHANNELID_USERNAME_INDEX,
@@ -95,13 +104,62 @@ class UserChannelDAO {
         };
 
         return new Promise((resolve, reject) => {
-            docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
                     reject(err);
                 } else {
                     console.log("Query for " + channelId + " Succeeded");
                     resolve(data.Items);
+                }
+            });
+        });
+    }
+
+    public deleteChannelSubscription(username: string, channelId: string): Promise<any> {
+        const deleteObject = {
+            TableName: USER_CHANNEL_TABLE_NAME,
+            Key: {
+                username: username,
+                channelId: channelId
+            },
+            ConditionExpression: "username = :u and channelId = :c",
+            ExpressionAttributeValues: {
+                ":u": username,
+                ":c": channelId
+            }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.delete(deleteObject, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Deleted user subscription successfully");
+                    this.getAllSubscribedUsers(channelId)
+                        .then((data: Array<UserChannelObject>) => {
+                            if (data.length == 0) {
+                                console.log("No more users in: " + channelId + " deleting channel");
+                                let channelDAO = new ChannelDAO(this.docClient);
+                                channelDAO
+                                    .deleteChannel(channelId)
+                                    .then(() => {
+                                        let messageDAO = new MessageDAO(this.docClient);
+                                        messageDAO.deleteAllMessagesForChannel(channelId);
+                                        resolve();
+                                    })
+                                    .catch((err) => {
+                                        reject(err);
+                                    });
+                            } else {
+                                resolve();
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            reject(err);
+                        });
                 }
             });
         });

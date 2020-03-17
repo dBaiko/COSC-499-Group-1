@@ -1,27 +1,37 @@
+mat-card {
+    background: var(--element-color);
+}
+
 mat-card-content {
     margin-left: 1vh;
     margin-right: 1vh;
-    margin-top: 1vh;
+    padding-bottom: 3vh;
+    color: var(--primary-text-color);
+}
+
+mat-card-header {
+    color: var(--primary-color);
 }
 
 mat-icon {
-    margin-bottom: 1vh;
+    margin-bottom: 0.5vh;
 }
 
 .icon {
     font-size: 64px;
 }
 
-#profilePicture {
+.profilePicture {
     float: right;
-    margin-right: 5vh;
+    margin-right: 1vh;
     border-style: solid;
-    border-color: black;
+    border-color: var(--soft-black);
     border-radius: 0.5vh;
     font-size: 128px;
     height: auto;
     overflow: visible;
     white-space: normal;
+    width: 10%;
 }
 
 .wrapper {
@@ -32,13 +42,38 @@ mat-icon {
 button {
     float: right;
     margin-right: 5vh;
-    color: white;
-    background-color: black;
-    margin-bottom: 1vh;
+    color: var(--primary-text-color);
+    background-color: var(--element-color);
     width: 14vh;
 }
 
-#profileTitle {
-    font-size: 48px;
+#settingsTitle {
+    font-size: 43px;
     margin-left: 1vh;
+}
+
+.wrapper {
+    margin-top: 2vh;
+}
+
+.nameHeaders {
+    font-size: 1.1em;
+}
+
+input {
+    width: 70%;
+    padding: 10px 10px;
+    border-radius: 1px;
+    border: 2px solid white;
+    background-color: var(--element-hover-color);
+}
+
+input:focus {
+    border: 2px solid var(--element-hover-color);
+}
+
+button {
+    border-radius: 3px;
+    background-color: var(--primary-color);
+    color: white;
 }

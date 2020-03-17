@@ -1,7 +1,5 @@
 mat-card {
-    background-color: #282828;
-    height: 34rem;
-    position: relative;
+    background-color: var(--element-color);
     border-radius: 0px;
     border-top: 1px solid #f8f8f8;
     height: 100%;
@@ -9,29 +7,38 @@ mat-card {
 
 mat-form-field {
     border-radius: 0.5rem;
-    background-color: #282828;
-    width: 100%;
-    color: #f8f8f8;
+    background-color: var(--element-color);
+    width: 86%;
+    margin-right: 50vh;
+    color: var(--primary-text-color);
 }
 
-
 #scrollable {
-    overflow-y: scroll;
+    overflow-y: auto;
+    height: 80%;
+    margin-top: 1rem;
+}
+
+.messagePicture {
+    width: 5%;
+}
+
+.clickable {
+    cursor: pointer;
+    color: var(--primary-color);
 }
 
 hr {
-    border: 1px solid #f8f8f8;
+    border: 1px solid #ececec;
 }
 
 mat-card-title {
-    color: #f8f8f8;
+    color: var(--primary-color);
 }
 
 .headerTop {
-    background-color: #282828;
+    background-color: var(--element-color);
     width: 100%;
-    position: fixed;
-    top: 4rem;
 }
 
 mat-card-footer {
@@ -39,17 +46,100 @@ mat-card-footer {
     position: fixed;
     bottom: 0;
     text-align: center;
+    margin-top: 10vh;
 }
 
 p {
-    color: #f8f8f8;
+    color: var(--primary-text-color);
 }
 
 mat-label {
-    color: #f8f8f8;
+    color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
 
 .container {
     height: 100%;
+    margin: 1vh;
+}
+
+.chat-box-header {
+    width: 100%;
+}
+
+.invite {
+    color: var(--primary-text-color);
+    border-radius: 0px;
+    position: absolute;
+    right: 1.1%;
+}
+
+.inviteButton {
+    border-radius: 0px;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.inviteButton:hover {
+    background-color: var(--primary-color);
+}
+
+.inviteSearch {
+    color: var(--primary-text-color);
+}
+
+.invite mat-card {
+    background-color: var(--primary-color);
+    width: 92%;
+    margin-top: 0%;
+    color: var(--primary-text-color);
+}
+
+.search mat-card-content {
+    position: absolute;
+    right: 1%;
+    top: 25%;
+}
+
+.search button {
+    border-radius: 0%;
+}
+
+.search button:hover {
+    background-color: var(--primary-color);
+}
+
+.invite mat-form-field {
+    border-radius: 0%;
+    width: 100%;
+    margin-right: 20vh;
+    margin-bottom: 0%;
+}
+
+.search {
+    background-color: var(--soft-black);
+    border: 1px solid black;
+    padding: 1px;
+}
+
+.subedOrSent {
+    margin-right: 1.25rem;
+    color: white;
+}
+
+.sendInviteButton {
+    color: white;
+}
+
+.errorMessage {
+    color: dimgrey;
+}
+
+.usernameInvite {
+    color: white;
+}
+
+::placeholder {
+    color: white;
+    opacity: 1;
 }

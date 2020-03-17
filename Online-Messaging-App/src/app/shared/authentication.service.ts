@@ -1,5 +1,12 @@
 import { Injectable } from "@angular/core";
-import { AuthenticationDetails, CognitoUser, CognitoUserAttribute, CognitoUserPool } from "amazon-cognito-identity-js";
+import {
+    AuthenticationDetails,
+    CognitoIdToken,
+    CognitoUser,
+    CognitoUserAttribute,
+    CognitoUserPool,
+    CognitoUserSession
+} from "amazon-cognito-identity-js";
 import { Observable } from "rxjs";
 import { CognitoConfig } from "./app-config";
 
@@ -12,8 +19,7 @@ const FAMILY_NAME: string = "family_name";
 export class AuthenticationService {
     cognitoUser: CognitoUser;
 
-    constructor() {
-    }
+    constructor() {}
 
     public register(
         username: string,
@@ -99,6 +105,22 @@ export class AuthenticationService {
         if (this.getAuthenticatedUser() != null) {
             this.getAuthenticatedUser().signOut();
             this.cognitoUser = null;
+        }
+    }
+
+    getCurrentSessionId(): Observable<CognitoIdToken> {
+        if (this.isLoggedIn()) {
+            return new Observable<CognitoIdToken>((observer) => {
+                userPool.getCurrentUser().getSession((error: Error, session: CognitoUserSession) => {
+                    if (error) {
+                        console.log(error);
+                        observer.error(error);
+                    }
+
+                    observer.next(session.getIdToken());
+                    observer.complete();
+                });
+            });
         }
     }
 }

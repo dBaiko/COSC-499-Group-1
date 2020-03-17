@@ -17,6 +17,13 @@ import { CreateChannelComponent } from "./createChannel/create-channel.component
 import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";
+import { NotificationService } from "../shared/notification.service";
+import { CookieService } from "ngx-cookie-service";
+import { FriendsBrowserComponent } from "./sidebar/friends-browser/friends-browser.component";
+import { UnsubscribeConfirmComponent } from "./sidebar/unsubscribe-confirm/unsubscribe-confirm.component";
+import { SettingsComponent } from "./settings/settings.component";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import {ClickOutsideModule} from "ng-click-outside";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -33,16 +40,21 @@ const socketConfig: SocketIoConfig = {
         LogoutFormComponent,
         SidebarComponent,
         CreateChannelComponent,
-        ProfileComponent
+        ProfileComponent,
+        FriendsBrowserComponent,
+        UnsubscribeConfirmComponent,
+        SettingsComponent
     ],
     imports: [
         CommonModule,
         MaterialModule,
+        ClickOutsideModule,
         FormsModule,
         ReactiveFormsModule,
         SocketIoModule.forRoot(socketConfig),
         MatSelectModule,
-        MatRadioModule
+        MatRadioModule,
+        MatSlideToggleModule
     ],
     exports: [
         HeaderComponent,
@@ -53,8 +65,8 @@ const socketConfig: SocketIoConfig = {
         FooterComponent,
         ChatboxComponent
     ],
-    providers: [MessengerService, AuthenticationService, CommonService],
-    entryComponents: [CreateChannelComponent]
+    providers: [MessengerService, CookieService, AuthenticationService, CommonService, NotificationService],
+    entryComponents: [CreateChannelComponent, UnsubscribeConfirmComponent]
 })
 export class HomeModule {
 }

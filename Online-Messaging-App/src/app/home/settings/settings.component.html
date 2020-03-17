@@ -1,0 +1,21 @@
+<div class="wrapper">
+    <mat-card>
+        <div class="icon">
+            <mat-card-header>
+                <b id="settingsTitle">Settings</b>
+            </mat-card-header>
+        </div>
+        <mat-card-content>
+            <hr />
+            <br />
+            <div class="settingsInfo">
+                <mat-slide-toggle (change)="themeToggle($event)" *ngIf="initialTheme == 'dark'" checked
+                    >Dark Theme
+                </mat-slide-toggle>
+                <mat-slide-toggle (change)="themeToggle($event)" *ngIf="initialTheme == 'light'"
+                    >Dark Theme
+                </mat-slide-toggle>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

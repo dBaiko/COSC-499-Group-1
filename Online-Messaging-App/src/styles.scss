@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
 .navbar {
     justify-content: space-between;
@@ -8,4 +9,70 @@
 html,
 body {
     overflow: hidden;
+}
+
+html {
+    overflow: hidden;
+}
+
+body {
+    overflow: hidden;
+}
+
+.mat-select-panel {
+    border-radius: 0 !important;
+}
+
+.dropped {
+    transform: rotate(180deg);
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px var(--soft-black) !important;
+    border-radius: 0.5px;
+    background: var(--scroll-background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: grey;
+    border-radius: 0px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: dimgrey;
+}
+
+.mat-focused .mat-form-field-label {
+    //color: white !important;
+    font-size: 20px;
+}
+
+:root {
+    --primary-color: #004c98;
+    --secondary-color: #fb3640;
+    --tertiary-color: #ff7733;
+    --primary-text-color: #424242;
+    --soft-black: #424242;
+    --background-color: #f8f8f8;
+    --element-color: #ffffff;
+    --hover-color: #3f3f3f;
+    --element-hover-color: #f5f5f5;
+    --scroll-background: #d1d1d1;
+}
+
+* {
+    font-family: "Open Sans";
+}
+
+.dialog-class .mat-dialog-container {
+    background: var(--background-color);
 }

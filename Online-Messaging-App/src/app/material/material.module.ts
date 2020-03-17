@@ -42,5 +42,4 @@ const material = [
     exports: [material],
     providers: [material]
 })
-export class MaterialModule {
-}
+export class MaterialModule {}

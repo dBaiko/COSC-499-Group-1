@@ -5,12 +5,11 @@ import { AuthenticationService } from "../../shared/authentication.service";
 import { CommonService } from "../../shared/common.service";
 import { RouterTestingModule } from "@angular/router/testing";
 import { routes } from "../../app-routing.module";
-import { HomeComponent } from "../home.component";
-import { HeaderComponent } from "../header/header.component";
 import { MaterialModule } from "../../material/material.module";
-import { SidebarComponent } from "../sidebar/sidebar.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ChatboxComponent } from "../chatbox/chatbox.component";
+import { HomeModule } from "../home.module";
+import { RegisterModule } from "../../register/register.module";
+import { LoginModule } from "../../login/login.module";
 
 describe("LogoutComponent", () => {
     let component: LogoutFormComponent;
@@ -18,9 +17,16 @@ describe("LogoutComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [LogoutFormComponent, HomeComponent, HeaderComponent, SidebarComponent, ChatboxComponent],
             providers: [AuthenticationService, CommonService],
-            imports: [RouterTestingModule.withRoutes(routes), MaterialModule, ReactiveFormsModule, FormsModule]
+            imports: [
+                RouterTestingModule.withRoutes(routes),
+                MaterialModule,
+                ReactiveFormsModule,
+                FormsModule,
+                HomeModule,
+                RegisterModule,
+                LoginModule
+            ]
         }).compileComponents();
     }));
 
