@@ -15,6 +15,7 @@ interface ProfileObject {
     username: string;
     firstName: string;
     lastName: string;
+    profileImage: string;
 }
 
 interface UserProfileObject {
@@ -22,14 +23,19 @@ interface UserProfileObject {
     email: string;
     firstName: string;
     lastName: string;
+    profileImage: string;
 }
+
+const PROFILE_IMAGE_S3_PREFIX: string =
+    "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 
 const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
 const FIRSTNAME_FORM_NAME = "firstName";
 
 const ERROR_MESSAGE = "Your edit was not saved correctly";
-const SUCCESS_MESSAGE = "You edit was saved correctly";
+const SUCCESS_MESSAGE = "Your edit was saved correctly";
+const IMAGE_MESSAGE = "Your profile picture was updated successfully";
 
 @Component({
     selector: "app-profile",
@@ -43,6 +49,8 @@ export class ProfileComponent implements OnInit {
     editing: boolean = false;
     submitAttempt: boolean = false;
     editSaveMessage: string = "";
+
+    imageHover: boolean = false;
 
     private usersAPI = APIConfig.usersAPI;
     private profilesAPI = APIConfig.profilesAPI;
@@ -68,16 +76,31 @@ export class ProfileComponent implements OnInit {
         this.getUserInfo(this._profileView);
     }
 
+    set toggleEditing(editing: boolean) {
+        this.editing = editing;
+        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
+        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
+        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
+    }
+
     ngOnInit() {
         this.editForm = new FormGroup({
             email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([Validators.required, this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
             )
         });
     }
@@ -99,7 +122,8 @@ export class ProfileComponent implements OnInit {
                             username: profile.username,
                             firstName: profile.firstName,
                             lastName: profile.lastName,
-                            email: null
+                            email: null,
+                            profileImage: profile.profileImage
                         };
 
                         if (username === this.auth.getAuthenticatedUser().getUsername()) {
@@ -127,11 +151,40 @@ export class ProfileComponent implements OnInit {
         );
     }
 
-    toggleEditing(editing: boolean) {
-        this.editing = editing;
-        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
-        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
-        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
+    updateProfilePicture(event: Event): void {
+        let username = this.auth.getAuthenticatedUser().getUsername();
+
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                let imageFile: File = (event.target as HTMLInputElement).files[0];
+
+                let formData: FormData = new FormData();
+                formData.append("file", imageFile);
+
+                formData.append("username", username);
+
+                this.http.put(this.profilesAPI + username + "/profile-image/", formData, httpHeaders).subscribe(
+                    (data) => {
+                        let img = document.getElementById("profileImage");
+                        img["src"] = this.userProfile.profileImage + "?" + Math.random();
+                        this.editSaveMessage = IMAGE_MESSAGE;
+                    },
+                    (err) => {
+                        console.log(err);
+                        this.editSaveMessage = ERROR_MESSAGE;
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 
     editFormSubmit(form: FormGroup): void {
@@ -152,7 +205,8 @@ export class ProfileComponent implements OnInit {
         let profile: ProfileObject = {
             username: username,
             firstName: firstName,
-            lastName: lastName
+            lastName: lastName,
+            profileImage: this.userProfile.profileImage
         };
 
         this.auth.getCurrentSessionId().subscribe(
@@ -169,7 +223,7 @@ export class ProfileComponent implements OnInit {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {
                                 this.getUserInfo(this.userProfile.username);
-                                this.toggleEditing(false);
+                                this.toggleEditing = false;
                                 this.editSaveMessage = SUCCESS_MESSAGE;
                             },
                             (err) => {

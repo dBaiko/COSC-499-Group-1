@@ -22,6 +22,7 @@ export interface UserChannelObject {
     userChannelRole: string;
     channelName: string;
     channelType: string;
+    profileImage: string;
 }
 
 export interface SettingsObject {

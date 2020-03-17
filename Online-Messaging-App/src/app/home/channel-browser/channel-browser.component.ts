@@ -10,11 +10,26 @@ interface ChannelObject {
     channelType: string;
 }
 
+interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
 const DEFAULT_CHANNEL_ROLE: string = "user";
 const PRIVATE_CHANNEL_TYPE: string = "private";
 const FRIEND_CHANNEL_TYPE: string = "friend";
+
+interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
 
 @Component({
     selector: "app-channel-browser",
@@ -26,14 +41,18 @@ export class ChannelBrowserComponent implements OnInit {
     channels: Array<ChannelObject> = [];
     count = 0;
 
+    userProfile: UserProfileObject;
+
     search = Constants.EMPTY;
 
     @Output() newChannelIdEvent = new EventEmitter<any>();
 
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
+    private profilesAPI = APIConfig.profilesAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {}
+    constructor(private http: HttpClient, private auth: AuthenticationService) {
+    }
 
     private _newChannel: ChannelObject;
 
@@ -53,6 +72,7 @@ export class ChannelBrowserComponent implements OnInit {
     ngOnInit() {
         this.getChannels();
         this.getSubscribedChannels();
+        this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
     }
 
     getSubscribedChannels() {
@@ -155,7 +175,8 @@ export class ChannelBrowserComponent implements OnInit {
                     channelId: channel.channelId,
                     userChannelRole: DEFAULT_CHANNEL_ROLE,
                     channelName: channel.channelName,
-                    channelType: channel.channelType
+                    channelType: channel.channelType,
+                    profileImage: this.userProfile.profileImage
                 };
 
                 this.newChannelIdEvent.emit({
@@ -168,11 +189,44 @@ export class ChannelBrowserComponent implements OnInit {
                 this.http
                     .post(this.channelsAPI + channel.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
-                        () => {},
+                        () => {
+                        },
                         (err) => {
                             console.log(err);
                         }
                     );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+    }
+
+    private getUserInfo(username: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        let profile: ProfileObject = data[0];
+                        this.userProfile = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null,
+                            profileImage: profile.profileImage
+                        };
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
             },
             (err) => {
                 console.log(err);

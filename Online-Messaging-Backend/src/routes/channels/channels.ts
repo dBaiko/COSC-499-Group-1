@@ -130,7 +130,8 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
                     req.body.channelId,
                     req.body.userChannelRole,
                     req.body.channelName,
-                    req.body.channelType
+                    req.body.channelType,
+                    req.body.profileImage
                 )
                 .then(() => {
                     res.status(200).send({
@@ -160,7 +161,8 @@ router.post(PATH_POST_NEW_CHANNEL, (req, res) => {
                     req.body.channelType,
                     req.body.firstUsername,
                     req.body.firstUserChannelRole,
-                    req.body.inviteStatus
+                    req.body.inviteStatus,
+                    req.body.profileImage
                 )
                 .then((data) => {
                     res.status(200).send({

@@ -1,21 +1,11 @@
-import {
-    AfterViewChecked,
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnInit,
-    Output,
-    ViewChild
-} from "@angular/core";
-import {MessengerService} from "../../shared/messenger.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {APIConfig, Constants} from "../../shared/app-config";
-import {AuthenticationService} from "../../shared/authentication.service";
-import {FormGroup} from "@angular/forms";
-import {NotificationObject, NotificationService, NotificationSocketObject} from "../../shared/notification.service";
-import {ChannelObject} from "../sidebar/sidebar.component";
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { MessengerService } from "../../shared/messenger.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { APIConfig, Constants } from "../../shared/app-config";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { FormGroup } from "@angular/forms";
+import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
@@ -46,6 +36,21 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
+interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
+interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
@@ -57,21 +62,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
-
     inviteSearchList: Array<UserObject> = [];
-
     subscribedUsers: Array<UserChannelObject> = [];
     subscribedUsersUsernames: Array<string> = [];
-
     channelNotifications: Array<NotificationObject> = [];
     channelNotificationsUsernames: Array<string> = [];
-
     friendMessage: string = null;
-
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
-    @ViewChild("scrollframe", {static: false}) scrollContainer: ElementRef;
+    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
+    currentUserProfile: UserProfileObject;
+    random;
+    private profilesAPI = APIConfig.profilesAPI;
     private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
@@ -107,8 +110,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (notFound) {
                         this.getChannelInfo().then((data: InviteChannelObject) => {
                             let inviteStatus: string = data.inviteStatus;
-                            let friendName: string = this.friendMessage =
-                                this.parseFriendChannelName(this.currentChannel.channelName);
+                            let friendName: string = (this.friendMessage = this.parseFriendChannelName(
+                                this.currentChannel.channelName
+                            ));
                             if (inviteStatus == "pending") {
                                 this.friendMessage =
                                     friendName +
@@ -144,6 +148,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.chatMessages.push(data);
             }
         });
+        this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
+        this.random = Math.random();
     }
 
     ngAfterViewChecked() {
@@ -161,7 +167,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 };
 
                 this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
-                    (data) => {
+                    (data: Array<Object>) => {
                         this.chatMessages = data || [];
                     },
                     (err) => {
@@ -179,10 +185,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
+
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: filter.clean(value.content)
+                content: filter.clean(value.content),
+                profileImage: this.currentUserProfile.profileImage
             };
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
@@ -351,16 +359,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         })
                     };
 
-                    this.http
-                        .get(this.channelsURL + this.currentChannel.channelId, httpHeaders)
-                        .subscribe(
-                            (data: InviteChannelObject) => {
-                                resolve(data);
-                            },
-                            (err) => {
-                                reject(err);
-                            }
-                        );
+                    this.http.get(this.channelsURL + this.currentChannel.channelId, httpHeaders).subscribe(
+                        (data: InviteChannelObject) => {
+                            resolve(data);
+                        },
+                        (err) => {
+                            reject(err);
+                        }
+                    );
                 },
                 (err) => {
                     reject(err);
@@ -390,5 +396,37 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } catch (err) {
             console.log(err);
         }
+    }
+
+    private getUserInfo(username: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        let profile: ProfileObject = data[0];
+                        this.currentUserProfile = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null,
+                            profileImage: profile.profileImage
+                        };
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 }
