@@ -46,7 +46,7 @@ export class NotificationService {
         return NotificationService.instance;
     }
 
-    public getUsers(): Array<UserSocket> {
+    public getOnlineUsers(): Array<UserSocket> {
         return NotificationService.onlineUsers
     }
 

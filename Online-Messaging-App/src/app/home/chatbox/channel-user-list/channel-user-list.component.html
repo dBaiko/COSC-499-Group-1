@@ -1,26 +1,29 @@
 <mat-card class="scrollMe">
     <div class="mat-card-header">
-        <mat-card-title
-            _ngcontent-cib-c7=""
-            class="chat-box-title mat-card-title ng-star-inserted"
-        >Subscribers
-            <hr _ngcontent-rur-c7="">
+        <mat-card-title>
+            Subscribers
+            <hr>
         </mat-card-title>
     </div>
     <div class="onlineUsers">
-        <mat-card-title
-            _ngcontent-cib-c7=""
-            class="chat-box-title mat-card-title ng-star-inserted"
-        >Online
-            <hr _ngcontent-rur-c7="">
+        <mat-card-title>
+            Online
+            <hr>
         </mat-card-title>
+        <div>
+
+        </div>
+
     </div>
     <div class="offlineUsers">
-        <mat-card-title
-            _ngcontent-cib-c7=""
-            class="chat-box-title mat-card-title ng-star-inserted"
-        >Offline
-            <hr _ngcontent-rur-c7="">
+        <mat-card-title>
+            Offline
+            <hr>
+
         </mat-card-title>
+        <div *ngFor="let user of subscribedUsers">
+            {{user.username}}
+        </div>
     </div>
+
 </mat-card>

@@ -58,10 +58,7 @@ mat-label {
     padding-left: 0.5rem;
 }
 
-.container {
-    height: 100%;
-    margin: 1vh;
-}
+
 
 .chat-box-header {
     width: 100%;
@@ -146,11 +143,12 @@ mat-label {
 
 app-channel-user-list {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
+    width: 20%;
+    float: left;
 }
 .container {
-    ::ng-deep mat-sidenav-container{
-        height: 50%;
-    }
-
+    height: 100%;
+    float: left;
+    width: 80%;
 }
