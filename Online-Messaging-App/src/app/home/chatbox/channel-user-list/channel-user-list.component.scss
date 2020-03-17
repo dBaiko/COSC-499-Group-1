@@ -1,0 +1,68 @@
+mat-card {
+    background-color: var(--element-color);
+    border-radius: 0px;
+    border-top: 1px solid #f8f8f8;
+    height: 100%;
+}
+
+mat-form-field {
+    border-radius: 0.5rem;
+    background-color: var(--element-color);
+    width: 86%;
+    margin-right: 50vh;
+    color: var(--primary-text-color);
+}
+
+#scrollable {
+    overflow-y: auto;
+    height: 80%;
+    margin-top: 1rem;
+}
+
+.userPicture {
+    width: 5%;
+}
+
+.clickable {
+    cursor: pointer;
+    color: var(--primary-color);
+}
+
+hr {
+    border: 1px solid #ececec;
+}
+
+mat-card-title {
+    color: var(--primary-color);
+}
+
+.headerTop {
+    background-color: var(--element-color);
+    width: 100%;
+}
+
+mat-card-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    margin-top: 10vh;
+}
+
+p {
+    color: var(--primary-text-color);
+}
+
+mat-label {
+    color: var(--primary-text-color);
+    padding-left: 0.5rem;
+}
+
+.container {
+    height: 100%;
+    margin: 1vh;
+}
+
+.chat-box-header {
+    width: 100%;
+}
