@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable} from "@angular/core";
 import * as Socket from "socket.io-client";
 
 export interface UserSocket {
@@ -36,13 +36,18 @@ export class NotificationService {
     private static onlineUsers: Array<UserSocket> = [];
     private static socketId: string;
 
-    constructor() {}
+    constructor() {
+    }
 
     public static getInstance(): NotificationService {
         if (!NotificationService.instance) {
             NotificationService.instance = new NotificationService();
         }
         return NotificationService.instance;
+    }
+
+    public getUsers(): Array<UserSocket> {
+        return NotificationService.onlineUsers
     }
 
     public getSocket(username: string): void {
