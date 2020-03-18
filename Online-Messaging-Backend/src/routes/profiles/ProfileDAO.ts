@@ -119,12 +119,12 @@ class ProfileDAO {
 
                             userChannelDAO.updateProfilePicture(username)
                                 .then(() => {
-                                    resolve(profileImageFilename);
                                 })
                                 .catch((err) => {
                                     console.log(err);
                                     reject(err);
                                 });
+                            resolve(profileImageFilename);
                         }
                     });
                 }

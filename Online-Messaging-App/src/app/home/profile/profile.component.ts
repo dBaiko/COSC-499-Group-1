@@ -5,17 +5,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
+import { ProfileObject } from "../home.component";
 
 interface UserObject {
     username: string;
     email: string;
-}
-
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
 }
 
 interface UserProfileObject {

@@ -7,6 +7,7 @@ import { FormGroup } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
+import { ProfileObject } from "../home.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
@@ -36,21 +37,6 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
-interface UserProfileObject {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
@@ -71,11 +57,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     friendMessage: string = null;
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
+    @Input() currentUserProfile: ProfileObject;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
-    currentUserProfile: UserProfileObject;
-    random;
-    private profilesAPI = APIConfig.profilesAPI;
     private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
@@ -149,16 +133,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.chatMessages.push(data);
             }
         });
-        this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
-        this.random = Math.random();
     }
 
     ngAfterViewChecked() {
         this.scrollToBottom();
-    }
-
-    updateProfileView(value: string) {
-        this.profileViewEvent.emit(value);
     }
 
     getMessages(channelId: string): void {
@@ -401,37 +379,5 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } catch (err) {
             console.log(err);
         }
-    }
-
-    private getUserInfo(username: string): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
-
-                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        let profile: ProfileObject = data[0];
-                        this.currentUserProfile = {
-                            username: profile.username,
-                            firstName: profile.firstName,
-                            lastName: profile.lastName,
-                            email: null,
-                            profileImage: profile.profileImage
-                        };
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
     }
 }
