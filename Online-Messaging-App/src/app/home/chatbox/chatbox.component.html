@@ -4,15 +4,15 @@
             <mat-card-header class="chat-box-header">
                 <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
                     <img
-                            class="messagePicture"
-                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
-                            style="display: inline"
+                        class="messagePicture"
+                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
+                        style="display: inline"
                     />
                     <mat-card-title
-                            (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
-                            class="clickable"
-                            style="display: inline"
+                        (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
+                        class="clickable"
+                        style="display: inline"
                     >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
                     >
                 </div>
@@ -48,19 +48,19 @@
                                     </div>
                                     <ng-template #elseBlock1>
                                         <div
-                                                *ngIf="
+                                            *ngIf="
                                                 this.channelNotificationsUsernames.includes(user.username);
                                                 else elseBlock2
                                             "
-                                                class="subedOrSent"
+                                            class="subedOrSent"
                                         >
                                             Invite Sent
                                         </div>
                                         <ng-template #elseBlock2>
                                             <button
-                                                    (click)="sendInvite(user.username)"
-                                                    class="sendInviteButton"
-                                                    mat-button
+                                                (click)="sendInvite(user.username)"
+                                                class="sendInviteButton"
+                                                mat-button
                                             >
                                                 Send Invite
                                             </button>
@@ -81,10 +81,10 @@
                 <mat-card-header>
                     <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                         <img
-                                class="messagePicture"
-                                inline="true"
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
+                            class="messagePicture"
+                            inline="true"
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{chatMessage.profileImage}}"
                         />
                         {{ chatMessage.username }}
                     </mat-card-title>
@@ -108,3 +108,9 @@
         </div>
     </mat-card>
 </div>
+<app-channel-user-list
+    (profileViewEvent)="updateProfileView($event)"
+    [subscribedUsers]="subscribedUsers"
+>
+
+</app-channel-user-list>

@@ -123,6 +123,10 @@ router.post(PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL, (req, res) => {
         (data) => {
             console.log(req.body);
             console.log(req.params.channelId);
+
+            console.log("HERE");
+            console.log(req.body.profileImage);
+
             const userChannelDAO = new UserChannelDAO(docClient);
             userChannelDAO
                 .addNewUserToChannel(

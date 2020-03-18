@@ -2,24 +2,37 @@
     <div class="mat-card-header">
         <mat-card-title>
             Subscribers
-            <hr>
         </mat-card-title>
     </div>
-    <div *ngFor="let user of onlineUsers" class="onlineUsers">
-        <mat-card>
-            <mat-card-title>Online
-                <hr>
-            </mat-card-title>
-            {{user.username}}
-        </mat-card>
-    </div>
-    <div *ngFor="let user of offlineUsers" class="offlineUsers">
-        <mat-card>
-            <mat-card-title>Offline
-                <hr>
-            </mat-card-title>
-            {{user.username}}
-        </mat-card>
-    </div>
-
+    <mat-card>
+        <mat-card-title>Online
+            <hr>
+        </mat-card-title>
+        <div *ngFor="let user of onlineUsers" class="onlineUsers">
+            <div (click)="goToProfile(user.username)">
+                <img
+                    class="userProfilePicture"
+                    inline="true"
+                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                    src="{{user.profileImage}}"
+                />
+                <span>{{user.username}}</span>
+            </div>
+        </div>
+        <br>
+        <mat-card-title>Offline
+            <hr>
+        </mat-card-title>
+        <div *ngFor="let user of offlineUsers" class="offlineUsers">
+            <div (click)="goToProfile(user.username)">
+                <img
+                    class="userProfilePicture"
+                    inline="true"
+                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                    src="{{user.profileImage}}"
+                />
+                <span>{{user.username}}</span>
+            </div>
+        </div>
+    </mat-card>
 </mat-card>

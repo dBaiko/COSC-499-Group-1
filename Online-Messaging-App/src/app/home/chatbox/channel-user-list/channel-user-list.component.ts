@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NotificationService, UserSocket } from "../../../shared/notification.service";
 import { UserChannelObject } from "../../home.component";
 
@@ -10,8 +10,9 @@ import { UserChannelObject } from "../../home.component";
 export class ChannelUserListComponent implements OnInit {
 
     offlineUsers: Array<UserChannelObject> = [];
-
-    private onlineUsers: Array<UserSocket> = [];
+    onlineUsers = [];
+    @Output() profileViewEvent = new EventEmitter<string>();
+    private socketOnlineUsers: Array<UserSocket> = [];
 
     constructor(private notificationService: NotificationService) {
     }
@@ -25,23 +26,36 @@ export class ChannelUserListComponent implements OnInit {
     @Input()
     set subscribedUsers(value: Array<UserChannelObject>) {
         this._subscribedUsers = value;
-        this.onlineUsers = this.notificationService.getOnlineUsers();
+        this.socketOnlineUsers = this.notificationService.getOnlineUsers();
 
         let onlineUsersNames: Array<string> = [];
 
-        this.onlineUsers.forEach((user) => {
+        this.socketOnlineUsers.forEach((user) => {
             onlineUsersNames.push(user.username);
         });
+
+        this.offlineUsers = [];
+        this.onlineUsers = [];
 
         for (let i = 0; i < this.subscribedUsers.length; i++) {
             let user = this.subscribedUsers[i];
             if (!onlineUsersNames.includes(user.username)) {
                 this.offlineUsers.push(user);
+            } else {
+                this.onlineUsers.push({
+                    username: user.username,
+                    profileImage: user.profileImage
+                });
             }
         }
+
     }
 
     ngOnInit(): void {
-
     }
+
+    goToProfile(username: string) {
+        this.profileViewEvent.emit(username);
+    }
+
 }
