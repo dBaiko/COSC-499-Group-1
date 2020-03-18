@@ -59,6 +59,7 @@ interface UserProfileObject {
 export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages;
     error: string = Constants.EMPTY;
+    differentUsername: boolean = false;
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
