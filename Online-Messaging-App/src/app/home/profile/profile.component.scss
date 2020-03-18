@@ -66,13 +66,9 @@ button {
 }
 
 .profilePicture {
-    //margin-right: 1vh;
     width: 2em;
     height: 2em;
     border-radius: 50%;
-    //background-repeat: no-repeat;
-    //background-position: center center;
-    //background-size: cover;
 }
 
 #imageInput {
@@ -82,6 +78,7 @@ button {
 #imageButton {
     z-index: 100;
     position: absolute;
-    top: 19vh;
-    left: 3.25rem;
+    top: 12vh;
+    left: 2.7rem;
+    font-size: 0.75rem;
 }

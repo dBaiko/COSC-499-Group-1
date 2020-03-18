@@ -23,9 +23,6 @@ mat-form-field {
     width: 2em;
     height: 2em;
     border-radius: 50%;
-    //background-repeat: no-repeat;
-    //background-position: center center;
-    //background-size: cover;
 }
 
 .clickable {
@@ -62,7 +59,6 @@ mat-label {
     color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
-
 
 
 .chat-box-header {
@@ -152,6 +148,7 @@ app-channel-user-list {
     width: 20%;
     float: left;
 }
+
 .container {
     height: 100%;
     float: left;
