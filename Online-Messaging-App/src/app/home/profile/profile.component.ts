@@ -76,13 +76,6 @@ export class ProfileComponent implements OnInit {
         this.getUserInfo(this._profileView);
     }
 
-    set toggleEditing(editing: boolean) {
-        this.editing = editing;
-        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
-        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
-        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
-    }
-
     ngOnInit() {
         this.editForm = new FormGroup({
             email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
@@ -149,6 +142,13 @@ export class ProfileComponent implements OnInit {
                 console.log(err);
             }
         );
+    }
+
+    toggleEditing(editing: boolean) {
+        this.editing = editing;
+        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
+        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
+        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
     }
 
     updateProfilePicture(event: Event): void {
@@ -223,7 +223,7 @@ export class ProfileComponent implements OnInit {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {
                                 this.getUserInfo(this.userProfile.username);
-                                this.toggleEditing = false;
+                                this.toggleEditing(false);
                                 this.editSaveMessage = SUCCESS_MESSAGE;
                             },
                             (err) => {
