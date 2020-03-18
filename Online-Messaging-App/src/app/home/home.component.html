@@ -3,6 +3,7 @@
         (newChannelEvent)="receiveNewSubbedChannel($event)"
         (profileViewEvent)="updateProfile($event)"
         (switchEvent)="updateDisplay($event)"
+        [currentUserProfile]="currentUserProfile"
     >
     </app-header>
     <mat-sidenav-container class="container">
@@ -19,6 +20,7 @@
                 (newChannelEvent)="addNewChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
+                [currentUserProfile]="currentUserProfile"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
             ></app-sidebar>
@@ -29,6 +31,7 @@
                     <div *ngSwitchCase="'channelBrowser'" class="scrollMe">
                         <app-channel-browser
                             (newChannelIdEvent)="receiveNewSubbedChannel($event)"
+                            [currentUserProfile]="currentUserProfile"
                             [newChannel]="newAddedChannel"
                             class="scrollMe"
                         ></app-channel-browser>
@@ -37,6 +40,7 @@
                         <app-chatbox
                             (profileViewEvent)="updateProfile($event)"
                             [currentChannel]="selectedChannelId"
+                            [currentUserProfile]="currentUserProfile"
                             [userList]="userList"
                             class="scrollMe"
                         ></app-chatbox>

@@ -1,9 +1,10 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
+import { ProfileObject } from "../home.component";
 
 interface UserChannelObject {
     username: string;
@@ -14,13 +15,6 @@ interface UserChannelObject {
     profileImage: string;
 }
 
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
 interface InviteChannelObject {
     channelId: string;
     channelName: string;
@@ -28,17 +22,7 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
-interface UserProfileObject {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
 const MY_SELECT_CHILD: string = "mySelect";
-const MAT_SELECT_ARROW: string = "mat-select-arrow";
-const CLASS_DROPPED: string = "dropped";
 const NOTIFICATIONS_URI: string = "/notifications";
 const INSERTED_TIME_URI: string = "/insertedTime/";
 const PUBLIC_NOTIFICATION: string = "public";
@@ -57,11 +41,11 @@ export class HeaderComponent implements OnInit {
     userLoggedIn = false;
     user;
 
-    userProfile: UserProfileObject;
     usersURL: string = APIConfig.usersAPI;
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
+    @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -69,7 +53,6 @@ export class HeaderComponent implements OnInit {
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
-    private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
     private channelBrowser = "channelBrowser";
     private profile = "profile";
@@ -103,7 +86,6 @@ export class HeaderComponent implements OnInit {
                     this.notificationCount++;
                 }
             );
-            this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
         }
     }
 
@@ -126,7 +108,7 @@ export class HeaderComponent implements OnInit {
             userChannelRole: DEFAULT_CHANNEL_ROLE,
             channelName: notification.channelName,
             channelType: notification.type,
-            profileImage: this.userProfile.profileImage
+            profileImage: this.currentUserProfile.profileImage
         };
 
         this.newChannelEvent.emit(user);
@@ -294,37 +276,5 @@ export class HeaderComponent implements OnInit {
             this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
         }
         this.notificationCount--;
-    }
-
-    private getUserInfo(username: string): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
-
-                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        let profile: ProfileObject = data[0];
-                        this.userProfile = {
-                            username: profile.username,
-                            firstName: profile.firstName,
-                            lastName: profile.lastName,
-                            email: null,
-                            profileImage: profile.profileImage
-                        };
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
     }
 }

@@ -5,7 +5,7 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
-import { UserChannelObject } from "../home.component";
+import { ProfileObject, UserChannelObject } from "../home.component";
 import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm/unsubscribe-confirm.component";
 
 interface UserObject {
@@ -37,6 +37,7 @@ export class SidebarComponent implements OnInit {
     friendsChannels = [];
     userSubscribedChannels = [];
     @Input() userList: Array<UserObject>;
+    @Input() currentUserProfile: ProfileObject;
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -203,12 +204,13 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    joinChannel(): void {
+    createChannel(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
         dialogConfig.panelClass = "dialog-class";
+        dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: UserChannelObject) => {
             if (result) {
@@ -236,6 +238,7 @@ export class SidebarComponent implements OnInit {
         dialogConfig.autoFocus = true;
         dialogConfig.width = "35%";
         dialogConfig.panelClass = "dialog-class";
+        dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(UnsubscribeConfirmComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result) {
@@ -248,6 +251,74 @@ export class SidebarComponent implements OnInit {
                             })
                         };
 
+                        for (let i = 0; i < this.userSubscribedChannels.length; i++) {
+                            if (this.userSubscribedChannels[i].channelId == channelId) {
+                                this.userSubscribedChannels.splice(i, 1);
+                            }
+                        }
+                        for (let i = 0; i < this.publicChannels.length; i++) {
+                            if (this.publicChannels[i].channelId == channelId) {
+                                this.publicChannels.splice(i, 1);
+                            }
+                        }
+                        for (let i = 0; i < this.privateChannels.length; i++) {
+                            if (this.privateChannels[i].channelId == channelId) {
+                                this.privateChannels.splice(i, 1);
+                            }
+                        }
+                        for (let i = 0; i < this.friendsChannels.length; i++) {
+                            if (this.friendsChannels[i].channelId == channelId) {
+                                this.friendsChannels.splice(i, 1);
+                            }
+                        }
+                        //TODO: reduce this, or at least move to a method
+                        if (this.publicChannelSelect) {
+                            if (this.publicChannels.length > 0) {
+                                this.selectPublicChannel();
+                                this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                            } else if (this.privateChannels.length > 0) {
+                                this.selectPrivateChannel();
+                                this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                            } else if (this.friendsChannels.length > 0) {
+                                this.selectFriend();
+                                this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                            } else {
+                                this.selectPublicChannel();
+                                this.switchDisplay(this.channelBrowser);
+                                this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                            }
+                        } else if (this.privateChannelSelect) {
+                            if (this.privateChannels.length > 0) {
+                                this.selectPrivateChannel();
+                                this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                            } else if (this.publicChannels.length > 0) {
+                                this.selectPublicChannel();
+                                this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                            } else if (this.friendsChannels.length > 0) {
+                                this.selectFriend();
+                                this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                            } else {
+                                this.selectPublicChannel();
+                                this.switchDisplay(this.channelBrowser);
+                                this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                            }
+                        } else if (this.friendChannelSelect) {
+                            if (this.friendsChannels.length > 0) {
+                                this.selectFriend();
+                                this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
+                            } else if (this.publicChannels.length > 0) {
+                                this.selectPublicChannel();
+                                this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+                            } else if (this.privateChannels.length > 0) {
+                                this.selectPrivateChannel();
+                                this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
+                            } else {
+                                this.selectPublicChannel();
+                                this.switchDisplay(this.channelBrowser);
+                                this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
+                            }
+                        }
+
                         this.http
                             .delete(
                                 this.usersAPI +
@@ -257,74 +328,7 @@ export class SidebarComponent implements OnInit {
                                 httpHeaders
                             )
                             .subscribe(
-                                (data) => {
-                                    for (let i = 0; i < this.userSubscribedChannels.length; i++) {
-                                        if (this.userSubscribedChannels[i].channelId == channelId) {
-                                            this.userSubscribedChannels.splice(i, 1);
-                                        }
-                                    }
-                                    for (let i = 0; i < this.publicChannels.length; i++) {
-                                        if (this.publicChannels[i].channelId == channelId) {
-                                            this.publicChannels.splice(i, 1);
-                                        }
-                                    }
-                                    for (let i = 0; i < this.privateChannels.length; i++) {
-                                        if (this.privateChannels[i].channelId == channelId) {
-                                            this.privateChannels.splice(i, 1);
-                                        }
-                                    }
-                                    for (let i = 0; i < this.friendsChannels.length; i++) {
-                                        if (this.friendsChannels[i].channelId == channelId) {
-                                            this.friendsChannels.splice(i, 1);
-                                        }
-                                    }
-                                    //TODO: reduce this, or at least move to a method
-                                    if (this.publicChannelSelect) {
-                                        if (this.publicChannels.length > 0) {
-                                            this.selectPublicChannel();
-                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-                                        } else if (this.privateChannels.length > 0) {
-                                            this.selectPrivateChannel();
-                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
-                                        } else if (this.friendsChannels.length > 0) {
-                                            this.selectFriend();
-                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
-                                        } else {
-                                            this.selectPublicChannel();
-                                            this.switchDisplay(this.channelBrowser);
-                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
-                                        }
-                                    } else if (this.privateChannelSelect) {
-                                        if (this.privateChannels.length > 0) {
-                                            this.selectPrivateChannel();
-                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
-                                        } else if (this.publicChannels.length > 0) {
-                                            this.selectPublicChannel();
-                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-                                        } else if (this.friendsChannels.length > 0) {
-                                            this.selectFriend();
-                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
-                                        } else {
-                                            this.selectPublicChannel();
-                                            this.switchDisplay(this.channelBrowser);
-                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
-                                        }
-                                    } else if (this.friendChannelSelect) {
-                                        if (this.friendsChannels.length > 0) {
-                                            this.selectFriend();
-                                            this.selectChannel(this.friendsChannels[0].channelId, FRIEND);
-                                        } else if (this.publicChannels.length > 0) {
-                                            this.selectPublicChannel();
-                                            this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-                                        } else if (this.privateChannels.length > 0) {
-                                            this.selectPrivateChannel();
-                                            this.selectChannel(this.privateChannels[0].channelId, PRIVATE);
-                                        } else {
-                                            this.selectPublicChannel();
-                                            this.switchDisplay(this.channelBrowser);
-                                            this.cookieService.delete(this.auth.getAuthenticatedUser().getUsername());
-                                        }
-                                    }
+                                () => {
                                 },
                                 (err) => {
                                     console.log(err);
