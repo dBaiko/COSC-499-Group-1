@@ -6,6 +6,8 @@ import MessageDAO from "../messages/MessageDAO";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";
+const PROFILE_IMAGE_S3_PREFIX: string =
+    "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 
 interface UserChannelObject {
     username: string;
@@ -13,6 +15,7 @@ interface UserChannelObject {
     userChannelRole: string;
     channelName: string;
     channelType: string;
+    profileImage: string;
 }
 
 class UserChannelDAO {
@@ -167,6 +170,43 @@ class UserChannelDAO {
             });
         });
     }
+
+    public updateProfilePicture(username: string): Promise<any> {
+
+        return new Promise<any>((resolve, reject) => {
+            this.getAllSubscribedChannels(username)
+                .then((data: Array<UserChannelObject>) => {
+
+                    data.forEach((userChannel) => {
+
+                        let params = {
+                            TableName: USER_CHANNEL_TABLE_NAME,
+                            Key: {
+                                username: username,
+                                channelId: userChannel.channelId
+                            },
+                            UpdateExpression: "SET profileImage = :p",
+                            ExpressionAttributeValues: {
+                                ":p": PROFILE_IMAGE_S3_PREFIX + username + ".png"
+                            }
+                        };
+
+                        this.docClient.update(params, (err, data1) => {
+                            if (err) {
+                                reject(err);
+                            }
+                        });
+
+                    });
+                    resolve();
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+
+    }
+
 }
 
 export default UserChannelDAO;
