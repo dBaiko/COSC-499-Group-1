@@ -4,20 +4,20 @@
             <mat-card-header>
                 <div (mouseenter)="imageHover = !imageHover" (mouseleave)="imageHover = !imageHover">
                     <img
-                            class="profilePicture"
-                            id="profileImage"
-                            inline="true"
-                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="{{ this.userProfile.profileImage }}"
+                        class="profilePicture"
+                        id="profileImage"
+                        inline="true"
+                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                        src="{{ this.userProfile.profileImage }}"
                     />
                     <input #fileInput (change)="updateProfilePicture($event)" id="imageInput" type="file"/>
                     <button
-                            (click)="fileInput.click()"
-                            *ngIf="
+                        (click)="fileInput.click()"
+                        *ngIf="
                             this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover
                         "
-                            id="imageButton"
-                            mat-button
+                        id="imageButton"
+                        mat-button
                     >
                         Select File
                     </button>
@@ -39,8 +39,8 @@
                 <div *ngIf="userProfile.email">
                     <p class="nameHeaders"><b>Email</b></p>
                     <p>{{ userProfile.email }}</p>
+                    <hr/>
                 </div>
-                <hr/>
                 <p class="nameHeaders"><b>First Name</b></p>
                 <p>{{ userProfile.firstName }}</p>
                 <hr/>
@@ -49,12 +49,12 @@
                 <hr/>
             </div>
             <div
-                    *ngIf="
+                *ngIf="
                     userProfile &&
                     editing &&
                     this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()
                 "
-                    class="profileInfo"
+                class="profileInfo"
             >
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
@@ -64,7 +64,7 @@
                     <input autocomplete="off" formControlName="email" id="email" name="email" required type="email"/>
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
-                                *ngIf="
+                            *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'email',
@@ -79,16 +79,16 @@
                     <hr/>
                     <p class="nameHeaders"><b>First Name</b></p>
                     <input
-                            autocomplete="off"
-                            formControlName="firstName"
-                            id="firstName"
-                            name="firstName"
-                            required
-                            type="text"
+                        autocomplete="off"
+                        formControlName="firstName"
+                        id="firstName"
+                        name="firstName"
+                        required
+                        type="text"
                     />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
-                                *ngIf="
+                            *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'firstName',
@@ -103,16 +103,16 @@
                     <hr/>
                     <p class="nameHeaders"><b>Last Name</b></p>
                     <input
-                            autocomplete="off"
-                            formControlName="lastName"
-                            id="lastName"
-                            name="lastName"
-                            required
-                            type="text"
+                        autocomplete="off"
+                        formControlName="lastName"
+                        id="lastName"
+                        name="lastName"
+                        required
+                        type="text"
                     />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
-                                *ngIf="
+                            *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'lastName',
@@ -131,9 +131,9 @@
                 </form>
             </div>
             <button
-                    (click)="toggleEditing(true)"
-                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
-                    mat-button
+                (click)="toggleEditing(true)"
+                *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
+                mat-button
             >
                 Edit
             </button>

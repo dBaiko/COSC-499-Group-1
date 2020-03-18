@@ -92,7 +92,9 @@
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
-                <hr/>
+                <div *ngIf="differentUsername">
+                    <hr/>
+                </div>
             </div>
         </div>
         <br/><br/>
