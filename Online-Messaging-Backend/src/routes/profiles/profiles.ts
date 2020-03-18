@@ -4,6 +4,7 @@ import ProfileDAO from "./ProfileDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
+import multer from "multer";
 
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
@@ -12,10 +13,12 @@ const jwtVerificationService: JwtVerificationService = JwtVerificationService.ge
 
 const router = express.Router();
 
-router.use(bodyParser());
+router.use(bodyParser.json({ limit: "50mb" }));
+router.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 const PATH_PUT_PROFILE: string = "/:username";
 const PATH_GET_PROFILE: string = "/:username";
+const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
 
@@ -24,6 +27,17 @@ interface ProfileObject {
     firstName: string;
     lastName: string;
 }
+
+const storage = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, "src/routes/profiles/temp");
+    },
+    filename: (req, file, callback) => {
+        callback(null, file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
 
 router.put(PATH_PUT_PROFILE, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
@@ -52,6 +66,32 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
                     data: { message: "Unauthorized to access user profile info" }
                 });
             }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.put(PATH_UPDATE_PROFILE_IMAGE, upload.single("file"), (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            const updateProfile = new ProfileDAO(docClient);
+            updateProfile
+                .updateProfileImage(req.file, req.body.username)
+                .then((data) => {
+                    res.status(200).send({
+                        profileImage: data
+                    });
+                })
+                .catch((err) => {
+                    res.status(401).send({
+                        status: 401,
+                        data: { message: err }
+                    });
+                });
         },
         (err) => {
             res.status(err.status).send(err);

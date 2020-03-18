@@ -6,14 +6,14 @@
                     <img
                         class="messagePicture"
                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                        src="https://i.imgur.com/32SZPXv.png"
+                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
                         style="display: inline"
                     />
                     <mat-card-title
                         (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
                         class="clickable"
                         style="display: inline"
-                        >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
+                    >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
                     >
                 </div>
                 <ng-template #notFriend>
@@ -23,11 +23,17 @@
                     <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
                         Send Invite
                     </button>
-                    <div (clickOutside)="closeInviting()" *ngIf="inviting" delayClickOutsideInit="true" id="inviteWindow" class="search">
+                    <div
+                        (clickOutside)="closeInviting()"
+                        *ngIf="inviting"
+                        class="search"
+                        delayClickOutsideInit="true"
+                        id="inviteWindow"
+                    >
                         <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
                             <mat-form-field>
                                 <mat-label>Search for person to invite</mat-label>
-                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users" />
+                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users"/>
                             </mat-form-field>
                         </form>
                         <div *ngFor="let user of inviteSearchList">
@@ -68,7 +74,7 @@
             </mat-card-header>
         </div>
         <p>{{ error }}</p>
-        <hr />
+        <hr/>
         <i class="errorMessage">{{ friendMessage }}</i>
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages">
@@ -78,7 +84,7 @@
                             class="messagePicture"
                             inline="true"
                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="https://i.imgur.com/32SZPXv.png"
+                            src="{{ chatMessage.profileImage }}"
                         />
                         {{ chatMessage.username }}
                     </mat-card-title>
@@ -86,16 +92,16 @@
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
-                <hr />
+                <hr/>
             </div>
         </div>
-        <br /><br />
+        <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
                 <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <input matInput name="content" ngModel placeholder="Enter Message" />
+                        <input matInput name="content" ngModel placeholder="Enter Message"/>
                     </mat-form-field>
                 </form>
             </mat-card-footer>

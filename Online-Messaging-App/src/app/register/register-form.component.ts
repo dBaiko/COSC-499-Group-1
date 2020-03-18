@@ -52,16 +52,31 @@ export class RegisterFormComponent implements OnInit {
         this.registerForm = new FormGroup({
             username: new FormControl(
                 "",
-                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    Validators.maxLength(30),
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
             ),
             matchingPasswords: this.matchingPasswordForm,
             firstName: new FormControl(
                 "",
-                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    Validators.maxLength(30),
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
             ),
             lastName: new FormControl(
                 "",
-                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noWhitespaceValidator, this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    Validators.maxLength(30),
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
             ),
             email: new FormControl("", Validators.compose([Validators.required, Validators.email]))
         });

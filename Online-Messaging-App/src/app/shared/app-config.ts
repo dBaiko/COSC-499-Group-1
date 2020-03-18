@@ -111,7 +111,5 @@ export const VALIDATION_MESSAGES = {
             message: "Channel name cannot contain swears"
         }
     ],
-    channelType: [
-        { type: "required", message: "Channel type is required" }
-    ]
+    channelType: [{ type: "required", message: "Channel type is required" }]
 };

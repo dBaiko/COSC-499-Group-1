@@ -21,19 +21,6 @@ mat-icon {
     font-size: 64px;
 }
 
-.profilePicture {
-    float: right;
-    margin-right: 1vh;
-    border-style: solid;
-    border-color: var(--soft-black);
-    border-radius: 0.5vh;
-    font-size: 128px;
-    height: auto;
-    overflow: visible;
-    white-space: normal;
-    width: 10%;
-}
-
 .wrapper {
     width: 60%;
     margin: auto;
@@ -76,4 +63,25 @@ button {
     border-radius: 3px;
     background-color: var(--primary-color);
     color: white;
+}
+
+.profilePicture {
+    //margin-right: 1vh;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    //background-repeat: no-repeat;
+    //background-position: center center;
+    //background-size: cover;
+}
+
+#imageInput {
+    display: none;
+}
+
+#imageButton {
+    z-index: 100;
+    position: absolute;
+    top: 19vh;
+    left: 3.25rem;
 }

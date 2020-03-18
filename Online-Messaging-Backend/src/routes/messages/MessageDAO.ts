@@ -7,6 +7,7 @@ interface Message {
     username: string;
     content: string;
     insertTime: number;
+    profileImage: string;
 }
 
 interface ChannelObject {
@@ -69,13 +70,15 @@ class MessageDAO {
         const messageId = uuid();
         const username = message.username;
         const content = message.content;
+        const profileImage = message.profileImage;
         const params = {
             Item: {
                 channelId,
                 content,
                 messageId,
                 username,
-                insertTime
+                insertTime,
+                profileImage
             },
             TableName: tableName
         };

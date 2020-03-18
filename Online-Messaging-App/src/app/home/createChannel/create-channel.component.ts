@@ -13,6 +13,7 @@ interface ChannelAndFirstUser {
     channelType: string;
     firstUsername: string;
     firstUserChannelRole: string;
+    profileImage: string;
 }
 
 interface ChannelObject {
@@ -29,6 +30,21 @@ interface newChannelResponse {
     };
 }
 
+interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
+interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
 const defaultFirstChannelRole = "admin";
 
 @Component({
@@ -41,7 +57,10 @@ export class CreateChannelComponent implements OnInit {
     submitAttempt: boolean = false;
     @Output() newChannelEvent: EventEmitter<any> = new EventEmitter<any>();
     data: ChannelObject = null;
+    userProfile: UserProfileObject;
     private channelAPI: string = APIConfig.channelsAPI;
+
+    private profilesAPI = APIConfig.profilesAPI;
 
     constructor(
         private auth: AuthenticationService,
@@ -56,10 +75,15 @@ export class CreateChannelComponent implements OnInit {
         this.newChannelForm = new FormGroup({
             channelName: new FormControl(
                 "",
-                Validators.compose([Validators.required, Validators.maxLength(30), this.formValidationService.noBadWordsValidator])
+                Validators.compose([
+                    Validators.required,
+                    Validators.maxLength(30),
+                    this.formValidationService.noBadWordsValidator
+                ])
             ),
             channelType: new FormControl("", Validators.compose([Validators.required]))
         });
+        this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
     }
 
     newChannelEntry(channelName: string, channelType: string): Observable<Object> {
@@ -67,7 +91,8 @@ export class CreateChannelComponent implements OnInit {
             channelName: channelName,
             channelType: channelType,
             firstUsername: this.auth.getAuthenticatedUser().getUsername(),
-            firstUserChannelRole: defaultFirstChannelRole
+            firstUserChannelRole: defaultFirstChannelRole,
+            profileImage: this.userProfile.profileImage
         };
 
         return new Observable<Object>((observer) => {
@@ -115,5 +140,37 @@ export class CreateChannelComponent implements OnInit {
 
     onClose(): void {
         this.dialogRef.close(this.data);
+    }
+
+    private getUserInfo(username: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        let profile: ProfileObject = data[0];
+                        this.userProfile = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null,
+                            profileImage: profile.profileImage
+                        };
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 }
