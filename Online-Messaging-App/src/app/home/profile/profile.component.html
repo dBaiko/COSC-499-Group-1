@@ -14,8 +14,7 @@
                     <button
                         (click)="fileInput.click()"
                         *ngIf="
-                            this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover
-                        "
+                            this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover"
                         id="imageButton"
                         mat-button
                     >
