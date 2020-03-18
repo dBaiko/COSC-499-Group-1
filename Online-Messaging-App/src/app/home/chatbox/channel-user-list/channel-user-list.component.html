@@ -1,0 +1,38 @@
+<mat-card class="scrollMe">
+    <div class="mat-card-header">
+        <mat-card-title>
+            Subscribers
+        </mat-card-title>
+    </div>
+    <mat-card>
+        <mat-card-title>Online
+            <hr>
+        </mat-card-title>
+        <div *ngFor="let user of onlineUsers" class="onlineUsers">
+            <div (click)="goToProfile(user.username)">
+                <img
+                    class="userProfilePicture"
+                    inline="true"
+                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                    src="{{user.profileImage}}"
+                />
+                <span>{{user.username}}</span>
+            </div>
+        </div>
+        <br>
+        <mat-card-title>Offline
+            <hr>
+        </mat-card-title>
+        <div *ngFor="let user of offlineUsers" class="offlineUsers">
+            <div (click)="goToProfile(user.username)">
+                <img
+                    class="userProfilePicture"
+                    inline="true"
+                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                    src="{{user.profileImage}}"
+                />
+                <span>{{user.username}}</span>
+            </div>
+        </div>
+    </mat-card>
+</mat-card>
