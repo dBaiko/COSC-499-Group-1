@@ -48,6 +48,7 @@ class UserChannelDAO {
         channelType: string,
         profileImage: string
     ): Promise<any> {
+
         const params = {
             Item: {
                 username,

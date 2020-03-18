@@ -20,7 +20,9 @@ mat-form-field {
 }
 
 .messagePicture {
-    width: 5%;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
 }
 
 .clickable {
@@ -58,10 +60,6 @@ mat-label {
     padding-left: 0.5rem;
 }
 
-.container {
-    height: 100%;
-    margin: 1vh;
-}
 
 .chat-box-header {
     width: 100%;
@@ -142,4 +140,17 @@ mat-label {
 ::placeholder {
     color: white;
     opacity: 1;
+}
+
+app-channel-user-list {
+    height: 100%;
+    overflow: auto;
+    width: 20%;
+    float: left;
+}
+
+.container {
+    height: 100%;
+    float: left;
+    width: 80%;
 }

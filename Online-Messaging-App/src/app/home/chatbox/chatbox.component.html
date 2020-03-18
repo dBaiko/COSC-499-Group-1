@@ -84,7 +84,7 @@
                             class="messagePicture"
                             inline="true"
                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="{{ chatMessage.profileImage }}"
+                            src="{{chatMessage.profileImage}}"
                         />
                         {{ chatMessage.username }}
                     </mat-card-title>
@@ -108,3 +108,9 @@
         </div>
     </mat-card>
 </div>
+<app-channel-user-list
+    (profileViewEvent)="updateProfileView($event)"
+    [subscribedUsers]="subscribedUsers"
+>
+
+</app-channel-user-list>

@@ -1,89 +1,84 @@
 mat-card {
-  background: var(--element-color);
+    background: var(--element-color);
 }
 
 mat-card-content {
-  margin-left: 1vh;
-  margin-right: 1vh;
-  padding-bottom: 3vh;
-  color: var(--primary-text-color);
+    margin-left: 1vh;
+    margin-right: 1vh;
+    padding-bottom: 3vh;
+    color: var(--primary-text-color);
 }
 
 mat-card-header {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 mat-icon {
-  margin-bottom: 0.5vh;
+    margin-bottom: 0.5vh;
 }
 
 .icon {
-  font-size: 64px;
+    font-size: 64px;
 }
 
 .wrapper {
-  width: 60%;
-  margin: auto;
+    width: 60%;
+    margin: auto;
 }
 
 button {
-  float: right;
-  margin-right: 5vh;
-  color: var(--primary-text-color);
-  background-color: var(--element-color);
-  width: 14vh;
+    float: right;
+    margin-right: 5vh;
+    color: var(--primary-text-color);
+    background-color: var(--element-color);
+    width: 14vh;
 }
 
 #settingsTitle {
-  font-size: 43px;
-  margin-left: 1vh;
+    font-size: 43px;
+    margin-left: 1vh;
 }
 
 .wrapper {
-  margin-top: 2vh;
+    margin-top: 2vh;
 }
 
 .nameHeaders {
-  font-size: 1.1em;
+    font-size: 1.1em;
 }
 
 input {
-  width: 70%;
-  padding: 10px 10px;
-  border-radius: 1px;
-  border: 2px solid white;
-  background-color: var(--element-hover-color);
+    width: 70%;
+    padding: 10px 10px;
+    border-radius: 1px;
+    border: 2px solid white;
+    background-color: var(--element-hover-color);
 }
 
 input:focus {
-  border: 2px solid var(--element-hover-color);
+    border: 2px solid var(--element-hover-color);
 }
 
 button {
-  border-radius: 3px;
-  background-color: var(--primary-color);
-  color: white;
+    border-radius: 3px;
+    background-color: var(--primary-color);
+    color: white;
 }
 
 .profilePicture {
-  //margin-right: 1vh;
-  border-style: solid;
-  border-color: var(--soft-black);
-  border-radius: 0.5vh;
-  font-size: 128px;
-  height: auto;
-  overflow: visible;
-  white-space: normal;
-  width: 40%;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
 }
 
 #imageInput {
-  display: none;
+    display: none;
 }
 
 #imageButton {
-  z-index: 100;
-  position: absolute;
-  top: 19vh;
-  left: 3.25rem;
+    z-index: 100;
+    position: absolute;
+    top: 12vh;
+    left: 2.7rem;
+    font-size: 0.75rem;
 }

@@ -156,6 +156,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.scrollToBottom();
     }
 
+    updateProfileView(value: string) {
+        this.profileViewEvent.emit(value);
+    }
+
     getMessages(channelId: string): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {

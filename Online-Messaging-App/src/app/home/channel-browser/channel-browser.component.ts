@@ -170,6 +170,8 @@ export class ChannelBrowserComponent implements OnInit {
                     })
                 };
 
+                console.log(this.userProfile.profileImage);
+
                 let user: UserChannelObject = {
                     username: this.auth.getAuthenticatedUser().getUsername(),
                     channelId: channel.channelId,
