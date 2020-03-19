@@ -111,5 +111,11 @@ export const VALIDATION_MESSAGES = {
             message: "Channel name cannot contain swears"
         }
     ],
-    channelType: [{ type: "required", message: "Channel type is required" }]
+    channelType: [{ type: "required", message: "Channel type is required" }],
+    profileImageName: [
+        { type: "badFileType", message: "Image file type must be png or jpg" }
+    ],
+    profileImageSize: [
+        { type: "badFileSize", message: "Image file size must not be greater than 1Mb" }
+    ]
 };

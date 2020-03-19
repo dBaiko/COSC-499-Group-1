@@ -46,7 +46,10 @@
                         ></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'" class="scrollMe">
-                        <app-profile [profileView]="profileView"></app-profile>
+                        <app-profile
+                            (profileUpdateEvent)="getUpdatedProfile()"
+                            [profileView]="profileView"
+                        ></app-profile>
                     </div>
                     <div *ngSwitchCase="'settings'" class="scrollMe">
                         <app-settings (themeEvent)="changeTheme($event)" [initialTheme]="currentTheme"></app-settings>
