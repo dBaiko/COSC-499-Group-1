@@ -55,8 +55,6 @@ export class FormValidationService {
         if (filesize) {
             if (!isNaN(filesize)) {
                 if (filesize > ONE_MB) {
-                    console.log("filesize");
-                    console.log(filesize);
                     return { badFileSize: true };
                 }
             }

@@ -170,11 +170,16 @@ export class ProfileComponent implements OnInit {
             .then((result) => {
                 this.newProfileImage = result;
                 document.getElementById("hiddenButton").click();
+            })
+            .catch((err) => {
+                console.log(err);
             });
     }
 
     imageFormSubmit() {
-        this.updateProfilePicture();
+        if (this.imageForm.valid) {
+            this.updateProfilePicture();
+        }
     }
 
     updateProfilePicture(): void {

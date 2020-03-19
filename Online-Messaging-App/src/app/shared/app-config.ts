@@ -116,6 +116,6 @@ export const VALIDATION_MESSAGES = {
         { type: "badFileType", message: "Image file type must be png or jpg" }
     ],
     profileImageSize: [
-        { type: "badFileSize", message: "Image file size must not be greater than 1Mb" }
+        { type: "badFileSize", message: "Image file size must be less than 1Mb" }
     ]
 };

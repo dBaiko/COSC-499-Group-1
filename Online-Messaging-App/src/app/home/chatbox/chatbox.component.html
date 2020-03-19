@@ -100,7 +100,8 @@
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
-                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off">
+                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off"
+                      id="messageForm">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
                         <input matInput name="content" ngModel placeholder="Enter Message"/>
