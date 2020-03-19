@@ -6,6 +6,7 @@ import * as Filter from "bad-words";
 const filter = new Filter();
 
 const CONFIRM_PASSWORD = "confirmPassword";
+const ONE_MB = 1000000;//1 million bytes is 1 Mb
 
 interface ValidationMethod {
     type: string;
@@ -16,6 +17,7 @@ const alphanumRegex: RegExp = /^[^\s\\]+$/i;
 
 @Injectable()
 export class FormValidationService {
+
     constructor() {
     }
 
@@ -30,6 +32,39 @@ export class FormValidationService {
         if (filter.isProfane(control.value)) {
             return { badWord: true };
         }
+        return null;
+    }
+
+    public correctFileType(control: AbstractControl): { [key: string]: boolean } | null {
+        let filename = control.value;
+        if (filename) {
+            let extension = filename.split(".")[1].toLowerCase();
+            if (("png" !== extension.toLowerCase()) && ("jpg" !== extension.toLowerCase()) && ("jpeg" !== extension.toLowerCase())) {
+                return { badFileType: true };
+            }
+
+        } else {
+            return null;
+        }
+
+        return null;
+    }
+
+    public correctFileSize(control: AbstractControl): { [key: string]: boolean } | null {
+        let filesize = control.value;
+        if (filesize) {
+            if (!isNaN(filesize)) {
+                if (filesize > ONE_MB) {
+                    console.log("filesize");
+                    console.log(filesize);
+                    return { badFileSize: true };
+                }
+            }
+
+        } else {
+            return null;
+        }
+
         return null;
     }
 

@@ -15,6 +15,7 @@ const DARK = "dark";
 const LIGHT = "light";
 
 const SETTINGS_URI = "/settings";
+const PROFILES_API = APIConfig.profilesAPI;
 
 export interface UserChannelObject {
     username: string;
@@ -46,6 +47,13 @@ interface UserObject {
     email: string;
 }
 
+export interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
@@ -65,7 +73,8 @@ export class HomeComponent implements OnInit {
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
     currentTheme: string;
-    private scrollContainer: any;
+
+    public currentUserProfile: ProfileObject;
 
     constructor(
         private auth: AuthenticationService,
@@ -96,10 +105,9 @@ export class HomeComponent implements OnInit {
             } else {
                 this.display = CHANNEL_BROWSER;
             }
-            if (this.auth.isLoggedIn()) {
-                this.getUsers();
-                this.getSettings();
-            }
+            this.getUsers();
+            this.getSettings();
+            this.getUserInfo();
         }
     }
 
@@ -130,6 +138,13 @@ export class HomeComponent implements OnInit {
     updateProfile(value: string): void {
         this.profileView = value;
         this.updateDisplay(PROFILE_PAGE);
+    }
+
+    getUpdatedProfile(): void {
+        this.getUserInfo()
+            .then(() => {
+                this.currentUserProfile.profileImage += "?" + Math.random();
+            });
     }
 
     private getUsers(): void {
@@ -182,6 +197,44 @@ export class HomeComponent implements OnInit {
                 console.log(err);
             }
         );
+    }
+
+    private getUserInfo(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    let username = this.auth.getAuthenticatedUser().getUsername();
+
+                    this.http.get(PROFILES_API + username, httpHeaders).subscribe(
+                        (data: Array<ProfileObject>) => {
+                            let profile: ProfileObject = data[0];
+                            this.currentUserProfile = {
+                                username: profile.username,
+                                firstName: profile.firstName,
+                                lastName: profile.lastName,
+                                profileImage: profile.profileImage + "?" + Math.random()
+                            };
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    reject(err);
+                }
+            );
+        });
     }
 
     private changeTheme(themeString: string): void {

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { APIConfig, Constants } from "../../shared/app-config";
-import { UserChannelObject } from "../home.component";
+import { ProfileObject, UserChannelObject } from "../home.component";
 
 interface ChannelObject {
     channelId: string;
@@ -10,26 +10,11 @@ interface ChannelObject {
     channelType: string;
 }
 
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
 const DEFAULT_CHANNEL_ROLE: string = "user";
 const PRIVATE_CHANNEL_TYPE: string = "private";
 const FRIEND_CHANNEL_TYPE: string = "friend";
-
-interface UserProfileObject {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
 
 @Component({
     selector: "app-channel-browser",
@@ -39,17 +24,14 @@ interface UserProfileObject {
 export class ChannelBrowserComponent implements OnInit {
     subscribedChannels: string[] = [];
     channels: Array<ChannelObject> = [];
-    count = 0;
-
-    userProfile: UserProfileObject;
 
     search = Constants.EMPTY;
 
+    @Input() currentUserProfile: ProfileObject;
     @Output() newChannelIdEvent = new EventEmitter<any>();
 
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
-    private profilesAPI = APIConfig.profilesAPI;
 
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
@@ -72,7 +54,6 @@ export class ChannelBrowserComponent implements OnInit {
     ngOnInit() {
         this.getChannels();
         this.getSubscribedChannels();
-        this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
     }
 
     getSubscribedChannels() {
@@ -170,7 +151,7 @@ export class ChannelBrowserComponent implements OnInit {
                     })
                 };
 
-                console.log(this.userProfile.profileImage);
+                console.log(this.currentUserProfile.profileImage);
 
                 let user: UserChannelObject = {
                     username: this.auth.getAuthenticatedUser().getUsername(),
@@ -178,7 +159,7 @@ export class ChannelBrowserComponent implements OnInit {
                     userChannelRole: DEFAULT_CHANNEL_ROLE,
                     channelName: channel.channelName,
                     channelType: channel.channelType,
-                    profileImage: this.userProfile.profileImage
+                    profileImage: this.currentUserProfile.profileImage
                 };
 
                 this.newChannelIdEvent.emit({
@@ -197,38 +178,6 @@ export class ChannelBrowserComponent implements OnInit {
                             console.log(err);
                         }
                     );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
-    }
-
-    private getUserInfo(username: string): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
-
-                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        let profile: ProfileObject = data[0];
-                        this.userProfile = {
-                            username: profile.username,
-                            firstName: profile.firstName,
-                            lastName: profile.lastName,
-                            email: null,
-                            profileImage: profile.profileImage
-                        };
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
             },
             (err) => {
                 console.log(err);

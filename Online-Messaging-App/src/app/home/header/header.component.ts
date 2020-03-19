@@ -1,9 +1,10 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { NotificationService, UserSocket } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
+import { ProfileObject } from "../home.component";
 
 interface UserChannelObject {
     username: string;
@@ -11,13 +12,6 @@ interface UserChannelObject {
     userChannelRole: string;
     channelName: string;
     channelType: string;
-    profileImage: string;
-}
-
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
     profileImage: string;
 }
 
@@ -60,8 +54,6 @@ export interface NotificationObject {
 }
 
 const MY_SELECT_CHILD: string = "mySelect";
-const MAT_SELECT_ARROW: string = "mat-select-arrow";
-const CLASS_DROPPED: string = "dropped";
 const NOTIFICATIONS_URI: string = "/notifications";
 const INSERTED_TIME_URI: string = "/insertedTime/";
 const PUBLIC_NOTIFICATION: string = "public";
@@ -82,12 +74,12 @@ export class HeaderComponent implements OnInit {
     userLoggedIn = false;
     user;
 
-    userProfile: UserProfileObject;
     usersURL: string = APIConfig.usersAPI;
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
     @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
+    @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -158,7 +150,7 @@ export class HeaderComponent implements OnInit {
             userChannelRole: DEFAULT_CHANNEL_ROLE,
             channelName: notification.channelName,
             channelType: notification.type,
-            profileImage: this.userProfile.profileImage
+            profileImage: this.currentUserProfile.profileImage
         };
 
         this.newChannelEvent.emit(user);

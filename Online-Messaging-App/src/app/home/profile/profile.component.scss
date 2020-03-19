@@ -66,8 +66,6 @@ button {
 }
 
 .profilePicture {
-    width: 2em;
-    height: 2em;
     border-radius: 50%;
 }
 
@@ -81,4 +79,8 @@ button {
     top: 12vh;
     left: 2.7rem;
     font-size: 0.75rem;
+}
+
+.profileError {
+    font-size: 0.7rem;
 }

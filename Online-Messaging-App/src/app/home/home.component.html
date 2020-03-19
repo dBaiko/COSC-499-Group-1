@@ -4,6 +4,7 @@
         (profileViewEvent)="updateProfile($event)"
         (switchEvent)="updateDisplay($event)"
         (notificationChannelEvent)="updateFromNotification($event)"
+        [currentUserProfile]="currentUserProfile"
     >
     </app-header>
     <mat-sidenav-container class="container">
@@ -20,6 +21,7 @@
                 (newChannelEvent)="addNewChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
+                [currentUserProfile]="currentUserProfile"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
                 [notificationChannel]="notificationChannel"
@@ -31,6 +33,7 @@
                     <div *ngSwitchCase="'channelBrowser'" class="scrollMe">
                         <app-channel-browser
                             (newChannelIdEvent)="receiveNewSubbedChannel($event)"
+                            [currentUserProfile]="currentUserProfile"
                             [newChannel]="newAddedChannel"
                             class="scrollMe"
                         ></app-channel-browser>
@@ -39,12 +42,16 @@
                         <app-chatbox
                             (profileViewEvent)="updateProfile($event)"
                             [currentChannel]="selectedChannelId"
+                            [currentUserProfile]="currentUserProfile"
                             [userList]="userList"
                             class="scrollMe"
                         ></app-chatbox>
                     </div>
                     <div *ngSwitchCase="'profile'" class="scrollMe">
-                        <app-profile [profileView]="profileView"></app-profile>
+                        <app-profile
+                            (profileUpdateEvent)="getUpdatedProfile()"
+                            [profileView]="profileView"
+                        ></app-profile>
                     </div>
                     <div *ngSwitchCase="'settings'" class="scrollMe">
                         <app-settings (themeEvent)="changeTheme($event)" [initialTheme]="currentTheme"></app-settings>

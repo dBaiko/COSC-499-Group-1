@@ -4,6 +4,7 @@ import fs from "fs";
 import { awsConfigPath } from "../../config/aws-config";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
+import UserChannelDAO from "../userChannels/UserChannelDAO";
 import SendData = ManagedUpload.SendData;
 
 aws.config.loadFromPath(awsConfigPath);
@@ -113,6 +114,16 @@ class ProfileDAO {
                             reject();
                         } else {
                             console.log("Item updated successfully:", JSON.stringify(data, null, 4));
+
+                            let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
+
+                            userChannelDAO.updateProfilePicture(username)
+                                .then(() => {
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    reject(err);
+                                });
                             resolve(profileImageFilename);
                         }
                     });

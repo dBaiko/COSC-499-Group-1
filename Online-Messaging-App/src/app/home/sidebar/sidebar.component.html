@@ -21,11 +21,7 @@
                     <mat-list-item
                         (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ publicChannel.channelName }}</h3>
-                        <!-- Hidden until functional -->
-                        <!--                        <a>-->
-                        <!--                            <mat-icon>settings</mat-icon>-->
-                        <!--                        </a>-->
+                    ><h3 matLine>{{ publicChannel.channelName }}</h3>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(publicChannel.channelId)">clear</mat-icon>
                         </a>
@@ -40,11 +36,7 @@
                     <mat-list-item
                         (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ privateChannel.channelName }}</h3>
-                        <!-- Hidden until functional -->
-                        <!--                        <a>-->
-                        <!--                            <mat-icon>settings</mat-icon>-->
-                        <!--                        </a>-->
+                    ><h3 matLine>{{ privateChannel.channelName }}</h3>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(privateChannel.channelId)">clear</mat-icon>
                         </a>
@@ -64,11 +56,7 @@
                     <mat-list-item
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
-                        ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
-                        <!-- Hidden until functional -->
-                        <!--                        <a>-->
-                        <!--                            <mat-icon>settings</mat-icon>-->
-                        <!--                        </a>-->
+                    ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(friendChannel.channelId)">clear</mat-icon>
                         </a>
@@ -77,8 +65,8 @@
             </mat-nav-list>
         </div>
     </div>
-    <br />
+    <br/>
     <div class="bottom">
-        <button (click)="joinChannel()" class="joinCreate">Create Channel</button>
+        <button (click)="createChannel()" class="joinCreate">Create Channel</button>
     </div>
 </mat-sidenav-container>

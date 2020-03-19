@@ -37,7 +37,7 @@
                             </mat-form-field>
                         </form>
                         <div *ngFor="let user of inviteSearchList">
-                            <mat-card *ngIf="user.username != auth.getAuthenticatedUser().getUsername()">
+                            <mat-card *ngIf="user.username != currentUserProfile.username">
                                 <mat-card-title class="usernameInvite">{{ user.username }}</mat-card-title>
                                 <mat-card-content>
                                     <div
@@ -92,7 +92,9 @@
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
-                <hr/>
+                <div *ngIf="differentUsername">
+                    <hr/>
+                </div>
             </div>
         </div>
         <br/><br/>
@@ -109,7 +111,7 @@
     </mat-card>
 </div>
 <app-channel-user-list
-    (profileViewEvent)="updateProfileView($event)"
+    (profileViewEvent)="goToProfile($event)"
     [subscribedUsers]="subscribedUsers"
 >
 
