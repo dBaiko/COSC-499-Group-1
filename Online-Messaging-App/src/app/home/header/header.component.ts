@@ -122,7 +122,6 @@ export class HeaderComponent implements OnInit {
                     this.notificationCount++;
                 }
             );
-            this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
         }
     }
 
@@ -343,38 +342,6 @@ export class HeaderComponent implements OnInit {
             this.generalNotification.splice(this.generalNotification.indexOf(notification), 1);
         }
         this.notificationCount--;
-    }
-
-    private getUserInfo(username: string): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
-
-                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        let profile: ProfileObject = data[0];
-                        this.userProfile = {
-                            username: profile.username,
-                            firstName: profile.firstName,
-                            lastName: profile.lastName,
-                            email: null,
-                            profileImage: profile.profileImage
-                        };
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
     }
 
     private deleteNotification(notification: NotificationObject): Promise<any> {
