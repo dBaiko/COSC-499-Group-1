@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from "@angular/core";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { ProfileObject } from "../home.component";
+import { ImageCompressor } from "../../shared/ImageCompressor";
 
 interface UserObject {
     username: string;
@@ -52,7 +53,8 @@ export class ProfileComponent implements OnInit {
         private auth: AuthenticationService,
         private http: HttpClient,
         private common: CommonService,
-        private formValidationService: FormValidationService
+        private formValidationService: FormValidationService,
+        private render: Renderer2
     ) {
     }
 
@@ -162,10 +164,13 @@ export class ProfileComponent implements OnInit {
 
     imageFormButtonClick(event) {
         let file = (event.target as HTMLInputElement).files[0];
-        this.newProfileImage = file;
         this.imageForm.controls["profileImageName"].setValue(file ? file.name : Constants.EMPTY);
         this.imageForm.controls["profileImageSize"].setValue(file ? file.size : Constants.EMPTY);
-        document.getElementById("hiddenButton").click();
+        ImageCompressor.compressImage(file, 200, 200, this.render)
+            .then((result) => {
+                this.newProfileImage = result;
+                document.getElementById("hiddenButton").click();
+            });
     }
 
     imageFormSubmit() {
