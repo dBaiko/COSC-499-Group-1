@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
 
 export interface UserSocket {
@@ -9,6 +9,7 @@ export interface UserSocket {
 export interface NotificationObject {
     channelId: string;
     channelName: string;
+    channelType: string;
     message: string;
     type: string;
     username: string;
@@ -47,7 +48,7 @@ export class NotificationService {
     }
 
     public getOnlineUsers(): Array<UserSocket> {
-        return NotificationService.onlineUsers
+        return NotificationService.onlineUsers;
     }
 
     public getSocket(username: string): void {

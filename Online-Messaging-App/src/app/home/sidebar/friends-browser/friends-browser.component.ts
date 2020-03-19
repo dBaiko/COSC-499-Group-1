@@ -161,6 +161,7 @@ export class FriendsBrowserComponent implements OnInit {
                             notification: {
                                 channelId: data.data.newChannel.channelId,
                                 channelName: data.data.newChannel.channelName,
+                                channelType: data.data.newChannel.channelType,
                                 fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                                 message: this.auth.getAuthenticatedUser().getUsername() + this.NOTIFICATION_MESSAGE,
                                 type: "friend",

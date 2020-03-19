@@ -31,6 +31,7 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
             let newNotification: NotificationObject = {
                 channelId: req.body.channelId,
                 channelName: req.body.channelName,
+                channelType: req.body.channelType,
                 username: req.body.username,
                 message: req.body.message,
                 type: req.body.type,

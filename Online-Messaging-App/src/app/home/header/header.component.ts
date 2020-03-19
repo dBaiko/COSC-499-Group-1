@@ -2,12 +2,8 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
-import {
-    NotificationService,
-    UserSocket
-} from "../../shared/notification.service";
+import { NotificationService, UserSocket } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
-import {not} from "rxjs/internal-compatibility";
 
 interface UserChannelObject {
     username: string;
@@ -41,8 +37,8 @@ interface UserProfileObject {
 }
 
 interface ChannelIdAndType {
-    channelId : string;
-    type : string;
+    channelId: string;
+    type: string;
 }
 
 export interface NotificationSocketObject {
@@ -54,6 +50,7 @@ export interface NotificationSocketObject {
 export interface NotificationObject {
     channelId: string;
     channelName: string;
+    channelType: string;
     message: string;
     type: string;
     username: string;
@@ -90,7 +87,7 @@ export class HeaderComponent implements OnInit {
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
-    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>()
+    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -140,10 +137,12 @@ export class HeaderComponent implements OnInit {
     toggleOpen(): void {
         this.open = !this.open;
     }
-    notificationChannelEmitter(view : string, channelId : string , type : string): void {
+
+    notificationChannelEmitter(view: string, channelId: string, type: string): void {
         this.switchEvent.emit(view);
-        this.notificationChannelEvent.emit(channelId);
+        this.notificationChannelEvent.emit({ channelId, type });
     }
+
     switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
@@ -178,15 +177,8 @@ export class HeaderComponent implements OnInit {
                     .post(this.channelsAPI + notification.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
                         () => {
-                            this.http
-                                .delete(
-                                    this.notificationsURL +
-                                    notification.notificationId +
-                                    INSERTED_TIME_URI +
-                                    notification.insertedTime,
-                                    httpHeaders
-                                )
-                                .subscribe(
+                            this.deleteNotification(notification)
+                                .then(
                                     () => {
                                         if (notification.type == "friend") {
                                             let channel: InviteChannelObject = {
@@ -207,11 +199,11 @@ export class HeaderComponent implements OnInit {
                                                     }
                                                 );
                                         }
-                                    },
-                                    (err) => {
-                                        console.log(err);
                                     }
-                                );
+                                )
+                                .catch((err) => {
+                                    console.log(err);
+                                });
                         },
                         (err) => {
                             console.log(err);
@@ -225,15 +217,15 @@ export class HeaderComponent implements OnInit {
 
         this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
+        this.notificationChannelEmitter("chatbox", notification.channelId, notification.channelType);
     }
 
     sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
         let message = this.auth.getAuthenticatedUser().getUsername();
         if (response) {
             message += ACCEPT_INVITE;
-        }
-        else
-            message+= DENY_INVITE;
+        } else
+            message += DENY_INVITE;
 
         message += notification.channelName;
         let notifications: NotificationSocketObject = {
@@ -245,6 +237,7 @@ export class HeaderComponent implements OnInit {
             notification: {
                 channelId: notification.channelId,
                 channelName: notification.channelName,
+                channelType: notification.channelType,
                 fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                 message: message,
                 type: "general",
@@ -267,15 +260,8 @@ export class HeaderComponent implements OnInit {
                     })
                 };
 
-                this.http
-                    .delete(
-                        this.notificationsURL +
-                        notification.notificationId +
-                        INSERTED_TIME_URI +
-                        notification.insertedTime,
-                        httpHeaders
-                    )
-                    .subscribe(
+                this.deleteNotification(notification)
+                    .then(
                         () => {
                             let channel: InviteChannelObject = {
                                 channelId: notification.channelId,
@@ -292,11 +278,11 @@ export class HeaderComponent implements OnInit {
                                     console.log(err);
                                 }
                             );
-                        },
-                        (err) => {
-                            console.log(err);
                         }
-                    );
+                    )
+                    .catch((err) => {
+                        console.log(err);
+                    });
             },
             (err) => {
                 console.log(err);
@@ -362,7 +348,7 @@ export class HeaderComponent implements OnInit {
         } else if (notification.type == FRIEND_NOTIFICATION) {
             this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
         } else {
-            this.generalNotification.splice(this.generalNotification.indexOf(notification),1);
+            this.generalNotification.splice(this.generalNotification.indexOf(notification), 1);
         }
         this.notificationCount--;
     }
@@ -398,4 +384,40 @@ export class HeaderComponent implements OnInit {
             }
         );
     }
+
+    private deleteNotification(notification: NotificationObject): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .delete(
+                            this.notificationsURL +
+                            notification.notificationId +
+                            INSERTED_TIME_URI +
+                            notification.insertedTime,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            () => {
+                                resolve();
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
+    }
+
 }

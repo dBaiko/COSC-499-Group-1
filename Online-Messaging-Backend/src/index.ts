@@ -17,6 +17,7 @@ export interface UserSocket {
 export interface NotificationObject {
     channelId: string;
     channelName: string;
+    channelType: string;
     message: string;
     type: string;
     username: string;
