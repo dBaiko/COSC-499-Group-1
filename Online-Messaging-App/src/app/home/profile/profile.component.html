@@ -10,7 +10,44 @@
                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                         src="{{ this.userProfile.profileImage }}"
                     />
-                    <input #fileInput (change)="updateProfilePicture($event)" id="imageInput" type="file"/>
+                    <form (ngSubmit)="imageFormSubmit()" [formGroup]="imageForm">
+                        <input #fileInput (change)="imageFormButtonClick($event)"
+                               accept=".png,.jpg,.jpeg"
+                               id="imageInput"
+                               name="profileImage"
+                               type="file"/>
+                        <input formControlName="profileImageName" name="imageName" type="hidden"/>
+                        <input formControlName="profileImageSize" name="imageSize" type="hidden"/>
+                        <mat-error *ngFor="let validation of common.validation_methods.profileImageName"
+                                   class="profileError">
+                            <mat-error
+                                *ngIf="
+                                    formValidationService.checkIfFormElementInvalid(
+                                        imageForm,
+                               'profileImageName',
+                                        validation,
+                                        true
+                                    )"
+                            >
+                                {{ validation.message }}
+                            </mat-error>
+                        </mat-error>
+                        <mat-error *ngFor="let validation of common.validation_methods.profileImageSize"
+                                   class="profileError">
+                            <mat-error
+                                *ngIf="
+                                    formValidationService.checkIfFormElementInvalid(
+                                        imageForm,
+                               'profileImageSize',
+                                        validation,
+                                        true
+                                    )"
+                            >
+                                {{ validation.message }}
+                            </mat-error>
+                        </mat-error>
+                        <button id="hiddenButton" style="display:none;" type="submit"></button>
+                    </form>
                     <button
                         (click)="fileInput.click()"
                         *ngIf="

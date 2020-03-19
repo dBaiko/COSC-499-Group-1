@@ -130,6 +130,13 @@ export class HomeComponent implements OnInit {
         this.updateDisplay(PROFILE_PAGE);
     }
 
+    getUpdatedProfile(): void {
+        this.getUserInfo()
+            .then(() => {
+                this.currentUserProfile.profileImage += "?" + Math.random();
+            });
+    }
+
     private getUsers(): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
@@ -182,37 +189,42 @@ export class HomeComponent implements OnInit {
         );
     }
 
-    private getUserInfo(): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+    private getUserInfo(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                let username = this.auth.getAuthenticatedUser().getUsername();
+                    let username = this.auth.getAuthenticatedUser().getUsername();
 
-                this.http.get(PROFILES_API + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        let profile: ProfileObject = data[0];
-                        this.currentUserProfile = {
-                            username: profile.username,
-                            firstName: profile.firstName,
-                            lastName: profile.lastName,
-                            profileImage: profile.profileImage
-                        };
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
+                    this.http.get(PROFILES_API + username, httpHeaders).subscribe(
+                        (data: Array<ProfileObject>) => {
+                            let profile: ProfileObject = data[0];
+                            this.currentUserProfile = {
+                                username: profile.username,
+                                firstName: profile.firstName,
+                                lastName: profile.lastName,
+                                profileImage: profile.profileImage + "?" + Math.random()
+                            };
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    reject(err);
+                }
+            );
+        });
     }
 
     private changeTheme(themeString: string): void {

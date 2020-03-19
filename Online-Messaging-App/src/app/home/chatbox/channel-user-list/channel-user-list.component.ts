@@ -39,6 +39,7 @@ export class ChannelUserListComponent implements OnInit {
 
         for (let i = 0; i < this.subscribedUsers.length; i++) {
             let user = this.subscribedUsers[i];
+            user.profileImage += "?" + Math.random();
             if (!onlineUsersNames.includes(user.username)) {
                 this.offlineUsers.push(user);
             } else {
