@@ -13,6 +13,11 @@ interface UserObject {
     email: string;
 }
 
+interface ChannelIdAndType {
+    channelId : string;
+    type : string;
+}
+
 export interface ChannelObject {
     channelId: string;
     channelName: string;
@@ -49,6 +54,7 @@ export class SidebarComponent implements OnInit {
     private channelBrowser = "channelBrowser";
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
+    private _notificationChannel: ChannelIdAndType;
 
     constructor(
         private http: HttpClient,
@@ -67,6 +73,12 @@ export class SidebarComponent implements OnInit {
     @Input()
     set subbedChannel(value: ChannelObject) {
         this.setNewChannel(value);
+    }
+
+    @Input()
+    set notificationChannel(value: ChannelIdAndType) {
+        this._notificationChannel = value;
+        this.selectChannel(value.channelId, value.type);
     }
 
     ngOnInit(): void {

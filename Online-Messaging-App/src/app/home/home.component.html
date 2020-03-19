@@ -3,6 +3,7 @@
         (newChannelEvent)="receiveNewSubbedChannel($event)"
         (profileViewEvent)="updateProfile($event)"
         (switchEvent)="updateDisplay($event)"
+        (notificationChannelEvent)="updateFromNotification($event)"
     >
     </app-header>
     <mat-sidenav-container class="container">
@@ -21,6 +22,7 @@
                 (switchEvent)="updateDisplay($event)"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
+                [notificationChannel]="notificationChannel"
             ></app-sidebar>
         </mat-sidenav>
         <mat-sidenav-content [formGroup]="options" class="scrollMe">

@@ -2,8 +2,12 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import {
+    NotificationService,
+    UserSocket
+} from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
+import {not} from "rxjs/internal-compatibility";
 
 interface UserChannelObject {
     username: string;
@@ -36,6 +40,28 @@ interface UserProfileObject {
     profileImage: string;
 }
 
+interface ChannelIdAndType {
+    channelId : string;
+    type : string;
+}
+
+export interface NotificationSocketObject {
+    fromUser: UserSocket;
+    toUser: UserSocket;
+    notification: NotificationObject;
+}
+
+export interface NotificationObject {
+    channelId: string;
+    channelName: string;
+    message: string;
+    type: string;
+    username: string;
+    notificationId: string;
+    insertedTime: number;
+    fromFriend: string;
+}
+
 const MY_SELECT_CHILD: string = "mySelect";
 const MAT_SELECT_ARROW: string = "mat-select-arrow";
 const CLASS_DROPPED: string = "dropped";
@@ -45,6 +71,8 @@ const PUBLIC_NOTIFICATION: string = "public";
 const PRIVATE_NOTIFICATION: string = "private";
 const FRIEND_NOTIFICATION: string = "friend";
 const DEFAULT_CHANNEL_ROLE: string = "user";
+const ACCEPT_INVITE: string = " has accepted your invite to join ";
+const DENY_INVITE: string = " has denied your invite to join ";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
@@ -62,6 +90,7 @@ export class HeaderComponent implements OnInit {
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
+    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>()
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
@@ -69,6 +98,7 @@ export class HeaderComponent implements OnInit {
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
+    generalNotification: Array<NotificationObject> = [];
     private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
     private channelBrowser = "channelBrowser";
@@ -110,7 +140,10 @@ export class HeaderComponent implements OnInit {
     toggleOpen(): void {
         this.open = !this.open;
     }
-
+    notificationChannelEmitter(view : string, channelId : string , type : string): void {
+        this.switchEvent.emit(view);
+        this.notificationChannelEvent.emit(channelId);
+    }
     switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
@@ -189,7 +222,39 @@ export class HeaderComponent implements OnInit {
                 console.log(err);
             }
         );
+
+        this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
+    }
+
+    sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
+        let message = this.auth.getAuthenticatedUser().getUsername();
+        if (response) {
+            message += ACCEPT_INVITE;
+        }
+        else
+            message+= DENY_INVITE;
+
+        message += notification.channelName;
+        let notifications: NotificationSocketObject = {
+            fromUser: {
+                username: this.auth.getAuthenticatedUser().getUsername(),
+                id: this.notificationService.getSocketId()
+            },
+            toUser: this.notificationService.getOnlineUserByUsername(notification.fromFriend),
+            notification: {
+                channelId: notification.channelId,
+                channelName: notification.channelName,
+                fromFriend: this.auth.getAuthenticatedUser().getUsername(),
+                message: message,
+                type: "general",
+                username: notification.fromFriend,
+                notificationId: null,
+                insertedTime: null
+            }
+        };
+
+        this.notificationService.sendNotification(notifications);
     }
 
     denyInvite(notification: NotificationObject): void {
@@ -237,6 +302,7 @@ export class HeaderComponent implements OnInit {
                 console.log(err);
             }
         );
+        this.sendInviteConfirmation(notification, false);
         this.removeNotification(notification);
     }
 
@@ -261,6 +327,7 @@ export class HeaderComponent implements OnInit {
                                 this.publicInvites = [];
                                 this.privateInvites = [];
                                 this.friendInvites = [];
+                                this.generalNotification = [];
                                 for (let i = 0; i < data.length; i++) {
                                     if (data[i].type == PUBLIC_NOTIFICATION) {
                                         this.publicInvites.push(data[i]);
@@ -268,6 +335,8 @@ export class HeaderComponent implements OnInit {
                                         this.privateInvites.push(data[i]);
                                     } else if (data[i].type == FRIEND_NOTIFICATION) {
                                         this.friendInvites.push(data[i]);
+                                    } else {
+                                        this.generalNotification.push(data[i]);
                                     }
                                 }
 
@@ -292,6 +361,8 @@ export class HeaderComponent implements OnInit {
             this.privateInvites.splice(this.privateInvites.indexOf(notification), 1);
         } else if (notification.type == FRIEND_NOTIFICATION) {
             this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
+        } else {
+            this.generalNotification.splice(this.generalNotification.indexOf(notification),1);
         }
         this.notificationCount--;
     }
