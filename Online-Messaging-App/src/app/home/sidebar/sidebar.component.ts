@@ -13,6 +13,11 @@ interface UserObject {
     email: string;
 }
 
+interface ChannelIdAndType {
+    channelId: string;
+    type: string;
+}
+
 export interface ChannelObject {
     channelId: string;
     channelName: string;
@@ -57,6 +62,24 @@ export class SidebarComponent implements OnInit {
         private auth: AuthenticationService,
         private dialog: MatDialog
     ) {
+    }
+
+    private _notificationChannel: ChannelIdAndType;
+
+    @Input()
+    set notificationChannel(value: ChannelIdAndType) {
+        if (value) {
+            this._notificationChannel = value;
+            this.selectChannel(value.channelId, value.type);
+            this.switchDisplay(this.chatBox);
+            if (value.type == PUBLIC) {
+                this.selectPublicChannel();
+            } else if (value.type == PRIVATE) {
+                this.selectPrivateChannel();
+            } else if (value.type == FRIEND) {
+                this.selectFriend();
+            }
+        }
     }
 
     private _subbedChannel: ChannelObject;

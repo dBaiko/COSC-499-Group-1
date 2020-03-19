@@ -229,7 +229,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             notification: {
                 channelId: this.currentChannel.channelId,
                 channelName: this.currentChannel.channelName,
-                fromFriend: null,
+                channelType: this.currentChannel.channelType,
+                fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                 message: NOTIFICATION_MESSAGE + this.currentChannel.channelName,
                 type: this.currentChannel.channelType,
                 username: username,

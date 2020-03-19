@@ -12,6 +12,7 @@ export interface NotificationDBObject {
     username: string;
     channelId: string;
     channelName: string;
+    channelType: string;
     type: string;
     message: string;
     fromFriend: string;
@@ -20,6 +21,7 @@ export interface NotificationDBObject {
 export interface NotificationObject {
     channelId: string;
     channelName: string;
+    channelType: string;
     message: string;
     type: string;
     username: string;
@@ -39,7 +41,8 @@ export class NotificationsDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
     private friendQueryDeclaration = "fromFriend = :fromFriend";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public getAllNotificationsForUser(username: string): Promise<any> {
         const params = {
@@ -117,6 +120,7 @@ export class NotificationsDAO {
             username: notificationSocketObject.notification.username,
             channelId: notificationSocketObject.notification.channelId,
             channelName: notificationSocketObject.notification.channelName,
+            channelType: notificationSocketObject.notification.channelType,
             type: notificationSocketObject.notification.type,
             fromFriend: notificationSocketObject.notification.fromFriend,
             message: notificationSocketObject.notification.message
@@ -147,6 +151,7 @@ export class NotificationsDAO {
             username: notificationObject.username,
             channelId: notificationObject.channelId,
             channelName: notificationObject.channelName,
+            channelType: notificationObject.channelType,
             type: notificationObject.type,
             message: notificationObject.message,
             fromFriend: notificationObject.fromFriend

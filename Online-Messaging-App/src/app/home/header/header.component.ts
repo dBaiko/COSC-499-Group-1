@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
+import { NotificationService, UserSocket } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
 import { ProfileObject } from "../home.component";
 
@@ -22,6 +22,37 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
+interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+}
+
+interface ChannelIdAndType {
+    channelId: string;
+    type: string;
+}
+
+export interface NotificationSocketObject {
+    fromUser: UserSocket;
+    toUser: UserSocket;
+    notification: NotificationObject;
+}
+
+export interface NotificationObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    message: string;
+    type: string;
+    username: string;
+    notificationId: string;
+    insertedTime: number;
+    fromFriend: string;
+}
+
 const MY_SELECT_CHILD: string = "mySelect";
 const NOTIFICATIONS_URI: string = "/notifications";
 const INSERTED_TIME_URI: string = "/insertedTime/";
@@ -29,6 +60,8 @@ const PUBLIC_NOTIFICATION: string = "public";
 const PRIVATE_NOTIFICATION: string = "private";
 const FRIEND_NOTIFICATION: string = "friend";
 const DEFAULT_CHANNEL_ROLE: string = "user";
+const ACCEPT_INVITE: string = " has accepted your invite to join ";
+const DENY_INVITE: string = " has denied your invite to join ";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
 
 @Component({
@@ -45,6 +78,7 @@ export class HeaderComponent implements OnInit {
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
+    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
     @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
@@ -53,6 +87,8 @@ export class HeaderComponent implements OnInit {
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
+    generalNotification: Array<NotificationObject> = [];
+    private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
     private channelBrowser = "channelBrowser";
     private profile = "profile";
@@ -86,11 +122,17 @@ export class HeaderComponent implements OnInit {
                     this.notificationCount++;
                 }
             );
+            this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
         }
     }
 
     toggleOpen(): void {
         this.open = !this.open;
+    }
+
+    notificationChannelEmitter(view: string, channelId: string, type: string): void {
+        this.switchEvent.emit(view);
+        this.notificationChannelEvent.emit({ channelId, type });
     }
 
     switchDisplay(value: string): void {
@@ -127,15 +169,8 @@ export class HeaderComponent implements OnInit {
                     .post(this.channelsAPI + notification.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
                         () => {
-                            this.http
-                                .delete(
-                                    this.notificationsURL +
-                                    notification.notificationId +
-                                    INSERTED_TIME_URI +
-                                    notification.insertedTime,
-                                    httpHeaders
-                                )
-                                .subscribe(
+                            this.deleteNotification(notification)
+                                .then(
                                     () => {
                                         if (notification.type == "friend") {
                                             let channel: InviteChannelObject = {
@@ -156,11 +191,11 @@ export class HeaderComponent implements OnInit {
                                                     }
                                                 );
                                         }
-                                    },
-                                    (err) => {
-                                        console.log(err);
                                     }
-                                );
+                                )
+                                .catch((err) => {
+                                    console.log(err);
+                                });
                         },
                         (err) => {
                             console.log(err);
@@ -171,7 +206,40 @@ export class HeaderComponent implements OnInit {
                 console.log(err);
             }
         );
+
+        this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
+        this.notificationChannelEmitter("chatbox", notification.channelId, notification.channelType);
+    }
+
+    sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
+        let message = this.auth.getAuthenticatedUser().getUsername();
+        if (response) {
+            message += ACCEPT_INVITE;
+        } else
+            message += DENY_INVITE;
+
+        message += notification.channelName;
+        let notifications: NotificationSocketObject = {
+            fromUser: {
+                username: this.auth.getAuthenticatedUser().getUsername(),
+                id: this.notificationService.getSocketId()
+            },
+            toUser: this.notificationService.getOnlineUserByUsername(notification.fromFriend),
+            notification: {
+                channelId: notification.channelId,
+                channelName: notification.channelName,
+                channelType: notification.channelType,
+                fromFriend: this.auth.getAuthenticatedUser().getUsername(),
+                message: message,
+                type: "general",
+                username: notification.fromFriend,
+                notificationId: null,
+                insertedTime: null
+            }
+        };
+
+        this.notificationService.sendNotification(notifications);
     }
 
     denyInvite(notification: NotificationObject): void {
@@ -184,15 +252,8 @@ export class HeaderComponent implements OnInit {
                     })
                 };
 
-                this.http
-                    .delete(
-                        this.notificationsURL +
-                        notification.notificationId +
-                        INSERTED_TIME_URI +
-                        notification.insertedTime,
-                        httpHeaders
-                    )
-                    .subscribe(
+                this.deleteNotification(notification)
+                    .then(
                         () => {
                             let channel: InviteChannelObject = {
                                 channelId: notification.channelId,
@@ -209,16 +270,17 @@ export class HeaderComponent implements OnInit {
                                     console.log(err);
                                 }
                             );
-                        },
-                        (err) => {
-                            console.log(err);
                         }
-                    );
+                    )
+                    .catch((err) => {
+                        console.log(err);
+                    });
             },
             (err) => {
                 console.log(err);
             }
         );
+        this.sendInviteConfirmation(notification, false);
         this.removeNotification(notification);
     }
 
@@ -243,6 +305,7 @@ export class HeaderComponent implements OnInit {
                                 this.publicInvites = [];
                                 this.privateInvites = [];
                                 this.friendInvites = [];
+                                this.generalNotification = [];
                                 for (let i = 0; i < data.length; i++) {
                                     if (data[i].type == PUBLIC_NOTIFICATION) {
                                         this.publicInvites.push(data[i]);
@@ -250,6 +313,8 @@ export class HeaderComponent implements OnInit {
                                         this.privateInvites.push(data[i]);
                                     } else if (data[i].type == FRIEND_NOTIFICATION) {
                                         this.friendInvites.push(data[i]);
+                                    } else {
+                                        this.generalNotification.push(data[i]);
                                     }
                                 }
 
@@ -274,7 +339,77 @@ export class HeaderComponent implements OnInit {
             this.privateInvites.splice(this.privateInvites.indexOf(notification), 1);
         } else if (notification.type == FRIEND_NOTIFICATION) {
             this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
+        } else {
+            this.generalNotification.splice(this.generalNotification.indexOf(notification), 1);
         }
         this.notificationCount--;
     }
+
+    private getUserInfo(username: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        let profile: ProfileObject = data[0];
+                        this.userProfile = {
+                            username: profile.username,
+                            firstName: profile.firstName,
+                            lastName: profile.lastName,
+                            email: null,
+                            profileImage: profile.profileImage
+                        };
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+    }
+
+    private deleteNotification(notification: NotificationObject): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .delete(
+                            this.notificationsURL +
+                            notification.notificationId +
+                            INSERTED_TIME_URI +
+                            notification.insertedTime,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            () => {
+                                resolve();
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
+    }
+
 }

@@ -37,6 +37,11 @@ interface ChannelObject {
     channelType: string;
 }
 
+interface ChannelIdAndType {
+    channelId : string;
+    type : string;
+}
+
 interface UserObject {
     username: string;
     email: string;
@@ -63,6 +68,7 @@ export class HomeComponent implements OnInit {
     selectedChannelName: string;
     newAddedChannel: ChannelObject;
     newSubbedChannel: ChannelObject;
+    notificationChannel: ChannelIdAndType;
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
@@ -123,6 +129,10 @@ export class HomeComponent implements OnInit {
 
     updateDisplay(value: string): void {
         this.display = value;
+    }
+
+    updateFromNotification(channel: ChannelIdAndType): void {
+        this.notificationChannel = channel;
     }
 
     updateProfile(value: string): void {
