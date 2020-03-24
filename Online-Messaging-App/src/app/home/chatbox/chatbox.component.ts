@@ -3,7 +3,7 @@ import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { FormGroup } from "@angular/forms";
+import { FormGroup, NgForm } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
@@ -46,6 +46,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages;
     error: string = Constants.EMPTY;
     differentUsername: boolean = false;
+
+    @ViewChild("messageForm", { static: false }) messageForm: NgForm;
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -260,6 +262,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             return true;
         }
         return false;
+    }
+
+    private textAreaSubmit(event) {
+        if (event.keyCode == 13 && event.shiftKey) {
+            console.log("enter and shift pressed");
+        } else if (event.keyCode == 13) {
+            console.log("enter pressed");
+            event.preventDefault();
+            this.messageForm.ngSubmit.emit();
+        }
     }
 
     private getSubcribedUsers(): Promise<any> {
