@@ -134,9 +134,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.currentChannel.channelId) {
                 this.chatMessages.push(data);
-                //this.currentUsername = this.chatMessages[(this.chatMessages.length)-1].username
-                // console.log(this.chatMessages[(this.chatMessages.length)-1].username);
-
             }
         });
     }
@@ -158,28 +155,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
                     (data: Array<Object>) => {
                         this.chatMessages = data || [];
-
-                        // this.prevUsername = this.chatMessages[this.val].username;
-                        // this.currentUsername = this.chatMessages[this.val].username;
-                        //
-                        // for(let i in this.chatMessages){
-                        //     this.prevUsername=this.currentUsername;
-                        //     this.currentUsername = this.chatMessages[i].username;
-                        //     console.log("previous" + this.prevUsername);
-                        //     console.log("username" + this.currentUsername);
-                        //     if(this.prevUsername != this.currentUsername){
-                        //         console.log("Different");
-                        //         this.newMessage = true;
-                        //     }
-                        //     else{
-                        //         console.log("Same");
-                        //         this.newMessage = false;
-                        //     }
-                        // }
-
-
-
-
                     },
                     (err) => {
                         this.error = err.toString();
@@ -388,7 +363,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private onScroll(): void {
-        console.log("on SCROLL");
         let element = this.scrollContainer.nativeElement;
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
@@ -400,7 +374,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private scrollToBottom(): void {
-        console.log("SCROLLto btoomtom");
         if (this.isNearBottom) {
             return;
         }

@@ -78,8 +78,8 @@
         <i class="errorMessage">{{ friendMessage }}</i>
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages; let i = index">
-<!--                <div *ngIf="i == 0">-->
-                    <mat-card-header *ngIf="i == 0">
+                <div *ngIf="i == 0">
+                    <mat-card-header>
                         <hr/>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
@@ -91,9 +91,9 @@
                             {{ chatMessage.username }}
                         </mat-card-title>
                     </mat-card-header>
-<!--                </div>-->
-<!--                <div *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">-->
-                    <mat-card-header *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                </div>
+                <div *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                    <mat-card-header>
                         <hr/>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
@@ -105,9 +105,9 @@
                             {{ chatMessage.username }}
                         </mat-card-title>
                     </mat-card-header>
-<!--                </div>-->
-<!--                <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">-->
-                    <mat-card-header *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                </div>
+                <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                    <mat-card-heade>
                         <hr/>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
@@ -118,19 +118,13 @@
                             />
                             {{ chatMessage.username }}
                         </mat-card-title>
-                    </mat-card-header>
-<!--                </div>-->
+                    </mat-card-heade>
+                </div>
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
             </div>
-            <!--                <ng-template #sameUsername>-->
-            <!--                    <mat-card-content>-->
-            <!--                        <p>{{ chatMessage.content }}</p>-->
-            <!--                    </mat-card-content>-->
-            <!--                </ng-template>-->
         </div>
-        <!--        </div>-->
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
