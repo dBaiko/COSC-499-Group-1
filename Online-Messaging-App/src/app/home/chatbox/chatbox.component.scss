@@ -158,3 +158,33 @@ app-channel-user-list {
 #messageForm {
     width: 68%;
 }
+
+markdown ::ng-deep p code {
+    background-color: var(--soft-black);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 10%;
+    color: white;
+    font-family: Consolas;
+}
+
+markdown ::ng-deep .lang-type {
+    background-color: var(--primary-color);
+    padding: 0.5rem;
+    position: relative;
+    bottom: 0.7rem;
+    left: -1rem;
+    border-radius: 10%;
+}
+
+markdown ::ng-deep pre {
+    background-color: var(--soft-black);
+    width: 95%;
+}
+
+markdown ::ng-deep a {
+    background-color: var(--soft-black);
+    border-radius: 10%;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}

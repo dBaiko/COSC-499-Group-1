@@ -89,8 +89,10 @@
                         {{ chatMessage.username }}
                     </mat-card-title>
                 </mat-card-header>
-                <mat-card-content>
-                    <p>{{ chatMessage.content }}</p>
+                <mat-card-content id="test">
+                    <p>
+                        <markdown class="mark">{{ chatMessage.content }}</markdown>
+                    </p>
                 </mat-card-content>
                 <div *ngIf="differentUsername">
                     <hr/>
@@ -100,11 +102,15 @@
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
-                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off"
-                      id="messageForm">
+                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)"
+                      autocomplete="off" id="messageForm">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <input matInput name="content" ngModel placeholder="Enter Message"/>
+                        <textarea (keydown)="textAreaSubmit($event)" cdkTextareaAutosize
+                                  matInput
+                                  name="content"
+                                  ngModel
+                        ></textarea>
                     </mat-form-field>
                 </form>
             </mat-card-footer>

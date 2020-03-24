@@ -76,7 +76,7 @@ export class FriendsBrowserComponent implements OnInit {
     @Input() userList: Array<UserObject>;
     @Input() friendList: Array<ChannelObject> = [];
     @Output() newFriendChannelEvent = new EventEmitter();
-    @ViewChild("inputForm", { static: false }) inputForm: ElementRef;
+    @ViewChild("inputForm") inputForm: ElementRef;
     userProfile: UserProfileObject;
     private notificationsURL: string = APIConfig.notificationsAPI;
     private channelsURL: string = APIConfig.channelsAPI;
@@ -84,7 +84,7 @@ export class FriendsBrowserComponent implements OnInit {
     private profilesAPI = APIConfig.profilesAPI;
 
     constructor(
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private http: HttpClient,
         private notificationService: NotificationService
     ) {
