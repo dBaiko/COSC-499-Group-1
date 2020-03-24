@@ -70,7 +70,7 @@ export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
     styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
-    @ViewChild(MY_SELECT_CHILD, { static: false }) mySelect;
+    @ViewChild(MY_SELECT_CHILD) mySelect;
     userLoggedIn = false;
     user;
 
@@ -88,11 +88,11 @@ export class HeaderComponent implements OnInit {
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
     generalNotification: Array<NotificationObject> = [];
+    channelBrowser = "channelBrowser";
+    profile = "profile";
+    settings = "settings";
     private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
-    private channelBrowser = "channelBrowser";
-    private profile = "profile";
-    private settings = "settings";
 
     constructor(
         private _eref: ElementRef,
@@ -283,6 +283,54 @@ export class HeaderComponent implements OnInit {
         this.removeNotification(notification);
     }
 
+    removeNotification(notification: NotificationObject): void {
+        if (notification.type == PUBLIC_NOTIFICATION) {
+            this.publicInvites.splice(this.publicInvites.indexOf(notification), 1);
+        } else if (notification.type == PRIVATE_NOTIFICATION) {
+            this.privateInvites.splice(this.privateInvites.indexOf(notification), 1);
+        } else if (notification.type == FRIEND_NOTIFICATION) {
+            this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
+        } else {
+            this.generalNotification.splice(this.generalNotification.indexOf(notification), 1);
+        }
+        this.notificationCount--;
+    }
+
+    deleteNotification(notification: NotificationObject): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http
+                        .delete(
+                            this.notificationsURL +
+                            notification.notificationId +
+                            INSERTED_TIME_URI +
+                            notification.insertedTime,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            () => {
+                                resolve();
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
+    }
+
     private getNotifications(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
@@ -326,54 +374,6 @@ export class HeaderComponent implements OnInit {
                 },
                 (err) => {
                     reject(err);
-                }
-            );
-        });
-    }
-
-    private removeNotification(notification: NotificationObject): void {
-        if (notification.type == PUBLIC_NOTIFICATION) {
-            this.publicInvites.splice(this.publicInvites.indexOf(notification), 1);
-        } else if (notification.type == PRIVATE_NOTIFICATION) {
-            this.privateInvites.splice(this.privateInvites.indexOf(notification), 1);
-        } else if (notification.type == FRIEND_NOTIFICATION) {
-            this.friendInvites.splice(this.friendInvites.indexOf(notification), 1);
-        } else {
-            this.generalNotification.splice(this.generalNotification.indexOf(notification), 1);
-        }
-        this.notificationCount--;
-    }
-
-    private deleteNotification(notification: NotificationObject): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
-
-                    this.http
-                        .delete(
-                            this.notificationsURL +
-                            notification.notificationId +
-                            INSERTED_TIME_URI +
-                            notification.insertedTime,
-                            httpHeaders
-                        )
-                        .subscribe(
-                            () => {
-                                resolve();
-                            },
-                            (err) => {
-                                reject(err);
-                            }
-                        );
-                },
-                (err) => {
-                    console.log(err);
                 }
             );
         });

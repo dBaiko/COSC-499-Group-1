@@ -52,7 +52,7 @@ export class CreateChannelComponent implements OnInit {
         private auth: AuthenticationService,
         private http: HttpClient,
         public common: CommonService,
-        private formValidationService: FormValidationService,
+        public formValidationService: FormValidationService,
         public dialogRef: MatDialogRef<CreateChannelComponent>,
         @Optional() @Inject(MAT_DIALOG_DATA) public data: any
     ) {

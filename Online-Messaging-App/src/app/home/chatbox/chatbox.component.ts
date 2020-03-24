@@ -3,7 +3,7 @@ import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { FormGroup } from "@angular/forms";
+import { FormGroup, NgForm } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
@@ -14,6 +14,13 @@ const MESSAGES_URI = "/messages";
 const USERS_URI = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE = "You have been invited to join ";
+
+const LANG_TYPES_PREFIX: string = "<span class=\"lang-type\">";
+const LANG_TYPES_SUFFIX: string = "</span><br>";
+const PRE_TAG: string = "pre";
+
+const LANG_TYPES_PREFIX_LENGTH: number = 24;
+const LANG_CLASS_PREFIX_LENGTH: number = 10;
 
 const filter = new Filter();
 
@@ -50,6 +57,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     prevUsername: string = " ";
     currentUsername: string = "None";
     newMessage: boolean = false;
+
+    viewed: boolean = false;
+
+    @ViewChild("messageForm") messageForm: NgForm;
+
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
     inviteSearchList: Array<UserObject> = [];
@@ -62,7 +74,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() userList: Array<UserObject>;
     @Input() currentUserProfile: ProfileObject;
     @Output() profileViewEvent = new EventEmitter<string>();
-    @ViewChild("scrollframe", { static: false }) scrollContainer: ElementRef;
+    @ViewChild("scrollframe") scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
     private isNearBottom = false;
     private atBottom = true;
@@ -134,37 +146,46 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.currentChannel.channelId) {
                 this.chatMessages.push(data);
+                setTimeout(this.addLangTypes, 50);
             }
         });
     }
 
     ngAfterViewChecked() {
         this.scrollToBottom();
+        if (!this.viewed) {
+            this.addLangTypes();
+        }
     }
 
-    getMessages(channelId: string): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+    getMessages(channelId: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
-                    (data: Array<Object>) => {
-                        this.chatMessages = data || [];
-                    },
-                    (err) => {
-                        this.error = err.toString();
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
+                    this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
+                        (data: Array<Object>) => {
+                            this.chatMessages = data || [];
+                            resolve();
+                        },
+                        (err) => {
+                            this.error = err.toString();
+                            reject();
+                        }
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    reject();
+                }
+            );
+        });
     }
 
     sendMessage(form: FormGroup): void {
@@ -250,6 +271,27 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let users = channelName.split("-", 2);
         if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
         else return users[0];
+    }
+
+    onScroll(): void {
+        let element = this.scrollContainer.nativeElement;
+        // using ceiling and floor here to normalize the differences in browsers way of calculating these values
+        this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
+        if (this.atBottom) {
+            this.isNearBottom = false;
+        } else {
+            this.isNearBottom = true;
+        }
+    }
+
+    textAreaSubmit(event) {
+        if (event.keyCode == 13 && event.shiftKey) {
+            console.log("enter and shift pressed");
+        } else if (event.keyCode == 13) {
+            console.log("enter pressed");
+            event.preventDefault();
+            this.messageForm.ngSubmit.emit();
+        }
     }
 
     private searchStrings(match: string, search: string): boolean {
@@ -362,17 +404,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
     }
 
-    private onScroll(): void {
-        let element = this.scrollContainer.nativeElement;
-        // using ceiling and floor here to normalize the differences in browsers way of calculating these values
-        this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
-        if (this.atBottom) {
-            this.isNearBottom = false;
-        } else {
-            this.isNearBottom = true;
-        }
-    }
-
     private scrollToBottom(): void {
         if (this.isNearBottom) {
             return;
@@ -383,6 +414,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } catch (err) {
             console.log(err);
         }
-
     }
+
+    private addLangTypes(): void {
+        let messages = document.getElementsByTagName(PRE_TAG);
+        // @ts-ignore
+        for (let item: HTMLBodyElement of messages) {
+            this.viewed = true;
+            if (item.innerHTML.substring(0, LANG_TYPES_PREFIX_LENGTH) != LANG_TYPES_PREFIX) {
+                item.innerHTML = LANG_TYPES_PREFIX + item.className.substring(LANG_CLASS_PREFIX_LENGTH) + LANG_TYPES_SUFFIX + item.innerHTML;
+            }
+        }
+    }
+
 }

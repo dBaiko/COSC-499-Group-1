@@ -37,7 +37,7 @@ export class RegisterFormComponent implements OnInit {
         private auth: AuthenticationService,
         private http: HttpClient,
         public common: CommonService,
-        private formValidationService: FormValidationService
+        public formValidationService: FormValidationService
     ) {
     }
 

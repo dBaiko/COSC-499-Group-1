@@ -79,8 +79,8 @@
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages; let i = index">
                 <div *ngIf="i == 0">
+                    <hr/>
                     <mat-card-header>
-                        <hr/>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
                                 class="messagePicture"
@@ -93,8 +93,8 @@
                     </mat-card-header>
                 </div>
                 <div *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                    <hr/>
                     <mat-card-header>
-                        <hr/>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
                                 class="messagePicture"
@@ -107,8 +107,8 @@
                     </mat-card-header>
                 </div>
                 <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
-                    <mat-card-heade>
-                        <hr/>
+                    <hr/>
+                    <mat-card-header>
                         <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                             <img
                                 class="messagePicture"
@@ -118,21 +118,27 @@
                             />
                             {{ chatMessage.username }}
                         </mat-card-title>
-                    </mat-card-heade>
+                    </mat-card-header>
                 </div>
                 <mat-card-content>
-                    <p>{{ chatMessage.content }}</p>
+                    <p>
+                        <markdown class="mark">{{ chatMessage.content }}</markdown>
+                    </p>
                 </mat-card-content>
             </div>
         </div>
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
-                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)" autocomplete="off"
-                      id="messageForm">
+                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)"
+                      autocomplete="off" id="messageForm">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <input matInput name="content" ngModel placeholder="Enter Message"/>
+                        <textarea (keydown)="textAreaSubmit($event)" cdkTextareaAutosize
+                                  matInput
+                                  name="content"
+                                  ngModel
+                        ></textarea>
                     </mat-form-field>
                 </form>
             </mat-card-footer>
