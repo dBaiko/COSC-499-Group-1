@@ -22,7 +22,7 @@
                         "main": "src/main.ts",
                         "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
-                        "aot": false,
+                        "aot": true,
                         "assets": [
                             "src/favicon.ico",
                             "src/assets"
@@ -34,8 +34,12 @@
                         "scripts": [
                             "node_modules/marked/lib/marked.js",
                             "node_modules/prismjs/prism.js",
-                            "node_modules/prismjs/components/prism-csharp.min.js",
-                            "node_modules/prismjs/components/prism-css.min.js"
+                            "node_modules/prismjs/components/prism-java.min.js",
+                            "node_modules/prismjs/components/prism-javascript.min.js",
+                            "node_modules/prismjs/components/prism-typescript.min.js",
+                            "node_modules/prismjs/components/prism-css.min.js",
+                            "node_modules/prismjs/components/prism-sass.min.js",
+                            "node_modules/prismjs/components/prism-c.min.js"
                         ]
                     },
                     "configurations": {
@@ -51,7 +55,6 @@
                             "sourceMap": true,
                             "extractCss": true,
                             "namedChunks": false,
-                            "aot": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
@@ -103,7 +106,14 @@
                             "node_modules/prismjs/themes/prism-okaidia.css"
                         ],
                         "scripts": [
-                            "node_modules/marked/lib/marked.js"
+                            "node_modules/marked/lib/marked.js",
+                            "node_modules/prismjs/prism.js",
+                            "node_modules/prismjs/components/prism-java.min.js",
+                            "node_modules/prismjs/components/prism-javascript.min.js",
+                            "node_modules/prismjs/components/prism-typescript.min.js",
+                            "node_modules/prismjs/components/prism-css.min.js",
+                            "node_modules/prismjs/components/prism-sass.min.js",
+                            "node_modules/prismjs/components/prism-c.min.js"
                         ]
                     }
                 },
@@ -135,5 +145,8 @@
             }
         }
     },
-    "defaultProject": "Online-Messaging-App"
+    "defaultProject": "Online-Messaging-App",
+    "cli": {
+        "analytics": "7e22b7c6-018f-4824-acd1-b0350649d84f"
+    }
 }

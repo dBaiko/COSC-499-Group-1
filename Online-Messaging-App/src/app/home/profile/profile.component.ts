@@ -50,10 +50,10 @@ export class ProfileComponent implements OnInit {
     private newProfileImage: File;
 
     constructor(
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private http: HttpClient,
-        private common: CommonService,
-        private formValidationService: FormValidationService,
+        public common: CommonService,
+        public formValidationService: FormValidationService,
         private render: Renderer2
     ) {
     }

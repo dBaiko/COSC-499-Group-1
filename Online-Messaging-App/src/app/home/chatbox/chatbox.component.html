@@ -89,9 +89,9 @@
                         {{ chatMessage.username }}
                     </mat-card-title>
                 </mat-card-header>
-                <mat-card-content>
+                <mat-card-content id="test">
                     <p>
-                        <markdown>{{ chatMessage.content }}</markdown>
+                        <markdown class="mark">{{ chatMessage.content }}</markdown>
                     </p>
                 </mat-card-content>
                 <div *ngIf="differentUsername">
@@ -106,8 +106,11 @@
                       autocomplete="off" id="messageForm">
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <textarea (keydown)="textAreaSubmit($event)" matInput name="content" ngModel
-                                  placeholder="Enter Message"></textarea>
+                        <textarea (keydown)="textAreaSubmit($event)" cdkTextareaAutosize
+                                  matInput
+                                  name="content"
+                                  ngModel
+                        ></textarea>
                     </mat-form-field>
                 </form>
             </mat-card-footer>

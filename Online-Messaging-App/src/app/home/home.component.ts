@@ -38,8 +38,8 @@ interface ChannelObject {
 }
 
 interface ChannelIdAndType {
-    channelId : string;
-    type : string;
+    channelId: string;
+    type: string;
 }
 
 interface UserObject {
@@ -147,6 +147,15 @@ export class HomeComponent implements OnInit {
             });
     }
 
+    changeTheme(themeString: string): void {
+        this.currentTheme = themeString;
+        if (themeString == LIGHT) {
+            this.setTheme(LightThemeColors);
+        } else if (themeString == DARK) {
+            this.setTheme(DarkThemeColors);
+        }
+    }
+
     private getUsers(): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
@@ -235,15 +244,6 @@ export class HomeComponent implements OnInit {
                 }
             );
         });
-    }
-
-    private changeTheme(themeString: string): void {
-        this.currentTheme = themeString;
-        if (themeString == LIGHT) {
-            this.setTheme(LightThemeColors);
-        } else if (themeString == DARK) {
-            this.setTheme(DarkThemeColors);
-        }
     }
 
     private setTheme(theme: ColorScheme): void {

@@ -51,7 +51,7 @@ export class SidebarComponent implements OnInit {
     privateChannelSelect: boolean;
     friendChannelSelect: boolean;
     list;
-    private chatBox = "chatBox";
+    chatBox = "chatBox";
     private channelBrowser = "channelBrowser";
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
@@ -374,7 +374,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    private setNewChannel(value: ChannelObject) {
+    setNewChannel(value: ChannelObject) {
         if (value) {
             this._subbedChannel = value;
             this.userSubscribedChannels.push(value);

@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, SecurityContext } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ChatboxComponent } from "./chatbox/chatbox.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -58,7 +58,9 @@ const socketConfig: SocketIoConfig = {
         MatSelectModule,
         MatRadioModule,
         MatSlideToggleModule,
-        MarkdownModule.forRoot()
+        MarkdownModule.forRoot({
+            sanitize: SecurityContext.NONE
+        })
     ],
     exports: [
         HeaderComponent,

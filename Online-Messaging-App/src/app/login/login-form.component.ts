@@ -20,8 +20,9 @@ export class LoginFormComponent implements OnInit {
     constructor(
         public common: CommonService,
         private auth: AuthenticationService,
-        private formValidationService: FormValidationService
-    ) {}
+        public formValidationService: FormValidationService
+    ) {
+    }
 
     ngOnInit(): void {
         this.loginForm = new FormGroup({
