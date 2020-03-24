@@ -77,26 +77,60 @@
         <hr/>
         <i class="errorMessage">{{ friendMessage }}</i>
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
-            <div *ngFor="let chatMessage of chatMessages">
-                <mat-card-header>
-                    <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                        <img
-                            class="messagePicture"
-                            inline="true"
-                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="{{chatMessage.profileImage}}"
-                        />
-                        {{ chatMessage.username }}
-                    </mat-card-title>
-                </mat-card-header>
+            <div *ngFor="let chatMessage of chatMessages; let i = index">
+<!--                <div *ngIf="i == 0">-->
+                    <mat-card-header *ngIf="i == 0">
+                        <hr/>
+                        <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                            <img
+                                class="messagePicture"
+                                inline="true"
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="{{chatMessage.profileImage}}"
+                            />
+                            {{ chatMessage.username }}
+                        </mat-card-title>
+                    </mat-card-header>
+<!--                </div>-->
+<!--                <div *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">-->
+                    <mat-card-header *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                        <hr/>
+                        <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                            <img
+                                class="messagePicture"
+                                inline="true"
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="{{chatMessage.profileImage}}"
+                            />
+                            {{ chatMessage.username }}
+                        </mat-card-title>
+                    </mat-card-header>
+<!--                </div>-->
+<!--                <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">-->
+                    <mat-card-header *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                        <hr/>
+                        <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                            <img
+                                class="messagePicture"
+                                inline="true"
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="{{chatMessage.profileImage}}"
+                            />
+                            {{ chatMessage.username }}
+                        </mat-card-title>
+                    </mat-card-header>
+<!--                </div>-->
                 <mat-card-content>
                     <p>{{ chatMessage.content }}</p>
                 </mat-card-content>
-                <div *ngIf="differentUsername">
-                    <hr/>
-                </div>
             </div>
+            <!--                <ng-template #sameUsername>-->
+            <!--                    <mat-card-content>-->
+            <!--                        <p>{{ chatMessage.content }}</p>-->
+            <!--                    </mat-card-content>-->
+            <!--                </ng-template>-->
         </div>
+        <!--        </div>-->
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
