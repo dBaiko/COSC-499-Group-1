@@ -7,7 +7,7 @@ import { CookieService } from "ngx-cookie-service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
-import {NewUsersSubbedChannelObject} from "./sidebar/sidebar.component";
+import { NewUsersSubbedChannelObject } from "./sidebar/sidebar.component";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
@@ -25,6 +25,7 @@ export interface UserChannelObject {
     channelName: string;
     channelType: string;
     profileImage: string;
+    statusText: string;
 }
 
 export interface SettingsObject {
@@ -54,6 +55,7 @@ export interface ProfileObject {
     firstName: string;
     lastName: string;
     profileImage: string;
+    statusText: string;
 }
 
 @Component({
@@ -163,6 +165,10 @@ export class HomeComponent implements OnInit {
         this.settings.explicit = explicit;
     }
 
+    setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
+        this.newUserSubbedChannel = $event;
+    }
+
     private getUsers(): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
@@ -236,7 +242,8 @@ export class HomeComponent implements OnInit {
                                 username: profile.username,
                                 firstName: profile.firstName,
                                 lastName: profile.lastName,
-                                profileImage: profile.profileImage + "?" + Math.random()
+                                profileImage: profile.profileImage + "?" + Math.random(),
+                                statusText: profile.statusText
                             };
                             resolve();
                         },
@@ -264,9 +271,5 @@ export class HomeComponent implements OnInit {
         document.documentElement.style.setProperty("--element-color", theme["element-color"]);
         document.documentElement.style.setProperty("--hover-color", theme["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", theme["element-hover-color"]);
-    }
-
-    setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
-        this.newUserSubbedChannel = $event;
     }
 }
