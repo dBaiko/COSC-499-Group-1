@@ -92,33 +92,38 @@
                         </mat-card-title>
                     </mat-card-header>
                 </div>
-                <div *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
-                    <hr/>
-                    <mat-card-header>
-                        <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                            <img
-                                class="messagePicture"
-                                inline="true"
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="{{chatMessage.profileImage}}"
-                            />
-                            {{ chatMessage.username }}
-                        </mat-card-title>
-                    </mat-card-header>
+                <div *ngIf="i != 0">
+                    <div
+                        *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                        <hr/>
+                        <mat-card-header>
+                            <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                <img
+                                    class="messagePicture"
+                                    inline="true"
+                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                    src="{{chatMessage.profileImage}}"
+                                />
+                                {{ chatMessage.username }}
+                            </mat-card-title>
+                        </mat-card-header>
+                    </div>
                 </div>
-                <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
-                    <hr/>
-                    <mat-card-header>
-                        <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                            <img
-                                class="messagePicture"
-                                inline="true"
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="{{chatMessage.profileImage}}"
-                            />
-                            {{ chatMessage.username }}
-                        </mat-card-title>
-                    </mat-card-header>
+                <div *ngIf="i != 0">
+                    <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                        <hr/>
+                        <mat-card-header>
+                            <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                <img
+                                    class="messagePicture"
+                                    inline="true"
+                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                    src="{{chatMessage.profileImage}}"
+                                />
+                                {{ chatMessage.username }}
+                            </mat-card-title>
+                        </mat-card-header>
+                    </div>
                 </div>
                 <mat-card-content>
                     <p>
