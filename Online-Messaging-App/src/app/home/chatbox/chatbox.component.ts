@@ -60,7 +60,6 @@ interface MessageObject {
 export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages: Array<MessageObject>;
     error: string = Constants.EMPTY;
-    differentUsername: boolean = false;
 
     viewed: boolean = false;
 
