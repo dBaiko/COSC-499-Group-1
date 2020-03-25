@@ -1,9 +1,9 @@
 <div *ngIf="userLoggedIn; else elseBlock" id="home">
     <app-header
         (newChannelEvent)="receiveNewSubbedChannel($event)"
+        (notificationChannelEvent)="updateFromNotification($event)"
         (profileViewEvent)="updateProfile($event)"
         (switchEvent)="updateDisplay($event)"
-        (notificationChannelEvent)="updateFromNotification($event)"
         [currentUserProfile]="currentUserProfile"
     >
     </app-header>
@@ -22,9 +22,9 @@
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
                 [currentUserProfile]="currentUserProfile"
+                [notificationChannel]="notificationChannel"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
-                [notificationChannel]="notificationChannel"
             ></app-sidebar>
         </mat-sidenav>
         <mat-sidenav-content [formGroup]="options" class="scrollMe">
@@ -54,7 +54,7 @@
                         ></app-profile>
                     </div>
                     <div *ngSwitchCase="'settings'" class="scrollMe">
-                        <app-settings (themeEvent)="changeTheme($event)" [initialTheme]="currentTheme"></app-settings>
+                        <app-settings (themeEvent)="changeTheme($event)" [settings]="settings"></app-settings>
                     </div>
 
                 </div>

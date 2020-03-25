@@ -29,6 +29,7 @@ export interface UserChannelObject {
 export interface SettingsObject {
     username: string;
     theme: string;
+    explicit: boolean;
 }
 
 interface ChannelObject {
@@ -72,7 +73,7 @@ export class HomeComponent implements OnInit {
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
-    currentTheme: string;
+    settings: SettingsObject;
 
     public currentUserProfile: ProfileObject;
 
@@ -148,7 +149,7 @@ export class HomeComponent implements OnInit {
     }
 
     changeTheme(themeString: string): void {
-        this.currentTheme = themeString;
+        this.settings.theme = themeString;
         if (themeString == LIGHT) {
             this.setTheme(LightThemeColors);
         } else if (themeString == DARK) {
@@ -195,6 +196,7 @@ export class HomeComponent implements OnInit {
                     .get(this.usersUrl + this.auth.getAuthenticatedUser().getUsername() + SETTINGS_URI, httpHeaders)
                     .subscribe(
                         (data: SettingsObject) => {
+                            this.settings = data[0];
                             this.changeTheme(data[0].theme);
                         },
                         (err) => {

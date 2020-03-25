@@ -11,7 +11,8 @@ interface SettingsObject {
 class SettingsDAO {
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public createSettingsInfo(username: string, theme: string): Promise<any> {
         const params = {
@@ -57,15 +58,16 @@ class SettingsDAO {
         });
     }
 
-    public updateSettings(username: string, theme: string) {
+    public updateSettings(username: string, theme: string, explicit: boolean) {
         const params = {
             TableName: SETTINGS_TABLE_NAME,
             Key: {
                 username: username
             },
-            UpdateExpression: "SET theme = :t",
+            UpdateExpression: "SET theme = :t, explicit = :e",
             ExpressionAttributeValues: {
-                ":t": theme
+                ":t": theme,
+                ":e": explicit
             }
         };
 

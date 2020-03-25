@@ -16,7 +16,7 @@ const LIGHT = "light";
 export class SettingsComponent implements OnInit {
     @Output() themeEvent = new EventEmitter<string>();
     @Input()
-    initialTheme: string;
+    settings: SettingsObject;
     private usersAPI: string = APIConfig.usersAPI;
 
     constructor(private auth: AuthenticationService, private http: HttpClient) {
@@ -35,7 +35,25 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+    explicitToggle(event): void {
+        if (event.checked) {
+            //TODO: implement explicit event emit
+            this.saveExplicit(true);
+        } else {
+            //TODO: implement explicit event emit
+            this.saveExplicit(false);
+        }
+    }
+
+    private saveExplicit(explicit: boolean) {
+        this.updateSettings(this.settings.theme, explicit);
+    }
+
     private saveTheme(themeString: string) {
+        this.updateSettings(themeString, this.settings.explicit);
+    }
+
+    private updateSettings(themeString: string, explicit: boolean) {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -46,8 +64,9 @@ export class SettingsComponent implements OnInit {
                 };
 
                 let settings: SettingsObject = {
-                    username: this.auth.getAuthenticatedUser().getUsername(),
-                    theme: themeString
+                    username: this.settings.username,
+                    theme: themeString,
+                    explicit: explicit
                 };
 
                 this.http
