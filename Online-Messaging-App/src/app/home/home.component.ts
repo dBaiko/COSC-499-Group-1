@@ -7,6 +7,7 @@ import { CookieService } from "ngx-cookie-service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
+import {NewUsersSubbedChannelObject} from "./sidebar/sidebar.component";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
@@ -76,6 +77,7 @@ export class HomeComponent implements OnInit {
     settings: SettingsObject;
 
     public currentUserProfile: ProfileObject;
+    public newUserSubbedChannel: NewUsersSubbedChannelObject;
 
     constructor(
         private auth: AuthenticationService,
@@ -262,5 +264,9 @@ export class HomeComponent implements OnInit {
         document.documentElement.style.setProperty("--element-color", theme["element-color"]);
         document.documentElement.style.setProperty("--hover-color", theme["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", theme["element-hover-color"]);
+    }
+
+    setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
+        this.newUserSubbedChannel = $event;
     }
 }
