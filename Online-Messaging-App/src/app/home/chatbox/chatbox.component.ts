@@ -43,21 +43,28 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
+interface MessageObject {
+    channelId: string,
+    insetTime: number,
+    content: string,
+    messageId: string,
+    profileImage: string,
+    username: string
+}
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
     styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-    chatMessages;
+    chatMessages: Array<MessageObject>;
     error: string = Constants.EMPTY;
     differentUsername: boolean = false;
 
     viewed: boolean = false;
 
     filter = new Filter();
-
-    doc = document;
 
     @ViewChild("messageForm") messageForm: NgForm;
 
@@ -181,7 +188,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     };
 
                     this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
-                        (data: Array<Object>) => {
+                        (data: Array<MessageObject>) => {
+                            for (let i = 0; i < data.length; i++) {// TODO: only do if users settings allow
+                                data[i].content = this.filterClean(data[i].content);
+                            }
                             this.chatMessages = data || [];
                             resolve();
                         },
