@@ -274,7 +274,7 @@ router.put(PATH_PUT_SETTINGS_FOR_USER, (req, res) => {
             ) {
                 const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
                 settingsDAO
-                    .updateSettings(req.body.username, req.body.theme)
+                    .updateSettings(req.body.username, req.body.theme, req.body.explicit)
                     .then(() => {
                         res.status(200).send({
                             status: 200,

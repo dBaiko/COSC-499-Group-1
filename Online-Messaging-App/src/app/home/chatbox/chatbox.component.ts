@@ -7,7 +7,8 @@ import { FormGroup, NgForm } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
-import { ProfileObject } from "../home.component";
+import { CommonService } from "../../shared/common.service";
+import { ProfileObject, SettingsObject } from "../home.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
@@ -21,8 +22,6 @@ const PRE_TAG: string = "pre";
 
 const LANG_TYPES_PREFIX_LENGTH: number = 24;
 const LANG_CLASS_PREFIX_LENGTH: number = 10;
-
-const filter = new Filter();
 
 interface UserObject {
     username: string;
@@ -44,21 +43,27 @@ interface InviteChannelObject {
     inviteStatus: string;
 }
 
+interface MessageObject {
+    channelId: string,
+    insetTime: number,
+    content: string,
+    messageId: string,
+    profileImage: string,
+    username: string
+}
+
 @Component({
     selector: "app-chatbox",
     templateUrl: "./chatbox.component.html",
     styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-    val: number = 0;
-    chatMessages;
+    chatMessages: Array<MessageObject>;
     error: string = Constants.EMPTY;
-    differentUsername: boolean = false;
-    prevUsername: string = " ";
-    currentUsername: string = "None";
-    newMessage: boolean = false;
 
     viewed: boolean = false;
+
+    filter = new Filter();
 
     @ViewChild("messageForm") messageForm: NgForm;
 
@@ -72,7 +77,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     friendMessage: string = null;
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
-    @Input() currentUserProfile: ProfileObject;
+    @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe") scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
@@ -83,8 +88,21 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private messagerService: MessengerService,
         private http: HttpClient,
         private auth: AuthenticationService,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        public common: CommonService
     ) {
+    }
+
+    private _currentUserProfile: ProfileObject;
+
+    get currentUserProfile(): ProfileObject {
+        return this._currentUserProfile;
+    }
+
+    @Input()
+    set currentUserProfile(value: ProfileObject) {
+        this._currentUserProfile = value;
+
     }
 
     private _currentChannel: ChannelObject;
@@ -145,6 +163,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.currentChannel.channelId) {
+                if (!this.settings.explicit) {
+                    data.content = this.filterClean(data.content);
+                }
                 this.chatMessages.push(data);
                 setTimeout(this.addLangTypes, 50);
             }
@@ -170,7 +191,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     };
 
                     this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
-                        (data: Array<Object>) => {
+                        (data: Array<MessageObject>) => {
+                            if (!this.settings.explicit) {
+                                for (let i = 0; i < data.length; i++) {
+                                    data[i].content = this.filterClean(data[i].content);
+                                }
+                            }
                             this.chatMessages = data || [];
                             resolve();
                         },
@@ -196,7 +222,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: filter.clean(value.content),
+                content: value.content,
                 profileImage: this.currentUserProfile.profileImage
             };
             this.isNearBottom = false;
@@ -286,12 +312,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     textAreaSubmit(event) {
         if (event.keyCode == 13 && event.shiftKey) {
-            console.log("enter and shift pressed");
         } else if (event.keyCode == 13) {
-            console.log("enter pressed");
             event.preventDefault();
             this.messageForm.ngSubmit.emit();
         }
+    }
+
+    filterClean(value: string) {
+        let s: string = this.filter.clean(value);
+        if (/^\*+$/.test(s.trim())) {
+            return s.replace(/\*/g, "\\*");
+        }
+        return s;
     }
 
     private searchStrings(match: string, search: string): boolean {
