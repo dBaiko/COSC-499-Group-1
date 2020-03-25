@@ -108,7 +108,7 @@ mat-button-toggle-group {
     border: none;
 }
 
-.mat-button-toggle-checked {
+.mat-button-toggle:checked {
     background-color: var(--primary-color);
     color: white;
     border: none;
