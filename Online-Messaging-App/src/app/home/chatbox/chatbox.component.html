@@ -136,16 +136,15 @@
                     </div>
                     <mat-card-content class="message">
                         <p>
-                            <markdown class="mark">{{ chatMessage.content }}
-                                <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
+                            <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                                 <mat-icon>edit</mat-icon>
                                 <mat-icon>delete</mat-icon>
                             </span>
-                                <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
+                            <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
-                            </markdown>
+                            <markdown class="mark">{{ chatMessage.content }}</markdown>
                         </p>
                     </mat-card-content>
                 </ng-template>
