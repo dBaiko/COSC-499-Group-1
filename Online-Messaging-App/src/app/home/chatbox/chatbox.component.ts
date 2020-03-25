@@ -116,7 +116,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentUserProfile(value: ProfileObject) {
         this._currentUserProfile = value;
-
     }
 
     private _currentChannel: ChannelObject;

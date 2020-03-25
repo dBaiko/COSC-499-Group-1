@@ -19,6 +19,7 @@ interface UserProfileObject {
     firstName: string;
     lastName: string;
     profileImage: string;
+    statusText: string;
 }
 
 const EMAIL_FORM_NAME = "email";
@@ -38,8 +39,10 @@ export class ProfileComponent implements OnInit {
     userProfile: UserProfileObject;
     editForm: FormGroup;
     imageForm: FormGroup;
+    statusForm: FormGroup;
 
     editing: boolean = false;
+    editingStatus: boolean = false;
     submitAttempt: boolean = false;
     editSaveMessage: string = "";
 
@@ -102,6 +105,12 @@ export class ProfileComponent implements OnInit {
                 Validators.compose([Validators.required, this.formValidationService.correctFileSize])
             )
         });
+        this.statusForm = new FormGroup({
+            statusText: new FormControl(
+                "",
+                Validators.compose([Validators.required])
+            )
+        });
     }
 
     /**
@@ -127,7 +136,8 @@ export class ProfileComponent implements OnInit {
                             firstName: profile.firstName,
                             lastName: profile.lastName,
                             email: null,
-                            profileImage: profile.profileImage + "?" + Math.random()
+                            profileImage: profile.profileImage + "?" + Math.random(),
+                            statusText: profile.statusText
                         };
 
                         if (username === this.auth.getAuthenticatedUser().getUsername()) {
@@ -160,6 +170,43 @@ export class ProfileComponent implements OnInit {
         this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
         this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
         this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
+    }
+
+    toggleEditingStatus(editingStatus: boolean) {
+        this.editingStatus = editingStatus;
+        this.statusForm.get("statusText").setValue(this.userProfile.statusText);
+    }
+
+    statusFormSubmit(form: FormGroup) {
+        let username = this.auth.getAuthenticatedUser().getUsername();
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.put(this.profilesAPI + username + "/status/", {
+                    username: username,
+                    status: form.value.statusText
+                }, httpHeaders).subscribe(
+                    (data) => {
+                        this.userProfile.statusText = form.value.statusText;
+                        this.toggleEditingStatus(false);
+                        this.profileUpdateEvent.emit();
+                    },
+                    (err) => {
+                        console.log(err);
+                        this.editSaveMessage = ERROR_MESSAGE;
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+
     }
 
     imageFormButtonClick(event) {
@@ -238,7 +285,8 @@ export class ProfileComponent implements OnInit {
             username: username,
             firstName: firstName,
             lastName: lastName,
-            profileImage: this.userProfile.profileImage
+            profileImage: this.userProfile.profileImage,
+            statusText: this.userProfile.statusText
         };
 
         this.auth.getCurrentSessionId().subscribe(

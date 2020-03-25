@@ -20,13 +20,15 @@ class ProfileDAO {
 
     public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         let profileImage = PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE;
+        let status: string = " ";
 
         const params = {
             Item: {
                 firstName,
                 lastName,
                 username,
-                profileImage
+                profileImage,
+                status
             },
             TableName: PROFILES_TABLE_NAME
         };
@@ -68,6 +70,40 @@ class ProfileDAO {
                     resolve();
                 }
             });
+        });
+    }
+
+    public updateStatus(username: string, status: string): Promise<any> {
+        if (status == "") {
+            status = " ";
+        }
+        return new Promise<any>((resolve, reject) => {
+            const params = {
+                TableName: PROFILES_TABLE_NAME,
+                Key: {
+                    username: username
+                },
+                UpdateExpression: "SET statusText = :s",
+                ExpressionAttributeValues: {
+                    ":s": status
+                }
+            };
+
+            this.docClient.update(params, (err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
+                    userChannelDAO.updateStatus(username, status)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch((err) => {
+                            reject();
+                        });
+                }
+            });
+
         });
     }
 

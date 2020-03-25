@@ -16,7 +16,8 @@
                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                     src="{{user.profileImage}}"
                 />
-                <span>{{user.username}}</span>
+                <span>{{user.username}}</span><br>
+                <span class="statusMessage"><i>{{user.statusText}}</i></span>
             </div>
         </div>
         <br>
@@ -31,7 +32,8 @@
                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                     src="{{user.profileImage}}"
                 />
-                <span>{{user.username}}</span>
+                <span>{{user.username}}</span><br>
+                <span class="statusMessage">{{user.statusText}}</span>
             </div>
         </div>
     </mat-card>

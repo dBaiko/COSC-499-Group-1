@@ -45,7 +45,8 @@ export class ChannelUserListComponent implements OnInit {
             } else {
                 this.onlineUsers.push({
                     username: user.username,
-                    profileImage: user.profileImage
+                    profileImage: user.profileImage,
+                    statusText: user.statusText
                 });
             }
         }

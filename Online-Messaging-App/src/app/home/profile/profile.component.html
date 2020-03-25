@@ -67,8 +67,26 @@
             <p>
                 <i>{{ editSaveMessage }}</i>
             </p>
-
             <div *ngIf="userProfile && !editing" class="profileInfo">
+                <p class="nameHeaders"><b>Status</b><span
+                    (click)="this.toggleEditingStatus(true)"
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"> Click to update</span>
+                </p>
+                <p (click)="this.toggleEditingStatus(true)"
+                   *ngIf="!editingStatus">{{userProfile.statusText}}</p>
+                <form
+                    (ngSubmit)="statusFormSubmit(statusForm)"
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && editingStatus"
+                    [formGroup]="statusForm">
+                    <input
+                        autocomplete="off"
+                        formControlName="statusText"
+                        maxlength="25"
+                        name="statusText"
+                        type="text"
+                    />
+                    <button mat-button type="submit">Update</button>
+                </form>
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
                 <hr/>
