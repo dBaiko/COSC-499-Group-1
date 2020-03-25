@@ -1,18 +1,18 @@
 <mat-sidenav-container>
     <mat-button-toggle-group *ngIf="publicChannelSelect" class="channelSelector mat-elevation-z0">
-        <mat-button-toggle (click)="selectPublicChannel()" checked>Public</mat-button-toggle>
-        <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectPublicChannel()" checked class="checked public">Public</mat-button-toggle>
+        <mat-button-toggle (click)="selectPrivateChannel()" class="private">Private</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" class="friend">Friend</mat-button-toggle>
     </mat-button-toggle-group>
     <mat-button-toggle-group *ngIf="privateChannelSelect" class="channelSelector mat-elevation-z0">
-        <mat-button-toggle (click)="selectPublicChannel()">Public</mat-button-toggle>
-        <mat-button-toggle (click)="selectPrivateChannel()" checked>Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()">Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectPublicChannel()" class="public">Public</mat-button-toggle>
+        <mat-button-toggle (click)="selectPrivateChannel()" checked class="checked private">Private</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" class="friend">Friend</mat-button-toggle>
     </mat-button-toggle-group>
     <mat-button-toggle-group *ngIf="friendChannelSelect" class="channelSelector mat-elevation-z0">
-        <mat-button-toggle (click)="selectPublicChannel()">Public</mat-button-toggle>
-        <mat-button-toggle (click)="selectPrivateChannel()">Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()" checked>Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectPublicChannel()" class="public">Public</mat-button-toggle>
+        <mat-button-toggle (click)="selectPrivateChannel()" class="private">Private</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" checked class="checked friend">Friend</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="scrollable">
         <div *ngIf="publicChannelSelect">
