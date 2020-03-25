@@ -5,7 +5,7 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup, NgForm } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { ChannelObject } from "../sidebar/sidebar.component";
+import {ChannelObject, NewUsersSubbedChannelObject} from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
 import { ProfileObject, SettingsObject } from "../home.component";
@@ -76,6 +76,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     channelNotificationsUsernames: Array<string> = [];
     friendMessage: string = null;
     @Input() channelName: string;
+  private _newUserSubbedChannel: NewUsersSubbedChannelObject;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
@@ -103,6 +104,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     set currentUserProfile(value: ProfileObject) {
         this._currentUserProfile = value;
 
+    }
+    @Input()
+    set newUserSubbedChannel(value: NewUsersSubbedChannelObject) {
+        if (value) {
+            this._newUserSubbedChannel = value;
+            this.sendStatus(value);
+        }
+    }
+    get newUserSubbedChannel(): NewUsersSubbedChannelObject {
+        return this._newUserSubbedChannel;
     }
 
     private _currentChannel: ChannelObject;
@@ -337,6 +348,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             return true;
         }
         return false;
+    }
+
+    private sendStatus(newUsersSubbedChannel): void {
+        let chatMessage = {
+            channelId: newUsersSubbedChannel.channelId,
+            username: null,
+            content: newUsersSubbedChannel.username + " has joined the channel",
+            profileImage: null
+        };
+        this.isNearBottom = false;
+        this.messagerService.sendMessage(chatMessage);
     }
 
     private getSubcribedUsers(): Promise<any> {
