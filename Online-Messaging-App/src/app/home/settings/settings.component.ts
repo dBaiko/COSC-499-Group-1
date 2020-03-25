@@ -15,6 +15,7 @@ const LIGHT = "light";
 })
 export class SettingsComponent implements OnInit {
     @Output() themeEvent = new EventEmitter<string>();
+    @Output() explicitEvent = new EventEmitter<boolean>();
     @Input()
     settings: SettingsObject;
     private usersAPI: string = APIConfig.usersAPI;
@@ -37,10 +38,10 @@ export class SettingsComponent implements OnInit {
 
     explicitToggle(event): void {
         if (event.checked) {
-            //TODO: implement explicit event emit
+            this.explicitEvent.emit(true);
             this.saveExplicit(true);
         } else {
-            //TODO: implement explicit event emit
+            this.explicitEvent.emit(false);
             this.saveExplicit(false);
         }
     }

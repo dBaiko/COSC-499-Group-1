@@ -157,6 +157,10 @@ export class HomeComponent implements OnInit {
         }
     }
 
+    setExplicit(explicit: boolean): void {
+        this.settings.explicit = explicit;
+    }
+
     private getUsers(): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {

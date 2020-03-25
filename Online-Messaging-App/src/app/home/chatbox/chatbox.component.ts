@@ -8,7 +8,7 @@ import { NotificationObject, NotificationService, NotificationSocketObject } fro
 import { ChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
-import { ProfileObject } from "../home.component";
+import { ProfileObject, SettingsObject } from "../home.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const MESSAGES_URI = "/messages";
@@ -78,6 +78,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     friendMessage: string = null;
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
+    @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe") scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
@@ -163,6 +164,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data.channelId == this.currentChannel.channelId) {
+                if (!this.settings.explicit) {
+                    data.content = this.filterClean(data.content);
+                }
                 this.chatMessages.push(data);
                 setTimeout(this.addLangTypes, 50);
             }
@@ -189,8 +193,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                     this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
                         (data: Array<MessageObject>) => {
-                            for (let i = 0; i < data.length; i++) {// TODO: only do if users settings allow
-                                data[i].content = this.filterClean(data[i].content);
+                            if (!this.settings.explicit) {
+                                for (let i = 0; i < data.length; i++) {
+                                    data[i].content = this.filterClean(data[i].content);
+                                }
                             }
                             this.chatMessages = data || [];
                             resolve();
@@ -220,7 +226,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 content: value.content,
                 profileImage: this.currentUserProfile.profileImage
             };
-            console.log(this.filterClean(value.content));
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
         } // TODO: add user error message if this is false
