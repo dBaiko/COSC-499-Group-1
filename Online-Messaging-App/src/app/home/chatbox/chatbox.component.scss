@@ -31,7 +31,10 @@ mat-form-field {
 }
 
 hr {
-    border: 1px solid #ececec;
+    border: 1px solid var(--soft-black);
+}
+hr::ng-deep pre{
+    border: 1px solid var(--element-color);
 }
 
 mat-card-title {
@@ -181,10 +184,22 @@ markdown ::ng-deep pre {
     background-color: var(--soft-black);
     width: 95%;
 }
-
-markdown ::ng-deep a {
-    background-color: var(--soft-black);
-    border-radius: 10%;
-    padding-left: 0.3em;
-    padding-right: 0.3em;
+.message{
+    font-size: 1.2em;
 }
+.message:hover{
+    background-color: var(--element-hover-color);
+}
+.message mat-icon{
+    visibility:hidden;
+}
+.message:hover mat-icon{
+    visibility: visible;
+}
+.message:hover ::ng-deep pre{
+    background-color: var(--soft-black);
+}
+.icons{
+    float:right;
+}
+
