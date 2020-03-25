@@ -27,7 +27,9 @@ export interface ChannelObject {
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
 const FRIEND: string = "friend";
+const CHECKED: string = "checked";
 const SELECTED: string = "selected";
+const LAX = "Lax";
 
 const CHANNELS_URI = "/channels/";
 
@@ -186,18 +188,45 @@ export class SidebarComponent implements OnInit {
         this.publicChannelSelect = true;
         this.privateChannelSelect = false;
         this.friendChannelSelect = false;
+        let publicElem: Element = document.getElementsByClassName(PUBLIC)[0];
+        let privateElem: Element = document.getElementsByClassName(PRIVATE)[0];
+        let friendElem: Element = document.getElementsByClassName(FRIEND)[0];
+
+        if (publicElem) {
+            publicElem.classList.add(CHECKED);
+            privateElem.classList.remove(CHECKED);
+            friendElem.classList.remove(CHECKED);
+        }
     }
 
     selectPrivateChannel(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = true;
         this.friendChannelSelect = false;
+        let publicElem: Element = document.getElementsByClassName(PUBLIC)[0];
+        let privateElem: Element = document.getElementsByClassName(PRIVATE)[0];
+        let friendElem: Element = document.getElementsByClassName(FRIEND)[0];
+
+        if (privateElem) {
+            publicElem.classList.remove(CHECKED);
+            privateElem.classList.add(CHECKED);
+            friendElem.classList.remove(CHECKED);
+        }
     }
 
     selectFriend(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
+        let publicElem: Element = document.getElementsByClassName(PUBLIC)[0];
+        let privateElem: Element = document.getElementsByClassName(PRIVATE)[0];
+        let friendElem: Element = document.getElementsByClassName(FRIEND)[0];
+
+        if (friendElem) {
+            publicElem.classList.remove(CHECKED);
+            privateElem.classList.remove(CHECKED);
+            friendElem.classList.add(CHECKED);
+        }
     }
 
     selectChannel(id: string, type: string) {
@@ -219,7 +248,7 @@ export class SidebarComponent implements OnInit {
                     null,
                     null,
                     null,
-                    "Lax"
+                    LAX
                 );
             } else {
                 item[SELECTED] = false;
