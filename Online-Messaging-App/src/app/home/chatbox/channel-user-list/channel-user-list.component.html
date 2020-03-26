@@ -8,31 +8,35 @@
         <mat-card-title>Online
             <hr>
         </mat-card-title>
-        <div *ngFor="let user of onlineUsers" class="onlineUsers">
-            <div (click)="goToProfile(user.username)">
-                <img
-                    class="userProfilePicture"
-                    inline="true"
-                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                    src="{{user.profileImage}}"
-                />
-                <span>{{user.username}}</span>
+        <mat-nav-list>
+            <div *ngFor="let user of onlineUsers" class="onlineUsers">
+                <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                    <img matListAvatar
+                        class="userProfilePicture"
+                        inline="true"
+                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                        src="{{user.profileImage}}"
+                    />
+                    <span matLine>{{user.username}}</span>
+                </mat-list-item>
             </div>
-        </div>
-        <br>
+            <br>
+        </mat-nav-list>
         <mat-card-title>Offline
             <hr>
         </mat-card-title>
+        <mat-nav-list>
         <div *ngFor="let user of offlineUsers" class="offlineUsers">
-            <div (click)="goToProfile(user.username)">
-                <img
+            <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                <img matListAvatar
                     class="userProfilePicture"
                     inline="true"
                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                     src="{{user.profileImage}}"
                 />
-                <span>{{user.username}}</span>
-            </div>
+                <span matLine>{{user.username}}</span>
+            </mat-list-item>
         </div>
+        </mat-nav-list>
     </mat-card>
 </mat-card>

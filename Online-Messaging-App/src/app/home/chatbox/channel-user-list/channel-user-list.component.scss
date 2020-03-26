@@ -21,12 +21,15 @@ mat-form-field {
 }
 
 .userPicture {
-    width: 5%;
+    width: 8%;
 }
 
 .clickable {
     cursor: pointer;
     color: var(--primary-color);
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 hr {
