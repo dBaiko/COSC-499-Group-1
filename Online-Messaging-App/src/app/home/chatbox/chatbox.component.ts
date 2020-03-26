@@ -355,7 +355,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http.delete(this.messagesAPI + chatMessage.messageId + "/" + chatMessage.channelId + "/" + chatMessage.insertTime, httpHeaders).subscribe(
+                this.http.delete(this.messagesAPI + chatMessage.messageId + "/" + chatMessage.channelId + "/" + chatMessage.insertTime + "/" + chatMessage.username, httpHeaders).subscribe(
                     () => {
                     },
                     (err) => {
