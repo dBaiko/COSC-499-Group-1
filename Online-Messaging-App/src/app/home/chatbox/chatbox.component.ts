@@ -62,13 +62,13 @@ interface MessageObject {
 export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages: Array<MessageObject> = [];
     error: string = Constants.EMPTY;
+
     viewed: boolean = false;
 
     filter = new Filter();
 
     @ViewChild("messageForm") messageForm: NgForm;
-    @ViewChild("content") messageContent: ElementRef;
-
+    @ViewChild("editForm") editForm: NgForm;
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -337,6 +337,20 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
+    editFormTextAreaSubmit(event) {
+        if (event.keyCode == 13 && event.shiftKey) {
+        } else if (event.keyCode == 13) {
+            event.preventDefault();
+            this.editForm.ngSubmit.emit();
+        }
+    }
+
+    editFormSubmit(form: FormGroup, message: MessageObject) {
+        if (form.value.content && !whitespaceRegEx.test(form.value.content)) {
+            this.editMessage(message, form.value.content);
+        }
+    }
+
     filterClean(value: string) {
         let s: string = this.filter.clean(value);
         if (/^\*+$/.test(s.trim())) {
@@ -373,6 +387,34 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     editMessage(chatMessage: MessageObject){
         this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
 
+    }
+
+    editMessage(message: MessageObject, newContent: string) {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                message.content = newContent;
+
+                this.http.put(this.messagesAPI + message.messageId, message, httpHeaders).subscribe(
+                    () => {
+                        //TODO: handle success
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 
     private searchStrings(match: string, search: string): boolean {

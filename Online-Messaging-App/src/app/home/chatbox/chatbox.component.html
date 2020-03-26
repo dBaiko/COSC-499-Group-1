@@ -140,6 +140,15 @@
                                   class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                                 <mat-icon (click)="editMessage(chatMessage)">edit</mat-icon>
+                                <mat-icon>edit</mat-icon>
+                                <!--                                <form #editForm="ngForm" (ngSubmit)="editFormSubmit(editForm.form, chatMessage)"-->
+                                <!--                                      autocomplete="off"-->
+                                <!--                                      id="editForm">-->
+                                <!--                                    <mat-form-field>-->
+                                <!--                                        <textarea (keydown)="editFormTextAreaSubmit($event)" cdkTextareaAutosize-->
+                                <!--                                                  matInput name="editContent" ngModel></textarea>-->
+                                <!--                                    </mat-form-field>-->
+                                <!--                                </form>-->
                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                             </span>
                             <span *ngIf="chatMessage.username != currentUserProfile.username"
