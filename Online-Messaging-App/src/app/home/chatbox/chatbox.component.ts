@@ -49,8 +49,9 @@ interface MessageObject {
     content: string,
     messageId: string,
     profileImage: string,
-    username: string
-    deleted: boolean;
+    username: string,
+    deleted: boolean,
+    editing: boolean;
 }
 
 @Component({
@@ -61,12 +62,13 @@ interface MessageObject {
 export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages: Array<MessageObject> = [];
     error: string = Constants.EMPTY;
-
     viewed: boolean = false;
 
     filter = new Filter();
 
     @ViewChild("messageForm") messageForm: NgForm;
+    @ViewChild("content") messageContent: ElementRef;
+
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -366,6 +368,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         );
         this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
+    }
+
+    editMessage(chatMessage: MessageObject){
+        this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
+
     }
 
     private searchStrings(match: string, search: string): boolean {
