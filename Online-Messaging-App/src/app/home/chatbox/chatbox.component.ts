@@ -45,11 +45,12 @@ interface InviteChannelObject {
 
 interface MessageObject {
     channelId: string,
-    insetTime: number,
+    insertTime: number,
     content: string,
     messageId: string,
     profileImage: string,
     username: string
+    deleted: boolean;
 }
 
 @Component({
@@ -81,6 +82,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe") scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
+    private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
 
@@ -339,6 +341,31 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             return s.replace(/\*/g, "\\*");
         }
         return s;
+    }
+
+    deleteMessage(chatMessage: MessageObject) {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.delete(this.messagesAPI + chatMessage.messageId + "/" + chatMessage.channelId + "/" + chatMessage.insertTime, httpHeaders).subscribe(
+                    () => {
+                    },
+                    (err) => {
+                        this.error = err.toString();
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+        this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
     }
 
     private searchStrings(match: string, search: string): boolean {

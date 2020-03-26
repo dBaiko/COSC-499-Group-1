@@ -210,7 +210,15 @@ markdown ::ng-deep pre {
     float: right;
 }
 
+.icons:hover {
+    cursor: pointer;
+}
+
 .status {
     text-align: center;
 }
 
+.deletedMessage {
+    font-size: 1em;
+    color: dimgrey;
+}

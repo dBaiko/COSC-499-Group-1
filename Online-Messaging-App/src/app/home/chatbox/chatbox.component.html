@@ -134,19 +134,26 @@
                             </mat-card-header>
                         </div>
                     </div>
-                    <mat-card-content class="message">
-                        <p>
-                            <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
+                    <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
+                        <p class="message">
+                            <span *ngIf="chatMessage.username == currentUserProfile.username"
+                                  class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                                 <mat-icon>edit</mat-icon>
-                                <mat-icon>delete</mat-icon>
+                                <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                             </span>
-                            <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
+                            <span *ngIf="chatMessage.username != currentUserProfile.username"
+                                  class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
                             <markdown class="mark">{{ chatMessage.content }}</markdown>
                         </p>
                     </mat-card-content>
+                    <ng-template #messageDeleted>
+                        <mat-card-content>
+                            <i class="deletedMessage">Message deleted</i>
+                        </mat-card-content>
+                    </ng-template>
                 </ng-template>
             </div>
         </div>
