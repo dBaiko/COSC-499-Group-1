@@ -21,15 +21,13 @@ mat-form-field {
 }
 
 .userPicture {
-    width: 8%;
+    width: 5%;
 }
 
 .clickable {
     cursor: pointer;
     color: var(--primary-color);
     align-items: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 hr {
@@ -78,4 +76,9 @@ mat-label {
     white-space: normal;
     width: 22%;
     border-radius: 50%;
+}
+
+.navTitle {
+    text-align: left;
+    padding-left: 4%;
 }
