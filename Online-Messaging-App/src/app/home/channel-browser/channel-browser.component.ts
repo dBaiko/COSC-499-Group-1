@@ -159,7 +159,8 @@ export class ChannelBrowserComponent implements OnInit {
                     userChannelRole: DEFAULT_CHANNEL_ROLE,
                     channelName: channel.channelName,
                     channelType: channel.channelType,
-                    profileImage: this.currentUserProfile.profileImage
+                    profileImage: this.currentUserProfile.profileImage,
+                    statusText: this.currentUserProfile.statusText
                 };
 
                 this.newChannelIdEvent.emit({

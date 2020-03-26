@@ -21,6 +21,7 @@
                 (newChannelEvent)="addNewChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
+                (newUserSubbedChannelEvent)="setNewUserSubbedChannel($event)"
                 [currentUserProfile]="currentUserProfile"
                 [notificationChannel]="notificationChannel"
                 [subbedChannel]="newSubbedChannel"
@@ -45,6 +46,7 @@
                             [currentUserProfile]="currentUserProfile"
                             [settings]="settings"
                             [userList]="userList"
+                            [newUserSubbedChannel]="newUserSubbedChannel"
                             class="scrollMe"
                         ></app-chatbox>
                     </div>

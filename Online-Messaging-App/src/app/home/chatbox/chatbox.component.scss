@@ -33,7 +33,8 @@ mat-form-field {
 hr {
     border: 1px solid var(--soft-black);
 }
-hr::ng-deep pre{
+
+hr::ng-deep pre {
     border: 1px solid var(--element-color);
 }
 
@@ -184,22 +185,40 @@ markdown ::ng-deep pre {
     background-color: var(--soft-black);
     width: 95%;
 }
-.message{
+
+.message {
     font-size: 1.2em;
 }
-.message:hover{
+
+.message:hover {
     background-color: var(--element-hover-color);
 }
-.message mat-icon{
-    visibility:hidden;
-}
-.message:hover mat-icon{
-    visibility: visible;
-}
-.message:hover ::ng-deep pre{
-    background-color: var(--soft-black);
-}
-.icons{
-    float:right;
+
+.message mat-icon {
+    visibility: hidden;
 }
 
+.message:hover mat-icon {
+    visibility: visible;
+}
+
+.message:hover ::ng-deep pre {
+    background-color: var(--soft-black);
+}
+
+.icons {
+    float: right;
+}
+
+.icons:hover {
+    cursor: pointer;
+}
+
+.status {
+    text-align: center;
+}
+
+.deletedMessage {
+    font-size: 1em;
+    color: dimgrey;
+}

@@ -207,6 +207,42 @@ class UserChannelDAO {
 
     }
 
+    public updateStatus(username: string, status: string): Promise<any> {
+
+        return new Promise<any>((resolve, reject) => {
+            this.getAllSubscribedChannels(username)
+                .then((data: Array<UserChannelObject>) => {
+
+                    data.forEach((userChannel) => {
+
+                        let params = {
+                            TableName: USER_CHANNEL_TABLE_NAME,
+                            Key: {
+                                username: username,
+                                channelId: userChannel.channelId
+                            },
+                            UpdateExpression: "SET statusText = :s",
+                            ExpressionAttributeValues: {
+                                ":s": status
+                            }
+                        };
+
+                        this.docClient.update(params, (err, data1) => {
+                            if (err) {
+                                reject(err);
+                            }
+                        });
+
+                    });
+                    resolve();
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+
+    }
+
 }
 
 export default UserChannelDAO;

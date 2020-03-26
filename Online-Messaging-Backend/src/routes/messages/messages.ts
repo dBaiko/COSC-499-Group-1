@@ -10,6 +10,7 @@ const router = express.Router();
 const AUTH_KEY = "authorization";
 
 const PATH_GET_ALL_MESSAGES: string = "/";
+const PATH_DELETE_MESSAGE: string = "/:messageId/:channelId/:insertTime/";
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
 
@@ -37,6 +38,18 @@ router.get(PATH_GET_ALL_MESSAGES, (req, res) => {
             res.status(err.status).send(err);
         }
     );
+});
+
+router.delete(PATH_DELETE_MESSAGE, (req, res) => {
+    let messageDAO = new MessageDAO(docClient);
+    messageDAO.deleteMessage(req.params.messageId, req.params.channelId, +req.params.insertTime)
+        .then(() => {
+            console.log("success delete message");
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(401).send(err);
+        });
 });
 
 export = router;

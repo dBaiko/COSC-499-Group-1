@@ -5,7 +5,7 @@ import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormGroup, NgForm } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { ChannelObject } from "../sidebar/sidebar.component";
+import { ChannelObject, NewUsersSubbedChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
 import { ProfileObject, SettingsObject } from "../home.component";
@@ -45,11 +45,12 @@ interface InviteChannelObject {
 
 interface MessageObject {
     channelId: string,
-    insetTime: number,
+    insertTime: number,
     content: string,
     messageId: string,
     profileImage: string,
     username: string
+    deleted: boolean;
 }
 
 @Component({
@@ -58,7 +59,7 @@ interface MessageObject {
     styleUrls: ["./chatbox.component.scss"]
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
-    chatMessages: Array<MessageObject>;
+    chatMessages: Array<MessageObject> = [];
     error: string = Constants.EMPTY;
 
     viewed: boolean = false;
@@ -81,6 +82,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild("scrollframe") scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
+    private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
 
@@ -93,6 +95,20 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     ) {
     }
 
+    private _newUserSubbedChannel: NewUsersSubbedChannelObject;
+
+    get newUserSubbedChannel(): NewUsersSubbedChannelObject {
+        return this._newUserSubbedChannel;
+    }
+
+    @Input()
+    set newUserSubbedChannel(value: NewUsersSubbedChannelObject) {
+        if (value) {
+            this._newUserSubbedChannel = value;
+            this.sendStatus(value);
+        }
+    }
+
     private _currentUserProfile: ProfileObject;
 
     get currentUserProfile(): ProfileObject {
@@ -102,7 +118,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentUserProfile(value: ProfileObject) {
         this._currentUserProfile = value;
-
     }
 
     private _currentChannel: ChannelObject;
@@ -162,12 +177,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     ngOnInit(): void {
         this.messagerService.subscribeToSocket().subscribe((data) => {
-            if (data.channelId == this.currentChannel.channelId) {
-                if (!this.settings.explicit) {
-                    data.content = this.filterClean(data.content);
+            if (data) {
+                if (data.channelId == this.currentChannel.channelId) {
+                    if (!this.settings.explicit) {
+                        data.content = this.filterClean(data.content);
+                    }
+                    this.chatMessages.push(data);
+                    setTimeout(this.addLangTypes, 50);
                 }
-                this.chatMessages.push(data);
-                setTimeout(this.addLangTypes, 50);
             }
         });
     }
@@ -326,6 +343,31 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return s;
     }
 
+    deleteMessage(chatMessage: MessageObject) {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.delete(this.messagesAPI + chatMessage.messageId + "/" + chatMessage.channelId + "/" + chatMessage.insertTime, httpHeaders).subscribe(
+                    () => {
+                    },
+                    (err) => {
+                        this.error = err.toString();
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+        this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
+    }
+
     private searchStrings(match: string, search: string): boolean {
         if (search === match) {
             return true;
@@ -337,6 +379,29 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             return true;
         }
         return false;
+    }
+
+    private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
+        if (newUsersSubbedChannel.joined) {
+            let chatMessage = {
+                channelId: newUsersSubbedChannel.channelId,
+                username: null,
+                content: newUsersSubbedChannel.username + " has joined the channel",
+                profileImage: null
+            };
+            this.isNearBottom = false;
+            this.messagerService.sendMessage(chatMessage);
+        } else {
+            let chatMessage = {
+                channelId: newUsersSubbedChannel.channelId,
+                username: null,
+                content: newUsersSubbedChannel.username + " has left the channel",
+                profileImage: null
+            };
+            this.isNearBottom = false;
+            this.messagerService.sendMessage(chatMessage);
+        }
+
     }
 
     private getSubcribedUsers(): Promise<any> {

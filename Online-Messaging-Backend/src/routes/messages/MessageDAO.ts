@@ -1,13 +1,14 @@
 /* tslint:disable:no-console */
-import { uuid } from "uuidv4";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 interface Message {
     channelId: number;
     username: string;
     content: string;
+    messageId: string;
     insertTime: number;
     profileImage: string;
+    deleted: string;
 }
 
 interface ChannelObject {
@@ -66,8 +67,8 @@ class MessageDAO {
 
     public addNewMessage(message: Message): void {
         const channelId = message.channelId;
-        const insertTime = Date.now();
-        const messageId = uuid();
+        const insertTime = message.insertTime;
+        const messageId = message.messageId;
         const username = message.username;
         const content = message.content;
         const profileImage = message.profileImage;
@@ -96,20 +97,22 @@ class MessageDAO {
         this.getMessageHistory(channelId)
             .then((data: Array<Message>) => {
                 for (let i = 0; i < data.length; i++) {
-                    let deleteObject = {
+                    let updateObject = {
                         TableName: tableName,
                         Key: {
                             channelId: data[i].channelId,
                             insertTime: data[i].insertTime
                         },
                         ConditionExpression: "channelId = :c and insertTime = :i",
+                        UpdateExpression: "SET deleted = :m",
                         ExpressionAttributeValues: {
                             ":c": channelId,
-                            ":i": data[i].insertTime
+                            ":i": data[i].insertTime,
+                            ":m": true
                         }
                     };
 
-                    this.docClient.delete(deleteObject, (err, data1) => {
+                    this.docClient.update(updateObject, (err, data1) => {
                         if (err) {
                             console.log(err);
                         }
@@ -121,6 +124,36 @@ class MessageDAO {
                 console.log(err);
             });
     }
+
+    public deleteMessage(messageId: string, channelId: string, insertTime: number): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            let updateObject = {
+                TableName: tableName,
+                Key: {
+                    channelId: channelId,
+                    insertTime: insertTime
+                },
+                UpdateExpression: "SET deleted = :m",
+                ConditionExpression: "messageId = :i",
+                ExpressionAttributeValues: {
+                    ":m": true,
+                    ":i": messageId
+                }
+            };
+
+            this.docClient.update(updateObject, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+
+            ;
+        });
+    }
+
 }
 
 export default MessageDAO;
