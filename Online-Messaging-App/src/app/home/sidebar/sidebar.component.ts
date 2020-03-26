@@ -24,6 +24,12 @@ export interface ChannelObject {
     channelType: string;
 }
 
+export interface NewUsersSubbedChannelObject {
+    channelId: string;
+    username: string;
+    joined: boolean;
+}
+
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
 const FRIEND: string = "friend";
@@ -49,6 +55,7 @@ export class SidebarComponent implements OnInit {
     @Output() newChannelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
+    @Output() newUserSubbedChannelEvent = new EventEmitter<NewUsersSubbedChannelObject>();
     publicChannelSelect: boolean;
     privateChannelSelect: boolean;
     friendChannelSelect: boolean;
@@ -81,6 +88,11 @@ export class SidebarComponent implements OnInit {
             } else if (value.type == FRIEND) {
                 this.selectFriend();
             }
+            this.newUserSubbedChannelEvent.emit({
+                channelId: value.channelId,
+                username: this.currentUserProfile.username,
+                joined: true
+            });
         }
     }
 
@@ -92,7 +104,14 @@ export class SidebarComponent implements OnInit {
 
     @Input()
     set subbedChannel(value: ChannelObject) {
-        this.setNewChannel(value);
+        if (value) {
+            this.setNewChannel(value);
+            this.newUserSubbedChannelEvent.emit({
+                channelId: value.channelId,
+                username: this.currentUserProfile.username,
+                joined: true
+            });
+        }
     }
 
     ngOnInit(): void {
@@ -392,6 +411,11 @@ export class SidebarComponent implements OnInit {
                     }
                 );
             }
+            this.newUserSubbedChannelEvent.emit({
+                channelId: channelId,
+                username: this.currentUserProfile.username,
+                joined: false
+            });
         });
     }
 

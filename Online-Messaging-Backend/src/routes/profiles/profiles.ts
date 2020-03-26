@@ -19,6 +19,7 @@ router.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit
 const PATH_PUT_PROFILE: string = "/:username";
 const PATH_GET_PROFILE: string = "/:username";
 const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
+const PATH_UPDATE_STATUS: string = "/:username/status/";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
 
@@ -78,20 +79,66 @@ router.put(PATH_UPDATE_PROFILE_IMAGE, upload.single("file"), (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-            const updateProfile = new ProfileDAO(docClient);
-            updateProfile
-                .updateProfileImage(req.file, req.body.username)
-                .then((data) => {
-                    res.status(200).send({
-                        profileImage: data
+            if (
+                req.params.username === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
+                const updateProfile = new ProfileDAO(docClient);
+                updateProfile
+                    .updateProfileImage(req.file, req.body.username)
+                    .then((data) => {
+                        res.status(200).send({
+                            profileImage: data
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(401).send({
+                            status: 401,
+                            data: { message: err }
+                        });
                     });
-                })
-                .catch((err) => {
-                    res.status(401).send({
-                        status: 401,
-                        data: { message: err }
-                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user profile info" }
                 });
+            }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.put(PATH_UPDATE_STATUS, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            console.log(req.params);
+            console.log(req.body);
+            if (
+                req.params.username === data.decodedToken[COGNITO_USERNAME] &&
+                req.body.username === data.decodedToken[COGNITO_USERNAME]
+            ) {
+                const updateProfile = new ProfileDAO(docClient);
+                updateProfile
+                    .updateStatus(req.body.username, req.body.status)
+                    .then(() => {
+                        res.status(200).send({});
+                    })
+                    .catch((err) => {
+                        res.status(401).send({
+                            status: 401,
+                            data: { message: err }
+                        });
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user profile info" }
+                });
+            }
         },
         (err) => {
             res.status(err.status).send(err);

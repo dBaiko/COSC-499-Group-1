@@ -65,6 +65,8 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("message", (message: any) => {
         if (message.content) {
+            message["insertTime"] = Date.now();
+            message["messageId"] = uuid();
             io.sockets.emit("broadcast", message);
             const messageDAO = new MessageDAO(docClient);
             messageDAO.addNewMessage(message);
