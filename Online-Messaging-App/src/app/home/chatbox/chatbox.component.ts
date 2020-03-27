@@ -16,10 +16,8 @@ import {
 import { AuthenticationService } from "../../shared/authentication.service";
 import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
-import { ChannelObject, NewUsersSubbedChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
-import { ProfileObject, SettingsObject } from "../home.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -32,7 +30,7 @@ const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
 const MESSAGE_FORM_IDENTIFIER: string = "messageForm";
 const EDIT_FORM_IDENTIFIER: string = "editForm";
 const SCROLL_FRAME_IDENTIFIER: string = "scrollframe";
-
+const HIDDEN_BUTTON_IDENTIFIER: string = "hiddenButton";
 const FRIEND_IDENTIFIER: string = "friend";
 const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
@@ -74,7 +72,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
-    @ViewChild(EDIT_FORM_IDENTIFIER) editForm: NgForm;
     editForm: FormGroup;
 
     inviting: boolean = false;
@@ -342,7 +339,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (event.keyCode == ENTER_KEY_CODE && event.shiftKey) {
         } else if (event.keyCode == ENTER_KEY_CODE) {
             event.preventDefault();
-            this.editForm.ngSubmit.emit();
+            document.getElementById(HIDDEN_BUTTON_IDENTIFIER).click();
         }
     }
 
