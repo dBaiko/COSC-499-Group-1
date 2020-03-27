@@ -27,7 +27,7 @@ const jwtVerificationService: JwtVerificationService = JwtVerificationService.ge
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
 
-router.use(bodyParser());
+router.use(bodyParser.json());
 
 router.get(PATH_GET_ALL_CHANNELS, (req, res) => {
     let token: string = req.headers[AUTH_KEY];

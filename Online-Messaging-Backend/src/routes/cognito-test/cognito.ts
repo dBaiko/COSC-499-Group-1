@@ -8,7 +8,7 @@ const PATH_GET_JWT: string = "/";
 
 const router = express.Router();
 
-router.use(bodyParser());
+router.use(bodyParser.json());
 
 router.get(PATH_GET_JWT, (req, res) => {
     let adminPassword = req.headers["authorization"];
