@@ -140,6 +140,7 @@ export interface MessageObject {
     profileImage: string;
     username: string;
     deleted: boolean;
+    editing: boolean;
 }
 
 export interface newChannelResponse {
