@@ -29,7 +29,7 @@ const jwtVerificationService: JwtVerificationService = JwtVerificationService.ge
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
 
-router.use(bodyParser());
+router.use(bodyParser.json());
 
 interface UserObject {
     username: string;
