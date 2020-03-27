@@ -10,7 +10,9 @@
                 <form #messageForm="ngForm" (ngSubmit)="sendQuery()" autocomplete="off">
                     <mat-form-field>
                         <mat-label>Search...</mat-label>
-                        <input (input)="onKey($event)" matInput name="content" />
+                        <label>
+                            <input (input)="onKey($event)" matInput name="content"/>
+                        </label>
                     </mat-form-field>
                 </form>
             </div>

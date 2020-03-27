@@ -10,7 +10,7 @@
     <mat-sidenav-container class="container">
         <mat-sidenav
             [fixedBottomGap]="options.value.bottom"
-            [fixedInViewport]="options.value.fixed"
+            [fixedInViewport]=!!options.value.fixed
             [fixedTopGap]="options.value.top"
             class="sidenav"
             mode="side"
@@ -19,9 +19,9 @@
             <app-sidebar
                 (channelEvent)="receiveId($event)"
                 (newChannelEvent)="addNewChannel($event)"
+                (newUserSubbedChannelEvent)="setNewUserSubbedChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
-                (newUserSubbedChannelEvent)="setNewUserSubbedChannel($event)"
                 [currentUserProfile]="currentUserProfile"
                 [notificationChannel]="notificationChannel"
                 [subbedChannel]="newSubbedChannel"
@@ -44,9 +44,9 @@
                             (profileViewEvent)="updateProfile($event)"
                             [currentChannel]="selectedChannelId"
                             [currentUserProfile]="currentUserProfile"
+                            [newUserSubbedChannel]="newUserSubbedChannel"
                             [settings]="settings"
                             [userList]="userList"
-                            [newUserSubbedChannel]="newUserSubbedChannel"
                             class="scrollMe"
                         ></app-chatbox>
                     </div>
@@ -57,11 +57,13 @@
                         ></app-profile>
                     </div>
                     <div *ngSwitchCase="'settings'" class="scrollMe">
-                        <app-settings (explicitEvent)="setExplicit($event)" (themeEvent)="changeTheme($event)"
-                                      [settings]="settings">
+                        <app-settings
+                            (explicitEvent)="setExplicit($event)"
+                            (themeEvent)="changeTheme($event)"
+                            [settings]="settings"
+                        >
                         </app-settings>
                     </div>
-
                 </div>
             </div>
         </mat-sidenav-content>

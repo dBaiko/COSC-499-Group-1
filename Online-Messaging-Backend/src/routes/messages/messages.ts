@@ -47,10 +47,10 @@ router.put(PATH_PUT_MESSAGE, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
                 let messageDAO = new MessageDAO(docClient);
-                messageDAO.updateMessage(req.body)
+                messageDAO
+                    .updateMessage(req.body)
                     .then(() => {
                         console.log("success update message");
                         res.status(200).send();
@@ -65,7 +65,6 @@ router.put(PATH_PUT_MESSAGE, (req, res) => {
                     data: { message: "Unauthorized to access user data" }
                 });
             }
-
         },
         (err) => {
             res.status(err.status).send(err);
@@ -74,15 +73,14 @@ router.put(PATH_PUT_MESSAGE, (req, res) => {
 });
 
 router.delete(PATH_DELETE_MESSAGE, (req, res) => {
-
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-
             if (data.decodedToken[COGNITO_USERNAME] == req.params.username) {
                 let messageDAO = new MessageDAO(docClient);
-                messageDAO.deleteMessage(req.params.messageId, req.params.channelId, +req.params.insertTime)
+                messageDAO
+                    .deleteMessage(req.params.messageId, req.params.channelId, +req.params.insertTime)
                     .then(() => {
                         console.log("success delete message");
                         res.status(200).send();
@@ -97,13 +95,11 @@ router.delete(PATH_DELETE_MESSAGE, (req, res) => {
                     data: { message: "Unauthorized to access user data" }
                 });
             }
-
         },
         (err) => {
             res.status(err.status).send(err);
         }
     );
-
 });
 
 export = router;

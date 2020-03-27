@@ -38,7 +38,7 @@ export class LoginFormComponent implements OnInit {
 
     login(username: string, password: string): void {
         this.auth.login(username, password).subscribe(
-            (data) => {
+            () => {
                 this.common.moveToHome();
             },
             (err) => {

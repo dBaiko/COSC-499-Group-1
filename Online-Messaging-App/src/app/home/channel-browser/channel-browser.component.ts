@@ -1,14 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { ProfileObject, UserChannelObject } from "../home.component";
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
+import { APIConfig, ChannelObject, Constants, ProfileObject, UserChannelObject } from "../../shared/app-config";
 
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
@@ -169,7 +162,7 @@ export class ChannelBrowserComponent implements OnInit {
                     channelType: channel.channelType
                 });
 
-                // TODO: check for errors in responce
+                // TODO: check for errors in response
                 this.http
                     .post(this.channelsAPI + channel.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(

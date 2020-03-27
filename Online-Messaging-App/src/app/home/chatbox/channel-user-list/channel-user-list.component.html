@@ -5,35 +5,41 @@
         </mat-card-title>
     </div>
     <mat-card>
-        <mat-card-title>Online
-            <hr>
+        <mat-card-title
+        >Online
+            <hr/>
         </mat-card-title>
         <div *ngFor="let user of onlineUsers" class="onlineUsers">
             <div (click)="goToProfile(user.username)">
                 <img
+                    alt="assets/icon-alt.PNG"
                     class="userProfilePicture"
-                    inline="true"
                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                    src="{{user.profileImage}}"
+                    src="{{ user.profileImage }}"
                 />
-                <span>{{user.username}}</span><br>
-                <span class="statusMessage"><i>{{user.statusText}}</i></span>
+                <span>{{ user.username }}</span
+                ><br/>
+                <span class="statusMessage"
+                ><i>{{ user.statusText }}</i></span
+                >
             </div>
         </div>
-        <br>
-        <mat-card-title>Offline
-            <hr>
+        <br/>
+        <mat-card-title
+        >Offline
+            <hr/>
         </mat-card-title>
         <div *ngFor="let user of offlineUsers" class="offlineUsers">
             <div (click)="goToProfile(user.username)">
                 <img
+                    alt="assets/icon-alt.PNG"
                     class="userProfilePicture"
-                    inline="true"
                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                    src="{{user.profileImage}}"
+                    src="{{ user.profileImage }}"
                 />
-                <span>{{user.username}}</span><br>
-                <span class="statusMessage">{{user.statusText}}</span>
+                <span>{{ user.username }}</span
+                ><br/>
+                <span class="statusMessage">{{ user.statusText }}</span>
             </div>
         </div>
     </mat-card>
