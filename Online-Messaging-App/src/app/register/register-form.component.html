@@ -9,15 +9,15 @@
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>
-                            <input
-                                class="form-control"
-                                formControlName="username"
-                                id="username"
-                                matInput
-                                name="username"
-                                required
-                                type="text"
-                            />
+                            <label for="username"></label><input
+                            class="form-control"
+                            formControlName="username"
+                            id="username"
+                            matInput
+                            name="username"
+                            required
+                            type="text"
+                        />
                             <mat-error *ngFor="let validation of common.validation_methods.username">
                                 <mat-error
                                     *ngIf="
@@ -28,7 +28,7 @@
                                             submitAttempt
                                         )
                                     "
-                                    >{{ validation.message }}</mat-error
+                                >{{ validation.message }}</mat-error
                                 >
                             </mat-error>
                         </mat-form-field>
@@ -36,15 +36,15 @@
                             <div>
                                 <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Password</mat-label>
-                                    <input
-                                        class="form-control"
-                                        formControlName="password"
-                                        id="password"
-                                        matInput
-                                        name="password"
-                                        required
-                                        type="password"
-                                    />
+                                    <label for="password"></label><input
+                                    class="form-control"
+                                    formControlName="password"
+                                    id="password"
+                                    matInput
+                                    name="password"
+                                    required
+                                    type="password"
+                                />
                                     <mat-hint>Minimum 8 Characters</mat-hint>
                                     <mat-error *ngFor="let validation of common.validation_methods.password">
                                         <mat-error
@@ -56,7 +56,7 @@
                                                     submitAttempt
                                                 )
                                             "
-                                            >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -64,16 +64,16 @@
                             <div>
                                 <mat-form-field appearance="fill" color="primary">
                                     <mat-label>Confirm Password</mat-label>
-                                    <input
-                                        [errorStateMatcher]="matcher"
-                                        class="form-control"
-                                        formControlName="confirmPassword"
-                                        id="confirmPassword"
-                                        matInput
-                                        name="confirmPassword"
-                                        required
-                                        type="password"
-                                    />
+                                    <label for="confirmPassword"></label><input
+                                    [errorStateMatcher]="matcher"
+                                    class="form-control"
+                                    formControlName="confirmPassword"
+                                    id="confirmPassword"
+                                    matInput
+                                    name="confirmPassword"
+                                    required
+                                    type="password"
+                                />
                                     <mat-error *ngFor="let validation of common.validation_methods.confirmPassword">
                                         <mat-error
                                             *ngIf="
@@ -82,7 +82,7 @@
                                                     (matchingPasswordForm.get('confirmPassword').dirty ||
                                                         matchingPasswordForm.get('confirmPassword').touched))
                                             "
-                                            >{{ validation.message }}</mat-error
+                                        >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
                                 </mat-form-field>
@@ -93,15 +93,15 @@
                         <div>
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>First Name</mat-label>
-                                <input
-                                    class="form-control"
-                                    formControlName="firstName"
-                                    id="firstName"
-                                    matInput
-                                    name="firstName"
-                                    required
-                                    type="text"
-                                />
+                                <label for="firstName"></label><input
+                                class="form-control"
+                                formControlName="firstName"
+                                id="firstName"
+                                matInput
+                                name="firstName"
+                                required
+                                type="text"
+                            />
                                 <mat-error *ngFor="let validation of common.validation_methods.firstName">
                                     <mat-error
                                         *ngIf="
@@ -112,7 +112,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -120,15 +120,15 @@
                         <div>
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>Last Name</mat-label>
-                                <input
-                                    class="form-control"
-                                    formControlName="lastName"
-                                    id="lastName"
-                                    matInput
-                                    name="lastName"
-                                    required
-                                    type="text"
-                                />
+                                <label for="lastName"></label><input
+                                class="form-control"
+                                formControlName="lastName"
+                                id="lastName"
+                                matInput
+                                name="lastName"
+                                required
+                                type="text"
+                            />
                                 <mat-error *ngFor="let validation of common.validation_methods.lastName">
                                     <mat-error
                                         *ngIf="
@@ -139,7 +139,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>
@@ -147,15 +147,15 @@
                         <div>
                             <mat-form-field appearance="fill" color="primary">
                                 <mat-label>Email</mat-label>
-                                <input
-                                    class="form-control"
-                                    formControlName="email"
-                                    id="email"
-                                    matInput
-                                    name="email"
-                                    required
-                                    type="email"
-                                />
+                                <label for="email"></label><input
+                                class="form-control"
+                                formControlName="email"
+                                id="email"
+                                matInput
+                                name="email"
+                                required
+                                type="email"
+                            />
                                 <mat-error *ngFor="let validation of common.validation_methods.email">
                                     <mat-error
                                         *ngIf="
@@ -166,7 +166,7 @@
                                                 submitAttempt
                                             )
                                         "
-                                        >{{ validation.message }}</mat-error
+                                    >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
                             </mat-form-field>

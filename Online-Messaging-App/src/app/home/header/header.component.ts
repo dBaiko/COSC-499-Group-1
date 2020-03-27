@@ -1,57 +1,18 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
-import { NotificationService, UserSocket } from "../../shared/notification.service";
-import { ChannelObject } from "../sidebar/sidebar.component";
-import { ProfileObject } from "../home.component";
-
-interface UserChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelName: string;
-    channelType: string;
-    profileImage: string;
-}
-
-interface InviteChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    inviteStatus: string;
-}
-
-interface UserProfileObject {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
-interface ChannelIdAndType {
-    channelId: string;
-    type: string;
-}
-
-export interface NotificationSocketObject {
-    fromUser: UserSocket;
-    toUser: UserSocket;
-    notification: NotificationObject;
-}
-
-export interface NotificationObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
-    type: string;
-    username: string;
-    notificationId: string;
-    insertedTime: number;
-    fromFriend: string;
-}
+import {
+    APIConfig,
+    ChannelIdAndType,
+    ChannelObject,
+    Constants,
+    InviteChannelObject,
+    NotificationObject,
+    NotificationSocketObject,
+    ProfileObject,
+    UserChannelObject
+} from "../../shared/app-config";
+import { NotificationService } from "../../shared/notification.service";
 
 const MY_SELECT_CHILD: string = "mySelect";
 const NOTIFICATIONS_URI: string = "/notifications";
@@ -60,6 +21,10 @@ const PUBLIC_NOTIFICATION: string = "public";
 const PRIVATE_NOTIFICATION: string = "private";
 const FRIEND_NOTIFICATION: string = "friend";
 const DEFAULT_CHANNEL_ROLE: string = "user";
+const CHATBOX_VIEW: string = "chatbox";
+const GENERAL_NOTIFICATION: string = "general";
+const ACCEPTED_NOTIFICATION: string = "accepted";
+const DENIED_NOTIFICATION: string = "accepted";
 const ACCEPT_INVITE: string = " has accepted your invite to join ";
 const DENY_INVITE: string = " has denied your invite to join ";
 export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
@@ -91,7 +56,6 @@ export class HeaderComponent implements OnInit {
     channelBrowser = "channelBrowser";
     profile = "profile";
     settings = "settings";
-    private profilesAPI = APIConfig.profilesAPI;
     private channelsAPI = APIConfig.channelsAPI;
 
     constructor(
@@ -107,7 +71,10 @@ export class HeaderComponent implements OnInit {
         if (this.userLoggedIn == true) {
             this.user = this.auth.getAuthenticatedUser();
 
-            this.getNotifications();
+            this.getNotifications()
+                .catch((err) => {
+                    console.error(err);
+                });
             this.notificationService.addSocketListener(
                 BROADCAST_NOTIFICATION_EVENT,
                 (notificationSocketObject: NotificationSocketObject) => {
@@ -149,7 +116,8 @@ export class HeaderComponent implements OnInit {
             userChannelRole: DEFAULT_CHANNEL_ROLE,
             channelName: notification.channelName,
             channelType: notification.type,
-            profileImage: this.currentUserProfile.profileImage
+            profileImage: this.currentUserProfile.profileImage,
+            statusText: this.currentUserProfile.statusText
         };
 
         this.newChannelEvent.emit(user);
@@ -163,35 +131,33 @@ export class HeaderComponent implements OnInit {
                     })
                 };
 
-                // TODO: check for errors in responce
+                // TODO: check for errors in response
                 this.http
                     .post(this.channelsAPI + notification.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
                         () => {
                             this.deleteNotification(notification)
-                                .then(
-                                    () => {
-                                        if (notification.type == "friend") {
-                                            let channel: InviteChannelObject = {
-                                                channelId: notification.channelId,
-                                                channelName: notification.channelName,
-                                                channelType: notification.type,
-                                                inviteStatus: "accepted"
-                                            };
+                                .then(() => {
+                                    if (notification.type == FRIEND_NOTIFICATION) {
+                                        let channel: InviteChannelObject = {
+                                            channelId: notification.channelId,
+                                            channelName: notification.channelName,
+                                            channelType: notification.type,
+                                            inviteStatus: ACCEPTED_NOTIFICATION
+                                        };
 
-                                            this.http
-                                                .put(this.channelsAPI + notification.channelId, channel, httpHeaders)
-                                                .subscribe(
-                                                    () => {
-                                                        console.log("success");
-                                                    },
-                                                    (err) => {
-                                                        console.log(err);
-                                                    }
-                                                );
-                                        }
+                                        this.http
+                                            .put(this.channelsAPI + notification.channelId, channel, httpHeaders)
+                                            .subscribe(
+                                                () => {
+                                                    console.log("success");
+                                                },
+                                                (err) => {
+                                                    console.log(err);
+                                                }
+                                            );
                                     }
-                                )
+                                })
                                 .catch((err) => {
                                     console.log(err);
                                 });
@@ -208,15 +174,14 @@ export class HeaderComponent implements OnInit {
 
         this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
-        this.notificationChannelEmitter("chatbox", notification.channelId, notification.channelType);
+        this.notificationChannelEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);
     }
 
     sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
         let message = this.auth.getAuthenticatedUser().getUsername();
         if (response) {
             message += ACCEPT_INVITE;
-        } else
-            message += DENY_INVITE;
+        } else message += DENY_INVITE;
 
         message += notification.channelName;
         let notifications: NotificationSocketObject = {
@@ -231,7 +196,7 @@ export class HeaderComponent implements OnInit {
                 channelType: notification.channelType,
                 fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                 message: message,
-                type: "general",
+                type: GENERAL_NOTIFICATION,
                 username: notification.fromFriend,
                 notificationId: null,
                 insertedTime: null
@@ -252,25 +217,23 @@ export class HeaderComponent implements OnInit {
                 };
 
                 this.deleteNotification(notification)
-                    .then(
-                        () => {
-                            let channel: InviteChannelObject = {
-                                channelId: notification.channelId,
-                                channelName: notification.channelName,
-                                channelType: notification.type,
-                                inviteStatus: "denied"
-                            };
+                    .then(() => {
+                        let channel: InviteChannelObject = {
+                            channelId: notification.channelId,
+                            channelName: notification.channelName,
+                            channelType: notification.type,
+                            inviteStatus: DENIED_NOTIFICATION
+                        };
 
-                            this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
-                                () => {
-                                    console.log("success");
-                                },
-                                (err) => {
-                                    console.log(err);
-                                }
-                            );
-                        }
-                    )
+                        this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
+                            () => {
+                                console.log("success");
+                            },
+                            (err) => {
+                                console.log(err);
+                            }
+                        );
+                    })
                     .catch((err) => {
                         console.log(err);
                     });
@@ -378,5 +341,4 @@ export class HeaderComponent implements OnInit {
             );
         });
     }
-
 }

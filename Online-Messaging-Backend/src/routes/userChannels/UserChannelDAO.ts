@@ -51,7 +51,6 @@ class UserChannelDAO {
         channelType: string,
         profileImage: string
     ): Promise<any> {
-
         const params = {
             Item: {
                 username,
@@ -172,13 +171,10 @@ class UserChannelDAO {
     }
 
     public updateProfilePicture(username: string): Promise<any> {
-
         return new Promise<any>((resolve, reject) => {
             this.getAllSubscribedChannels(username)
                 .then((data: Array<UserChannelObject>) => {
-
                     data.forEach((userChannel) => {
-
                         let params = {
                             TableName: USER_CHANNEL_TABLE_NAME,
                             Key: {
@@ -196,7 +192,6 @@ class UserChannelDAO {
                                 reject(err);
                             }
                         });
-
                     });
                     resolve();
                 })
@@ -204,17 +199,13 @@ class UserChannelDAO {
                     reject(err);
                 });
         });
-
     }
 
     public updateStatus(username: string, status: string): Promise<any> {
-
         return new Promise<any>((resolve, reject) => {
             this.getAllSubscribedChannels(username)
                 .then((data: Array<UserChannelObject>) => {
-
                     data.forEach((userChannel) => {
-
                         let params = {
                             TableName: USER_CHANNEL_TABLE_NAME,
                             Key: {
@@ -232,7 +223,6 @@ class UserChannelDAO {
                                 reject(err);
                             }
                         });
-
                     });
                     resolve();
                 })
@@ -240,9 +230,7 @@ class UserChannelDAO {
                     reject(err);
                 });
         });
-
     }
-
 }
 
 export default UserChannelDAO;

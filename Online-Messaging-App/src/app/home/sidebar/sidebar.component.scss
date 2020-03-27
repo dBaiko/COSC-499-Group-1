@@ -27,10 +27,7 @@ button {
 }
 
 mat-icon {
-    margin: auto;
-    margin-top: 10px;
-    margin-right: 15px;
-    margin-left: 10px;
+    margin: 10px 15px auto 10px;
     color: white;
 }
 
@@ -93,10 +90,10 @@ h2 {
 }
 
 mat-button-toggle {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     background-color: var(--soft-black);
     color: white;
-    border: 0px;
+    border: 0;
 }
 
 mat-button-toggle:hover {
@@ -104,7 +101,7 @@ mat-button-toggle:hover {
 }
 
 mat-button-toggle-group {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     border: none;
 }
 
@@ -141,7 +138,7 @@ mat-button-toggle-group {
     cursor: pointer;
     position: absolute;
     left: 0;
-    bottom: 0vh;
+    bottom: 0;
 }
 
 .joinCreate:focus {
@@ -153,7 +150,7 @@ mat-button-toggle-group {
 }
 
 .mat-flat-button {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
 }
 
 .mat-button-toggle ::ng-deep .mat-button-toggle-focus-overlay {

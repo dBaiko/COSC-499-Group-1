@@ -1,7 +1,18 @@
 import { AfterViewChecked, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
+import {
+    APIConfig,
+    ChannelObject,
+    Constants,
+    InviteChannelObject,
+    MessageObject,
+    NewUsersSubbedChannelObject,
+    ProfileObject,
+    SettingsObject,
+    UserChannelObject,
+    UserObject
+} from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
@@ -11,10 +22,32 @@ import { CommonService } from "../../shared/common.service";
 import { ProfileObject, SettingsObject } from "../home.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
-const MESSAGES_URI = "/messages";
-const USERS_URI = "/users";
+const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
+const STAR_REGEX: RegExp = /\*/g;
+const STAR_REPLACE_VALUE: string = "\\*";
+const MESSAGES_URI: string = "/messages";
+const USERS_URI: string = "/users";
 const NOTIFICATIONS_URI = "/notifications";
-const NOTIFICATION_MESSAGE = "You have been invited to join ";
+const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
+const MESSAGE_FORM_IDENTIFIER: string = "messageForm";
+const EDIT_FORM_IDENTIFIER: string = "editForm";
+const SCROLL_FRAME_IDENTIFIER: string = "scrollframe";
+
+const FRIEND_IDENTIFIER: string = "friend";
+const PENDING_INVITE_IDENTIFIER: string = "pending";
+const DENIED_INVITE_IDENTIFIER: string = "denied";
+const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
+
+const PENDING_INVITE_MESSAGE: string =
+    " has not yet accepted your request and will not see these messages until they accept";
+const DENIED_INVITE_MESSAGE: string =
+    " has denied your friend request. You can continue to view the message history," +
+    " but you will have to leave this channel and make a new friend request to talk to them again";
+const ACCEPTED_INVITE_MESSAGE: string =
+    " has left the channel. You can continue to view the message history," +
+    " but you will have to leave this channel and make a new friend request to talk to them again";
+const JOINED_CHANNEL_MESSAGE: string = " has joined the channel";
+const LEFT_CHANNEL_MESSAGE: string = " has left the channel";
 
 const LANG_TYPES_PREFIX: string = "<span class=\"lang-type\">";
 const LANG_TYPES_SUFFIX: string = "</span><br>";
@@ -22,37 +55,10 @@ const PRE_TAG: string = "pre";
 
 const LANG_TYPES_PREFIX_LENGTH: number = 24;
 const LANG_CLASS_PREFIX_LENGTH: number = 10;
-
-interface UserObject {
-    username: string;
-    email: string;
-}
-
-interface UserChannelObject {
-    username: string;
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    userChannelRole: string;
-}
-
-interface InviteChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    inviteStatus: string;
-}
-
-interface MessageObject {
-    channelId: string,
-    insertTime: number,
-    content: string,
-    messageId: string,
-    profileImage: string,
-    username: string,
-    deleted: boolean,
-    editing: boolean;
-}
+const ENTER_KEY_CODE: number = 13;
+const FRIEND_CHANNEL_MAX_LENGTH = 2;
+const FRIEND_CHANNEL_FIRST_USER = 0;
+const FRIEND_CHANNEL_SECOND_USER = 1;
 
 @Component({
     selector: "app-chatbox",
@@ -67,7 +73,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     filter = new Filter();
 
-    @ViewChild("messageForm") messageForm: NgForm;
+    @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
+    @ViewChild(EDIT_FORM_IDENTIFIER) editForm: NgForm;
     editForm: FormGroup;
 
     inviting: boolean = false;
@@ -82,7 +89,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
-    @ViewChild("scrollframe") scrollContainer: ElementRef;
+    @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
     private channelsURL: string = APIConfig.channelsAPI;
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
@@ -131,11 +138,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentChannel(value: ChannelObject) {
         this._currentChannel = value;
-        this.getMessages(this._currentChannel.channelId);
+        this.getMessages(this._currentChannel.channelId)
+            .catch((err) => {
+                console.error(err);
+            });
         this.isNearBottom = false;
         this.getSubcribedUsers()
             .then((data: Array<UserChannelObject>) => {
-                if (this.currentChannel.channelType == "friend") {
+                if (this.currentChannel.channelType == FRIEND_IDENTIFIER) {
                     let notFound = true;
                     for (let i in data) {
                         if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
@@ -148,20 +158,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             let friendName: string = (this.friendMessage = this.parseFriendChannelName(
                                 this.currentChannel.channelName
                             ));
-                            if (inviteStatus == "pending") {
-                                this.friendMessage =
-                                    friendName +
-                                    " has not yet accepted your request and will not see these messages until they accept";
-                            } else if (inviteStatus == "denied") {
-                                this.friendMessage =
-                                    friendName +
-                                    " has denied your friend request. You can continue to view the message history," +
-                                    " but you will have to leave this channel and make a new friend request to talk to them again";
-                            } else if (inviteStatus == "accepted") {
-                                this.friendMessage =
-                                    friendName +
-                                    " has left the channel. You can continue to view the message history," +
-                                    " but you will have to leave this channel and make a new friend request to talk to them again";
+                            if (inviteStatus == PENDING_INVITE_IDENTIFIER) {
+                                this.friendMessage = friendName + PENDING_INVITE_MESSAGE;
+                            } else if (inviteStatus == DENIED_INVITE_IDENTIFIER) {
+                                this.friendMessage = friendName + DENIED_INVITE_MESSAGE;
+                            } else if (inviteStatus == ACCEPTED_INVITE_IDENTIFIER) {
+                                this.friendMessage = friendName + ACCEPTED_INVITE_MESSAGE;
                             }
                         });
                     } else {
@@ -174,7 +176,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             .catch((err) => {
                 console.log(err);
             });
-        this.getChannelNotifications();
+        this.getChannelNotifications()
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
     ngOnInit(): void {
@@ -263,25 +268,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     openInviting(): void {
         this.inviteSearchList = [];
         this.inviting = true;
-        this.getChannelNotifications();
-        this.getSubcribedUsers();
+        this.getChannelNotifications()
+            .catch((err) => {
+                console.error(err);
+            });
+        this.getSubcribedUsers()
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
     inviteFormSubmit() {
-        if (this.inviteSearch == Constants.EMPTY) {
+        if (!this.common.inviteFormSearch(this.inviteSearch, this.inviteSearchList, this.userList)) {
             this.inviteSearchList = [];
-        } else {
-            for (let i in this.userList) {
-                if (this.searchStrings(this.userList[i].username.toLowerCase(), this.inviteSearch.toLowerCase())) {
-                    if (this.inviteSearchList.indexOf(this.userList[i]) === -1) {
-                        this.inviteSearchList.push(this.userList[i]);
-                    }
-                } else {
-                    if (this.inviteSearchList[this.inviteSearchList.indexOf(this.userList[i])]) {
-                        this.inviteSearchList.splice(this.inviteSearchList.indexOf(this.userList[i]), 1);
-                    }
-                }
-            }
         }
     }
 
@@ -316,20 +315,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     parseFriendChannelName(channelName: string): string {
-        let users = channelName.split("-", 2);
-        if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
-        else return users[0];
+        let users = channelName.split(Constants.DASH, FRIEND_CHANNEL_MAX_LENGTH);
+        if (users[FRIEND_CHANNEL_FIRST_USER] == this.auth.getAuthenticatedUser().getUsername()) {
+            return users[FRIEND_CHANNEL_SECOND_USER];
+        } else {
+            return users[FRIEND_CHANNEL_FIRST_USER];
+        }
     }
 
     onScroll(): void {
         let element = this.scrollContainer.nativeElement;
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
-        if (this.atBottom) {
-            this.isNearBottom = false;
-        } else {
-            this.isNearBottom = true;
-        }
+        this.isNearBottom = !this.atBottom;
     }
 
     textAreaSubmit(event) {
@@ -341,10 +339,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     editFormTextAreaSubmit(event) {
-        if (event.keyCode == 13 && event.shiftKey) {
-        } else if (event.keyCode == 13) {
+        if (event.keyCode == ENTER_KEY_CODE && event.shiftKey) {
+        } else if (event.keyCode == ENTER_KEY_CODE) {
             event.preventDefault();
-            document.getElementById("hiddenButton").click();
+            this.editForm.ngSubmit.emit();
         }
     }
 
@@ -356,8 +354,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     filterClean(value: string) {
         let s: string = this.filter.clean(value);
-        if (/^\*+$/.test(s.trim())) {
-            return s.replace(/\*/g, "\\*");
+        if (STAR_REPLACE_REGEX.test(s.trim())) {
+            return s.replace(STAR_REGEX, STAR_REPLACE_VALUE);
         }
         return s;
     }
@@ -372,13 +370,25 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http.delete(this.messagesAPI + chatMessage.messageId + "/" + chatMessage.channelId + "/" + chatMessage.insertTime + "/" + chatMessage.username, httpHeaders).subscribe(
-                    () => {
-                    },
-                    (err) => {
-                        this.error = err.toString();
-                    }
-                );
+                this.http
+                    .delete(
+                        this.messagesAPI +
+                        chatMessage.messageId +
+                        Constants.SLASH +
+                        chatMessage.channelId +
+                        Constants.SLASH +
+                        chatMessage.insertTime +
+                        Constants.SLASH +
+                        chatMessage.username,
+                        httpHeaders
+                    )
+                    .subscribe(
+                        () => {
+                        },
+                        (err) => {
+                            this.error = err.toString();
+                        }
+                    );
             },
             (err) => {
                 console.log(err);
@@ -419,7 +429,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         console.log(err);
                     }
                 );
-
             },
             (err) => {
                 console.log(err);
@@ -427,25 +436,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         );
     }
 
-    private searchStrings(match: string, search: string): boolean {
-        if (search === match) {
-            return true;
-        }
-        if (search.length > match.length) {
-            return false;
-        }
-        if (match.substring(0, search.length) == search) {
-            return true;
-        }
-        return false;
-    }
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
         if (newUsersSubbedChannel.joined) {
             let chatMessage = {
                 channelId: newUsersSubbedChannel.channelId,
                 username: null,
-                content: newUsersSubbedChannel.username + " has joined the channel",
+                content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
                 profileImage: null
             };
             this.isNearBottom = false;
@@ -454,13 +451,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let chatMessage = {
                 channelId: newUsersSubbedChannel.channelId,
                 username: null,
-                content: newUsersSubbedChannel.username + " has left the channel",
+                content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
                 profileImage: null
             };
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
         }
-
     }
 
     private getSubcribedUsers(): Promise<any> {
@@ -578,9 +574,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         for (let item: HTMLBodyElement of messages) {
             this.viewed = true;
             if (item.innerHTML.substring(0, LANG_TYPES_PREFIX_LENGTH) != LANG_TYPES_PREFIX) {
-                item.innerHTML = LANG_TYPES_PREFIX + item.className.substring(LANG_CLASS_PREFIX_LENGTH) + LANG_TYPES_SUFFIX + item.innerHTML;
+                item.innerHTML =
+                    LANG_TYPES_PREFIX +
+                    item.className.substring(LANG_CLASS_PREFIX_LENGTH) +
+                    LANG_TYPES_SUFFIX +
+                    item.innerHTML;
             }
         }
     }
-
 }
