@@ -3,7 +3,7 @@ import { MessengerService } from "../../shared/messenger.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { APIConfig, Constants } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { FormGroup, NgForm } from "@angular/forms";
+import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import { ChannelObject, NewUsersSubbedChannelObject } from "../sidebar/sidebar.component";
 import * as Filter from "bad-words";
@@ -62,13 +62,13 @@ interface MessageObject {
 export class ChatboxComponent implements OnInit, AfterViewChecked {
     chatMessages: Array<MessageObject> = [];
     error: string = Constants.EMPTY;
-
+    currentlyEditing: boolean = false;
     viewed: boolean = false;
 
     filter = new Filter();
 
     @ViewChild("messageForm") messageForm: NgForm;
-    @ViewChild("editForm") editForm: NgForm;
+    editForm: FormGroup;
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -178,6 +178,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     ngOnInit(): void {
+        this.editForm = new FormGroup({
+            content: new FormControl("",Validators.compose([Validators.required]))
+        });
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data) {
                 if (data.channelId == this.currentChannel.channelId) {
@@ -341,7 +344,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (event.keyCode == 13 && event.shiftKey) {
         } else if (event.keyCode == 13) {
             event.preventDefault();
-            this.editForm.ngSubmit.emit();
+            document.getElementById("hiddenButton").click();
         }
     }
 
@@ -384,8 +387,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
     }
 
-    editMessage(chatMessage: MessageObject){
-        this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
+    toggleEditingMessage(chatMessage: MessageObject){
+        if(!this.currentlyEditing) {
+            this.currentlyEditing = true;
+            this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
+            this.editForm.get("content").setValue(chatMessage.content);
+        }
 
     }
 
@@ -403,7 +410,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                 this.http.put(this.messagesAPI + message.messageId, message, httpHeaders).subscribe(
                     () => {
-                        //TODO: handle success
+                        this.currentlyEditing = false;
+                        this.chatMessages[this.chatMessages.indexOf(message)].editing = false;
+                        this.editForm.get("content").setValue(Constants.EMPTY);
+                        this.chatMessages[this.chatMessages.indexOf(message)].content = newContent;
                     },
                     (err) => {
                         console.log(err);
