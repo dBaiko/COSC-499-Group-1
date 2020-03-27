@@ -147,22 +147,28 @@
                         <p class="message">
                             <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
-                                <mat-icon>edit</mat-icon>
-                                <!--                                <form #editForm="ngForm" (ngSubmit)="editFormSubmit(editForm.form, chatMessage)"-->
-                                <!--                                      autocomplete="off"-->
-                                <!--                                      id="editForm">-->
-                                <!--                                    <mat-form-field>-->
-                                <!--                                        <textarea (keydown)="editFormTextAreaSubmit($event)" cdkTextareaAutosize-->
-                                <!--                                                  matInput name="editContent" ngModel></textarea>-->
-                                <!--                                    </mat-form-field>-->
-                                <!--                                </form>-->
+                                <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                             </span>
                             <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
-                            <markdown class="mark">{{ chatMessage.content }}</markdown>
+
+                            <markdown *ngIf="!chatMessage.editing" class="mark">{{ chatMessage.content }} </markdown>
                         </p>
+                        <form *ngIf="chatMessage.editing"[formGroup]="editForm"
+                              (ngSubmit)="editFormSubmit(editForm, chatMessage)"
+                              autocomplete="off"
+                              id="editForm">
+                                        <textarea
+                                            class="inputArea"
+                                            formControlName="content"
+                                            (keydown)="editFormTextAreaSubmit($event)"
+                                            cdkTextareaAutosize
+                                            matInput name="editContent"
+                                        ></textarea>
+                                <button id="hiddenButton" style="display:none;" type="submit"></button>
+                        </form>
                     </mat-card-content>
                     <ng-template #messageDeleted>
                         <mat-card-content>

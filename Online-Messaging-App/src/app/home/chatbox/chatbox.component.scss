@@ -202,9 +202,6 @@ markdown ::ng-deep pre {
     visibility: visible;
 }
 
-.message:hover ::ng-deep pre {
-    background-color: var(--soft-black);
-}
 
 .icons {
     float: right;
@@ -222,3 +219,19 @@ markdown ::ng-deep pre {
     font-size: 1em;
     color: dimgrey;
 }
+.inputArea{
+    width: 70%;
+    padding: 10px 10px;
+    background-color: var(--element-hover-color);
+}
+
+.mat-form-field-underline{
+    display: none;
+}
+textarea{
+    color:var(--primary-text-color);
+    resize: none;
+    overflow: hidden;
+}
+
+
