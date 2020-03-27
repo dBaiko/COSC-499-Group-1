@@ -1,30 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from "@angular/core";
-import { APIConfig, Constants } from "../../shared/app-config";
+import { APIConfig, Constants, ProfileObject, UserObject, UserProfileObject } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
-import { ProfileObject } from "../home.component";
 import { ImageCompressor } from "../../shared/ImageCompressor";
-
-interface UserObject {
-    username: string;
-    email: string;
-}
-
-interface UserProfileObject {
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-    statusText: string;
-}
 
 const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
 const FIRSTNAME_FORM_NAME = "firstName";
+
+const STATUS_URI: string = "/status/";
+const PROFILE_IMAGE_URI = "/profile-image/";
+const STATUS_TEXT_IDENTIFIER: string = "statusText";
+
+const HIDDEN_BUTTON_IDENTIFIER: string = "hiddenButton";
+const PROFILE_IMAGE_NAME: string = "profileImageName";
+const PROFILE_IMAGE_SIZE: string = "profileImageSize";
+const PROFILE_IMAGE: string = "profileImage";
+
 
 const ERROR_MESSAGE = "Your edit was not saved correctly";
 const SUCCESS_MESSAGE = "Your edit was saved correctly";
@@ -76,9 +71,9 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit() {
         this.editForm = new FormGroup({
-            email: new FormControl("", Validators.compose([Validators.required, Validators.email])),
+            email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     this.formValidationService.noWhitespaceValidator,
@@ -86,7 +81,7 @@ export class ProfileComponent implements OnInit {
                 ])
             ),
             lastName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     this.formValidationService.noWhitespaceValidator,
@@ -97,19 +92,16 @@ export class ProfileComponent implements OnInit {
 
         this.imageForm = new FormGroup({
             profileImageName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([Validators.required, this.formValidationService.correctFileType])
             ),
             profileImageSize: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([Validators.required, this.formValidationService.correctFileSize])
             )
         });
         this.statusForm = new FormGroup({
-            statusText: new FormControl(
-                "",
-                Validators.compose([Validators.required])
-            )
+            statusText: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
         });
     }
 
@@ -136,7 +128,7 @@ export class ProfileComponent implements OnInit {
                             firstName: profile.firstName,
                             lastName: profile.lastName,
                             email: null,
-                            profileImage: profile.profileImage + "?" + Math.random(),
+                            profileImage: profile.profileImage + Constants.QUESTION_MARK + Math.random(),
                             statusText: profile.statusText
                         };
 
@@ -174,7 +166,7 @@ export class ProfileComponent implements OnInit {
 
     toggleEditingStatus(editingStatus: boolean) {
         this.editingStatus = editingStatus;
-        this.statusForm.get("statusText").setValue(this.userProfile.statusText);
+        this.statusForm.get(STATUS_TEXT_IDENTIFIER).setValue(this.userProfile.statusText);
     }
 
     statusFormSubmit(form: FormGroup) {
@@ -187,36 +179,41 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.profilesAPI + username + "/status/", {
-                    username: username,
-                    status: form.value.statusText
-                }, httpHeaders).subscribe(
-                    (data) => {
-                        this.userProfile.statusText = form.value.statusText;
-                        this.toggleEditingStatus(false);
-                        this.profileUpdateEvent.emit();
-                    },
-                    (err) => {
-                        console.log(err);
-                        this.editSaveMessage = ERROR_MESSAGE;
-                    }
-                );
+                this.http
+                    .put(
+                        this.profilesAPI + username + STATUS_URI,
+                        {
+                            username: username,
+                            status: form.value.statusText
+                        },
+                        httpHeaders
+                    )
+                    .subscribe(
+                        () => {
+                            this.userProfile.statusText = form.value.statusText;
+                            this.toggleEditingStatus(false);
+                            this.profileUpdateEvent.emit();
+                        },
+                        (err) => {
+                            console.log(err);
+                            this.editSaveMessage = ERROR_MESSAGE;
+                        }
+                    );
             },
             (err) => {
                 console.log(err);
             }
         );
-
     }
 
     imageFormButtonClick(event) {
         let file = (event.target as HTMLInputElement).files[0];
-        this.imageForm.controls["profileImageName"].setValue(file ? file.name : Constants.EMPTY);
-        this.imageForm.controls["profileImageSize"].setValue(file ? file.size : Constants.EMPTY);
+        this.imageForm.controls[PROFILE_IMAGE_NAME].setValue(file ? file.name : Constants.EMPTY);
+        this.imageForm.controls[PROFILE_IMAGE_SIZE].setValue(file ? file.size : Constants.EMPTY);
         ImageCompressor.compressImage(file, 200, 200, this.render)
             .then((result) => {
                 this.newProfileImage = result;
-                document.getElementById("hiddenButton").click();
+                document.getElementById(HIDDEN_BUTTON_IDENTIFIER).click();
             })
             .catch((err) => {
                 console.log(err);
@@ -243,15 +240,15 @@ export class ProfileComponent implements OnInit {
                 let imageFile: File = this.newProfileImage;
 
                 let formData: FormData = new FormData();
-                formData.append("file", imageFile);
+                formData.append(Constants.FILE, imageFile);
 
-                formData.append("username", username);
+                formData.append(Constants.USERNAME, username);
 
-                this.http.put(this.profilesAPI + username + "/profile-image/", formData, httpHeaders).subscribe(
-                    (data) => {
+                this.http.put(this.profilesAPI + username + PROFILE_IMAGE_URI, formData, httpHeaders).subscribe(
+                    () => {
                         this.profileUpdateEvent.emit();
-                        let img = document.getElementById("profileImage");
-                        img["src"] = this.userProfile.profileImage + "?" + Math.random();
+                        let img = document.getElementById(PROFILE_IMAGE);
+                        img[Constants.SRC] = this.userProfile.profileImage + Constants.QUESTION_MARK + Math.random();
                         this.editSaveMessage = IMAGE_MESSAGE;
                     },
                     (err) => {

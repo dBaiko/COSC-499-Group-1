@@ -6,21 +6,21 @@
             </mat-card-header>
         </div>
         <mat-card-content>
-            <hr/>
-            <br/>
+            <hr />
+            <br />
             <div class="settingsInfo">
                 <mat-slide-toggle (change)="themeToggle($event)" *ngIf="settings.theme == 'dark'" checked
-                >Dark Theme
+                    >Dark Theme
                 </mat-slide-toggle>
                 <mat-slide-toggle (change)="themeToggle($event)" *ngIf="settings.theme == 'light'"
-                >Dark Theme
+                    >Dark Theme
                 </mat-slide-toggle>
-                <br>
+                <br />
                 <mat-slide-toggle (change)="explicitToggle($event)" *ngIf="settings.explicit" checked
-                >Explicit (see explicit content)
+                    >Explicit (see explicit content)
                 </mat-slide-toggle>
                 <mat-slide-toggle (change)="explicitToggle($event)" *ngIf="!settings.explicit"
-                >Explicit (see explicit content)
+                    >Explicit (see explicit content)
                 </mat-slide-toggle>
             </div>
         </mat-card-content>

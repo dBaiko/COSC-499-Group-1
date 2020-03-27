@@ -5,10 +5,12 @@
         <div class="floater">
             <div class="headInfo">
                 <button [mat-menu-trigger-for]="userMenu" id="username" mat-button>
-                    <img *ngIf="currentUserProfile"
-                         class="userProfilePicture"
-                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                         src="{{currentUserProfile.profileImage}}"
+                    <img
+                        *ngIf="currentUserProfile"
+                        alt="assets/icon-alt.PNG"
+                        class="userProfilePicture"
+                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                        src="{{ currentUserProfile.profileImage }}"
                     />
                     {{ user.username }}
                 </button>
@@ -34,8 +36,7 @@
     <div *ngIf="publicInvites.length > 0">
         <span class="title">Public Invites</span>
         <div *ngFor="let notification of publicInvites">
-            <div
-                class="notificationOption">
+            <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
@@ -50,8 +51,7 @@
     <div *ngIf="privateInvites.length > 0">
         <span class="title">Private Invites</span>
         <div *ngFor="let notification of privateInvites">
-            <div
-                class="notificationOption">
+            <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
@@ -66,8 +66,7 @@
     <div *ngIf="friendInvites.length > 0">
         <span class="title">Friend Invites</span>
         <div *ngFor="let notification of friendInvites">
-            <div
-                class="notificationOption">
+            <div class="notificationOption">
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
@@ -82,14 +81,20 @@
     <div *ngIf="generalNotification.length > 0">
         <span class="title">General</span>
         <div *ngFor="let notification of generalNotification">
-            <div (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
-                 class="notificationOption">
+            <div
+                (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
+                class="notificationOption"
+            >
                 <mat-card>
                     <mat-card-title>{{ notification.message }}</mat-card-title>
                     <br/>
                     <div class="inviteButtons">
-                        <button (click)="removeNotification(notification); deleteNotification(notification)"
-                                class="inviteButton" mat-button>X
+                        <button
+                            (click)="removeNotification(notification); deleteNotification(notification)"
+                            class="inviteButton"
+                            mat-button
+                        >
+                            X
                         </button>
                     </div>
                 </mat-card>
@@ -98,8 +103,14 @@
     </div>
 
     <mat-card
-        *ngIf="privateInvites.length == 0 && publicInvites.length == 0 && friendInvites.length == 0 && generalNotification.length == 0"
-        disabled>
+        *ngIf="
+            privateInvites.length == 0 &&
+            publicInvites.length == 0 &&
+            friendInvites.length == 0 &&
+            generalNotification.length == 0
+        "
+        disabled
+    >
         <mat-card-title>No notifications</mat-card-title>
     </mat-card>
 </div>

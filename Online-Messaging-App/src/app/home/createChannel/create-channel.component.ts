@@ -1,35 +1,18 @@
 import { Component, EventEmitter, Inject, OnInit, Optional, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { APIConfig } from "../../shared/app-config";
+import {
+    APIConfig,
+    ChannelAndFirstUser,
+    ChannelObject,
+    newChannelResponse,
+    ProfileObject
+} from "../../shared/app-config";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { CommonService } from "../../shared/common.service";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Observable } from "rxjs";
-import { ProfileObject } from "../home.component";
-
-interface ChannelAndFirstUser {
-    channelName: string;
-    channelType: string;
-    firstUsername: string;
-    firstUserChannelRole: string;
-    profileImage: string;
-}
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
-
-interface newChannelResponse {
-    status: number;
-    data: {
-        message: string;
-        newChannel: ChannelObject;
-    };
-}
 
 const defaultFirstChannelRole = "admin";
 
@@ -74,13 +57,13 @@ export class CreateChannelComponent implements OnInit {
     }
 
     newChannelEntry(channelName: string, channelType: string): Observable<Object> {
-
         let newChannel: ChannelAndFirstUser = {
             channelName: channelName,
             channelType: channelType,
             firstUsername: this.auth.getAuthenticatedUser().getUsername(),
             firstUserChannelRole: defaultFirstChannelRole,
-            profileImage: this.currentUserProfile.profileImage
+            profileImage: this.currentUserProfile.profileImage,
+            inviteStatus: null
         };
 
         return new Observable<Object>((observer) => {
@@ -101,7 +84,7 @@ export class CreateChannelComponent implements OnInit {
                         (err) => {
                             observer.error(err);
                         }
-                    ); // TODO: check for errors in responce
+                    ); // TODO: check for errors in response
                 },
                 (err) => {
                     console.log(err);

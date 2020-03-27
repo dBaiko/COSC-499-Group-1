@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NotificationService, UserSocket } from "../../../shared/notification.service";
-import { UserChannelObject } from "../../home.component";
+import { UserChannelObject } from "../../../shared/app-config";
 
 @Component({
     selector: "app-channel-user-list",
@@ -8,9 +8,8 @@ import { UserChannelObject } from "../../home.component";
     styleUrls: ["./channel-user-list.component.scss"]
 })
 export class ChannelUserListComponent implements OnInit {
-
     offlineUsers: Array<UserChannelObject> = [];
-    onlineUsers = [];
+    onlineUsers: Array<UserChannelObject> = [];
     @Output() profileViewEvent = new EventEmitter<string>();
     private socketOnlineUsers: Array<UserSocket> = [];
 
@@ -45,12 +44,15 @@ export class ChannelUserListComponent implements OnInit {
             } else {
                 this.onlineUsers.push({
                     username: user.username,
+                    channelId: user.channelId,
+                    userChannelRole: user.userChannelRole,
+                    channelName: user.channelName,
+                    channelType: user.channelType,
                     profileImage: user.profileImage,
                     statusText: user.statusText
                 });
             }
         }
-
     }
 
     ngOnInit(): void {
@@ -59,5 +61,4 @@ export class ChannelUserListComponent implements OnInit {
     goToProfile(username: string) {
         this.profileViewEvent.emit(username);
     }
-
 }
