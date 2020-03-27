@@ -153,15 +153,14 @@
                               (ngSubmit)="editFormSubmit(editForm, chatMessage)"
                               autocomplete="off"
                               id="editForm">
-                            <mat-form-field>
                                         <textarea
+                                            class="inputArea"
                                             formControlName="content"
                                             (keydown)="editFormTextAreaSubmit($event)"
                                             cdkTextareaAutosize
                                             matInput name="editContent"
                                         ></textarea>
                                 <button id="hiddenButton" style="display:none;" type="submit"></button>
-                            </mat-form-field>
                         </form>
                     </mat-card-content>
                     <ng-template #messageDeleted>

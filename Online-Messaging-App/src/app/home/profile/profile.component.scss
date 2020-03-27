@@ -50,8 +50,7 @@ button {
 input {
     width: 70%;
     padding: 10px 10px;
-    border-radius: 1px;
-    border: 2px solid white;
+    color:var(--primary-text-color);
     background-color: var(--element-hover-color);
 }
 
