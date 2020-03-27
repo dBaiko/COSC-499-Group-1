@@ -1,6 +1,6 @@
 mat-card {
     background-color: var(--element-color);
-    border-radius: 0vh;
+    border-radius: 0;
     height: 100%;
     margin-right: 1vh;
     margin-top: 1vh;
@@ -11,7 +11,7 @@ mat-form-field {
     background-color: var(--element-color);
     width: 100%;
     color: var(--primary-text-color);
-    left: 0vh;
+    left: 0;
     margin-bottom: 1vh;
     margin-top: 1vh;
 }
@@ -21,7 +21,7 @@ hr {
 }
 
 .mat-card-title .mat-card-header {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
     color: var(--primary-text-color);
 }
 
@@ -30,16 +30,16 @@ hr {
 }
 
 .mat-card-header {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 
 .mat-card-title {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 
 mat-card-title {
     color: var(--primary-text-color);
-    padding: 10px 0px 10px 0px;
+    padding: 10px 0 10px 0;
 }
 
 .headerTop {
@@ -110,12 +110,12 @@ mat-panel-title {
 }
 
 .mat-card {
-    padding: 0px;
+    padding: 0;
 }
 
 #scrollable {
     height: 82%;
     overflow-y: auto;
     z-index: 5;
-    padding: 0px;
+    padding: 0;
 }

@@ -149,7 +149,6 @@ class MessageDAO {
                     resolve();
                 }
             });
-
         });
     }
 
@@ -177,11 +176,8 @@ class MessageDAO {
                     resolve();
                 }
             });
-
-            ;
         });
     }
-
 }
 
 export default MessageDAO;

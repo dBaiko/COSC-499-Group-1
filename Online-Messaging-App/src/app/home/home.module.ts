@@ -1,7 +1,6 @@
 import { NgModule, SecurityContext } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ChatboxComponent } from "./chatbox/chatbox.component";
-import { FooterComponent } from "./footer/footer.component";
 import { HeaderComponent } from "./header/header.component";
 import { ChannelBrowserComponent } from "./channel-browser/channel-browser.component";
 import { HomeComponent } from "./home.component";
@@ -36,7 +35,6 @@ const socketConfig: SocketIoConfig = {
     declarations: [
         ChatboxComponent,
         ChannelBrowserComponent,
-        FooterComponent,
         HeaderComponent,
         HomeComponent,
         LogoutFormComponent,
@@ -68,8 +66,8 @@ const socketConfig: SocketIoConfig = {
         LogoutFormComponent,
         SidebarComponent,
         ChannelBrowserComponent,
-        FooterComponent,
-        ChatboxComponent
+        ChatboxComponent,
+        FormsModule
     ],
     providers: [MessengerService, CookieService, AuthenticationService, CommonService, NotificationService],
     entryComponents: [CreateChannelComponent, UnsubscribeConfirmComponent]

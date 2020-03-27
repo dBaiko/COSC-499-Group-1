@@ -94,7 +94,8 @@ class ProfileDAO {
                     reject(err);
                 } else {
                     let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
-                    userChannelDAO.updateStatus(username, status)
+                    userChannelDAO
+                        .updateStatus(username, status)
                         .then(() => {
                             resolve();
                         })
@@ -103,7 +104,6 @@ class ProfileDAO {
                         });
                 }
             });
-
         });
     }
 
@@ -153,7 +153,8 @@ class ProfileDAO {
 
                             let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
 
-                            userChannelDAO.updateProfilePicture(username)
+                            userChannelDAO
+                                .updateProfilePicture(username)
                                 .then(() => {
                                 })
                                 .catch((err) => {

@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { SettingsObject } from "../home.component";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { APIConfig } from "../../shared/app-config";
+import { APIConfig, SettingsObject } from "../../shared/app-config";
 
 const SETTINGS_URI = "/settings";
 const DARK = "dark";
@@ -77,7 +76,7 @@ export class SettingsComponent implements OnInit {
                         httpHeaders
                     )
                     .subscribe(
-                        (data: SettingsObject) => {
+                        (SettingsObject) => {
                             console.log("Settings updated successfully.");
                         },
                         (err) => {

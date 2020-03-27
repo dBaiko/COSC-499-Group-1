@@ -4,44 +4,53 @@
             <mat-card-header>
                 <div (mouseenter)="imageHover = !imageHover" (mouseleave)="imageHover = !imageHover">
                     <img
+                        alt="assets/icon-alt.PNG"
                         class="profilePicture"
                         id="profileImage"
-                        inline="true"
                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                         src="{{ this.userProfile.profileImage }}"
                     />
                     <form (ngSubmit)="imageFormSubmit()" [formGroup]="imageForm">
-                        <input #fileInput (change)="imageFormButtonClick($event)"
-                               accept=".png,.jpg,.jpeg"
-                               id="imageInput"
-                               name="profileImage"
-                               type="file"/>
+                        <input
+                            #fileInput
+                            (change)="imageFormButtonClick($event)"
+                            accept=".png,.jpg,.jpeg"
+                            id="imageInput"
+                            name="profileImage"
+                            type="file"
+                        />
                         <input formControlName="profileImageName" name="imageName" type="hidden"/>
                         <input formControlName="profileImageSize" name="imageSize" type="hidden"/>
-                        <mat-error *ngFor="let validation of common.validation_methods.profileImageName"
-                                   class="profileError">
+                        <mat-error
+                            *ngFor="let validation of common.validation_methods.profileImageName"
+                            class="profileError"
+                        >
                             <mat-error
                                 *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         imageForm,
-                               'profileImageName',
+                                        'profileImageName',
                                         validation,
                                         true
-                                    )"
+                                    )
+                                "
                             >
                                 {{ validation.message }}
                             </mat-error>
                         </mat-error>
-                        <mat-error *ngFor="let validation of common.validation_methods.profileImageSize"
-                                   class="profileError">
+                        <mat-error
+                            *ngFor="let validation of common.validation_methods.profileImageSize"
+                            class="profileError"
+                        >
                             <mat-error
                                 *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         imageForm,
-                               'profileImageSize',
+                                        'profileImageSize',
                                         validation,
                                         true
-                                    )"
+                                    )
+                                "
                             >
                                 {{ validation.message }}
                             </mat-error>
@@ -51,7 +60,8 @@
                     <button
                         (click)="fileInput.click()"
                         *ngIf="
-                            this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover"
+                            this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover
+                        "
                         id="imageButton"
                         mat-button
                     >
@@ -68,23 +78,32 @@
                 <i>{{ editSaveMessage }}</i>
             </p>
             <div *ngIf="userProfile && !editing" class="profileInfo">
-                <p class="nameHeaders"><b>Status</b><span
+                <p class="nameHeaders">
+                    <b>Status</b
+                    ><span
                     (click)="this.toggleEditingStatus(true)"
-                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"> Click to update</span>
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
+                >
+                        Click to update</span
+                >
                 </p>
-                <p (click)="this.toggleEditingStatus(true)"
-                   *ngIf="!editingStatus">{{userProfile.statusText}}</p>
+                <p (click)="this.toggleEditingStatus(true)" *ngIf="!editingStatus">{{ userProfile.statusText }}</p>
                 <form
                     (ngSubmit)="statusFormSubmit(statusForm)"
-                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && editingStatus"
-                    [formGroup]="statusForm">
-                    <input
-                        autocomplete="off"
-                        formControlName="statusText"
-                        maxlength="25"
-                        name="statusText"
-                        type="text"
-                    />
+                    *ngIf="
+                        this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && editingStatus
+                    "
+                    [formGroup]="statusForm"
+                >
+                    <label>
+                        <input
+                            autocomplete="off"
+                            formControlName="statusText"
+                            maxlength="25"
+                            name="statusText"
+                            type="text"
+                        />
+                    </label>
                     <button mat-button type="submit">Update</button>
                 </form>
                 <p class="nameHeaders"><b>Username</b></p>
@@ -115,7 +134,8 @@
                 <hr/>
                 <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm">
                     <p class="nameHeaders"><b>Email</b></p>
-                    <input autocomplete="off" formControlName="email" id="email" name="email" required type="email"/>
+                    <label for="email"></label><input autocomplete="off" formControlName="email" id="email" name="email"
+                                                      required type="email"/>
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
                             *ngIf="
@@ -132,14 +152,14 @@
                     </mat-error>
                     <hr/>
                     <p class="nameHeaders"><b>First Name</b></p>
-                    <input
-                        autocomplete="off"
-                        formControlName="firstName"
-                        id="firstName"
-                        name="firstName"
-                        required
-                        type="text"
-                    />
+                    <label for="firstName"></label><input
+                    autocomplete="off"
+                    formControlName="firstName"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    type="text"
+                />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
                             *ngIf="
@@ -156,14 +176,14 @@
                     </mat-error>
                     <hr/>
                     <p class="nameHeaders"><b>Last Name</b></p>
-                    <input
-                        autocomplete="off"
-                        formControlName="lastName"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        type="text"
-                    />
+                    <label for="lastName"></label><input
+                    autocomplete="off"
+                    formControlName="lastName"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    type="text"
+                />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
                             *ngIf="

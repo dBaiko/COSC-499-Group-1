@@ -4,11 +4,11 @@
             <mat-card-header class="chat-box-header">
                 <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
                     <img
+                        alt="assets/icon-alt.PNG"
                         class="messagePicture"
                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                         src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
-                        style="display: inline"
-                    />
+                        style="display: inline"/><!-- TODO: replace with friends user profile picture -->
                     <mat-card-title
                         (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
                         class="clickable"
@@ -33,7 +33,9 @@
                         <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
                             <mat-form-field>
                                 <mat-label>Search for person to invite</mat-label>
-                                <input (input)="onKey($event)" class="inviteSearch" matInput name="users"/>
+                                <label>
+                                    <input (input)="onKey($event)" class="inviteSearch" matInput name="users"/>
+                                </label>
                             </mat-form-field>
                         </form>
                         <div *ngFor="let user of inviteSearchList">
@@ -79,7 +81,7 @@
         <div #scrollframe (scroll)="onScroll()" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages; let i = index">
                 <div *ngIf="!chatMessage.username; else elseBlock">
-                    <hr>
+                    <hr/>
                     <mat-card-content class="status">
                         <p>
                             {{ chatMessage.content }}
@@ -92,10 +94,10 @@
                         <mat-card-header>
                             <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                                 <img
+                                    alt="assets/icon-alt.PNG"
                                     class="messagePicture"
-                                    inline="true"
                                     onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                    src="{{chatMessage.profileImage}}"
+                                    src="{{ chatMessage.profileImage }}"
                                 />
                                 {{ chatMessage.username }}
                             </mat-card-title>
@@ -103,15 +105,20 @@
                     </div>
                     <div *ngIf="i != 0">
                         <div
-                            *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                            *ngIf="
+                                i != 0 &&
+                                i != chatMessages.length - 1 &&
+                                chatMessage.username != chatMessages[i - 1].username
+                            "
+                        >
                             <hr/>
                             <mat-card-header>
                                 <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                                     <img
+                                        alt="assets/icon-alt.PNG"
                                         class="messagePicture"
-                                        inline="true"
                                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                        src="{{chatMessage.profileImage}}"
+                                        src="{{ chatMessage.profileImage }}"
                                     />
                                     {{ chatMessage.username }}
                                 </mat-card-title>
@@ -119,15 +126,17 @@
                         </div>
                     </div>
                     <div *ngIf="i != 0">
-                        <div *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
+                        <div
+                            *ngIf="i == chatMessages.length - 1 && chatMessage.username != chatMessages[i - 1].username"
+                        >
                             <hr/>
                             <mat-card-header>
                                 <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                                     <img
+                                        alt="assets/icon-alt.PNG"
                                         class="messagePicture"
-                                        inline="true"
                                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                        src="{{chatMessage.profileImage}}"
+                                        src="{{ chatMessage.profileImage }}"
                                     />
                                     {{ chatMessage.username }}
                                 </mat-card-title>
@@ -136,8 +145,7 @@
                     </div>
                     <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
                         <p class="message">
-                            <span *ngIf="chatMessage.username == currentUserProfile.username"
-                                  class="icons">
+                            <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                                 <mat-icon>edit</mat-icon>
                                 <!--                                <form #editForm="ngForm" (ngSubmit)="editFormSubmit(editForm.form, chatMessage)"-->
@@ -150,8 +158,7 @@
                                 <!--                                </form>-->
                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                             </span>
-                            <span *ngIf="chatMessage.username != currentUserProfile.username"
-                                  class="icons">
+                            <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
                             <markdown class="mark">{{ chatMessage.content }}</markdown>
@@ -168,24 +175,28 @@
         <br/><br/>
         <div class="footerTop">
             <mat-card-footer>
-                <form #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm.form)"
-                      autocomplete="off" id="messageForm">
+                <form
+                    #messageForm="ngForm"
+                    (ngSubmit)="sendMessage(messageForm.form)"
+                    autocomplete="off"
+                    id="messageForm"
+                >
                     <mat-form-field>
                         <mat-label>Message</mat-label>
-                        <textarea (keydown)="textAreaSubmit($event)" cdkTextareaAutosize
-                                  matInput
-                                  name="content"
-                                  ngModel
-                        ></textarea>
+                        <label>
+<textarea
+    (keydown)="textAreaSubmit($event)"
+    cdkTextareaAutosize
+    matInput
+    name="content"
+    ngModel
+></textarea>
+                        </label>
                     </mat-form-field>
                 </form>
             </mat-card-footer>
         </div>
     </mat-card>
 </div>
-<app-channel-user-list
-    (profileViewEvent)="goToProfile($event)"
-    [subscribedUsers]="subscribedUsers"
->
-
+<app-channel-user-list (profileViewEvent)="goToProfile($event)" [subscribedUsers]="subscribedUsers">
 </app-channel-user-list>

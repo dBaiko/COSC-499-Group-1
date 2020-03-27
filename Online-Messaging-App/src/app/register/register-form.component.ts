@@ -123,6 +123,6 @@ export class RegisterFormComponent implements OnInit {
             lastName: lastName
         };
 
-        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise(); // TODO: check for errors in responce
+        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise(); // TODO: check for errors in response
     }
 }
