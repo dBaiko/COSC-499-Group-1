@@ -148,15 +148,15 @@ mat-label {
 
 app-channel-user-list {
     height: 100%;
-    overflow: hidden;
-    min-width: 3in;
-    float: right;
-    flex-shrink: 0;
+    overflow: auto;
+    width: 20%;
+    float: left;
 }
 
 .container {
     height: 100%;
     float: left;
+    width: 80%;
 }
 
 #messageForm {
