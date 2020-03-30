@@ -146,19 +146,6 @@ mat-label {
     opacity: 1;
 }
 
-app-channel-user-list {
-    height: 100%;
-    overflow: auto;
-    width: 20%;
-    float: left;
-}
-
-.container {
-    height: 100%;
-    float: left;
-    width: 80%;
-}
-
 #messageForm {
     width: 68%;
 }
@@ -219,19 +206,38 @@ markdown ::ng-deep pre {
     font-size: 1em;
     color: dimgrey;
 }
-.inputArea{
+
+.inputArea {
     width: 70%;
     padding: 10px 10px;
     background-color: var(--element-hover-color);
 }
 
-.mat-form-field-underline{
+.mat-form-field-underline {
     display: none;
 }
-textarea{
-    color:var(--primary-text-color);
+
+textarea {
+    color: var(--primary-text-color);
     resize: none;
     overflow: hidden;
+}
+
+.container {
+    height: 100%;
+    margin: 1vh;
+    display: table;
+}
+
+app-channel-user-list {
+    display: table-cell;
+    min-width: 200px;
+}
+
+.content {
+    display: table-cell;
+    width: 100%;
+    height: 100%;
 }
 
 
