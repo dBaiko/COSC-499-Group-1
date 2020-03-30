@@ -23,6 +23,7 @@ mat-form-field {
     width: 2em;
     height: 2em;
     border-radius: 50%;
+    vertical-align: middle;
 }
 
 .clickable {
@@ -40,6 +41,7 @@ hr::ng-deep pre {
 
 mat-card-title {
     color: var(--primary-color);
+
 }
 
 .headerTop {
@@ -233,5 +235,13 @@ textarea{
     resize: none;
     overflow: hidden;
 }
+.chat-box-title{
+    padding-top: 0.6em;
+    margin-left: -1.5em;
+
+}
+//.userTitle{
+//    text-align: center;
+//}
 
 

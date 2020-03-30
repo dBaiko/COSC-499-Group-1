@@ -16,10 +16,18 @@
                 </button>
                 <mat-menu #userMenu="matMenu" class="menuList" disableOptionCentering disabled xPosition="after">
                     <div class="userMenu">
-                        <a (click)="switchDisplay(channelBrowser)" class="link" type="submit">Browse Channels</a> <br/>
+                        <span class="hoverLinks">
+                        <a (click)="switchDisplay(channelBrowser)" class="link" type="submit">Browse Channels</a><br/>
+                            </span>
+                        <span class="hoverLinks">
                         <a (click)="switchDisplay(profile)" type="submit">Profile</a> <br/>
+                        </span>
+                        <span class="hoverLinks">
                         <a (click)="switchDisplay(settings)" type="submit">Settings</a> <br/>
+                        </span>
+                        <span class="hoverLinks">
                         <logout-form></logout-form>
+                        </span>
                     </div>
                 </mat-menu>
             </div>
@@ -86,7 +94,7 @@
                 class="notificationOption"
             >
                 <mat-card>
-                    <mat-card-title>{{ notification.message }}</mat-card-title>
+                    <mat-card-title class="message">{{ notification.message }}</mat-card-title>
                     <br/>
                     <div class="inviteButtons">
                         <button
