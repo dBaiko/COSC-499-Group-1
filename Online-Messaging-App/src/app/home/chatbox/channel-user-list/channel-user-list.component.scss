@@ -1,6 +1,6 @@
 mat-card {
     background-color: var(--element-color);
-    border-radius: 0px;
+    border-radius: 0;
     border-top: 1px solid #f8f8f8;
     height: 100%;
     color: var(--primary-text-color);
@@ -36,11 +36,6 @@ hr {
 
 mat-card-title {
     color: var(--primary-color);
-}
-
-.headerTop {
-    background-color: var(--element-color);
-    width: 100%;
 }
 
 mat-card-footer {

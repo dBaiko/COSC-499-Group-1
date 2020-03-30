@@ -13,14 +13,14 @@
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Username</mat-label>
-                            <input
-                                class="form-control"
-                                formControlName="username"
-                                id="username"
-                                matInput
-                                name="username"
-                                type="text"
-                            />
+                            <label for="username"></label><input
+                            class="form-control"
+                            formControlName="username"
+                            id="username"
+                            matInput
+                            name="username"
+                            type="text"
+                        />
                             <mat-error *ngFor="let validation of common.validation_methods.username">
                                 <mat-error
                                     *ngIf="
@@ -41,14 +41,14 @@
                     <div class="form-group">
                         <mat-form-field appearance="fill" color="primary">
                             <mat-label>Password</mat-label>
-                            <input
-                                class="form-control"
-                                formControlName="password"
-                                id="password"
-                                matInput
-                                name="password"
-                                type="password"
-                            />
+                            <label for="password"></label><input
+                            class="form-control"
+                            formControlName="password"
+                            id="password"
+                            matInput
+                            name="password"
+                            type="password"
+                        />
                             <mat-error *ngFor="let validation of common.validation_methods.password">
                                 <mat-error
                                     *ngIf="

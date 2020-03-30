@@ -1,34 +1,20 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig, Constants } from "../../shared/app-config";
+import {
+    APIConfig,
+    ChannelIdAndType,
+    ChannelObject,
+    Constants,
+    NewUsersSubbedChannelObject,
+    ProfileObject,
+    UserChannelObject,
+    UserObject
+} from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
-import { ProfileObject, UserChannelObject } from "../home.component";
 import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm/unsubscribe-confirm.component";
-
-interface UserObject {
-    username: string;
-    email: string;
-}
-
-interface ChannelIdAndType {
-    channelId: string;
-    type: string;
-}
-
-export interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
-
-export interface NewUsersSubbedChannelObject {
-    channelId: string;
-    username: string;
-    joined: boolean;
-}
 
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
@@ -36,6 +22,11 @@ const FRIEND: string = "friend";
 const CHECKED: string = "checked";
 const SELECTED: string = "selected";
 const LAX = "Lax";
+
+const DIALOG_WIDTH = "35%";
+const DIALOG_CLASS = "dialog-class";
+
+const MAX_FRIEND_CHANNEL_LENGTH = 2;
 
 const CHANNELS_URI = "/channels/";
 
@@ -198,7 +189,7 @@ export class SidebarComponent implements OnInit {
     }
 
     parseFriendChannelName(channelName: string): string {
-        let users = channelName.split("-", 2);
+        let users = channelName.split(Constants.DASH, MAX_FRIEND_CHANNEL_LENGTH);
         if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
         else return users[0];
     }
@@ -254,7 +245,9 @@ export class SidebarComponent implements OnInit {
                 this.channelEvent.emit({
                     channelId: item.channelId,
                     channelName: item.channelName,
-                    channelType: item.channelType
+                    channelType: item.channelType,
+                    selected: null,
+                    filtered: null
                 });
                 item[SELECTED] = true;
                 this.cookieService.set(
@@ -279,13 +272,19 @@ export class SidebarComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = "35%";
-        dialogConfig.panelClass = "dialog-class";
+        dialogConfig.width = DIALOG_WIDTH;
+        dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: UserChannelObject) => {
             if (result) {
-                this.newChannelEvent.emit(result);
+                this.newChannelEvent.emit({
+                    channelId: result.channelId,
+                    channelType: result.channelType,
+                    channelName: result.channelName,
+                    selected: true,
+                    filtered: null
+                });
                 this.userSubscribedChannels.push(result);
                 if (result.channelType == PUBLIC) {
                     this.publicChannels.push(result);
@@ -307,8 +306,8 @@ export class SidebarComponent implements OnInit {
         let dialogConfig: MatDialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = "35%";
-        dialogConfig.panelClass = "dialog-class";
+        dialogConfig.width = DIALOG_WIDTH;
+        dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(UnsubscribeConfirmComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: boolean) => {

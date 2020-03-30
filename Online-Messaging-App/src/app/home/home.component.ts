@@ -5,9 +5,17 @@ import { FormBuilder, FormGroup } from "@angular/forms";
 import { NotificationService } from "../shared/notification.service";
 import { CookieService } from "ngx-cookie-service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { APIConfig } from "../shared/app-config";
+import {
+    APIConfig,
+    ChannelIdAndType,
+    ChannelObject,
+    Constants,
+    NewUsersSubbedChannelObject,
+    ProfileObject,
+    SettingsObject,
+    UserObject
+} from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
-import { NewUsersSubbedChannelObject } from "./sidebar/sidebar.component";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
@@ -18,45 +26,6 @@ const LIGHT = "light";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
 
-export interface UserChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelName: string;
-    channelType: string;
-    profileImage: string;
-    statusText: string;
-}
-
-export interface SettingsObject {
-    username: string;
-    theme: string;
-    explicit: boolean;
-}
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
-
-interface ChannelIdAndType {
-    channelId: string;
-    type: string;
-}
-
-interface UserObject {
-    username: string;
-    email: string;
-}
-
-export interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-    statusText: string;
-}
 
 @Component({
     selector: "app-home",
@@ -68,8 +37,7 @@ export class HomeComponent implements OnInit {
     options: FormGroup;
 
     display: string = CHANNEL_BROWSER;
-    selectedChannelId: string;
-    selectedChannelName: string;
+    selectedChannelId: ChannelObject;
     newAddedChannel: ChannelObject;
     newSubbedChannel: ChannelObject;
     notificationChannel: ChannelIdAndType;
@@ -112,16 +80,15 @@ export class HomeComponent implements OnInit {
             }
             this.getUsers();
             this.getSettings();
-            this.getUserInfo();
+            this.getUserInfo()
+                .catch((err) => {
+                    console.error(err);
+                });
         }
     }
 
     receiveId($event) {
         this.selectedChannelId = $event;
-    }
-
-    receiveName($event) {
-        this.selectedChannelName = $event;
     }
 
     receiveNewSubbedChannel(event: ChannelObject) {
@@ -146,10 +113,9 @@ export class HomeComponent implements OnInit {
     }
 
     getUpdatedProfile(): void {
-        this.getUserInfo()
-            .then(() => {
-                this.currentUserProfile.profileImage += "?" + Math.random();
-            });
+        this.getUserInfo().then(() => {
+            this.currentUserProfile.profileImage += Constants.QUESTION_MARK + Math.random();
+        });
     }
 
     changeTheme(themeString: string): void {
@@ -242,7 +208,7 @@ export class HomeComponent implements OnInit {
                                 username: profile.username,
                                 firstName: profile.firstName,
                                 lastName: profile.lastName,
-                                profileImage: profile.profileImage + "?" + Math.random(),
+                                profileImage: profile.profileImage + Constants.QUESTION_MARK + Math.random(),
                                 statusText: profile.statusText
                             };
                             resolve();

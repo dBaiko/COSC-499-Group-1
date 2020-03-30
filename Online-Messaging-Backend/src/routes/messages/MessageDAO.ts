@@ -125,6 +125,33 @@ class MessageDAO {
             });
     }
 
+    public updateMessage(message: Message): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            let updateObject = {
+                TableName: tableName,
+                Key: {
+                    channelId: message.channelId,
+                    insertTime: message.insertTime
+                },
+                UpdateExpression: "SET content = :c",
+                ConditionExpression: "messageId = :i",
+                ExpressionAttributeValues: {
+                    ":i": message.messageId,
+                    ":c": message.content
+                }
+            };
+
+            this.docClient.update(updateObject, (err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    console.log("message updated successfully");
+                    resolve();
+                }
+            });
+        });
+    }
+
     public deleteMessage(messageId: string, channelId: string, insertTime: number): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             let updateObject = {
@@ -149,11 +176,8 @@ class MessageDAO {
                     resolve();
                 }
             });
-
-            ;
         });
     }
-
 }
 
 export default MessageDAO;

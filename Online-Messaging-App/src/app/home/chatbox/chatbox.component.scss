@@ -1,6 +1,6 @@
 mat-card {
     background-color: var(--element-color);
-    border-radius: 0px;
+    border-radius: 0;
     border-top: 1px solid #f8f8f8;
     height: 100%;
 }
@@ -71,13 +71,13 @@ mat-label {
 
 .invite {
     color: var(--primary-text-color);
-    border-radius: 0px;
+    border-radius: 0;
     position: absolute;
     right: 1.1%;
 }
 
 .inviteButton {
-    border-radius: 0px;
+    border-radius: 0;
     background-color: var(--primary-color);
     color: white;
 }
@@ -93,7 +93,7 @@ mat-label {
 .invite mat-card {
     background-color: var(--primary-color);
     width: 92%;
-    margin-top: 0%;
+    margin-top: 0;
     color: var(--primary-text-color);
 }
 
@@ -104,7 +104,7 @@ mat-label {
 }
 
 .search button {
-    border-radius: 0%;
+    border-radius: 0;
 }
 
 .search button:hover {
@@ -112,10 +112,10 @@ mat-label {
 }
 
 .invite mat-form-field {
-    border-radius: 0%;
+    border-radius: 0;
     width: 100%;
     margin-right: 20vh;
-    margin-bottom: 0%;
+    margin-bottom: 0;
 }
 
 .search {
@@ -202,9 +202,6 @@ markdown ::ng-deep pre {
     visibility: visible;
 }
 
-.message:hover ::ng-deep pre {
-    background-color: var(--soft-black);
-}
 
 .icons {
     float: right;
@@ -222,3 +219,19 @@ markdown ::ng-deep pre {
     font-size: 1em;
     color: dimgrey;
 }
+.inputArea{
+    width: 70%;
+    padding: 10px 10px;
+    background-color: var(--element-hover-color);
+}
+
+.mat-form-field-underline{
+    display: none;
+}
+textarea{
+    color:var(--primary-text-color);
+    resize: none;
+    overflow: hidden;
+}
+
+

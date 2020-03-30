@@ -1,5 +1,5 @@
-// noinspection SpellCheckingInspection
 import { HttpHeaders } from "@angular/common/http";
+import { UserSocket } from "./notification.service";
 
 export const CognitoConfig = {
     UserPoolId: "ca-central-1_6ickHVand",
@@ -28,7 +28,11 @@ export const Constants = {
         headers: new HttpHeaders({
             "Content-Type": "application/json"
         })
-    }
+    },
+    DASH: "-",
+    QUESTION_MARK: "?",
+    FILE: "file",
+    SRC: "src"
 };
 
 export const VALIDATION_MESSAGES = {
@@ -112,10 +116,136 @@ export const VALIDATION_MESSAGES = {
         }
     ],
     channelType: [{ type: "required", message: "Channel type is required" }],
-    profileImageName: [
-        { type: "badFileType", message: "Image file type must be png or jpg" }
-    ],
-    profileImageSize: [
-        { type: "badFileSize", message: "Image file size must be less than 1Mb" }
-    ]
+    profileImageName: [{ type: "badFileType", message: "Image file type must be png or jpg" }],
+    profileImageSize: [{ type: "badFileSize", message: "Image file size must be less than 1Mb" }]
 };
+
+export interface UserObject {
+    username: string;
+    email: string;
+}
+
+export interface InviteChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    inviteStatus: string;
+}
+
+export interface MessageObject {
+    channelId: string;
+    insertTime: number;
+    content: string;
+    messageId: string;
+    profileImage: string;
+    username: string;
+    deleted: boolean;
+    editing: boolean;
+}
+
+export interface newChannelResponse {
+    status: number;
+    data: {
+        message: string;
+        newChannel: ChannelObject;
+    };
+}
+
+export interface ChannelAndFirstUser {
+    channelName: string;
+    channelType: string;
+    firstUsername: string;
+    firstUserChannelRole: string;
+    profileImage: string;
+    inviteStatus: string;
+}
+
+export interface UserChannelObject {
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+    profileImage: string;
+    statusText: string;
+}
+
+export interface InviteChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    inviteStatus: string;
+}
+
+export interface ChannelIdAndType {
+    channelId: string;
+    type: string;
+}
+
+export interface NotificationSocketObject {
+    fromUser: UserSocket;
+    toUser: UserSocket;
+    notification: NotificationObject;
+}
+
+export interface NotificationObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    message: string;
+    type: string;
+    username: string;
+    notificationId: string;
+    insertedTime: number;
+    fromFriend: string;
+}
+
+export interface UserProfileObject {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+    statusText: string;
+}
+
+export interface ChannelIdAndType {
+    channelId: string;
+    type: string;
+}
+
+export interface ChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    selected: boolean;
+    filtered: boolean;
+}
+
+export interface NewUsersSubbedChannelObject {
+    channelId: string;
+    username: string;
+    joined: boolean;
+}
+
+export interface HttpResponse {
+    status: number;
+    data: {
+        message: string;
+        newChannel: ChannelObject;
+    };
+}
+
+export interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    profileImage: string;
+    statusText: string;
+}
+
+export interface SettingsObject {
+    username: string;
+    theme: string;
+    explicit: boolean;
+}
