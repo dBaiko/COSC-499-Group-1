@@ -15,9 +15,9 @@ mat-form-field {
 }
 
 #scrollable {
-    overflow-y: hidden;
-    height: 80%;
     margin-top: 1rem;
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .userPicture {
@@ -81,6 +81,7 @@ mat-label {
 .navTitle {
     text-align: left;
     padding-left: 4%;
+    padding-top: 10px;
 }
 
 .statusMessage {
