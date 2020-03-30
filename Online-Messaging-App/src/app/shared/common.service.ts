@@ -1,8 +1,7 @@
 import { AuthenticationService } from "./authentication.service";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { Constants, VALIDATION_MESSAGES } from "./app-config";
-import { UserObject } from "../home/chatbox/chatbox.component";
+import { Constants, UserObject, VALIDATION_MESSAGES } from "./app-config";
 
 @Injectable()
 export class CommonService {
