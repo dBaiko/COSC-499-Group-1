@@ -53,6 +53,28 @@
                             </mat-error>
                         </mat-error>
                     </div>
+                    <p>Channel Bio</p>
+                    <div class="channelBio">
+                        <textarea
+                            class="inputArea"
+                            formControlName="content"
+                            cdkTextareaAutosize
+                            matInput name="editContent"></textarea>
+<!--                        <mat-error *ngFor="let validation of common.validation_methods.channelName">-->
+<!--                            <mat-error-->
+<!--                                *ngIf="-->
+<!--                                        formValidationService.checkIfFormElementInvalid(-->
+<!--                                            newChannelForm,-->
+<!--                                            'channelName',-->
+<!--                                            validation,-->
+<!--                                            submitAttempt-->
+<!--                                        )-->
+<!--                                    "-->
+<!--                            >{{ validation.message }}-->
+<!--                            </mat-error>-->
+<!--                        </mat-error>-->
+                    </div>
+
                 </div>
             </div>
             <div class="center">
