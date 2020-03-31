@@ -26,7 +26,6 @@ const LIGHT = "light";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
 
-
 @Component({
     selector: "app-home",
     templateUrl: "./home.component.html",
@@ -80,10 +79,9 @@ export class HomeComponent implements OnInit {
             }
             this.getUsers();
             this.getSettings();
-            this.getUserInfo()
-                .catch((err) => {
-                    console.error(err);
-                });
+            this.getUserInfo().catch((err) => {
+                console.error(err);
+            });
         }
     }
 

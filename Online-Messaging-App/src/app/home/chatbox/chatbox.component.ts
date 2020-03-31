@@ -14,7 +14,7 @@ import {
     UserObject
 } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
-import {FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
+import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
 import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
@@ -22,6 +22,8 @@ import { CommonService } from "../../shared/common.service";
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
+const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
+const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
 const MESSAGES_URI: string = "/messages";
 const USERS_URI: string = "/users";
@@ -35,6 +37,9 @@ const FRIEND_IDENTIFIER: string = "friend";
 const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
+
+const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
+const SCROLLABLE_IDENTIFIER: string = "scrollable";
 
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
@@ -74,6 +79,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
     editForm: FormGroup;
 
+    @ViewChild("textArea") textArea: ElementRef;
+
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
     inviteSearchList: Array<UserObject> = [];
@@ -91,6 +98,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
+    private textAreaHeight = 0;
+    private defaultHeight = 80;
 
     constructor(
         private messagerService: MessengerService,
@@ -135,10 +144,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentChannel(value: ChannelObject) {
         this._currentChannel = value;
-        this.getMessages(this._currentChannel.channelId)
-            .catch((err) => {
-                console.error(err);
-            });
+        this.getMessages(this._currentChannel.channelId).catch((err) => {
+            console.error(err);
+        });
         this.isNearBottom = false;
         this.getSubcribedUsers()
             .then((data: Array<UserChannelObject>) => {
@@ -173,15 +181,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             .catch((err) => {
                 console.log(err);
             });
-        this.getChannelNotifications()
-            .catch((err) => {
-                console.error(err);
-            });
+        this.getChannelNotifications().catch((err) => {
+            console.error(err);
+        });
     }
 
     ngOnInit(): void {
         this.editForm = new FormGroup({
-            content: new FormControl("",Validators.compose([Validators.required]))
+            content: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
         });
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data) {
@@ -194,6 +201,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
             }
         });
+        this.textAreaHeight = document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height;
     }
 
     ngAfterViewChecked() {
@@ -242,11 +250,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
-
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: value.content,
+                content: value.content.replace(NEW_LINE_REGEX, "\n"),
                 profileImage: this.currentUserProfile.profileImage
             };
             this.isNearBottom = false;
@@ -265,14 +272,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     openInviting(): void {
         this.inviteSearchList = [];
         this.inviting = true;
-        this.getChannelNotifications()
-            .catch((err) => {
-                console.error(err);
-            });
-        this.getSubcribedUsers()
-            .catch((err) => {
-                console.error(err);
-            });
+        this.getChannelNotifications().catch((err) => {
+            console.error(err);
+        });
+        this.getSubcribedUsers().catch((err) => {
+            console.error(err);
+        });
     }
 
     inviteFormSubmit() {
@@ -332,6 +337,23 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } else if (event.keyCode == 13) {
             event.preventDefault();
             this.messageForm.ngSubmit.emit();
+        }
+        if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height > this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight - 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
+        } else if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height < this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight + 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
         }
     }
 
@@ -394,13 +416,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
     }
 
-    toggleEditingMessage(chatMessage: MessageObject){
-        if(!this.currentlyEditing) {
+    toggleEditingMessage(chatMessage: MessageObject) {
+        if (!this.currentlyEditing) {
             this.currentlyEditing = true;
             this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
             this.editForm.get("content").setValue(chatMessage.content);
         }
-
     }
 
     editMessage(message: MessageObject, newContent: string) {
@@ -432,7 +453,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         );
     }
-
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
         if (newUsersSubbedChannel.joined) {
