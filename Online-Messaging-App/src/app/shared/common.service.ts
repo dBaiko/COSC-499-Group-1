@@ -51,7 +51,5 @@ export class CommonService {
             return false;
         }
         return match.substring(0, search.length) == search;
-
     }
-
 }

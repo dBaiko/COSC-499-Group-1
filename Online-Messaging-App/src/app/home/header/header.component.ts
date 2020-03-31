@@ -71,10 +71,9 @@ export class HeaderComponent implements OnInit {
         if (this.userLoggedIn == true) {
             this.user = this.auth.getAuthenticatedUser();
 
-            this.getNotifications()
-                .catch((err) => {
-                    console.error(err);
-                });
+            this.getNotifications().catch((err) => {
+                console.error(err);
+            });
             this.notificationService.addSocketListener(
                 BROADCAST_NOTIFICATION_EVENT,
                 (notificationSocketObject: NotificationSocketObject) => {

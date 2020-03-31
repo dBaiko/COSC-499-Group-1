@@ -15,7 +15,6 @@ mat-form-field {
 
 #scrollable {
     overflow-y: auto;
-    height: 80%;
     margin-top: 1rem;
 }
 
@@ -23,6 +22,7 @@ mat-form-field {
     width: 2em;
     height: 2em;
     border-radius: 50%;
+    vertical-align: middle;
 }
 
 .clickable {
@@ -40,6 +40,7 @@ hr::ng-deep pre {
 
 mat-card-title {
     color: var(--primary-color);
+
 }
 
 .headerTop {
@@ -63,7 +64,6 @@ mat-label {
     color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
-
 
 .chat-box-header {
     width: 100%;
@@ -146,19 +146,6 @@ mat-label {
     opacity: 1;
 }
 
-app-channel-user-list {
-    height: 100%;
-    overflow: auto;
-    width: 20%;
-    float: left;
-}
-
-.container {
-    height: 100%;
-    float: left;
-    width: 80%;
-}
-
 #messageForm {
     width: 68%;
 }
@@ -202,7 +189,6 @@ markdown ::ng-deep pre {
     visibility: visible;
 }
 
-
 .icons {
     float: right;
 }
@@ -219,19 +205,22 @@ markdown ::ng-deep pre {
     font-size: 1em;
     color: dimgrey;
 }
-.inputArea{
+
+.inputArea {
     width: 70%;
     padding: 10px 10px;
     background-color: var(--element-hover-color);
 }
 
-.mat-form-field-underline{
+.mat-form-field-underline {
     display: none;
 }
-textarea{
-    color:var(--primary-text-color);
+
+textarea {
+    color: var(--primary-text-color);
     resize: none;
-    overflow: hidden;
+    overflow-y: scroll;
+    max-height: 10rem;
 }
 .chat-box-title{
     color: var(--primary-color);
@@ -241,9 +230,55 @@ mat-expansion-panel{
     width: 85%;
     background-color: var(--element-color);
     color: var(--primary-text-color);
+    margin-left: -1.5em;
 }
 mat-expansion-panel:hover{
     background-color: var(--element-hover-color);
 }
 
+.defaultHeight {
+    height: 80%;
+}
 
+.page {
+    height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+    // max-width: 1160px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px;
+    min-height: 600px;
+}
+
+.content-wrapper {
+    height: 100%;
+    float: left;
+    width: 100%;
+}
+
+//.userTitle{
+//    text-align: center;
+//}
+
+.content {
+    height: 100%;
+    margin-right: 225px;
+    clear: both;
+    min-height: 600px;
+}
+
+.container {
+    height: 100%;
+}
+
+.sidebar {
+    position: relative;
+    width: 225px;
+    margin-left: -225px;
+    float: right;
+    min-height: 600px;
+    height: 100%;
+}
