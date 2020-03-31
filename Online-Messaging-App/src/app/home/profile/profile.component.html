@@ -19,8 +19,8 @@
                             name="profileImage"
                             type="file"
                         />
-                        <input formControlName="profileImageName" name="imageName" type="hidden"/>
-                        <input formControlName="profileImageSize" name="imageSize" type="hidden"/>
+                        <input formControlName="profileImageName" name="imageName" type="hidden" />
+                        <input formControlName="profileImageSize" name="imageSize" type="hidden" />
                         <mat-error
                             *ngFor="let validation of common.validation_methods.profileImageName"
                             class="profileError"
@@ -72,8 +72,8 @@
             </mat-card-header>
         </div>
         <mat-card-content>
-            <hr/>
-            <br/>
+            <hr />
+            <br />
             <p>
                 <i>{{ editSaveMessage }}</i>
             </p>
@@ -81,11 +81,11 @@
                 <p class="nameHeaders">
                     <b>Status</b
                     ><span
-                    (click)="this.toggleEditingStatus(true)"
-                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
-                >
+                        (click)="this.toggleEditingStatus(true)"
+                        *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
+                    >
                         Click to update</span
-                >
+                    >
                 </p>
                 <p (click)="this.toggleEditingStatus(true)" *ngIf="!editingStatus">{{ userProfile.statusText }}</p>
                 <form
@@ -108,18 +108,18 @@
                 </form>
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr/>
+                <hr />
                 <div *ngIf="userProfile.email">
                     <p class="nameHeaders"><b>Email</b></p>
                     <p>{{ userProfile.email }}</p>
-                    <hr/>
+                    <hr />
                 </div>
                 <p class="nameHeaders"><b>First Name</b></p>
                 <p>{{ userProfile.firstName }}</p>
-                <hr/>
+                <hr />
                 <p class="nameHeaders"><b>Last Name</b></p>
                 <p>{{ userProfile.lastName }}</p>
-                <hr/>
+                <hr />
             </div>
             <div
                 *ngIf="
@@ -131,11 +131,11 @@
             >
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr/>
+                <hr />
                 <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm">
                     <p class="nameHeaders"><b>Email</b></p>
-                    <label for="email"></label><input autocomplete="off" formControlName="email" id="email" name="email"
-                                                      required type="email"/>
+                    <label for="email"></label
+                    ><input autocomplete="off" formControlName="email" id="email" name="email" required type="email" />
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
                             *ngIf="
@@ -150,16 +150,17 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <p class="nameHeaders"><b>First Name</b></p>
-                    <label for="firstName"></label><input
-                    autocomplete="off"
-                    formControlName="firstName"
-                    id="firstName"
-                    name="firstName"
-                    required
-                    type="text"
-                />
+                    <label for="firstName"></label
+                    ><input
+                        autocomplete="off"
+                        formControlName="firstName"
+                        id="firstName"
+                        name="firstName"
+                        required
+                        type="text"
+                    />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
                             *ngIf="
@@ -174,16 +175,17 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <p class="nameHeaders"><b>Last Name</b></p>
-                    <label for="lastName"></label><input
-                    autocomplete="off"
-                    formControlName="lastName"
-                    id="lastName"
-                    name="lastName"
-                    required
-                    type="text"
-                />
+                    <label for="lastName"></label
+                    ><input
+                        autocomplete="off"
+                        formControlName="lastName"
+                        id="lastName"
+                        name="lastName"
+                        required
+                        type="text"
+                    />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
                             *ngIf="
@@ -198,7 +200,7 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr/>
+                    <hr />
                     <button *ngIf="editing" mat-button type="submit">
                         Save
                     </button>

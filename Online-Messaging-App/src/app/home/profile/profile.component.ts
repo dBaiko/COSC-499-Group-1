@@ -20,7 +20,6 @@ const PROFILE_IMAGE_NAME: string = "profileImageName";
 const PROFILE_IMAGE_SIZE: string = "profileImageSize";
 const PROFILE_IMAGE: string = "profileImage";
 
-
 const ERROR_MESSAGE = "Your edit was not saved correctly";
 const SUCCESS_MESSAGE = "Your edit was saved correctly";
 const IMAGE_MESSAGE = "Your profile picture was updated successfully";

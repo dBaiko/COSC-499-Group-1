@@ -1,9 +1,19 @@
+mat-sidenav-container {
+    height: 100%;
+    overflow: hidden;
+}
+
+::ng-deep .mat-drawer-content {
+    overflow: hidden;
+}
+
 mat-card {
     background-color: var(--element-color);
     border-radius: 0;
     border-top: 1px solid #f8f8f8;
-    height: 100%;
     color: var(--primary-text-color);
+    height: 100%;
+    padding-left: 0;
 }
 
 mat-form-field {
@@ -15,9 +25,19 @@ mat-form-field {
 }
 
 #scrollable {
-    overflow-y: hidden;
-    height: 80%;
-    margin-top: 1rem;
+    overflow-y: auto;
+    box-sizing: border-box;
+    height: 85%;
+}
+
+.userPicture {
+    width: 5%;
+}
+
+.clickable {
+    cursor: pointer;
+    color: var(--primary-color);
+    align-items: center;
 }
 
 hr {
@@ -45,9 +65,8 @@ mat-label {
     padding-left: 0.5rem;
 }
 
-.container {
-    height: 100%;
-    margin: 1vh;
+.chat-box-header {
+    width: 100%;
 }
 
 .userProfilePicture {
@@ -57,6 +76,12 @@ mat-label {
     white-space: normal;
     width: 22%;
     border-radius: 50%;
+}
+
+.navTitle {
+    text-align: left;
+    padding-left: 4%;
+    background-color: var(--element-color);
 }
 
 .statusMessage {

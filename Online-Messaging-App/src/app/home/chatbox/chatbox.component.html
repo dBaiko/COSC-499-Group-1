@@ -1,113 +1,120 @@
-<div class="container">
-    <mat-card class="scrollMe">
-        <div class="headerTop">
-            <mat-card-header class="chat-box-header">
-                <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
-                    <img
-                        alt="assets/icon-alt.PNG"
-                        class="messagePicture"
-                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
-                        style="display: inline"/><!-- TODO: replace with friends user profile picture -->
-                    <mat-card-title
-                        (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
-                        class="clickable"
-                        style="display: inline"
-                    >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
-                    >
-                </div>
-                <ng-template #notFriend>
-                    <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>
-                </ng-template>
-                <div *ngIf="currentChannel.channelType != 'friend'" class="invite">
-                    <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
-                        Send Invite
-                    </button>
-                    <div
-                        (clickOutside)="closeInviting()"
-                        *ngIf="inviting"
-                        class="search"
-                        delayClickOutsideInit="true"
-                        id="inviteWindow"
-                    >
-                        <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
-                            <mat-form-field>
-                                <mat-label>Search for person to invite</mat-label>
-                                <label>
-                                    <input (input)="onKey($event)" class="inviteSearch" matInput name="users"/>
-                                </label>
-                            </mat-form-field>
-                        </form>
-                        <div *ngFor="let user of inviteSearchList">
-                            <mat-card *ngIf="user.username != currentUserProfile.username">
-                                <mat-card-title class="usernameInvite">{{ user.username }}</mat-card-title>
-                                <mat-card-content>
-                                    <div
-                                        *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
-                                        class="subedOrSent"
+<div class="page">
+    <div class="wrapper">
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="container">
+                    <mat-card class="scrollMe">
+                        <div class="headerTop">
+                            <mat-card-header class="chat-box-header">
+                                <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
+                                    <img
+                                        alt="assets/icon-alt.PNG"
+                                        class="messagePicture"
+                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
+                                        style="display: inline"
+                                    /><!-- TODO: replace with friends user profile picture -->
+                                    <mat-card-title
+                                        (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
+                                        class="clickable"
+                                        style="display: inline"
+                                    >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
                                     >
-                                        Subscribed
-                                    </div>
-                                    <ng-template #elseBlock1>
-                                        <div
-                                            *ngIf="
+                                </div>
+                                <ng-template #notFriend>
+                                    <mat-card-title
+                                        class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>
+                                </ng-template>
+                                <div *ngIf="currentChannel.channelType != 'friend'" class="invite">
+                                    <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
+                                        Send Invite
+                                    </button>
+                                    <div
+                                        (clickOutside)="closeInviting()"
+                                        *ngIf="inviting"
+                                        class="search"
+                                        delayClickOutsideInit="true"
+                                        id="inviteWindow"
+                                    >
+                                        <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
+                                            <mat-form-field>
+                                                <mat-label>Search for person to invite</mat-label>
+                                                <label>
+                                                    <input (input)="onKey($event)" class="inviteSearch" matInput
+                                                           name="users"/>
+                                                </label>
+                                            </mat-form-field>
+                                        </form>
+                                        <div *ngFor="let user of inviteSearchList">
+                                            <mat-card *ngIf="user.username != currentUserProfile.username">
+                                                <mat-card-title
+                                                    class="usernameInvite">{{ user.username }}</mat-card-title>
+                                                <mat-card-content>
+                                                    <div
+                                                        *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
+                                                        class="subedOrSent"
+                                                    >
+                                                        Subscribed
+                                                    </div>
+                                                    <ng-template #elseBlock1>
+                                                        <div
+                                                            *ngIf="
                                                 this.channelNotificationsUsernames.includes(user.username);
                                                 else elseBlock2
                                             "
-                                            class="subedOrSent"
-                                        >
-                                            Invite Sent
+                                                            class="subedOrSent"
+                                                        >
+                                                            Invite Sent
+                                                        </div>
+                                                        <ng-template #elseBlock2>
+                                                            <button
+                                                                (click)="sendInvite(user.username)"
+                                                                class="sendInviteButton"
+                                                                mat-button
+                                                            >
+                                                                Send Invite
+                                                            </button>
+                                                        </ng-template>
+                                                    </ng-template>
+                                                </mat-card-content>
+                                            </mat-card>
                                         </div>
-                                        <ng-template #elseBlock2>
-                                            <button
-                                                (click)="sendInvite(user.username)"
-                                                class="sendInviteButton"
-                                                mat-button
-                                            >
-                                                Send Invite
-                                            </button>
-                                        </ng-template>
-                                    </ng-template>
-                                </mat-card-content>
-                            </mat-card>
+                                    </div>
+                                </div>
+                            </mat-card-header>
                         </div>
-                    </div>
-                </div>
-            </mat-card-header>
-        </div>
-        <p>{{ error }}</p>
-        <hr/>
-        <i class="errorMessage">{{ friendMessage }}</i>
-        <div #scrollframe (scroll)="onScroll()" id="scrollable">
-            <div *ngFor="let chatMessage of chatMessages; let i = index">
-                <div *ngIf="!chatMessage.username; else elseBlock">
-                    <hr/>
-                    <mat-card-content class="status">
-                        <p>
-                            {{ chatMessage.content }}
-                        </p>
-                    </mat-card-content>
-                </div>
-                <ng-template #elseBlock>
-                    <div *ngIf="i == 0">
+                        <p>{{ error }}</p>
                         <hr/>
-                        <mat-card-header>
-                            <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                                <img
-                                    alt="assets/icon-alt.PNG"
-                                    class="messagePicture"
-                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                    src="{{ chatMessage.profileImage }}"
-                                />
-                                <span class="userTitle">
-                                {{ chatMessage.username }}
-                                </span>
-                            </mat-card-title>
-                        </mat-card-header>
-                    </div>
-                    <div *ngIf="i != 0">
-                        <div
-                            *ngIf="
+                        <i class="errorMessage">{{ friendMessage }}</i>
+                        <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
+                            <div *ngFor="let chatMessage of chatMessages; let i = index">
+                                <div *ngIf="!chatMessage.username; else elseBlock">
+                                    <hr/>
+                                    <mat-card-content class="status">
+                                        <p>
+                                            {{ chatMessage.content }}
+                                        </p>
+                                    </mat-card-content>
+                                </div>
+                                <ng-template #elseBlock>
+                                    <div *ngIf="i == 0">
+                                        <hr/>
+                                        <mat-card-header>
+                                            <mat-card-title (click)="goToProfile(chatMessage.username)"
+                                                            class="clickable">
+                                                <img
+                                                    alt="assets/icon-alt.PNG"
+                                                    class="messagePicture"
+                                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                                    src="{{ chatMessage.profileImage }}"
+                                                />
+                                                {{ chatMessage.username }}
+                                            </mat-card-title>
+                                        </mat-card-header>
+                                    </div>
+                                    <div *ngIf="i != 0">
+                                        <div
+                                            *ngIf="
                                 i != 0 &&
                                 i != chatMessages.length - 1 &&
                                 chatMessage.username != chatMessages[i - 1].username
@@ -156,59 +163,72 @@
                                 <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                             </span>
-                            <span *ngIf="chatMessage.username != currentUserProfile.username" class="icons">
+                                            <span *ngIf="chatMessage.username != currentUserProfile.username"
+                                                  class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
 
-                            <markdown *ngIf="!chatMessage.editing" class="mark">{{ chatMessage.content }} </markdown>
-                        </p>
-                        <form *ngIf="chatMessage.editing"[formGroup]="editForm"
-                              (ngSubmit)="editFormSubmit(editForm, chatMessage)"
-                              autocomplete="off"
-                              id="editForm">
-                                        <textarea
-                                            class="inputArea"
-                                            formControlName="content"
-                                            (keydown)="editFormTextAreaSubmit($event)"
-                                            cdkTextareaAutosize
-                                            matInput name="editContent"
-                                        ></textarea>
-                                <button id="hiddenButton" style="display:none;" type="submit"></button>
-                        </form>
-                    </mat-card-content>
-                    <ng-template #messageDeleted>
-                        <mat-card-content>
-                            <i class="deletedMessage">Message deleted</i>
-                        </mat-card-content>
-                    </ng-template>
-                </ng-template>
+                                            <markdown *ngIf="!chatMessage.editing"
+                                                      class="mark">{{ chatMessage.content }} </markdown>
+                                        </p>
+                                        <form
+                                            (ngSubmit)="editFormSubmit(editForm, chatMessage)"
+                                            *ngIf="chatMessage.editing"
+                                            [formGroup]="editForm"
+                                            autocomplete="off"
+                                            id="editForm"
+                                        >
+                            <textarea
+                                (keydown)="editFormTextAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                class="inputArea"
+                                formControlName="content"
+                                matInput
+                                name="editContent"
+                            ></textarea>
+                                            <button id="hiddenButton" style="display:none;" type="submit"></button>
+                                        </form>
+                                    </mat-card-content>
+                                    <ng-template #messageDeleted>
+                                        <mat-card-content>
+                                            <i class="deletedMessage">Message deleted</i>
+                                        </mat-card-content>
+                                    </ng-template>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <br/><br/>
+                        <div class="footerTop">
+                            <mat-card-footer>
+                                <form
+                                    #messageForm="ngForm"
+                                    (ngSubmit)="sendMessage(messageForm.form)"
+                                    autocomplete="off"
+                                    id="messageForm"
+                                >
+                                    <mat-form-field>
+                                        <mat-label>Message</mat-label>
+                                        <label>
+                            <textarea
+                                (keydown)="textAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                id="messageInputField"
+                                matInput
+                                name="content"
+                                ngModel
+                            ></textarea>
+                                        </label>
+                                    </mat-form-field>
+                                </form>
+                            </mat-card-footer>
+                        </div>
+                    </mat-card>
+                </div>
             </div>
         </div>
-        <br/><br/>
-        <div class="footerTop">
-            <mat-card-footer>
-                <form
-                    #messageForm="ngForm"
-                    (ngSubmit)="sendMessage(messageForm.form)"
-                    autocomplete="off"
-                    id="messageForm"
-                >
-                    <mat-form-field>
-                        <mat-label>Message</mat-label>
-                        <label>
-<textarea
-    (keydown)="textAreaSubmit($event)"
-    cdkTextareaAutosize
-    matInput
-    name="content"
-    ngModel
-></textarea>
-                        </label>
-                    </mat-form-field>
-                </form>
-            </mat-card-footer>
+        <div class="sidebar">
+            <app-channel-user-list (profileViewEvent)="goToProfile($event)" [subscribedUsers]="subscribedUsers">
+            </app-channel-user-list>
         </div>
-    </mat-card>
+    </div>
 </div>
-<app-channel-user-list (profileViewEvent)="goToProfile($event)" [subscribedUsers]="subscribedUsers">
-</app-channel-user-list>
