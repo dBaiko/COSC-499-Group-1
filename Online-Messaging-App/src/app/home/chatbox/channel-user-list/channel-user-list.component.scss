@@ -1,9 +1,19 @@
+mat-sidenav-container {
+    height: 100%;
+    overflow: hidden;
+}
+
+::ng-deep .mat-drawer-content {
+    overflow: hidden;
+}
+
 mat-card {
     background-color: var(--element-color);
     border-radius: 0;
     border-top: 1px solid #f8f8f8;
-    //height: 100%;
     color: var(--primary-text-color);
+    height: 100%;
+    padding-left: 0;
 }
 
 mat-form-field {
@@ -14,11 +24,10 @@ mat-form-field {
     color: var(--primary-text-color);
 }
 
-.scrollable {
+#scrollable {
     overflow-y: auto;
-    height: 80%;
-    margin-top: 1rem;
     box-sizing: border-box;
+    height: 85%;
 }
 
 .userPicture {
@@ -72,6 +81,7 @@ mat-label {
 .navTitle {
     text-align: left;
     padding-left: 4%;
+    background-color: var(--element-color);
 }
 
 .statusMessage {

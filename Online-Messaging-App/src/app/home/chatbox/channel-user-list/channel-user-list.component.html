@@ -1,42 +1,44 @@
 <mat-sidenav-container>
-    <mat-card-title class="navTitle">
-        Subscribers
-    </mat-card-title>
-    <mat-card class="scrollable">
-        <mat-card-title>Online
-            <hr>
+    <mat-card class="scrollMe">
+        <mat-card-title class="navTitle">
+            Subscribers
         </mat-card-title>
-        <mat-nav-list>
-            <div *ngFor="let user of onlineUsers" class="onlineUsers">
-                <mat-list-item (click)="goToProfile(user.username)" class="clickable">
-                    <img class="userProfilePicture"
-                         inline="true"
-                         matListAvatar
-                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                         src="{{user.profileImage}}"
-                    />
-                    <span matLine>{{user.username}}</span><br>
-                    <span class="statusMessage" matLine><i>{{user.statusText}}</i></span>
-                </mat-list-item>
-            </div>
-            <br>
-        </mat-nav-list>
-        <mat-card-title>Offline
-            <hr>
-        </mat-card-title>
-        <mat-nav-list>
-            <div *ngFor="let user of offlineUsers" class="offlineUsers">
-                <mat-list-item (click)="goToProfile(user.username)" class="clickable">
-                    <img class="userProfilePicture"
-                         inline="true"
-                         matListAvatar
-                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                         src="{{user.profileImage}}"
-                    />
-                    <span matLine>{{user.username}}</span><br>
-                    <span class="statusMessage" matLine>{{user.statusText}}</span>
-                </mat-list-item>
-            </div>
-        </mat-nav-list>
+        <div id="scrollable">
+            <mat-card-title>Online
+                <hr>
+            </mat-card-title>
+            <mat-nav-list>
+                <div *ngFor="let user of onlineUsers" class="onlineUsers">
+                    <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                        <img class="userProfilePicture"
+                             inline="true"
+                             matListAvatar
+                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                             src="{{user.profileImage}}"
+                        />
+                        <span matLine>{{user.username}}</span><br>
+                        <span class="statusMessage" matLine><i>{{user.statusText}}</i></span>
+                    </mat-list-item>
+                </div>
+                <br>
+            </mat-nav-list>
+            <mat-card-title>Offline
+                <hr>
+            </mat-card-title>
+            <mat-nav-list>
+                <div *ngFor="let user of offlineUsers" class="offlineUsers">
+                    <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                        <img class="userProfilePicture"
+                             inline="true"
+                             matListAvatar
+                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                             src="{{user.profileImage}}"
+                        />
+                        <span matLine>{{user.username}}</span><br>
+                        <span class="statusMessage" matLine>{{user.statusText}}</span>
+                    </mat-list-item>
+                </div>
+            </mat-nav-list>
+        </div>
     </mat-card>
 </mat-sidenav-container>
