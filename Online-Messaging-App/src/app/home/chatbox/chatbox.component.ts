@@ -91,6 +91,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
+    private textAreaHeight = 0;
+    private defaultHeight = 80;
 
     constructor(
         private messagerService: MessengerService,
@@ -195,6 +197,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
             }
         });
+        this.textAreaHeight = document.getElementById("messageInputField").getBoundingClientRect().height;
     }
 
     ngAfterViewChecked() {
@@ -333,6 +336,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } else if (event.keyCode == 13) {
             event.preventDefault();
             this.messageForm.ngSubmit.emit();
+        }
+        if (document.getElementById("messageInputField").getBoundingClientRect().height>this.textAreaHeight) {
+            this.defaultHeight = this.defaultHeight-2;
+            document.getElementById("scrollable").style.height = this.defaultHeight + "%";
+            this.textAreaHeight = document.getElementById("messageInputField").getBoundingClientRect().height;
+        }
+        else if (document.getElementById("messageInputField").getBoundingClientRect().height<this.textAreaHeight) {
+            this.defaultHeight = this.defaultHeight+2;
+            document.getElementById("scrollable").style.height = this.defaultHeight + "%";
+            this.textAreaHeight = document.getElementById("messageInputField").getBoundingClientRect().height;
         }
     }
 

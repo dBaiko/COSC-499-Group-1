@@ -78,7 +78,7 @@
         <p>{{ error }}</p>
         <hr/>
         <i class="errorMessage">{{ friendMessage }}</i>
-        <div #scrollframe (scroll)="onScroll()" id="scrollable">
+        <div #scrollframe (scroll)="onScroll()" id="scrollable" class = "defaultHeight">
             <div *ngFor="let chatMessage of chatMessages; let i = index">
                 <div *ngIf="!chatMessage.username; else elseBlock">
                     <hr/>
@@ -190,13 +190,15 @@
                     <mat-form-field>
                         <mat-label>Message</mat-label>
                         <label>
-<textarea
+
+<textarea id ="messageInputField"
     (keydown)="textAreaSubmit($event)"
     cdkTextareaAutosize
     matInput
     name="content"
     ngModel
 ></textarea>
+
                         </label>
                     </mat-form-field>
                 </form>

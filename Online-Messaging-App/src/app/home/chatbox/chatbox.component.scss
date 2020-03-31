@@ -15,7 +15,6 @@ mat-form-field {
 
 #scrollable {
     overflow-y: auto;
-    height: 80%;
     margin-top: 1rem;
 }
 
@@ -231,7 +230,11 @@ markdown ::ng-deep pre {
 textarea{
     color:var(--primary-text-color);
     resize: none;
-    overflow: hidden;
+    overflow-y: scroll;
+    max-height: 10rem;
 }
 
+.defaultHeight {
+    height: 80%;
+}
 
