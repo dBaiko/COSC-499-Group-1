@@ -53,10 +53,9 @@ export class FriendsBrowserComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getFriendNotifications()
-            .catch((err) => {
-                console.error(err);
-            });
+        this.getFriendNotifications().catch((err) => {
+            console.error(err);
+        });
     }
 
     onKey($event: Event) {

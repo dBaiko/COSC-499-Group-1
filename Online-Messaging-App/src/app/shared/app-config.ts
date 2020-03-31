@@ -32,7 +32,8 @@ export const Constants = {
     DASH: "-",
     QUESTION_MARK: "?",
     FILE: "file",
-    SRC: "src"
+    SRC: "src",
+    PERCENT: "%"
 };
 
 export const VALIDATION_MESSAGES = {
