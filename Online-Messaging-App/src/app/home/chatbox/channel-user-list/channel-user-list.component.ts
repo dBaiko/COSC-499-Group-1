@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NotificationService, UserSocket } from "../../../shared/notification.service";
-import { UserChannelObject } from "../../../shared/app-config";
+import { Constants, UserChannelObject } from "../../../shared/app-config";
 
 @Component({
     selector: "app-channel-user-list",
@@ -38,7 +38,7 @@ export class ChannelUserListComponent implements OnInit {
 
         for (let i = 0; i < this.subscribedUsers.length; i++) {
             let user = this.subscribedUsers[i];
-            user.profileImage += "?" + Math.random();
+            user.profileImage += Constants.QUESTION_MARK + Math.random();
             if (!onlineUsersNames.includes(user.username)) {
                 this.offlineUsers.push(user);
             } else {
