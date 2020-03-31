@@ -53,93 +53,98 @@
                                                 this.channelNotificationsUsernames.includes(user.username);
                                                 else elseBlock2
                                             "
-                                                class="subedOrSent"
+                                            class="subedOrSent"
+                                        >
+                                            Invite Sent
+                                        </div>
+                                        <ng-template #elseBlock2>
+                                            <button
+                                                (click)="sendInvite(user.username)"
+                                                class="sendInviteButton"
+                                                mat-button
                                             >
-                                                Invite Sent
-                                            </div>
-                                            <ng-template #elseBlock2>
-                                                <button
-                                                    (click)="sendInvite(user.username)"
-                                                    class="sendInviteButton"
-                                                    mat-button
-                                                >
-                                                    Send Invite
-                                                </button>
-                                            </ng-template>
+                                                Send Invite
+                                            </button>
                                         </ng-template>
-                                    </mat-card-content>
-                                </mat-card>
-                            </div>
+                                    </ng-template>
+                                </mat-card-content>
+                            </mat-card>
                         </div>
                     </div>
-                </mat-card-header>
-            </div>
-            <p>{{ error }}</p>
-            <hr/>
-            <i class="errorMessage">{{ friendMessage }}</i>
-            <div #scrollframe (scroll)="onScroll()" id="scrollable">
-                <div *ngFor="let chatMessage of chatMessages; let i = index">
-                    <div *ngIf="!chatMessage.username; else elseBlock">
-                        <hr>
-                        <mat-card-content class="status">
-                            <p>
-                                {{ chatMessage.content }}
-                            </p>
-                        </mat-card-content>
+                </div>
+            </mat-card-header>
+        </div>
+        <p>{{ error }}</p>
+        <hr/>
+        <i class="errorMessage">{{ friendMessage }}</i>
+        <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
+            <div *ngFor="let chatMessage of chatMessages; let i = index">
+                <div *ngIf="!chatMessage.username; else elseBlock">
+                    <hr/>
+                    <mat-card-content class="status">
+                        <p>
+                            {{ chatMessage.content }}
+                        </p>
+                    </mat-card-content>
+                </div>
+                <ng-template #elseBlock>
+                    <div *ngIf="i == 0">
+                        <hr/>
+                        <mat-card-header>
+                            <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                <img
+                                    alt="assets/icon-alt.PNG"
+                                    class="messagePicture"
+                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                    src="{{ chatMessage.profileImage }}"
+                                />
+                                {{ chatMessage.username }}
+                            </mat-card-title>
+                        </mat-card-header>
                     </div>
-                    <ng-template #elseBlock>
-                        <div *ngIf="i == 0">
+                    <div *ngIf="i != 0">
+                        <div
+                            *ngIf="
+                                i != 0 &&
+                                i != chatMessages.length - 1 &&
+                                chatMessage.username != chatMessages[i - 1].username
+                            "
+                        >
                             <hr/>
                             <mat-card-header>
                                 <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
                                     <img
+                                        alt="assets/icon-alt.PNG"
                                         class="messagePicture"
-                                        inline="true"
                                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                        src="{{chatMessage.profileImage}}"
+                                        src="{{ chatMessage.profileImage }}"
                                     />
                                     {{ chatMessage.username }}
                                 </mat-card-title>
                             </mat-card-header>
                         </div>
-                        <div *ngIf="i != 0">
-                            <div
-                                *ngIf="i != 0 && i != chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
-                                <hr/>
-                                <mat-card-header>
-                                    <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                                        <img
-                                            class="messagePicture"
-                                            inline="true"
-                                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                            src="{{chatMessage.profileImage}}"
-                                        />
-                                        {{ chatMessage.username }}
-                                    </mat-card-title>
-                                </mat-card-header>
-                            </div>
+                    </div>
+                    <div *ngIf="i != 0">
+                        <div
+                            *ngIf="i == chatMessages.length - 1 && chatMessage.username != chatMessages[i - 1].username"
+                        >
+                            <hr/>
+                            <mat-card-header>
+                                <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                    <img
+                                        alt="assets/icon-alt.PNG"
+                                        class="messagePicture"
+                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                        src="{{ chatMessage.profileImage }}"
+                                    />
+                                    {{ chatMessage.username }}
+                                </mat-card-title>
+                            </mat-card-header>
                         </div>
-                        <div *ngIf="i != 0">
-                            <div
-                                *ngIf="i == chatMessages.length-1 && chatMessage.username != chatMessages[i-1].username">
-                                <hr/>
-                                <mat-card-header>
-                                    <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
-                                        <img
-                                            class="messagePicture"
-                                            inline="true"
-                                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                            src="{{chatMessage.profileImage}}"
-                                        />
-                                        {{ chatMessage.username }}
-                                    </mat-card-title>
-                                </mat-card-header>
-                            </div>
-                        </div>
-                        <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
-                            <p class="message">
-                            <span *ngIf="chatMessage.username == currentUserProfile.username"
-                                  class="icons">
+                    </div>
+                    <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
+                        <p class="message">
+                            <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
                                 <mat-icon>emoji_emotions</mat-icon>
                                 <mat-icon>edit</mat-icon>
                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
@@ -179,5 +184,60 @@
     </div>
     <app-channel-user-list (profileViewEvent)="goToProfile($event)"
                            [subscribedUsers]="subscribedUsers"></app-channel-user-list>
+
+                            <markdown *ngIf="!chatMessage.editing" class="mark">{{ chatMessage.content }} </markdown>
+                        </p>
+                        <form
+                            (ngSubmit)="editFormSubmit(editForm, chatMessage)"
+                            *ngIf="chatMessage.editing"
+                            [formGroup]="editForm"
+                            autocomplete="off"
+                            id="editForm"
+                        >
+                            <textarea
+                                (keydown)="editFormTextAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                class="inputArea"
+                                formControlName="content"
+                                matInput
+                                name="editContent"
+                            ></textarea>
+                            <button id="hiddenButton" style="display:none;" type="submit"></button>
+                        </form>
+                    </mat-card-content>
+                    <ng-template #messageDeleted>
+                        <mat-card-content>
+                            <i class="deletedMessage">Message deleted</i>
+                        </mat-card-content>
+                    </ng-template>
+                </ng-template>
+            </div>
+        </div>
+        <br/><br/>
+        <div class="footerTop">
+            <mat-card-footer>
+                <form
+                    #messageForm="ngForm"
+                    (ngSubmit)="sendMessage(messageForm.form)"
+                    autocomplete="off"
+                    id="messageForm"
+                >
+                    <mat-form-field>
+                        <mat-label>Message</mat-label>
+                        <label>
+                            <textarea
+                                (keydown)="textAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                id="messageInputField"
+                                matInput
+                                name="content"
+                                ngModel
+                            ></textarea>
+                        </label>
+                    </mat-form-field>
+                </form>
+            </mat-card-footer>
+        </div>
+    </mat-card>
 </div>
 
