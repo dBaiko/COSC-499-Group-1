@@ -50,7 +50,12 @@ button {
     text-align: center;
     color: var(--primary-text-color);
 }
-
+.channelDescription {
+    text-align: center;
+    color: var(--primary-text-color);
+    background-color: rgba(0,0,0,.04);
+    min-height: 5em;
+}
 mat-radio-group {
     display: inline-block;
 }

@@ -112,9 +112,13 @@ mat-button-toggle-group {
     box-shadow: none !important;
     transition: none !important;
 }
+.checked:hover{
+    background-color: var(--primary-color);
+
+}
 
 .mat-button-toggle-checked:hover {
-    background-color: var(--primary-color);
+    background-color: white;
     color: white;
     border: none;
 }

@@ -22,6 +22,7 @@ mat-form-field {
     width: 2em;
     height: 2em;
     border-radius: 50%;
+    vertical-align: middle;
 }
 
 .clickable {
@@ -39,6 +40,7 @@ hr::ng-deep pre {
 
 mat-card-title {
     color: var(--primary-color);
+
 }
 
 .headerTop {
@@ -220,6 +222,19 @@ textarea {
     overflow-y: scroll;
     max-height: 10rem;
 }
+.chat-box-title{
+    color: var(--primary-color);
+}
+
+mat-expansion-panel{
+    width: 85%;
+    background-color: var(--element-color);
+    color: var(--primary-text-color);
+    margin-left: -1.5em;
+}
+mat-expansion-panel:hover{
+    background-color: var(--element-hover-color);
+}
 
 .defaultHeight {
     height: 80%;
@@ -243,6 +258,10 @@ textarea {
     float: left;
     width: 100%;
 }
+
+//.userTitle{
+//    text-align: center;
+//}
 
 .content {
     height: 100%;

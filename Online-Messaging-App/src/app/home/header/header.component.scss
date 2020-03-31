@@ -132,8 +132,9 @@ button:hover {
 }
 
 .inviteButton {
-  font-size: 0.75rem;
-  border-radius: 0;
+    font-size: 0.75rem;
+    border-radius: 0;
+    float: right;
 }
 
 .inviteButton:hover {
@@ -170,15 +171,15 @@ mat-label {
 .userMenu a {
   margin: 3rem;
 }
+.userMenu a:hover{
+    background-color: #003E7C;
+}
 
 .userMenu {
-  text-align: center;
-  width: 15vw;
+    text-align: center;
+    width: 15em;
 }
 
-.userMenu a:hover {
-  background-color: #005cbe;
-}
 
 .userProfilePicture {
   width: 50%;
@@ -187,3 +188,13 @@ mat-label {
   position: absolute;
   right: 80%;
 }
+.userMenu logout-form:hover{
+    background-color: #003E7C;
+}
+
+//.message{
+//float: left;
+//}
+
+
+
