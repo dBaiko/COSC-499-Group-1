@@ -233,5 +233,17 @@ textarea{
     resize: none;
     overflow: hidden;
 }
+.chat-box-title{
+    color: var(--primary-color);
+}
+
+mat-expansion-panel{
+    width: 85%;
+    background-color: var(--element-color);
+    color: var(--primary-text-color);
+}
+mat-expansion-panel:hover{
+    background-color: var(--element-hover-color);
+}
 
 
