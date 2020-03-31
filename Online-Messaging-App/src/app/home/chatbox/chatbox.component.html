@@ -8,7 +8,8 @@
                         class="messagePicture"
                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                         src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
-                        style="display: inline"/><!-- TODO: replace with friends user profile picture -->
+                        style="display: inline"
+                    /><!-- TODO: replace with friends user profile picture -->
                     <mat-card-title
                         (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
                         class="clickable"
@@ -78,7 +79,7 @@
         <p>{{ error }}</p>
         <hr/>
         <i class="errorMessage">{{ friendMessage }}</i>
-        <div #scrollframe (scroll)="onScroll()" id="scrollable">
+        <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
             <div *ngFor="let chatMessage of chatMessages; let i = index">
                 <div *ngIf="!chatMessage.username; else elseBlock">
                     <hr/>
@@ -156,18 +157,22 @@
 
                             <markdown *ngIf="!chatMessage.editing" class="mark">{{ chatMessage.content }} </markdown>
                         </p>
-                        <form *ngIf="chatMessage.editing"[formGroup]="editForm"
-                              (ngSubmit)="editFormSubmit(editForm, chatMessage)"
-                              autocomplete="off"
-                              id="editForm">
-                                        <textarea
-                                            class="inputArea"
-                                            formControlName="content"
-                                            (keydown)="editFormTextAreaSubmit($event)"
-                                            cdkTextareaAutosize
-                                            matInput name="editContent"
-                                        ></textarea>
-                                <button id="hiddenButton" style="display:none;" type="submit"></button>
+                        <form
+                            (ngSubmit)="editFormSubmit(editForm, chatMessage)"
+                            *ngIf="chatMessage.editing"
+                            [formGroup]="editForm"
+                            autocomplete="off"
+                            id="editForm"
+                        >
+                            <textarea
+                                (keydown)="editFormTextAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                class="inputArea"
+                                formControlName="content"
+                                matInput
+                                name="editContent"
+                            ></textarea>
+                            <button id="hiddenButton" style="display:none;" type="submit"></button>
                         </form>
                     </mat-card-content>
                     <ng-template #messageDeleted>
@@ -190,13 +195,14 @@
                     <mat-form-field>
                         <mat-label>Message</mat-label>
                         <label>
-<textarea
-    (keydown)="textAreaSubmit($event)"
-    cdkTextareaAutosize
-    matInput
-    name="content"
-    ngModel
-></textarea>
+                            <textarea
+                                (keydown)="textAreaSubmit($event)"
+                                cdkTextareaAutosize
+                                id="messageInputField"
+                                matInput
+                                name="content"
+                                ngModel
+                            ></textarea>
                         </label>
                     </mat-form-field>
                 </form>

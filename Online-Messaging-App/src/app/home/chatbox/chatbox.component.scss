@@ -15,7 +15,6 @@ mat-form-field {
 
 #scrollable {
     overflow-y: auto;
-    height: 80%;
     margin-top: 1rem;
 }
 
@@ -63,7 +62,6 @@ mat-label {
     color: var(--primary-text-color);
     padding-left: 0.5rem;
 }
-
 
 .chat-box-header {
     width: 100%;
@@ -202,7 +200,6 @@ markdown ::ng-deep pre {
     visibility: visible;
 }
 
-
 .icons {
     float: right;
 }
@@ -219,19 +216,24 @@ markdown ::ng-deep pre {
     font-size: 1em;
     color: dimgrey;
 }
-.inputArea{
+
+.inputArea {
     width: 70%;
     padding: 10px 10px;
     background-color: var(--element-hover-color);
 }
 
-.mat-form-field-underline{
+.mat-form-field-underline {
     display: none;
 }
-textarea{
-    color:var(--primary-text-color);
+
+textarea {
+    color: var(--primary-text-color);
     resize: none;
-    overflow: hidden;
+    overflow-y: scroll;
+    max-height: 10rem;
 }
 
-
+.defaultHeight {
+    height: 80%;
+}
