@@ -168,6 +168,8 @@ export interface UserChannelObject extends ChannelObject {
     channelType: string;
     profileImage: string;
     statusText: string;
+    selected: boolean;
+    filtered: boolean;
 }
 
 export interface InviteChannelObject {

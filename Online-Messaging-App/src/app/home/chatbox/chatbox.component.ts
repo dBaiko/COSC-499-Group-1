@@ -179,6 +179,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             });
     }
 
+
     ngOnInit(): void {
         this.editForm = new FormGroup({
             content: new FormControl("",Validators.compose([Validators.required]))
