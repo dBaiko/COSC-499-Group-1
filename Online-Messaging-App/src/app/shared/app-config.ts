@@ -160,7 +160,7 @@ export interface ChannelAndFirstUser {
     inviteStatus: string;
 }
 
-export interface UserChannelObject extends ChannelObject {
+export interface UserChannelObject {
     username: string;
     channelId: string;
     userChannelRole: string;
