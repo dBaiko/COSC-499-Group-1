@@ -22,6 +22,8 @@ import { CommonService } from "../../shared/common.service";
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
+const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
+const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
 const MESSAGES_URI: string = "/messages";
 const USERS_URI: string = "/users";
@@ -76,6 +78,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
     editForm: FormGroup;
+
+    @ViewChild("textArea") textArea: ElementRef;
 
     inviting: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -246,11 +250,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
-
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: value.content,
+                content: value.content.replace(NEW_LINE_REGEX, "\n"),
                 profileImage: this.currentUserProfile.profileImage
             };
             this.isNearBottom = false;

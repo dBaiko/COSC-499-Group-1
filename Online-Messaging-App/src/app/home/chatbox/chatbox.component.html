@@ -175,8 +175,8 @@
                                 <mat-icon>emoji_emotions</mat-icon>
                             </span>
 
-                                            <markdown *ngIf="!chatMessage.editing"
-                                                      class="mark">{{ chatMessage.content }} </markdown>
+                                            <markdown *ngIf="!chatMessage.editing" class="mark"
+                                                      ngPreserveWhitespaces>{{ chatMessage.content }}</markdown>
                                         </p>
                                         <form
                                             (ngSubmit)="editFormSubmit(editForm, chatMessage)"
@@ -217,12 +217,14 @@
                                         <mat-label>Message</mat-label>
                                         <label>
                             <textarea
+                                #textArea
                                 (keydown)="textAreaSubmit($event)"
                                 cdkTextareaAutosize
                                 id="messageInputField"
                                 matInput
                                 name="content"
                                 ngModel
+                                wrap="hard"
                             ></textarea>
                                         </label>
                                     </mat-form-field>
