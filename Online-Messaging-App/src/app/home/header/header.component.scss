@@ -172,23 +172,14 @@ mat-label {
     margin: 3rem;
 }
 .userMenu a:hover{
-    background-color: var(--primary-color);
+    background-color: #003E7C;
 }
 
 .userMenu {
     text-align: center;
     width: 15em;
 }
-//.hoverLinks:hover{
-//    width: 100%;
-//    background-color: var(--hover-color);
-//
-//}
 
-//.userMenu a:hover {
-//    background-color: #005cbe;
-//    display: block;
-//}
 
 .userProfilePicture {
     width: 50%;
@@ -197,6 +188,10 @@ mat-label {
     position: absolute;
     right: 80%;
 }
+.userMenu logout-form:hover{
+    background-color: #003E7C;
+}
+
 //.message{
 //float: left;
 //}
