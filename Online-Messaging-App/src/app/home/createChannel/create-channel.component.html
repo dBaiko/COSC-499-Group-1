@@ -10,17 +10,17 @@
                             <mat-label>Channel Name</mat-label>
                             <label for="channelName"></label
                             ><input
-                                class="form-control"
-                                formControlName="channelName"
-                                id="channelName"
-                                matInput
-                                name="channelName"
-                                required
-                                type="text"
+                            class="form-control"
+                            formControlName="channelName"
+                            id="channelName"
+                            matInput
+                            name="channelName"
+                            required
+                            type="text"
                         />
                             <mat-error *ngFor="let validation of common.validation_methods.channelName">
                                 <mat-error
-                                        *ngIf="
+                                    *ngIf="
                                         formValidationService.checkIfFormElementInvalid(
                                             newChannelForm,
                                             'channelName',
@@ -41,7 +41,7 @@
                         </mat-radio-group>
                         <mat-error *ngFor="let validation of common.validation_methods.channelType">
                             <mat-error
-                                    *ngIf="
+                                *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         newChannelForm,
                                         'channelType',
@@ -57,8 +57,9 @@
                     <div class="channelDescription">
                     <textarea
                         cdkTextareaAutosize
+                        formControlName="channelDescription"
                         matInput
-                        name="content"
+                        name="channelDescription"
                         ngModel
                     ></textarea>
                     </div>

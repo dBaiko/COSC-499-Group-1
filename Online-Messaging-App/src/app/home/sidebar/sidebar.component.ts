@@ -246,6 +246,7 @@ export class SidebarComponent implements OnInit {
                     channelId: item.channelId,
                     channelName: item.channelName,
                     channelType: item.channelType,
+                    channelDescription: null,
                     selected: null,
                     filtered: null
                 });
@@ -276,12 +277,13 @@ export class SidebarComponent implements OnInit {
         dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((result: UserChannelObject) => {
+        dialogRef.afterClosed().subscribe((result: ChannelObject) => {
             if (result) {
                 this.newChannelEvent.emit({
                     channelId: result.channelId,
                     channelType: result.channelType,
                     channelName: result.channelName,
+                    channelDescription: result.channelDescription,
                     selected: true,
                     filtered: null
                 });

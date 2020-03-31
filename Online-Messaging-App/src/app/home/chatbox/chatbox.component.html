@@ -22,13 +22,14 @@
                                     >
                                 </div>
                                 <ng-template #notFriend>
-                                    <mat-expansion-panel class="mat-elevation-z0" [togglePosition]="'before'">
+                                    <mat-expansion-panel [togglePosition]="'before'" class="mat-elevation-z0">
                                         <mat-expansion-panel-header>
                                             <mat-panel-title class="chat-box-title">
                                                 {{ currentChannel.channelName }}
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
-                                        <p>Description of the channel</p>
+                                        <p>{{this.currentChannel.channelDescription}}</p>
+                                        <p *ngIf="userIsAdmin()">YOU ARE ADMIN</p>
                                     </mat-expansion-panel>
                                     <!--                    <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>-->
                                 </ng-template>
@@ -129,7 +130,8 @@
                                         >
                                             <hr/>
                                             <mat-card-header>
-                                                <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                                <mat-card-title (click)="goToProfile(chatMessage.username)"
+                                                                class="clickable">
                                                     <img
                                                         alt="assets/icon-alt.PNG"
                                                         class="messagePicture"
@@ -149,7 +151,8 @@
                                         >
                                             <hr/>
                                             <mat-card-header>
-                                                <mat-card-title (click)="goToProfile(chatMessage.username)" class="clickable">
+                                                <mat-card-title (click)="goToProfile(chatMessage.username)"
+                                                                class="clickable">
                                                     <img
                                                         alt="assets/icon-alt.PNG"
                                                         class="messagePicture"

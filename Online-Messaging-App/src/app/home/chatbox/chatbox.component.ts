@@ -144,6 +144,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentChannel(value: ChannelObject) {
         this._currentChannel = value;
+        this.getChannelInfo()
+            .catch((err) => {
+                console.error(err);
+            });
         this.getMessages(this._currentChannel.channelId).catch((err) => {
             console.error(err);
         });
@@ -454,6 +458,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         );
     }
 
+    userIsAdmin(): boolean {
+        if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
+            if (this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)].userChannelRole == "admin") {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
         if (newUsersSubbedChannel.joined) {
             let chatMessage = {
@@ -495,6 +508,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
+                            console.log(this.subscribedUsers);
                             resolve(data);
                         },
                         (err) => {
@@ -559,6 +573,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                     this.http.get(this.channelsURL + this.currentChannel.channelId, httpHeaders).subscribe(
                         (data: InviteChannelObject) => {
+                            this.currentChannel.channelDescription = data.channelDescription;
                             resolve(data);
                         },
                         (err) => {
