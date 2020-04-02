@@ -62,6 +62,19 @@
                         name="channelDescription"
                         ngModel
                     ></textarea>
+                        <mat-error *ngFor="let validation of common.validation_methods.channelDescription">
+                            <mat-error
+                                *ngIf="
+                                    formValidationService.checkIfFormElementInvalid(
+                                        newChannelForm,
+                                        'channelDescription',
+                                        validation,
+                                        submitAttempt
+                                    )
+                                "
+                            >{{ validation.message }}
+                            </mat-error>
+                        </mat-error>
                     </div>
                 </div>
             </div>

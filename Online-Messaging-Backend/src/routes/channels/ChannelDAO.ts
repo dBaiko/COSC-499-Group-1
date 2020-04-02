@@ -3,7 +3,7 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import { uuid } from "uuidv4";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { DocumentClient, ItemList } from "aws-sdk/clients/dynamodb";
 
 aws.config.loadFromPath(awsConfigPath);
 
@@ -13,6 +13,21 @@ interface ChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
+    channelDescription: string;
+}
+
+export interface ChannelAndNumUsers extends ChannelObject {
+    numUsers?: number;
+}
+
+export interface UserChannelObject {
+    username: string;
+    channelId: string;
+    userChannelRole: string;
+    channelName: string;
+    channelType: string;
+    profileImage: string;
+    statusText: string;
 }
 
 class ChannelDAO {
@@ -55,11 +70,31 @@ class ChannelDAO {
                     reject(err);
                 } else {
                     console.log("Query Succeeded");
-                    resolve(
-                        data.Items.sort((a: ChannelObject, b: ChannelObject) =>
-                            a.channelName > b.channelName ? 1 : -1
-                        )
-                    );
+                    let channels: ItemList = data.Items;
+                    let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
+                    let channelList: Array<ChannelAndNumUsers> = [];
+                    let count: number = 0;
+                    for (let channelItem of channels) {
+                        let channel: ChannelAndNumUsers = {
+                            channelId: (channelItem.channelId as string),
+                            channelName: (channelItem.channelName as string),
+                            channelType: (channelItem.channelType as string),
+                            channelDescription: (channelItem.channelDescription as string)
+                        };
+                        userChannelDAO.getAllSubscribedUsers(channel.channelId)
+                            .then((data: Array<UserChannelObject>) => {
+                                channel.numUsers = data.length;
+                                channelList.push(channel);
+                                count++;
+                                if (count == channels.length) {
+                                    resolve(channelList.sort(((a, b) => a.numUsers > b.numUsers ? -1 : 1)));
+                                }
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+
+                    }
                 }
             });
         });

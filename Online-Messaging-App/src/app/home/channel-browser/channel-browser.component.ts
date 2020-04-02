@@ -1,13 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { APIConfig, ChannelObject, Constants, ProfileObject, UserChannelObject } from "../../shared/app-config";
+import {
+    APIConfig,
+    ChannelAndNumUsers,
+    ChannelObject,
+    Constants,
+    ProfileObject,
+    UserChannelObject
+} from "../../shared/app-config";
 
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
 const DEFAULT_CHANNEL_ROLE: string = "user";
 const PRIVATE_CHANNEL_TYPE: string = "private";
 const FRIEND_CHANNEL_TYPE: string = "friend";
+const USERS_URI: string = "/users";
 
 @Component({
     selector: "app-channel-browser",
@@ -16,7 +24,7 @@ const FRIEND_CHANNEL_TYPE: string = "friend";
 })
 export class ChannelBrowserComponent implements OnInit {
     subscribedChannels: string[] = [];
-    channels: Array<ChannelObject> = [];
+    channels: Array<ChannelAndNumUsers> = [];
 
     search = Constants.EMPTY;
 
@@ -29,7 +37,7 @@ export class ChannelBrowserComponent implements OnInit {
     constructor(private http: HttpClient, private auth: AuthenticationService) {
     }
 
-    private _newChannel: ChannelObject;
+    private _newChannel: ChannelAndNumUsers;
 
     get newChannel(): ChannelObject {
         return this._newChannel;
@@ -39,13 +47,19 @@ export class ChannelBrowserComponent implements OnInit {
     set newChannel(value: ChannelObject) {
         if (value) {
             this._newChannel = value;
+            this._newChannel.numUsers = 1;
             this.channels.push(value);
             this.subscribedChannels.push(value.channelId);
         }
     }
 
     ngOnInit() {
-        this.getChannels();
+        this.getChannels()
+            .then(() => {
+            })
+            .catch(() => {
+                console.log("error");
+            });
         this.getSubscribedChannels();
     }
 
@@ -98,38 +112,42 @@ export class ChannelBrowserComponent implements OnInit {
         this.sendQuery();
     }
 
-    getChannels(): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+    getChannels(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                this.http.get(this.channelsAPI, httpHeaders).subscribe(
-                    (data: Array<ChannelObject>) => {
-                        this.channels = data;
-                        for (let i = 0; i < this.channels.length; i++) {
-                            if (
-                                this.channels[i].channelType == PRIVATE_CHANNEL_TYPE ||
-                                this.channels[i].channelType == FRIEND_CHANNEL_TYPE
-                            ) {
-                                this.channels.splice(i, 1);
-                                i--;
+                    this.http.get(this.channelsAPI, httpHeaders).subscribe(
+                        (data: Array<ChannelObject>) => {
+                            this.channels = data;
+                            for (let i = 0; i < this.channels.length; i++) {
+                                if (
+                                    this.channels[i].channelType == PRIVATE_CHANNEL_TYPE ||
+                                    this.channels[i].channelType == FRIEND_CHANNEL_TYPE
+                                ) {
+                                    this.channels.splice(i, 1);
+                                    i--;
+                                }
                             }
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject();
                         }
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-            },
-            (err) => {
-                console.log(err);
-            }
-        );
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        });
     }
 
     joinChannel(channel: ChannelObject) {
@@ -178,4 +196,38 @@ export class ChannelBrowserComponent implements OnInit {
             }
         );
     }
+
+    private getSubcribedUsers(channelId: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.get(this.channelsAPI + channelId + USERS_URI, httpHeaders).subscribe(
+                        (data: Array<UserChannelObject>) => {
+                            resolve(data);
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    console.log(err);
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private sortChannel(): void {
+        this.channels = this.channels.sort((a, b) => a.numUsers > b.numUsers ? 1 : -1);
+    }
+
 }
