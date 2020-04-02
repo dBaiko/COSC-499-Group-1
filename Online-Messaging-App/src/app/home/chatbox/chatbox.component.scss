@@ -280,13 +280,9 @@ mat-expansion-panel:hover {
     width: 100%;
 }
 
-//.userTitle{
-//    text-align: center;
-//}
-
 .content {
     height: 100%;
-    margin-right: 225px;
+    margin-right: 250px;
     clear: both;
     min-height: 600px;
 }
@@ -297,8 +293,8 @@ mat-expansion-panel:hover {
 
 .sidebar {
     position: relative;
-    width: 225px;
-    margin-left: -225px;
+    width: 250px;
+    margin-left: -250px;
     float: right;
     min-height: 600px;
     height: 100%;

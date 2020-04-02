@@ -11,7 +11,7 @@
                     <mat-form-field>
                         <mat-label>Search...</mat-label>
                         <label>
-                            <input (input)="onKey($event)" matInput name="content" />
+                            <input (input)="onKey($event)" matInput name="content"/>
                         </label>
                     </mat-form-field>
                 </form>
@@ -25,9 +25,9 @@
                                     <mat-panel-title>
                                         {{ channel.channelName }}
                                     </mat-panel-title>
-                                    <mat-panel-description> {{ channel.channelName }} tags</mat-panel-description>
+                                    <mat-panel-description>Subscribers: {{channel.numUsers}}</mat-panel-description>
                                 </mat-expansion-panel-header>
-                                <p>Description of the channel</p>
+                                <p>{{channel.channelDescription}}</p>
                                 <mat-action-row>
                                     <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">
                                         <button (click)="joinChannel(channel)" class="join" mat-button>

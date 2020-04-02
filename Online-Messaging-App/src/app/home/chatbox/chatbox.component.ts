@@ -548,7 +548,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
-                            console.log(this.subscribedUsers);
                             resolve(data);
                         },
                         (err) => {
