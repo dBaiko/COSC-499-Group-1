@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
-import MessageDAO from "./routes/messages/MessageDAO";
+import MessageDAO, { Message } from "./routes/messages/MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "./config/aws-config";
 import { NotificationsDAO } from "./routes/notifications/NotificationsDAO";
@@ -63,11 +63,29 @@ io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");
 
-    socketIO.on("message", (message: any) => {
+    socketIO.on("message", (message: Message) => {
         if (message.content) {
             message["insertTime"] = Date.now();
             message["messageId"] = uuid();
             io.sockets.emit("broadcast", message);
+
+            let messageNotification: NotificationObject = {
+                channelId: message.channelId,
+                type: "message",
+                notificationId: uuid(),
+                insertedTime: Date.now(),
+                channelName: undefined,
+                channelType: undefined,
+                message: undefined,
+                username: undefined,
+                fromFriend: undefined
+            };
+
+            io.sockets.emit("messageNotificationBroadcast", messageNotification);
+
+            let notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
+            notificationsDAO.createNewNotification(messageNotification);
+
             const messageDAO = new MessageDAO(docClient);
             messageDAO.addNewMessage(message);
         }

@@ -20,14 +20,14 @@ export interface NotificationDBObject {
 
 export interface NotificationObject {
     channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
+    channelName?: string;
+    channelType?: string;
+    message?: string;
     type: string;
-    username: string;
+    username?: string;
     notificationId: string;
     insertedTime: number;
-    fromFriend: string;
+    fromFriend?: string;
 }
 
 export interface NotificationSocketObject {
