@@ -43,12 +43,14 @@ export class HeaderComponent implements OnInit {
     notificationsURL: string = APIConfig.notificationsAPI;
     notificationCount: number = 0;
     open: boolean = false;
+    sideBarOpen: boolean = false;
     @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
     @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
+    @Output() sideBarToggleEvent = new EventEmitter<boolean>();
     publicInvites: Array<NotificationObject> = [];
     privateInvites: Array<NotificationObject> = [];
     friendInvites: Array<NotificationObject> = [];
@@ -293,6 +295,16 @@ export class HeaderComponent implements OnInit {
                 }
             );
         });
+    }
+
+    toggleSideBarOpen(value: boolean) {
+        if (value) {
+            this.sideBarOpen = true;
+            this.sideBarToggleEvent.emit(true);
+        } else {
+            this.sideBarOpen = false;
+            this.sideBarToggleEvent.emit(false);
+        }
     }
 
     private getNotifications(): Promise<any> {
