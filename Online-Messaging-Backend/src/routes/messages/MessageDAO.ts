@@ -1,12 +1,12 @@
 /* tslint:disable:no-console */
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
-interface Message {
-    channelId: number;
+export interface Message {
+    channelId: string;
     username: string;
     content: string;
-    messageId: string;
-    insertTime: number;
+    messageId?: string;
+    insertTime?: number;
     profileImage: string;
     deleted: string;
 }
