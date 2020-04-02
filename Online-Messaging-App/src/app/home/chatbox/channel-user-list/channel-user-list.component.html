@@ -16,7 +16,12 @@
                              onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                              src="{{user.profileImage}}"
                         />
-                        <span matLine>{{user.username}}</span><br>
+                        <span matLine>
+                            {{user.username}}
+                            <img *ngIf="user.userChannelRole == 'admin'" class="adminImage" inline="true"
+                                 src="assets/crown.png">
+                        </span>
+                        <br>
                         <span class="statusMessage" matLine><i>{{user.statusText}}</i></span>
                     </mat-list-item>
                 </div>
@@ -34,7 +39,12 @@
                              onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                              src="{{user.profileImage}}"
                         />
-                        <span matLine>{{user.username}}</span><br>
+                        <span matLine>
+                            {{user.username}}
+                            <img *ngIf="user.userChannelRole == 'admin'" class="adminImage" inline="true"
+                                 src="assets/crown.png">
+                        </span>
+                        <br>
                         <span class="statusMessage" matLine>{{user.statusText}}</span>
                     </mat-list-item>
                 </div>

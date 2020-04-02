@@ -52,14 +52,16 @@ export class CreateChannelComponent implements OnInit {
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
-            channelType: new FormControl("", Validators.compose([Validators.required]))
+            channelType: new FormControl("", Validators.compose([Validators.required])),
+            channelDescription: new FormControl("", Validators.compose([Validators.required]))
         });
     }
 
-    newChannelEntry(channelName: string, channelType: string): Observable<Object> {
+    newChannelEntry(channelName: string, channelType: string, channelDescription: string): Observable<Object> {
         let newChannel: ChannelAndFirstUser = {
             channelName: channelName,
             channelType: channelType,
+            channelDescription: channelDescription,
             firstUsername: this.auth.getAuthenticatedUser().getUsername(),
             firstUserChannelRole: defaultFirstChannelRole,
             profileImage: this.currentUserProfile.profileImage,
@@ -96,7 +98,7 @@ export class CreateChannelComponent implements OnInit {
     newChannel(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.newChannelForm.valid) {
-            this.newChannelEntry(form.value.channelName, form.value.channelType).subscribe(
+            this.newChannelEntry(form.value.channelName, form.value.channelType, form.value.channelDescription).subscribe(
                 (result: newChannelResponse) => {
                     this.newChannelObject = result.data.newChannel;
                     this.onClose();

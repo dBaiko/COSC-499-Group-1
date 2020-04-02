@@ -87,6 +87,7 @@ export class FriendsBrowserComponent implements OnInit {
         let newChannel: ChannelAndFirstUser = {
             channelName: this.auth.getAuthenticatedUser().getUsername() + Constants.DASH + username,
             channelType: FRIEND,
+            channelDescription: null,
             firstUsername: this.auth.getAuthenticatedUser().getUsername(),
             firstUserChannelRole: FRIEND,
             inviteStatus: PENDING,

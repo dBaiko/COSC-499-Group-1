@@ -212,6 +212,25 @@ markdown ::ng-deep pre {
     background-color: var(--element-hover-color);
 }
 
+.channelDescriptionTextArea {
+    background-color: var(--scroll-background);
+    color: #424242;
+}
+
+.channelDescButton {
+    border-radius: 0;
+    margin-left: 1em;
+}
+
+.channelDescButton:hover {
+    background-color: #717171;
+}
+
+#descMessage {
+    font-size: 0.75rem;
+    color: #636363;
+}
+
 .mat-form-field-underline {
     display: none;
 }
@@ -222,17 +241,19 @@ textarea {
     overflow-y: scroll;
     max-height: 10rem;
 }
-.chat-box-title{
+
+.chat-box-title {
     color: var(--primary-color);
 }
 
-mat-expansion-panel{
+mat-expansion-panel {
     width: 85%;
     background-color: var(--element-color);
     color: var(--primary-text-color);
     margin-left: -1.5em;
 }
-mat-expansion-panel:hover{
+
+mat-expansion-panel:hover {
     background-color: var(--element-hover-color);
 }
 

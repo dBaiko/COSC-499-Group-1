@@ -142,11 +142,12 @@ export class HeaderComponent implements OnInit {
                                             channelId: notification.channelId,
                                             channelName: notification.channelName,
                                             channelType: notification.type,
+                                            channelDescription: null,
                                             inviteStatus: ACCEPTED_NOTIFICATION
                                         };
 
                                         this.http
-                                            .put(this.channelsAPI + notification.channelId, channel, httpHeaders)
+                                            .put(this.channelsAPI + notification.channelId + Constants.SLASH + "inviteStatus" + Constants.SLASH + ACCEPTED_NOTIFICATION, channel, httpHeaders)
                                             .subscribe(
                                                 () => {
                                                     console.log("success");
@@ -221,10 +222,11 @@ export class HeaderComponent implements OnInit {
                             channelId: notification.channelId,
                             channelName: notification.channelName,
                             channelType: notification.type,
+                            channelDescription: null,
                             inviteStatus: DENIED_NOTIFICATION
                         };
 
-                        this.http.put(this.channelsAPI + notification.channelId, channel, httpHeaders).subscribe(
+                        this.http.put(this.channelsAPI + notification.channelId + Constants.SLASH + "inviteStatus" + Constants.SLASH + DENIED_NOTIFICATION, channel, httpHeaders).subscribe(
                             () => {
                                 console.log("success");
                             },
