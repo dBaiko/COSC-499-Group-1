@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -44,6 +44,10 @@ export class HomeComponent implements OnInit {
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
     settings: SettingsObject;
+
+    sidebarOpened: boolean = true;
+
+    @ViewChild("sidenav") sidebar;
 
     public currentUserProfile: ProfileObject;
     public newUserSubbedChannel: NewUsersSubbedChannelObject;
@@ -131,6 +135,10 @@ export class HomeComponent implements OnInit {
 
     setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
         this.newUserSubbedChannel = $event;
+    }
+
+    toggleSidebarOpen() {
+        this.sidebar.toggle();
     }
 
     private getUsers(): void {
