@@ -55,7 +55,7 @@ describe("DAO Spec", () => {
 
     const channel = new ChannelDAO(ddb);
     it("should create a new channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null);
+        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
         const item = await ddb.scan({ TableName: "Channel" }).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
@@ -71,7 +71,7 @@ describe("DAO Spec", () => {
     });
 
     it("should retrieve certain information about a channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null);
+        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
         const testChannel = await ddb.scan({ TableName: "Channel" }).promise();
         let channelId = testChannel.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
@@ -91,19 +91,29 @@ describe("DAO Spec", () => {
     });
 
     const userChannel = new UserChannelDAO(ddb);
-    it("should subscribe a user to a channel", async () => {});
-    it("should return a list of channels a user is subscribed to", async () => {});
-    it("should return a list of all users subscribed to a channel", async () => {});
-    it("should return all users and all channels they are subscribed to", async () => {});
+    it("should subscribe a user to a channel", async () => {
+    });
+    it("should return a list of channels a user is subscribed to", async () => {
+    });
+    it("should return a list of all users subscribed to a channel", async () => {
+    });
+    it("should return all users and all channels they are subscribed to", async () => {
+    });
 
-    it("should create a new profile from basic user information", async () => {});
-    it("should return only data marked public in a user's profile", async () => {});
-    it("should return all data in a user's profile", async () => {});
-    it("should update all data in a user's profile", async () => {});
+    it("should create a new profile from basic user information", async () => {
+    });
+    it("should return only data marked public in a user's profile", async () => {
+    });
+    it("should return all data in a user's profile", async () => {
+    });
+    it("should update all data in a user's profile", async () => {
+    });
 
     const msg = new MessageDAO(ddb);
-    it("should retrieve the message history for a given channel", async () => {});
-    it("should get all messages from all channels", async () => {});
+    it("should retrieve the message history for a given channel", async () => {
+    });
+    it("should get all messages from all channels", async () => {
+    });
     // it("should add a new message to the file", async () => {
     //     //TODO: create message object to pass.
     //     await msg.addNewMessage("Lorem Ipsum");

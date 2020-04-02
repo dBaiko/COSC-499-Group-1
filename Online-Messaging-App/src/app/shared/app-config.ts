@@ -130,6 +130,7 @@ export interface InviteChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
+    channelDescription: string
     inviteStatus: string;
 }
 
@@ -155,6 +156,7 @@ export interface newChannelResponse {
 export interface ChannelAndFirstUser {
     channelName: string;
     channelType: string;
+    channelDescription: string;
     firstUsername: string;
     firstUserChannelRole: string;
     profileImage: string;
@@ -219,6 +221,7 @@ export interface ChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
+    channelDescription: string;
     selected: boolean;
     filtered: boolean;
 }

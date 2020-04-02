@@ -30,7 +30,7 @@ const USERS_URI: string = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
 const MESSAGE_FORM_IDENTIFIER: string = "messageForm";
-const EDIT_FORM_IDENTIFIER: string = "editForm";
+const TEXT_AREA_IDENTIFIER: string = "textArea";
 const SCROLL_FRAME_IDENTIFIER: string = "scrollframe";
 const HIDDEN_BUTTON_IDENTIFIER: string = "hiddenButton";
 const FRIEND_IDENTIFIER: string = "friend";
@@ -77,11 +77,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
-    editForm: FormGroup;
 
-    @ViewChild("textArea") textArea: ElementRef;
+    editForm: FormGroup;
+    channelDescForm: FormGroup;
+
+    @ViewChild(TEXT_AREA_IDENTIFIER) textArea: ElementRef;
 
     inviting: boolean = false;
+    editingChannelDescription: boolean = false;
     inviteSearch: string = Constants.EMPTY;
     inviteSearchList: Array<UserObject> = [];
     subscribedUsers: Array<UserChannelObject> = [];
@@ -144,6 +147,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentChannel(value: ChannelObject) {
         this._currentChannel = value;
+        this.getChannelInfo()
+            .catch((err) => {
+                console.error(err);
+            });
         this.getMessages(this._currentChannel.channelId).catch((err) => {
             console.error(err);
         });
@@ -189,6 +196,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     ngOnInit(): void {
         this.editForm = new FormGroup({
             content: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
+        });
+        this.channelDescForm = new FormGroup({
+            channelDescription: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
         });
         this.messagerService.subscribeToSocket().subscribe((data) => {
             if (data) {
@@ -416,12 +426,46 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
     }
 
+    toggleEditingChannelDescription() {
+        if (!this.editingChannelDescription) {
+            this.editingChannelDescription = true;
+            this.channelDescForm.get("channelDescription").setValue(this.currentChannel.channelDescription);
+        }
+    }
+
     toggleEditingMessage(chatMessage: MessageObject) {
         if (!this.currentlyEditing) {
             this.currentlyEditing = true;
             this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
             this.editForm.get("content").setValue(chatMessage.content);
         }
+    }
+
+    editChannelDescriptionSubmit(form: FormGroup) {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.currentChannel.channelDescription = form.value.channelDescription;
+
+                this.http.put(this.channelsURL + this.currentChannel.channelId, this.currentChannel, httpHeaders).subscribe(
+                    () => {
+                        this.editingChannelDescription = false;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 
     editMessage(message: MessageObject, newContent: string) {
@@ -452,6 +496,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
+    }
+
+    userIsAdmin(): boolean {
+        if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
+            if (this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)].userChannelRole == "admin") {
+                return true;
+            }
+        }
+        return false;
     }
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
@@ -495,6 +548,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
+                            console.log(this.subscribedUsers);
                             resolve(data);
                         },
                         (err) => {
@@ -559,6 +613,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                     this.http.get(this.channelsURL + this.currentChannel.channelId, httpHeaders).subscribe(
                         (data: InviteChannelObject) => {
+                            this.currentChannel.channelDescription = data.channelDescription;
                             resolve(data);
                         },
                         (err) => {
