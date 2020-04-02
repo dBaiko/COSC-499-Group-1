@@ -51,7 +51,7 @@ mat-sidenav-container {
 }
 
 .scrollable {
-    height: 87%;
+    height: 75%;
     overflow-y: auto;
     margin-top: 1%;
     margin-right: 1%;
@@ -112,7 +112,8 @@ mat-button-toggle-group {
     box-shadow: none !important;
     transition: none !important;
 }
-.checked:hover{
+
+.checked:hover {
     background-color: var(--primary-color);
 
 }

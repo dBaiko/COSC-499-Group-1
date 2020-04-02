@@ -118,7 +118,8 @@ export const VALIDATION_MESSAGES = {
     ],
     channelType: [{ type: "required", message: "Channel type is required" }],
     profileImageName: [{ type: "badFileType", message: "Image file type must be png or jpg" }],
-    profileImageSize: [{ type: "badFileSize", message: "Image file size must be less than 1Mb" }]
+    profileImageSize: [{ type: "badFileSize", message: "Image file size must be less than 1Mb" }],
+    channelDescription: [{ type: "required", message: "Channel Description is required" }]
 };
 
 export interface UserObject {
@@ -222,8 +223,12 @@ export interface ChannelObject {
     channelName: string;
     channelType: string;
     channelDescription: string;
-    selected: boolean;
-    filtered: boolean;
+    selected?: boolean;
+    filtered?: boolean;
+}
+
+export interface ChannelAndNumUsers extends ChannelObject {
+    numUsers?: number;
 }
 
 export interface NewUsersSubbedChannelObject {
