@@ -28,8 +28,29 @@
                                                 {{ currentChannel.channelName }}
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
-                                        <p>{{this.currentChannel.channelDescription}}</p>
-                                        <p *ngIf="userIsAdmin()">YOU ARE ADMIN</p>
+                                        <div *ngIf="userIsAdmin() else elseDesc">
+                                            <p (click)="this.toggleEditingChannelDescription()"
+                                               *ngIf="!editingChannelDescription">
+                                                <i id="descMessage">Click to edit description</i><br>
+                                                {{this.currentChannel.channelDescription}}
+                                            </p>
+                                            <form (ngSubmit)="editChannelDescriptionSubmit(this.channelDescForm)"
+                                                  *ngIf="editingChannelDescription"
+                                                  [formGroup]="channelDescForm">
+                                                    <textarea
+                                                        cdkTextareaAutosize
+                                                        class="inputArea channelDescriptionTextArea"
+                                                        formControlName="channelDescription"
+                                                        matInput
+                                                        name="channelDescription">
+
+                                                    </textarea>
+                                                <button class="channelDescButton" mat-button type="submit">Save</button>
+                                            </form>
+                                        </div>
+                                        <ng-template #elseDesc>
+                                            <p>{{this.currentChannel.channelDescription}}</p>
+                                        </ng-template>
                                     </mat-expansion-panel>
                                     <!--                    <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>-->
                                 </ng-template>
