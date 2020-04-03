@@ -79,6 +79,7 @@ export class HeaderComponent implements OnInit {
             this.notificationService.addSocketListener(
                 BROADCAST_NOTIFICATION_EVENT,
                 (notificationSocketObject: NotificationSocketObject) => {
+                    console.log("notification recieved");
                     let notification: NotificationObject = notificationSocketObject.notification;
                     if (notification.type == PUBLIC_NOTIFICATION) {
                         this.publicInvites.push(notification);
@@ -86,6 +87,8 @@ export class HeaderComponent implements OnInit {
                         this.privateInvites.push(notification);
                     } else if (notification.type == FRIEND_NOTIFICATION) {
                         this.friendInvites.push(notification);
+                    } else {
+                        this.generalNotification.push(notification);
                     }
                     this.notificationCount++;
                 }

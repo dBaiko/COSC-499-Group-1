@@ -39,6 +39,7 @@ const FRIEND_IDENTIFIER: string = "friend";
 const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
+const GENERAL_NOTIFICATION: string = "general";
 
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
@@ -269,6 +270,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
             this.handleInput();
+            value.content = this.markUpMentions(value.content);
+            for (let user of this.mentionListToSubmit) {
+                this.sendMentionNotification(user);
+            }
+            this.mentionListToSubmit = [];
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 channelType: this.currentChannel.channelType,
@@ -401,6 +407,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     event.preventDefault();
                     this.selectingFromMention = true;
                     this.selectedMentionIndex = this.mentionList.length - 1;
+                } else if (event.keyCode == 16) {
+                    event.preventDefault();
                 } else {
                     let partialUsername = text.substring(this.mentioningIndex);
                     this.mentionListSearch(partialUsername);
@@ -437,7 +445,44 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     applyHighlights(text: string): string {
         if (text) {
-            return text.replace(/\n$/g, "\n\n").replace(/(@[a-zA-Z]+)/g, "<mark style='background-color: dimgray'>$1</mark>");
+            text = text.replace(/\n$/g, "\n\n");
+            let atUsernameRegExp = /(@[a-zA-Z]+)/g;
+            let result;
+            let indexs = [];
+            while ((result = atUsernameRegExp.exec(text))) {
+                if (!/<mark style='background-color: dimgray'>/g.test(text.substring(result.index - 40, result.index))) {
+                    let endIndex = text.substring(result.index).indexOf(" ");
+                    if (endIndex == -1) {
+                        endIndex = text.length;
+                    }
+                    endIndex = result.index + endIndex;
+
+                    let user = text.substring(result.index, endIndex);
+                    if (this.mentionList.includes(user.substring(1))) {
+                        indexs.push({
+                            begin: result.index,
+                            end: endIndex,
+                            user: user
+                        });
+                    }
+                }
+            }
+            let retText = "";
+            if (indexs.length > 0) {
+                retText = text.substring(0, indexs[0].begin);
+                for (let i = 0; i < indexs.length; i++) {
+                    retText += "<mark style='background-color: dimgray'>";
+                    retText += indexs[i].user;
+                    retText += "</mark>";
+                    if (i != indexs.length - 1) {
+                        retText += text.substring(indexs[i].end, indexs[i + 1].begin);
+                    }
+
+                }
+                return retText;
+            }
+
+            return text;
         } else
             return null;
     }
@@ -592,25 +637,96 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
+    private sendMentionNotification(username): void {
+        let message: string = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        let notifications: NotificationSocketObject = {
+            fromUser: {
+                username: this.auth.getAuthenticatedUser().getUsername(),
+                id: this.notificationService.getSocketId()
+            },
+            toUser: this.notificationService.getOnlineUserByUsername(username),
+            notification: {
+                channelId: this.currentChannel.channelId,
+                channelName: this.currentChannel.channelName,
+                channelType: this.currentChannel.channelType,
+                fromFriend: this.auth.getAuthenticatedUser().getUsername(),
+                message: message,
+                type: GENERAL_NOTIFICATION,
+                username: username,
+                notificationId: null,
+                insertedTime: null
+            }
+        };
+
+        this.notificationService.sendNotification(notifications);
+    }
+
+    private markUpMentions(text: string) {
+        if (text) {
+            text = text.replace(/\n$/g, "\n\n");
+            let atUsernameRegExp = /(@[a-zA-Z]+)/g;
+            let result;
+            let indexs = [];
+            while ((result = atUsernameRegExp.exec(text))) {
+                if (!/`/g.test(text.substring(result.index - 1, result.index))) {
+                    let endIndex = text.substring(result.index).indexOf(" ");
+                    if (endIndex == -1) {
+                        endIndex = text.length;
+                    }
+                    endIndex = result.index + endIndex;
+
+                    let user = text.substring(result.index, endIndex);
+                    if (this.mentionList.includes(user.substring(1))) {
+                        indexs.push({
+                            begin: result.index,
+                            end: endIndex,
+                            user: user
+                        });
+                    }
+                }
+            }
+            let retText = "";
+            if (indexs.length > 0) {
+                retText = text.substring(0, indexs[0].begin);
+                for (let i = 0; i < indexs.length; i++) {
+                    retText += "`";
+                    retText += indexs[i].user;
+                    retText += "`";
+                    if (i != indexs.length - 1) {
+                        retText += text.substring(indexs[i].end, indexs[i + 1].begin);
+                    }
+
+                }
+                retText += text.substring(indexs[indexs.length - 1].end, text.length);
+                return retText;
+            }
+
+            return text;
+        } else
+            return null;
+    }
+
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
-        if (newUsersSubbedChannel.joined) {
-            let chatMessage = {
-                channelId: newUsersSubbedChannel.channelId,
-                username: null,
-                content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
-                profileImage: null
-            };
-            this.isNearBottom = false;
-            this.messagerService.sendMessage(chatMessage);
-        } else {
-            let chatMessage = {
-                channelId: newUsersSubbedChannel.channelId,
-                username: null,
-                content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
-                profileImage: null
-            };
-            this.isNearBottom = false;
-            this.messagerService.sendMessage(chatMessage);
+        if (!this.subscribedUsersUsernames.includes(newUsersSubbedChannel.username)) {
+            if (newUsersSubbedChannel.joined) {
+                let chatMessage = {
+                    channelId: newUsersSubbedChannel.channelId,
+                    username: null,
+                    content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
+                    profileImage: null
+                };
+                this.isNearBottom = false;
+                this.messagerService.sendMessage(chatMessage);
+            } else {
+                let chatMessage = {
+                    channelId: newUsersSubbedChannel.channelId,
+                    username: null,
+                    content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
+                    profileImage: null
+                };
+                this.isNearBottom = false;
+                this.messagerService.sendMessage(chatMessage);
+            }
         }
     }
 
