@@ -115,7 +115,6 @@ mat-button-toggle-group {
 
 .checked:hover {
     background-color: var(--primary-color);
-
 }
 
 .mat-button-toggle-checked:hover {
@@ -175,11 +174,13 @@ p {
     color: white;
     text-align: center;
 }
+
 .messageNotification {
     background-color: red;
     border-radius: 100px;
     margin: 5px;
 }
+
 .border {
     background-color: red;
     border-radius: 100px;

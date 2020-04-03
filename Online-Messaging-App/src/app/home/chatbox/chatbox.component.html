@@ -28,28 +28,32 @@
                                                 {{ currentChannel.channelName }}
                                             </mat-panel-title>
                                         </mat-expansion-panel-header>
-                                        <div *ngIf="userIsAdmin() else elseDesc">
-                                            <p (click)="this.toggleEditingChannelDescription()"
-                                               *ngIf="!editingChannelDescription">
-                                                <i id="descMessage">Click to edit description</i><br>
-                                                {{this.currentChannel.channelDescription}}
+                                        <div *ngIf="userIsAdmin(); else elseDesc">
+                                            <p
+                                                (click)="this.toggleEditingChannelDescription()"
+                                                *ngIf="!editingChannelDescription"
+                                            >
+                                                <i id="descMessage">Click to edit description</i><br/>
+                                                {{ this.currentChannel.channelDescription }}
                                             </p>
-                                            <form (ngSubmit)="editChannelDescriptionSubmit(this.channelDescForm)"
-                                                  *ngIf="editingChannelDescription"
-                                                  [formGroup]="channelDescForm">
-                                                    <textarea
-                                                        cdkTextareaAutosize
-                                                        class="inputArea channelDescriptionTextArea"
-                                                        formControlName="channelDescription"
-                                                        matInput
-                                                        name="channelDescription">
-
-                                                    </textarea>
+                                            <form
+                                                (ngSubmit)="editChannelDescriptionSubmit(this.channelDescForm)"
+                                                *ngIf="editingChannelDescription"
+                                                [formGroup]="channelDescForm"
+                                            >
+                                                <textarea
+                                                    cdkTextareaAutosize
+                                                    class="inputArea channelDescriptionTextArea"
+                                                    formControlName="channelDescription"
+                                                    matInput
+                                                    name="channelDescription"
+                                                >
+                                                </textarea>
                                                 <button class="channelDescButton" mat-button type="submit">Save</button>
                                             </form>
                                         </div>
                                         <ng-template #elseDesc>
-                                            <p>{{this.currentChannel.channelDescription}}</p>
+                                            <p>{{ this.currentChannel.channelDescription }}</p>
                                         </ng-template>
                                     </mat-expansion-panel>
                                     <!--                    <mat-card-title class="chat-box-title">{{ currentChannel.channelName }}</mat-card-title>-->
@@ -69,18 +73,26 @@
                                             <mat-form-field>
                                                 <mat-label>Search for person to invite</mat-label>
                                                 <label>
-                                                    <input (input)="onKey($event)" class="inviteSearch" matInput
-                                                           name="users"/>
+                                                    <input
+                                                        (input)="onKey($event)"
+                                                        class="inviteSearch"
+                                                        matInput
+                                                        name="users"
+                                                    />
                                                 </label>
                                             </mat-form-field>
                                         </form>
                                         <div *ngFor="let user of inviteSearchList">
                                             <mat-card *ngIf="user.username != currentUserProfile.username">
-                                                <mat-card-title
-                                                    class="usernameInvite">{{ user.username }}</mat-card-title>
+                                                <mat-card-title class="usernameInvite">{{
+                                                    user.username
+                                                    }}</mat-card-title>
                                                 <mat-card-content>
                                                     <div
-                                                        *ngIf="subscribedUsersUsernames.includes(user.username); else elseBlock1"
+                                                        *ngIf="
+                                                            subscribedUsersUsernames.includes(user.username);
+                                                            else elseBlock1
+                                                        "
                                                         class="subedOrSent"
                                                     >
                                                         Subscribed
@@ -88,9 +100,11 @@
                                                     <ng-template #elseBlock1>
                                                         <div
                                                             *ngIf="
-                                                this.channelNotificationsUsernames.includes(user.username);
-                                                else elseBlock2
-                                            "
+                                                                this.channelNotificationsUsernames.includes(
+                                                                    user.username
+                                                                );
+                                                                else elseBlock2
+                                                            "
                                                             class="subedOrSent"
                                                         >
                                                             Invite Sent
@@ -129,8 +143,10 @@
                                     <div *ngIf="i == 0">
                                         <hr/>
                                         <mat-card-header>
-                                            <mat-card-title (click)="goToProfile(chatMessage.username)"
-                                                            class="clickable">
+                                            <mat-card-title
+                                                (click)="goToProfile(chatMessage.username)"
+                                                class="clickable"
+                                            >
                                                 <img
                                                     alt="assets/icon-alt.PNG"
                                                     class="messagePicture"
@@ -144,15 +160,17 @@
                                     <div *ngIf="i != 0">
                                         <div
                                             *ngIf="
-                                i != 0 &&
-                                i != chatMessages.length - 1 &&
-                                chatMessage.username != chatMessages[i - 1].username
-                            "
+                                                i != 0 &&
+                                                i != chatMessages.length - 1 &&
+                                                chatMessage.username != chatMessages[i - 1].username
+                                            "
                                         >
                                             <hr/>
                                             <mat-card-header>
-                                                <mat-card-title (click)="goToProfile(chatMessage.username)"
-                                                                class="clickable">
+                                                <mat-card-title
+                                                    (click)="goToProfile(chatMessage.username)"
+                                                    class="clickable"
+                                                >
                                                     <img
                                                         alt="assets/icon-alt.PNG"
                                                         class="messagePicture"
@@ -160,20 +178,25 @@
                                                         src="{{ chatMessage.profileImage }}"
                                                     />
                                                     <span class="userTitle">
-                                {{ chatMessage.username }}
-                                </span>
+                                                        {{ chatMessage.username }}
+                                                    </span>
                                                 </mat-card-title>
                                             </mat-card-header>
                                         </div>
                                     </div>
                                     <div *ngIf="i != 0">
                                         <div
-                                            *ngIf="i == chatMessages.length - 1 && chatMessage.username != chatMessages[i - 1].username"
+                                            *ngIf="
+                                                i == chatMessages.length - 1 &&
+                                                chatMessage.username != chatMessages[i - 1].username
+                                            "
                                         >
                                             <hr/>
                                             <mat-card-header>
-                                                <mat-card-title (click)="goToProfile(chatMessage.username)"
-                                                                class="clickable">
+                                                <mat-card-title
+                                                    (click)="goToProfile(chatMessage.username)"
+                                                    class="clickable"
+                                                >
                                                     <img
                                                         alt="assets/icon-alt.PNG"
                                                         class="messagePicture"
@@ -181,26 +204,32 @@
                                                         src="{{ chatMessage.profileImage }}"
                                                     />
                                                     <span class="userTitle">
-                                {{ chatMessage.username }}
-                                </span>
+                                                        {{ chatMessage.username }}
+                                                    </span>
                                                 </mat-card-title>
                                             </mat-card-header>
                                         </div>
                                     </div>
                                     <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
                                         <p class="message">
-                            <span *ngIf="chatMessage.username == currentUserProfile.username" class="icons">
-                                <mat-icon>emoji_emotions</mat-icon>
-                                <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
-                                <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
-                            </span>
-                                            <span *ngIf="chatMessage.username != currentUserProfile.username"
-                                                  class="icons">
-                                <mat-icon>emoji_emotions</mat-icon>
-                            </span>
+                                            <span
+                                                *ngIf="chatMessage.username == currentUserProfile.username"
+                                                class="icons"
+                                            >
+                                                <mat-icon>emoji_emotions</mat-icon>
+                                                <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
+                                                <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
+                                            </span>
+                                            <span
+                                                *ngIf="chatMessage.username != currentUserProfile.username"
+                                                class="icons"
+                                            >
+                                                <mat-icon>emoji_emotions</mat-icon>
+                                            </span>
 
-                                            <markdown *ngIf="!chatMessage.editing" class="mark"
-                                                      ngPreserveWhitespaces>{{ chatMessage.content }}</markdown>
+                                            <markdown *ngIf="!chatMessage.editing" class="mark" ngPreserveWhitespaces>{{
+                                                chatMessage.content
+                                                }}</markdown>
                                         </p>
                                         <form
                                             (ngSubmit)="editFormSubmit(editForm, chatMessage)"
@@ -209,14 +238,14 @@
                                             autocomplete="off"
                                             id="editForm"
                                         >
-                            <textarea
-                                (keydown)="editFormTextAreaSubmit($event)"
-                                cdkTextareaAutosize
-                                class="inputArea"
-                                formControlName="content"
-                                matInput
-                                name="editContent"
-                            ></textarea>
+                                            <textarea
+                                                (keydown)="editFormTextAreaSubmit($event)"
+                                                cdkTextareaAutosize
+                                                class="inputArea"
+                                                formControlName="content"
+                                                matInput
+                                                name="editContent"
+                                            ></textarea>
                                             <button id="hiddenButton" style="display:none;" type="submit"></button>
                                         </form>
                                     </mat-card-content>
@@ -240,16 +269,16 @@
                                     <mat-form-field>
                                         <mat-label>Message</mat-label>
                                         <label>
-                            <textarea
-                                #textArea
-                                (keydown)="textAreaSubmit($event)"
-                                cdkTextareaAutosize
-                                id="messageInputField"
-                                matInput
-                                name="content"
-                                ngModel
-                                wrap="hard"
-                            ></textarea>
+                                            <textarea
+                                                #textArea
+                                                (keydown)="textAreaSubmit($event)"
+                                                cdkTextareaAutosize
+                                                id="messageInputField"
+                                                matInput
+                                                name="content"
+                                                ngModel
+                                                wrap="hard"
+                                            ></textarea>
                                         </label>
                                     </mat-form-field>
                                 </form>

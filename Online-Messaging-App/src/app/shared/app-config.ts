@@ -1,5 +1,4 @@
 import { HttpHeaders } from "@angular/common/http";
-import { UserSocket } from "./notification.service";
 
 export const CognitoConfig = {
     UserPoolId: "ca-central-1_6ickHVand",
@@ -131,7 +130,7 @@ export interface InviteChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
-    channelDescription: string
+    channelDescription: string;
     inviteStatus: string;
 }
 
@@ -164,14 +163,33 @@ export interface ChannelAndFirstUser {
     inviteStatus: string;
 }
 
-export interface UserChannelObject {
+export interface UserSocket {
+    id: string;
     username: string;
+}
+
+export interface UserChannelObject {
+    username?: string;
     channelId: string;
-    userChannelRole: string;
+    userChannelRole?: string;
     channelName: string;
     channelType: string;
-    profileImage: string;
-    statusText: string;
+    profileImage?: string;
+    statusText?: string;
+    selected?: boolean;
+    notificationCount?: number;
+}
+
+export interface UserChannelObjectWithNotficationCount extends UserChannelObject {
+}
+
+export interface ChannelObject {
+    channelId: string;
+    channelName: string;
+    channelType: string;
+    channelDescription: string;
+    selected?: boolean;
+    filtered?: boolean;
 }
 
 export interface InviteChannelObject {
@@ -194,14 +212,14 @@ export interface NotificationSocketObject {
 
 export interface NotificationObject {
     channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
+    channelName?: string;
+    channelType?: string;
+    message?: string;
     type: string;
-    username: string;
+    username?: string;
     notificationId: string;
     insertedTime: number;
-    fromFriend: string;
+    fromFriend?: string;
 }
 
 export interface UserProfileObject {
@@ -216,15 +234,6 @@ export interface UserProfileObject {
 export interface ChannelIdAndType {
     channelId: string;
     type: string;
-}
-
-export interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    channelDescription: string;
-    selected?: boolean;
-    filtered?: boolean;
 }
 
 export interface ChannelAndNumUsers extends ChannelObject {

@@ -9,6 +9,7 @@ import { uuid } from "uuidv4";
 const PATH_POST_NEW_NOTIFICATION: string = "/";
 const PATH_DELETE_NOTIFICATION: string = "/:notificationId/insertedTime/:insertedTime";
 const PATH_GET_ALL_FRIEND_INVITES_FROM_USER: string = "/fromFriend/:fromFriend";
+const PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL: string = "/channelId/:channelId/username/:username";
 
 const AUTH_KEY = "authorization";
 
@@ -97,6 +98,31 @@ router.get(PATH_GET_ALL_FRIEND_INVITES_FROM_USER, (req, res) => {
                     res.status(200).send(data);
                 })
                 .catch((err) => {
+                    res.status(400).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.delete(PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data: HTTPResponseAndToken) => {
+            const notificationsDAO = new NotificationsDAO(docClient);
+            notificationsDAO
+                .getAllNotificationsForChannelAtUsername(req.params.channelId, req.params.username)
+                .then((data: Array<NotificationObject>) => {
+                    for (let item of data) {
+                        notificationsDAO.deleteNotification(item.notificationId, item.insertedTime);
+                        res.status(200).send({ status: 200, message: "Message notifications deleted successfully" });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
                     res.status(400).send(err);
                 });
         },
