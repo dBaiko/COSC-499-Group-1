@@ -124,6 +124,7 @@ io.on("connection", (socketIO) => {
             notificationSocketObject.notification.fromFriend = "%";
         console.log(users);
         if (notificationSocketObject.toUser != null) {
+            console.log(notificationSocketObject);
             socketIO.broadcast
                 .to(notificationSocketObject.toUser.id)
                 .emit("broadcastNotification", notificationSocketObject);

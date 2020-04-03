@@ -39,6 +39,7 @@ const FRIEND_IDENTIFIER: string = "friend";
 const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
+const GENERAL_NOTIFICATION: string = "general";
 
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
@@ -79,6 +80,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
+
+    mentioning: boolean = false;
+    mentionList: Array<string> = [];
+    mentioningIndex: number = 0;
+    mentionListToSubmit: Array<string> = [];
+    selectedMentionIndex: number = -1;
+    selectingFromMention: boolean = false;
 
     editForm: FormGroup;
     channelDescForm: FormGroup;
@@ -261,6 +269,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
+            this.handleInput();
+            value.content = this.markUpMentions(value.content);
+            for (let user of this.mentionListToSubmit) {
+                this.sendMentionNotification(user);
+            }
+            this.mentionListToSubmit = [];
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 channelType: this.currentChannel.channelType,
@@ -346,27 +360,136 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     textAreaSubmit(event) {
         if (event.keyCode == 13 && event.shiftKey) {
-        } else if (event.keyCode == 13) {
+        } else if (event.keyCode == 13 && !this.selectingFromMention) {
             event.preventDefault();
+            this.resetMentionList();
             this.messageForm.ngSubmit.emit();
+            return;
+        } else if (event.keyCode == 38) {
+            event.preventDefault();
         }
-        if (
-            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height > this.textAreaHeight
-        ) {
-            this.defaultHeight = this.defaultHeight - 2;
-            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
-            this.textAreaHeight = document
-                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
-                .getBoundingClientRect().height;
-        } else if (
-            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height < this.textAreaHeight
-        ) {
-            this.defaultHeight = this.defaultHeight + 2;
-            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
-            this.textAreaHeight = document
-                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
-                .getBoundingClientRect().height;
+
+        this.checkForTextAreaHeight();
+    }
+
+    handleMentioning(event) {
+        let text = (this.messageForm.form.value.content as string);
+        if (text) {
+            if (this.selectingFromMention) {
+                if (event.keyCode == 38 || event.keyCode == 40) {
+                    event.preventDefault();
+                    if (event.keyCode == 38) {
+                        this.selectedMentionIndex--;
+                    } else if (event.keyCode == 40) {
+                        this.selectedMentionIndex++;
+                    }
+                    if (this.selectedMentionIndex < 0) {
+                        this.selectedMentionIndex = 0;
+                    } else if (this.selectedMentionIndex > this.mentionList.length) {
+                        this.selectedMentionIndex = -1;
+                        this.selectingFromMention = false;
+                    }
+                } else if (event.keyCode == 13) {
+                    let userToMention = this.mentionList[this.selectedMentionIndex];
+                    this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
+                    this.addMentionIfMentionable(userToMention);
+                    this.resetMentionList();
+                } else {
+                    this.selectedMentionIndex = -1;
+                    this.selectingFromMention = false;
+                }
+            } else if (this.mentioning) {
+                if (event.keyCode == 32) {
+                    let userToMention = text.substring(this.mentioningIndex, text.lastIndexOf(" "));
+                    this.addMentionIfMentionable(userToMention);
+                    this.resetMentionList();
+                } else if (event.keyCode == 38) {
+                    event.preventDefault();
+                    this.selectingFromMention = true;
+                    this.selectedMentionIndex = this.mentionList.length - 1;
+                } else if (event.keyCode == 16) {
+                    event.preventDefault();
+                } else {
+                    let partialUsername = text.substring(this.mentioningIndex);
+                    this.mentionListSearch(partialUsername);
+                }
+            } else {
+                if (event.keyCode == 50) {
+                    this.mentioning = true;
+                    this.mentioningIndex = text.length;
+                }
+            }
+        } else {
+            this.resetMentionList();
         }
+
+        if (this.mentionList.length == 0) {
+            this.mentioning = false;
+        }
+
+        this.handleInput();
+    }
+
+    clickMentionList(username: string) {
+        let text = (this.messageForm.form.value.content as string);
+        this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + username + " " });
+        this.addMentionIfMentionable(username);
+        this.resetMentionList();
+    }
+
+    handleInput() {
+        let text = (this.messageForm.form.value.content as string);
+        let highlightedText = this.applyHighlights(text);
+        document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
+    }
+
+    applyHighlights(text: string): string {
+        if (text) {
+            text = text.replace(/\n$/g, "\n\n");
+            let atUsernameRegExp = /(@[a-zA-Z]+)/g;
+            let result;
+            let indexs = [];
+            while ((result = atUsernameRegExp.exec(text))) {
+                if (!/<mark style='background-color: dimgray'>/g.test(text.substring(result.index - 40, result.index))) {
+                    let endIndex = text.substring(result.index).indexOf(" ");
+                    if (endIndex == -1) {
+                        endIndex = text.length;
+                    }
+                    endIndex = result.index + endIndex;
+
+                    let user = text.substring(result.index, endIndex);
+                    if (this.mentionList.includes(user.substring(1))) {
+                        indexs.push({
+                            begin: result.index,
+                            end: endIndex,
+                            user: user
+                        });
+                    }
+                }
+            }
+            let retText = "";
+            if (indexs.length > 0) {
+                retText = text.substring(0, indexs[0].begin);
+                for (let i = 0; i < indexs.length; i++) {
+                    retText += "<mark style='background-color: dimgray'>";
+                    retText += indexs[i].user;
+                    retText += "</mark>";
+                    if (i != indexs.length - 1) {
+                        retText += text.substring(indexs[i].end, indexs[i + 1].begin);
+                    }
+
+                }
+                return retText;
+            }
+
+            return text;
+        } else
+            return null;
+    }
+
+    handleScroll() {
+        let scrollTop = document.getElementById("messageInputField").scrollTop;
+        document.getElementById("backdrop").scrollTop = scrollTop;
     }
 
     editFormTextAreaSubmit(event) {
@@ -514,25 +637,96 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
+    private sendMentionNotification(username): void {
+        let message: string = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        let notifications: NotificationSocketObject = {
+            fromUser: {
+                username: this.auth.getAuthenticatedUser().getUsername(),
+                id: this.notificationService.getSocketId()
+            },
+            toUser: this.notificationService.getOnlineUserByUsername(username),
+            notification: {
+                channelId: this.currentChannel.channelId,
+                channelName: this.currentChannel.channelName,
+                channelType: this.currentChannel.channelType,
+                fromFriend: this.auth.getAuthenticatedUser().getUsername(),
+                message: message,
+                type: GENERAL_NOTIFICATION,
+                username: username,
+                notificationId: null,
+                insertedTime: null
+            }
+        };
+
+        this.notificationService.sendNotification(notifications);
+    }
+
+    private markUpMentions(text: string) {
+        if (text) {
+            text = text.replace(/\n$/g, "\n\n");
+            let atUsernameRegExp = /(@[a-zA-Z]+)/g;
+            let result;
+            let indexs = [];
+            while ((result = atUsernameRegExp.exec(text))) {
+                if (!/`/g.test(text.substring(result.index - 1, result.index))) {
+                    let endIndex = text.substring(result.index).indexOf(" ");
+                    if (endIndex == -1) {
+                        endIndex = text.length;
+                    }
+                    endIndex = result.index + endIndex;
+
+                    let user = text.substring(result.index, endIndex);
+                    if (this.mentionList.includes(user.substring(1))) {
+                        indexs.push({
+                            begin: result.index,
+                            end: endIndex,
+                            user: user
+                        });
+                    }
+                }
+            }
+            let retText = "";
+            if (indexs.length > 0) {
+                retText = text.substring(0, indexs[0].begin);
+                for (let i = 0; i < indexs.length; i++) {
+                    retText += "`";
+                    retText += indexs[i].user;
+                    retText += "`";
+                    if (i != indexs.length - 1) {
+                        retText += text.substring(indexs[i].end, indexs[i + 1].begin);
+                    }
+
+                }
+                retText += text.substring(indexs[indexs.length - 1].end, text.length);
+                return retText;
+            }
+
+            return text;
+        } else
+            return null;
+    }
+
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
-        if (newUsersSubbedChannel.joined) {
-            let chatMessage = {
-                channelId: newUsersSubbedChannel.channelId,
-                username: null,
-                content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
-                profileImage: null
-            };
-            this.isNearBottom = false;
-            this.messagerService.sendMessage(chatMessage);
-        } else {
-            let chatMessage = {
-                channelId: newUsersSubbedChannel.channelId,
-                username: null,
-                content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
-                profileImage: null
-            };
-            this.isNearBottom = false;
-            this.messagerService.sendMessage(chatMessage);
+        if (!this.subscribedUsersUsernames.includes(newUsersSubbedChannel.username)) {
+            if (newUsersSubbedChannel.joined) {
+                let chatMessage = {
+                    channelId: newUsersSubbedChannel.channelId,
+                    username: null,
+                    content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
+                    profileImage: null
+                };
+                this.isNearBottom = false;
+                this.messagerService.sendMessage(chatMessage);
+            } else {
+                let chatMessage = {
+                    channelId: newUsersSubbedChannel.channelId,
+                    username: null,
+                    content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
+                    profileImage: null
+                };
+                this.isNearBottom = false;
+                this.messagerService.sendMessage(chatMessage);
+            }
         }
     }
 
@@ -555,6 +749,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
+                            this.resetMentionList();
                             resolve(data);
                         },
                         (err) => {
@@ -660,4 +855,61 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         }
     }
+
+    private mentionListSearch(search: string): boolean {
+        let origMentionList = [...this.mentionList];
+        if (search == Constants.EMPTY) {
+            this.resetMentionList();
+            return false;
+        } else {
+            for (let user of origMentionList) {
+                if (this.common.searchStrings(user.toLowerCase(), search.toLowerCase())) {
+                    if (this.mentionList.indexOf(user) === -1) {
+                        this.mentionList.push(user);
+                    }
+                } else {
+                    if (this.mentionList[this.mentionList.indexOf(user)]) {
+                        this.mentionList.splice(this.mentionList.indexOf(user), 1);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private resetMentionList(): void {
+        this.selectingFromMention = false;
+        this.mentionList = [...this.subscribedUsersUsernames];
+        this.mentionList.push("everyone");
+        this.selectedMentionIndex = -1;
+        this.mentioning = false;
+        this.mentioningIndex = 0;
+    }
+
+    private checkForTextAreaHeight(): void {
+        if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height > this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight - 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
+        } else if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height < this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight + 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
+        }
+    }
+
+    private addMentionIfMentionable(userToMention): void {
+        if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
+            this.mentionListToSubmit.push(userToMention);
+        }
+    }
+
 }

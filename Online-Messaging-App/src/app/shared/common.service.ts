@@ -43,7 +43,7 @@ export class CommonService {
         return true;
     }
 
-    private searchStrings(match: string, search: string): boolean {
+    public searchStrings(match: string, search: string): boolean {
         if (search === match) {
             return true;
         }

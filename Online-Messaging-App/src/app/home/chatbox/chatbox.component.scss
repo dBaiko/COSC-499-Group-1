@@ -298,3 +298,41 @@ mat-expansion-panel:hover {
     min-height: 600px;
     height: 100%;
 }
+
+.mentionList {
+    background-color: white;
+}
+
+.mentionListItem:hover {
+    background-color: yellow;
+}
+
+.selected {
+    background-color: yellow;
+}
+
+#backdrop {
+    overflow: auto;
+    background-color: transparent;
+    z-index: 1;
+    color: transparent;
+}
+
+.highlights {
+    position: absolute;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: transparent;
+    color: transparent;
+}
+
+#messageInput {
+    background-color: transparent;
+    margin: 0;
+    border-radius: 0;
+}
+
+mark {
+    color: transparent;
+    background-color: red !important;
+}
