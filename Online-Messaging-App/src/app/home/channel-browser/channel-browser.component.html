@@ -25,9 +25,9 @@
                                     <mat-panel-title>
                                         {{ channel.channelName }}
                                     </mat-panel-title>
-                                    <mat-panel-description>Subscribers: {{channel.numUsers}}</mat-panel-description>
+                                    <mat-panel-description>Subscribers: {{ channel.numUsers }}</mat-panel-description>
                                 </mat-expansion-panel-header>
-                                <p>{{channel.channelDescription}}</p>
+                                <p>{{ channel.channelDescription }}</p>
                                 <mat-action-row>
                                     <div *ngIf="!this.subscribedChannels.includes(channel.channelId); else joined">
                                         <button (click)="joinChannel(channel)" class="join" mat-button>

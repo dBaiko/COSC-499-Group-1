@@ -4,48 +4,62 @@
             Subscribers
         </mat-card-title>
         <div id="scrollable">
-            <mat-card-title>Online
-                <hr>
+            <mat-card-title
+            >Online
+                <hr/>
             </mat-card-title>
             <mat-nav-list>
                 <div *ngFor="let user of onlineUsers" class="onlineUsers">
                     <mat-list-item (click)="goToProfile(user.username)" class="clickable">
-                        <img class="userProfilePicture"
-                             inline="true"
-                             matListAvatar
-                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                             src="{{user.profileImage}}"
+                        <img
+                                class="userProfilePicture"
+                                inline="true"
+                                matListAvatar
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="{{ user.profileImage }}"
                         />
                         <span matLine>
-                            {{user.username}}
-                            <img *ngIf="user.userChannelRole == 'admin'" class="adminImage" inline="true"
-                                 src="assets/crown.png">
+                            {{ user.username }}
+                            <img
+                                    *ngIf="user.userChannelRole == 'admin'"
+                                    class="adminImage"
+                                    inline="true"
+                                    src="assets/crown.png"
+                            />
                         </span>
-                        <br>
-                        <span class="statusMessage" matLine><i>{{user.statusText}}</i></span>
+                        <br/>
+                        <span class="statusMessage" matLine
+                        ><i>{{ user.statusText }}</i></span
+                        >
                     </mat-list-item>
                 </div>
-                <br>
+                <br/>
             </mat-nav-list>
-            <mat-card-title>Offline
-                <hr>
+            <mat-card-title
+            >Offline
+                <hr/>
             </mat-card-title>
             <mat-nav-list>
                 <div *ngFor="let user of offlineUsers" class="offlineUsers">
                     <mat-list-item (click)="goToProfile(user.username)" class="clickable">
-                        <img class="userProfilePicture"
-                             inline="true"
-                             matListAvatar
-                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                             src="{{user.profileImage}}"
+                        <img
+                                class="userProfilePicture"
+                                inline="true"
+                                matListAvatar
+                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                src="{{ user.profileImage }}"
                         />
                         <span matLine>
-                            {{user.username}}
-                            <img *ngIf="user.userChannelRole == 'admin'" class="adminImage" inline="true"
-                                 src="assets/crown.png">
+                            {{ user.username }}
+                            <img
+                                    *ngIf="user.userChannelRole == 'admin'"
+                                    class="adminImage"
+                                    inline="true"
+                                    src="assets/crown.png"
+                            />
                         </span>
-                        <br>
-                        <span class="statusMessage" matLine>{{user.statusText}}</span>
+                        <br/>
+                        <span class="statusMessage" matLine>{{ user.statusText }}</span>
                     </mat-list-item>
                 </div>
             </mat-nav-list>

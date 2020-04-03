@@ -5,17 +5,15 @@ import {
     ChannelObject,
     Constants,
     HttpResponse,
+    NotificationObject,
+    NotificationSocketObject,
     ProfileObject,
     UserObject,
     UserProfileObject
 } from "../../../shared/app-config";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../../shared/authentication.service";
-import {
-    NotificationObject,
-    NotificationService,
-    NotificationSocketObject
-} from "../../../shared/notification.service";
+import { NotificationService } from "../../../shared/notification.service";
 import { CommonService } from "../../../shared/common.service";
 
 const NOTIFICATIONS_URI: string = "/fromFriend/";

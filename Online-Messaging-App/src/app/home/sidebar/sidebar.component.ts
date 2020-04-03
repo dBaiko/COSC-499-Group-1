@@ -7,14 +7,17 @@ import {
     ChannelObject,
     Constants,
     NewUsersSubbedChannelObject,
+    NotificationObject,
     ProfileObject,
     UserChannelObject,
+    UserChannelObjectWithNotficationCount,
     UserObject
 } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CreateChannelComponent } from "../createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
 import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm/unsubscribe-confirm.component";
+import { NotificationService } from "../../shared/notification.service";
 
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
@@ -23,6 +26,10 @@ const CHECKED: string = "checked";
 const SELECTED: string = "selected";
 const LAX = "Lax";
 
+const NOTIFICATIONS_URI = "/notifications";
+const CHANNEL_ID_URI = "/channelId/";
+const USERNAME_URI = "/username/";
+
 const DIALOG_WIDTH = "35%";
 const DIALOG_CLASS = "dialog-class";
 
@@ -30,15 +37,17 @@ const MAX_FRIEND_CHANNEL_LENGTH = 2;
 
 const CHANNELS_URI = "/channels/";
 
+const MESSAGE_NOTIFICATION_BROADCAST = "messageNotificationBroadcast";
+
 @Component({
     selector: "app-sidebar",
     templateUrl: "./sidebar.component.html",
     styleUrls: ["./sidebar.component.scss"]
 })
 export class SidebarComponent implements OnInit {
-    publicChannels = [];
-    privateChannels = [];
-    friendsChannels = [];
+    publicChannels: Array<UserChannelObjectWithNotficationCount> = [];
+    privateChannels: Array<UserChannelObjectWithNotficationCount> = [];
+    friendsChannels: Array<UserChannelObjectWithNotficationCount> = [];
     userSubscribedChannels = [];
     @Input() userList: Array<UserObject>;
     @Input() currentUserProfile: ProfileObject;
@@ -52,15 +61,21 @@ export class SidebarComponent implements OnInit {
     friendChannelSelect: boolean;
     list;
     chatBox = "chatBox";
+
+    selectedChannelId: string;
+
     private channelBrowser = "channelBrowser";
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
+    private channelsURL: string = APIConfig.channelsAPI;
+    private notificationsAPI: string = APIConfig.notificationsAPI;
 
     constructor(
         private http: HttpClient,
         private cookieService: CookieService,
         private auth: AuthenticationService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private notificationService: NotificationService
     ) {
     }
 
@@ -135,6 +150,31 @@ export class SidebarComponent implements OnInit {
             .catch((err) => {
                 console.log(err);
             });
+
+        this.notificationService.addSocketListener(
+            MESSAGE_NOTIFICATION_BROADCAST,
+            (messageNotification: NotificationObject) => {
+                if (
+                    messageNotification.type == "message" &&
+                    messageNotification.username == this.currentUserProfile.username &&
+                    messageNotification.channelId != this.selectedChannelId
+                ) {
+                    if (messageNotification.channelType == PUBLIC) {
+                        this.publicChannels[
+                            this.findIndexOfChannel(this.publicChannels, messageNotification.channelId)
+                            ].notificationCount += 1;
+                    } else if (messageNotification.channelType == PRIVATE) {
+                        this.privateChannels[
+                            this.findIndexOfChannel(this.privateChannels, messageNotification.channelId)
+                            ].notificationCount += 1;
+                    } else if (messageNotification.channelType == FRIEND) {
+                        this.friendsChannels[
+                            this.findIndexOfChannel(this.friendsChannels, messageNotification.channelId)
+                            ].notificationCount += 1;
+                    }
+                }
+            }
+        );
     }
 
     getSubscribedChannels(): Promise<any> {
@@ -159,7 +199,13 @@ export class SidebarComponent implements OnInit {
                                 this.privateChannels = [];
                                 this.friendsChannels = [];
                                 this.userSubscribedChannels = data;
-                                this.userSubscribedChannels.forEach((item: UserChannelObject) => {
+                                if (this.userSubscribedChannels.length > 0) {
+                                    this.channelEvent.emit(this.userSubscribedChannels[0]);
+                                    this.userSubscribedChannels[0][SELECTED] = true;
+                                }
+                                for (let i = 0; i < data.length; i++) {
+                                    let item = data[i];
+                                    item.notificationCount = 0;
                                     if (item.channelType == PUBLIC) {
                                         this.publicChannels.push(item);
                                     } else if (item.channelType == PRIVATE) {
@@ -167,12 +213,46 @@ export class SidebarComponent implements OnInit {
                                     } else {
                                         this.friendsChannels.push(item);
                                     }
-                                });
-                                if (this.userSubscribedChannels.length > 0) {
-                                    this.channelEvent.emit(this.userSubscribedChannels[0]);
-                                    this.userSubscribedChannels[0][SELECTED] = true;
+
+                                    this.getChannelNotifications(item.channelId)
+                                        .then((notificationData: Array<NotificationObject>) => {
+                                            for (let notification of notificationData) {
+                                                if (
+                                                    notification.type == "message" &&
+                                                    notification.username == this.currentUserProfile.username
+                                                ) {
+                                                    if (notification.channelType == PUBLIC) {
+                                                        this.publicChannels[
+                                                            this.findIndexOfChannel(
+                                                                this.publicChannels,
+                                                                notification.channelId
+                                                            )
+                                                            ].notificationCount += 1;
+                                                    } else if (notification.channelType == PRIVATE) {
+                                                        this.privateChannels[
+                                                            this.findIndexOfChannel(
+                                                                this.privateChannels,
+                                                                notification.channelId
+                                                            )
+                                                            ].notificationCount += 1;
+                                                    } else if (notification.channelType == FRIEND) {
+                                                        this.friendsChannels[
+                                                            this.findIndexOfChannel(
+                                                                this.friendsChannels,
+                                                                notification.channelId
+                                                            )
+                                                            ].notificationCount += 1;
+                                                    }
+                                                }
+                                            }
+                                            if (i == data.length - 1 || data.length == 0) {
+                                                resolve(notificationData);
+                                            }
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
+                                        });
                                 }
-                                resolve(data);
                             },
                             (err) => {
                                 console.log(err);
@@ -240,6 +320,7 @@ export class SidebarComponent implements OnInit {
     }
 
     selectChannel(id: string, type: string) {
+        this.selectedChannelId = id;
         this.userSubscribedChannels.forEach((item: UserChannelObject) => {
             if (item.channelId == id) {
                 this.channelEvent.emit({
@@ -251,6 +332,16 @@ export class SidebarComponent implements OnInit {
                     filtered: null
                 });
                 item[SELECTED] = true;
+                if (type == PUBLIC) {
+                    this.publicChannels[this.findIndexOfChannel(this.publicChannels, id)].notificationCount = 0;
+                } else if (type == PRIVATE) {
+                    this.privateChannels[this.findIndexOfChannel(this.privateChannels, id)].notificationCount = 0;
+                } else if (type == FRIEND) {
+                    this.friendsChannels[this.findIndexOfChannel(this.friendsChannels, id)].notificationCount = 0;
+                }
+
+                this.deleteMessageNotifications(id);
+
                 this.cookieService.set(
                     this.auth.getAuthenticatedUser().getUsername(),
                     JSON.stringify({
@@ -446,4 +537,64 @@ export class SidebarComponent implements OnInit {
             this.selectChannel(value.channelId, value.channelType);
         }
     }
+
+    private getChannelNotifications(channelId: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.get(this.channelsURL + channelId + NOTIFICATIONS_URI, httpHeaders).subscribe(
+                        (data: Array<NotificationObject>) => {
+                            resolve(data);
+                        },
+                        (err) => {
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private findIndexOfChannel(channels: Array<UserChannelObjectWithNotficationCount>, channelId: string): number {
+        for (let i = 0; i < channels.length; i++) {
+            if (channels[i].channelId == channelId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private deleteMessageNotifications(channelId: string): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.delete(this.notificationsAPI + CHANNEL_ID_URI + channelId + USERNAME_URI + this.currentUserProfile.username, httpHeaders).subscribe(
+                    () => {
+                    },
+                    (err) => {
+                        console.error(err);
+                    }
+                );
+            },
+            (err) => {
+            }
+        );
+    }
+
 }

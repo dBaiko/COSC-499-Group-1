@@ -1,28 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
-
-export interface UserSocket {
-    id: string;
-    username: string;
-}
-
-export interface NotificationObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
-    type: string;
-    username: string;
-    notificationId: string;
-    insertedTime: number;
-    fromFriend: string;
-}
-
-export interface NotificationSocketObject {
-    fromUser: UserSocket;
-    toUser: UserSocket;
-    notification: NotificationObject;
-}
+import { NotificationSocketObject, UserSocket } from "./app-config";
 
 const USERNAME_EVENT = "username";
 const EXIT_EVENT = "exit";

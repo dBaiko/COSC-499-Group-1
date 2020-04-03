@@ -20,14 +20,14 @@ export interface NotificationDBObject {
 
 export interface NotificationObject {
     channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
+    channelName?: string;
+    channelType?: string;
+    message?: string;
     type: string;
-    username: string;
+    username?: string;
     notificationId: string;
     insertedTime: number;
-    fromFriend: string;
+    fromFriend?: string;
 }
 
 export interface NotificationSocketObject {
@@ -97,6 +97,31 @@ export class NotificationsDAO {
             KeyConditionExpression: this.channelIdQueryDeclaration,
             ExpressionAttributeValues: {
                 ":channelId": channelId
+            }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query for " + channelId + "'s notifications succeeded");
+                    resolve(data.Items);
+                }
+            });
+        });
+    }
+
+    public getAllNotificationsForChannelAtUsername(channelId: string, username: string): Promise<any> {
+        const params = {
+            TableName: NOTIFICATIONS_TABLE_NAME,
+            IndexName: NOTIFICATIONS_CHANNEL_INDEX,
+            KeyConditionExpression: "channelId = :c",
+            FilterExpression: "username = :u",
+            ExpressionAttributeValues: {
+                ":c": channelId,
+                ":u": username
             }
         };
 

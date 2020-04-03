@@ -22,6 +22,12 @@
                         (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
                         [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ publicChannel.channelName }}</h3>
+                        <a *ngIf="publicChannel.notificationCount > 0" class="border">
+                            <p *ngIf="publicChannel.notificationCount < 10" class="messageNotification">
+                                {{ publicChannel.notificationCount }}
+                            </p>
+                            <p *ngIf="publicChannel.notificationCount >= 10" class="messageNotification">10+</p>
+                        </a>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(publicChannel.channelId)">clear</mat-icon>
                         </a>
@@ -37,6 +43,9 @@
                         (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
                         [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ privateChannel.channelName }}</h3>
+                        <a *ngIf="privateChannel.notificationCount" class="border">
+                            <p class="messageNotification">{{ privateChannel.notificationCount }}</p>
+                        </a>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(privateChannel.channelId)">clear</mat-icon>
                         </a>
@@ -57,6 +66,9 @@
                         (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
                         [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
+                        <a *ngIf="friendChannel.notificationCount" class="border">
+                            <p class="messageNotification">{{ friendChannel.notificationCount }}</p>
+                        </a>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(friendChannel.channelId)">clear</mat-icon>
                         </a>

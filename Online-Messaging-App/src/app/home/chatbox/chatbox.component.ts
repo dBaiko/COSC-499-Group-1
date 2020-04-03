@@ -8,6 +8,8 @@ import {
     InviteChannelObject,
     MessageObject,
     NewUsersSubbedChannelObject,
+    NotificationObject,
+    NotificationSocketObject,
     ProfileObject,
     SettingsObject,
     UserChannelObject,
@@ -15,9 +17,9 @@ import {
 } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
-import { NotificationObject, NotificationService, NotificationSocketObject } from "../../shared/notification.service";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
+import { NotificationService } from "../../shared/notification.service";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -147,10 +149,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input()
     set currentChannel(value: ChannelObject) {
         this._currentChannel = value;
-        this.getChannelInfo()
-            .catch((err) => {
-                console.error(err);
-            });
+        this.getChannelInfo().catch((err) => {
+            console.error(err);
+        });
         this.getMessages(this._currentChannel.channelId).catch((err) => {
             console.error(err);
         });
@@ -262,6 +263,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             form.reset();
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
+                channelType: this.currentChannel.channelType,
                 username: this.auth.getAuthenticatedUser().getUsername(),
                 content: value.content.replace(NEW_LINE_REGEX, "\n"),
                 profileImage: this.currentUserProfile.profileImage
@@ -453,14 +455,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                 this.currentChannel.channelDescription = form.value.channelDescription;
 
-                this.http.put(this.channelsURL + this.currentChannel.channelId, this.currentChannel, httpHeaders).subscribe(
-                    () => {
-                        this.editingChannelDescription = false;
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
+                this.http
+                    .put(this.channelsURL + this.currentChannel.channelId, this.currentChannel, httpHeaders)
+                    .subscribe(
+                        () => {
+                            this.editingChannelDescription = false;
+                        },
+                        (err) => {
+                            console.log(err);
+                        }
+                    );
             },
             (err) => {
                 console.log(err);
@@ -500,7 +504,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     userIsAdmin(): boolean {
         if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
-            if (this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)].userChannelRole == "admin") {
+            if (
+                this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
+                    .userChannelRole == "admin"
+            ) {
                 return true;
             }
         }
