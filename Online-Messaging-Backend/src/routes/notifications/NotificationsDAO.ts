@@ -113,6 +113,31 @@ export class NotificationsDAO {
         });
     }
 
+    public getAllNotificationsForChannelAtUsername(channelId: string, username: string): Promise<any> {
+        const params = {
+            TableName: NOTIFICATIONS_TABLE_NAME,
+            IndexName: NOTIFICATIONS_CHANNEL_INDEX,
+            KeyConditionExpression: "channelId = :c",
+            FilterExpression: "username = :u",
+            ExpressionAttributeValues: {
+                ":c": channelId,
+                ":u": username
+            }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("Query for " + channelId + "'s notifications succeeded");
+                    resolve(data.Items);
+                }
+            });
+        });
+    }
+
     public socketCreateNewNotification(notificationSocketObject: NotificationSocketObject): Promise<any> {
         let notificationDBObject: NotificationDBObject = {
             notificationId: notificationSocketObject.notification.notificationId,

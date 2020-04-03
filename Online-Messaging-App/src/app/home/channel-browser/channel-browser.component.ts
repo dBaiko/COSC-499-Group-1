@@ -227,7 +227,6 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     private sortChannel(): void {
-        this.channels = this.channels.sort((a, b) => a.numUsers > b.numUsers ? 1 : -1);
+        this.channels = this.channels.sort((a, b) => (a.numUsers > b.numUsers ? 1 : -1));
     }
-
 }

@@ -149,7 +149,16 @@ export class HeaderComponent implements OnInit {
                                         };
 
                                         this.http
-                                            .put(this.channelsAPI + notification.channelId + Constants.SLASH + "inviteStatus" + Constants.SLASH + ACCEPTED_NOTIFICATION, channel, httpHeaders)
+                                            .put(
+                                                this.channelsAPI +
+                                                notification.channelId +
+                                                Constants.SLASH +
+                                                "inviteStatus" +
+                                                Constants.SLASH +
+                                                ACCEPTED_NOTIFICATION,
+                                                channel,
+                                                httpHeaders
+                                            )
                                             .subscribe(
                                                 () => {
                                                     console.log("success");
@@ -228,14 +237,25 @@ export class HeaderComponent implements OnInit {
                             inviteStatus: DENIED_NOTIFICATION
                         };
 
-                        this.http.put(this.channelsAPI + notification.channelId + Constants.SLASH + "inviteStatus" + Constants.SLASH + DENIED_NOTIFICATION, channel, httpHeaders).subscribe(
-                            () => {
-                                console.log("success");
-                            },
-                            (err) => {
-                                console.log(err);
-                            }
-                        );
+                        this.http
+                            .put(
+                                this.channelsAPI +
+                                notification.channelId +
+                                Constants.SLASH +
+                                "inviteStatus" +
+                                Constants.SLASH +
+                                DENIED_NOTIFICATION,
+                                channel,
+                                httpHeaders
+                            )
+                            .subscribe(
+                                () => {
+                                    console.log("success");
+                                },
+                                (err) => {
+                                    console.log(err);
+                                }
+                            );
                     })
                     .catch((err) => {
                         console.log(err);
@@ -332,16 +352,18 @@ export class HeaderComponent implements OnInit {
                                 for (let i = 0; i < data.length; i++) {
                                     if (data[i].type == PUBLIC_NOTIFICATION) {
                                         this.publicInvites.push(data[i]);
+                                        this.notificationCount++;
                                     } else if (data[i].type == PRIVATE_NOTIFICATION) {
                                         this.privateInvites.push(data[i]);
+                                        this.notificationCount++;
                                     } else if (data[i].type == FRIEND_NOTIFICATION) {
                                         this.friendInvites.push(data[i]);
-                                    } else {
+                                        this.notificationCount++;
+                                    } else if (data[i].type == GENERAL_NOTIFICATION) {
                                         this.generalNotification.push(data[i]);
+                                        this.notificationCount++;
                                     }
                                 }
-
-                                this.notificationCount = data.length;
                             },
                             (err) => {
                                 console.log(err);

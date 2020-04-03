@@ -9,6 +9,7 @@ export interface Message {
     insertTime?: number;
     profileImage: string;
     deleted: string;
+    channelType?: string;
 }
 
 interface ChannelObject {

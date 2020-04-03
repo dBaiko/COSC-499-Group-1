@@ -5,8 +5,9 @@ import routes from "./routes";
 import MessageDAO, { Message } from "./routes/messages/MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "./config/aws-config";
-import { NotificationsDAO } from "./routes/notifications/NotificationsDAO";
+import { NotificationObject, NotificationsDAO } from "./routes/notifications/NotificationsDAO";
 import { uuid } from "uuidv4";
+import UserChannelDAO from "./routes/userChannels/UserChannelDAO";
 import socket = require("socket.io");
 
 export interface UserSocket {
@@ -14,22 +15,22 @@ export interface UserSocket {
     username: string;
 }
 
-export interface NotificationObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    message: string;
-    type: string;
-    username: string;
-    notificationId: string;
-    insertedTime: number;
-    fromFriend: string;
-}
-
 export interface NotificationSocketObject {
     fromUser: UserSocket;
     toUser: UserSocket;
     notification: NotificationObject;
+}
+
+export interface UserChannelObject {
+    username?: string;
+    channelId: string;
+    userChannelRole?: string;
+    channelName: string;
+    channelType: string;
+    profileImage?: string;
+    statusText?: string;
+    selected?: boolean;
+    notificationCount?: number;
 }
 
 const app = express();
@@ -74,17 +75,36 @@ io.on("connection", (socketIO) => {
                 type: "message",
                 notificationId: uuid(),
                 insertedTime: Date.now(),
-                channelName: undefined,
-                channelType: undefined,
-                message: undefined,
-                username: undefined,
-                fromFriend: undefined
+                channelType: message.channelType,
+                username: null,
+                fromFriend: message.username
             };
 
-            io.sockets.emit("messageNotificationBroadcast", messageNotification);
+            for (let user of users) {
+                messageNotification.username = user.username;
+                socketIO.broadcast.to(user.id).emit("messageNotificationBroadcast", messageNotification);
+            }
 
-            let notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
-            notificationsDAO.createNewNotification(messageNotification);
+            let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
+            userChannelDAO.getAllSubscribedUsers(message.channelId)
+                .then((data: Array<UserChannelObject>) => {
+                    for (let i = 0; i < data.length; i++) {
+                        let messageNotification: NotificationObject = {
+                            channelId: message.channelId,
+                            type: "message",
+                            notificationId: uuid(),
+                            insertedTime: Date.now(),
+                            channelType: message.channelType,
+                            username: data[i].username,
+                            fromFriend: message.username
+                        };
+                        let notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
+                        notificationsDAO.createNewNotification(messageNotification);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
 
             const messageDAO = new MessageDAO(docClient);
             messageDAO.addNewMessage(message);

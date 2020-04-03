@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { NotificationService, UserSocket } from "../../../shared/notification.service";
-import { Constants, UserChannelObject } from "../../../shared/app-config";
+import { NotificationService } from "../../../shared/notification.service";
+import { Constants, UserChannelObject, UserSocket } from "../../../shared/app-config";
 
 @Component({
     selector: "app-channel-user-list",

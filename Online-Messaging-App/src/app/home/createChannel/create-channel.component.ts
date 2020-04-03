@@ -98,7 +98,11 @@ export class CreateChannelComponent implements OnInit {
     newChannel(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.newChannelForm.valid) {
-            this.newChannelEntry(form.value.channelName, form.value.channelType, form.value.channelDescription).subscribe(
+            this.newChannelEntry(
+                form.value.channelName,
+                form.value.channelType,
+                form.value.channelDescription
+            ).subscribe(
                 (result: newChannelResponse) => {
                     this.newChannelObject = result.data.newChannel;
                     this.onClose();
