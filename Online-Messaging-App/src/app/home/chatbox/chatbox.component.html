@@ -266,12 +266,27 @@
                                     autocomplete="off"
                                     id="messageForm"
                                 >
+                                    <mat-list *ngIf="mentioning" class="mentionList">
+                                        <div *ngFor="let username of this.mentionList">
+                                            <div
+                                                *ngIf="selectingFromMention && selectedMentionIndex == this.mentionList.indexOf(username); else elseNotSelected">
+                                                <mat-list-item class="selected">
+                                                    @{{username}}
+                                                </mat-list-item>
+                                            </div>
+                                            <ng-template #elseNotSelected>
+                                                <mat-list-item>
+                                                    @{{username}}
+                                                </mat-list-item>
+                                            </ng-template>
+                                        </div>
+                                    </mat-list>
                                     <mat-form-field>
                                         <mat-label>Message</mat-label>
                                         <label>
                                             <textarea
-                                                #textArea
-                                                (keydown)="textAreaSubmit($event)"
+                                                #textArea="ngModel"
+                                                (keyup)="textAreaSubmit($event)"
                                                 cdkTextareaAutosize
                                                 id="messageInputField"
                                                 matInput

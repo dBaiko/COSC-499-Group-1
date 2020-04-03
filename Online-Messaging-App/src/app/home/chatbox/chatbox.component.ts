@@ -80,6 +80,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
 
+    mentioning: boolean = false;
+    mentionList: Array<string> = [];
+    mentioningIndex: number = 0;
+    mentionListToSubmit: Array<string> = [];
+    selectedMentionIndex: number = -1;
+    selectingFromMention: boolean = false;
+
     editForm: FormGroup;
     channelDescForm: FormGroup;
 
@@ -345,28 +352,60 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     textAreaSubmit(event) {
-        if (event.keyCode == 13 && event.shiftKey) {
+        let text = (this.messageForm.form.value.content as string);
+        if (this.selectingFromMention) {
+            event.preventDefault();
+            if (event.keyCode == 38) {
+                this.selectedMentionIndex--;
+            } else if (event.keyCode == 40) {
+                this.selectedMentionIndex++;
+            } else if (event.keyCode == 13) {
+                let userToMention = this.mentionList[this.selectedMentionIndex];
+                this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
+                if (!this.mentionListToSubmit.includes(userToMention)) {
+                    this.mentionListToSubmit.push(userToMention);
+                }
+                this.resetMentionList();
+            }
+            if (this.selectedMentionIndex < 0) {
+                this.selectedMentionIndex = 0;
+            } else if (this.selectedMentionIndex > this.mentionList.length - 1) {
+                this.selectingFromMention = false;
+            }
         } else if (event.keyCode == 13) {
             event.preventDefault();
             this.messageForm.ngSubmit.emit();
+            this.resetMentionList();
+        } else if (event.keyCode == 50) {
+            this.mentioning = true;
+            this.mentioningIndex = text.length;
+        } else if (event.keyCode == 32 && this.mentioning) {
+            this.resetMentionList();
+
+            let userToMention = text.substring(this.mentioningIndex, text.lastIndexOf(" "));
+            if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
+                this.mentionListToSubmit.push(userToMention);
+            }
+            this.mentioningIndex = 0;
+        } else if (this.mentioning && event.keyCode == 38) {
+            this.selectingFromMention = true;
+            this.selectedMentionIndex = this.mentionList.length - 1;
         }
-        if (
-            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height > this.textAreaHeight
-        ) {
-            this.defaultHeight = this.defaultHeight - 2;
-            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
-            this.textAreaHeight = document
-                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
-                .getBoundingClientRect().height;
-        } else if (
-            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height < this.textAreaHeight
-        ) {
-            this.defaultHeight = this.defaultHeight + 2;
-            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
-            this.textAreaHeight = document
-                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
-                .getBoundingClientRect().height;
+
+        if (this.mentionList.length == 0) {
+            this.mentioning = false;
         }
+
+        if (text == Constants.EMPTY) {
+            this.resetMentionList();
+        }
+
+        if (this.mentioning) {
+            let partialUsername = text.substring(this.mentioningIndex);
+            this.mentionListSearch(partialUsername);
+        }
+
+        this.checkForTextAreaHeight();
     }
 
     editFormTextAreaSubmit(event) {
@@ -555,6 +594,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
+                            this.mentionList = usernames;
                             resolve(data);
                         },
                         (err) => {
@@ -660,4 +700,54 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         }
     }
+
+    private mentionListSearch(search: string): boolean {
+        let origMentionList = [...this.mentionList];
+        if (search == Constants.EMPTY) {
+            this.resetMentionList();
+            return false;
+        } else {
+            for (let user of origMentionList) {
+                if (this.common.searchStrings(user.toLowerCase(), search.toLowerCase())) {
+                    if (this.mentionList.indexOf(user) === -1) {
+                        this.mentionList.push(user);
+                    }
+                } else {
+                    if (this.mentionList[this.mentionList.indexOf(user)]) {
+                        this.mentionList.splice(this.mentionList.indexOf(user), 1);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private resetMentionList(): void {
+        this.selectingFromMention = false;
+        this.mentionList = [...this.subscribedUsersUsernames];
+        this.mentionList.push("everyone");
+        this.selectedMentionIndex = -1;
+        this.mentioning = false;
+    }
+
+    private checkForTextAreaHeight(): void {
+        if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height > this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight - 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
+        } else if (
+            document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height < this.textAreaHeight
+        ) {
+            this.defaultHeight = this.defaultHeight + 2;
+            document.getElementById(SCROLLABLE_IDENTIFIER).style.height = this.defaultHeight + Constants.PERCENT;
+            this.textAreaHeight = document
+                .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
+                .getBoundingClientRect().height;
+        }
+    }
+
 }
