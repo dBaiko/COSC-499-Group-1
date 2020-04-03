@@ -268,6 +268,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         let value = form.value;
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
+            this.handleInput();
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
                 channelType: this.currentChannel.channelType,
@@ -352,60 +353,98 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     textAreaSubmit(event) {
-        let text = (this.messageForm.form.value.content as string);
-        if (this.selectingFromMention) {
+        if (event.keyCode == 13 && event.shiftKey) {
+        } else if (event.keyCode == 13 && !this.selectingFromMention) {
             event.preventDefault();
-            if (event.keyCode == 38) {
-                this.selectedMentionIndex--;
-            } else if (event.keyCode == 40) {
-                this.selectedMentionIndex++;
-            } else if (event.keyCode == 13) {
-                let userToMention = this.mentionList[this.selectedMentionIndex];
-                this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
-                if (!this.mentionListToSubmit.includes(userToMention)) {
-                    this.mentionListToSubmit.push(userToMention);
-                }
-                this.resetMentionList();
-            }
-            if (this.selectedMentionIndex < 0) {
-                this.selectedMentionIndex = 0;
-            } else if (this.selectedMentionIndex > this.mentionList.length - 1) {
-                this.selectingFromMention = false;
-            }
-        } else if (event.keyCode == 13) {
-            event.preventDefault();
+            this.resetMentionList();
             this.messageForm.ngSubmit.emit();
-            this.resetMentionList();
-        } else if (event.keyCode == 50) {
-            this.mentioning = true;
-            this.mentioningIndex = text.length;
-        } else if (event.keyCode == 32 && this.mentioning) {
-            this.resetMentionList();
+            return;
+        } else if (event.keyCode == 38) {
+            event.preventDefault();
+        }
 
-            let userToMention = text.substring(this.mentioningIndex, text.lastIndexOf(" "));
-            if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
-                this.mentionListToSubmit.push(userToMention);
+        this.checkForTextAreaHeight();
+    }
+
+    handleMentioning(event) {
+        let text = (this.messageForm.form.value.content as string);
+        if (text) {
+            if (this.selectingFromMention) {
+                if (event.keyCode == 38 || event.keyCode == 40) {
+                    event.preventDefault();
+                    if (event.keyCode == 38) {
+                        this.selectedMentionIndex--;
+                    } else if (event.keyCode == 40) {
+                        this.selectedMentionIndex++;
+                    }
+                    if (this.selectedMentionIndex < 0) {
+                        this.selectedMentionIndex = 0;
+                    } else if (this.selectedMentionIndex > this.mentionList.length) {
+                        this.selectedMentionIndex = -1;
+                        this.selectingFromMention = false;
+                    }
+                } else if (event.keyCode == 13) {
+                    let userToMention = this.mentionList[this.selectedMentionIndex];
+                    this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
+                    this.addMentionIfMentionable(userToMention);
+                    this.resetMentionList();
+                } else {
+                    this.selectedMentionIndex = -1;
+                    this.selectingFromMention = false;
+                }
+            } else if (this.mentioning) {
+                if (event.keyCode == 32) {
+                    let userToMention = text.substring(this.mentioningIndex, text.lastIndexOf(" "));
+                    this.addMentionIfMentionable(userToMention);
+                    this.resetMentionList();
+                } else if (event.keyCode == 38) {
+                    event.preventDefault();
+                    this.selectingFromMention = true;
+                    this.selectedMentionIndex = this.mentionList.length - 1;
+                } else {
+                    let partialUsername = text.substring(this.mentioningIndex);
+                    this.mentionListSearch(partialUsername);
+                }
+            } else {
+                if (event.keyCode == 50) {
+                    this.mentioning = true;
+                    this.mentioningIndex = text.length;
+                }
             }
-            this.mentioningIndex = 0;
-        } else if (this.mentioning && event.keyCode == 38) {
-            this.selectingFromMention = true;
-            this.selectedMentionIndex = this.mentionList.length - 1;
+        } else {
+            this.resetMentionList();
         }
 
         if (this.mentionList.length == 0) {
             this.mentioning = false;
         }
 
-        if (text == Constants.EMPTY) {
-            this.resetMentionList();
-        }
+        this.handleInput();
+    }
 
-        if (this.mentioning) {
-            let partialUsername = text.substring(this.mentioningIndex);
-            this.mentionListSearch(partialUsername);
-        }
+    clickMentionList(username: string) {
+        let text = (this.messageForm.form.value.content as string);
+        this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + username + " " });
+        this.addMentionIfMentionable(username);
+        this.resetMentionList();
+    }
 
-        this.checkForTextAreaHeight();
+    handleInput() {
+        let text = (this.messageForm.form.value.content as string);
+        let highlightedText = this.applyHighlights(text);
+        document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
+    }
+
+    applyHighlights(text: string): string {
+        if (text) {
+            return text.replace(/\n$/g, "\n\n").replace(/(@[a-zA-Z]+)/g, "<mark style='background-color: dimgray'>$1</mark>");
+        } else
+            return null;
+    }
+
+    handleScroll() {
+        let scrollTop = document.getElementById("messageInputField").scrollTop;
+        document.getElementById("backdrop").scrollTop = scrollTop;
     }
 
     editFormTextAreaSubmit(event) {
@@ -594,7 +633,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 usernames.push(data[i].username);
                             }
                             this.subscribedUsersUsernames = usernames;
-                            this.mentionList = usernames;
+                            this.resetMentionList();
                             resolve(data);
                         },
                         (err) => {
@@ -728,6 +767,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.mentionList.push("everyone");
         this.selectedMentionIndex = -1;
         this.mentioning = false;
+        this.mentioningIndex = 0;
     }
 
     private checkForTextAreaHeight(): void {
@@ -747,6 +787,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             this.textAreaHeight = document
                 .getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER)
                 .getBoundingClientRect().height;
+        }
+    }
+
+    private addMentionIfMentionable(userToMention): void {
+        if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
+            this.mentionListToSubmit.push(userToMention);
         }
     }
 

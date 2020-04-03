@@ -270,12 +270,14 @@
                                         <div *ngFor="let username of this.mentionList">
                                             <div
                                                 *ngIf="selectingFromMention && selectedMentionIndex == this.mentionList.indexOf(username); else elseNotSelected">
-                                                <mat-list-item class="selected">
+                                                <mat-list-item (click)="clickMentionList(username)"
+                                                               class="selected mentionListItem">
                                                     @{{username}}
                                                 </mat-list-item>
                                             </div>
                                             <ng-template #elseNotSelected>
-                                                <mat-list-item>
+                                                <mat-list-item (click)="clickMentionList(username)"
+                                                               class="mentionListItem">
                                                     @{{username}}
                                                 </mat-list-item>
                                             </ng-template>
@@ -284,9 +286,14 @@
                                     <mat-form-field>
                                         <mat-label>Message</mat-label>
                                         <label>
+                                            <div id="backdrop">
+                                                <div class="highlights"></div>
+                                            </div>
                                             <textarea
                                                 #textArea="ngModel"
-                                                (keyup)="textAreaSubmit($event)"
+                                                (keydown)="textAreaSubmit($event)"
+                                                (keyup)="handleMentioning($event)"
+                                                (scroll)="handleScroll()"
                                                 cdkTextareaAutosize
                                                 id="messageInputField"
                                                 matInput
