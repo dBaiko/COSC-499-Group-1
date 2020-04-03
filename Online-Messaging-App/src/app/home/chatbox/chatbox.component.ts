@@ -271,9 +271,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             form.reset();
             this.handleInput();
             value.content = this.markUpMentions(value.content);
-            for (let user of this.mentionListToSubmit) {
-                this.sendMentionNotification(user);
+            if (this.mentionListToSubmit.includes("everyone")) {
+                for (let user of this.mentionList) {
+                    if (user != "everyone") {
+                        this.sendMentionNotification(user);
+                    }
+                }
+            } else {
+                for (let user of this.mentionListToSubmit) {
+                    this.sendMentionNotification(user);
+                }
             }
+
             this.mentionListToSubmit = [];
             let chatMessage = {
                 channelId: this.currentChannel.channelId,
