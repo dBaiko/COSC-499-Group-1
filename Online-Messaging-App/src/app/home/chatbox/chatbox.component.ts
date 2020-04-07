@@ -459,7 +459,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let result;
             let indexs = [];
             while ((result = atUsernameRegExp.exec(text))) {
-                if (!/<mark style='background-color: dimgray'>/g.test(text.substring(result.index - 40, result.index))) {
+                if (!/<mark style='background-color: var(--primary-color)'>/g.test(text.substring(result.index - 40, result.index))) {
                     let endIndex = text.substring(result.index).indexOf(" ");
                     if (endIndex == -1) {
                         endIndex = text.length;
@@ -480,7 +480,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             if (indexs.length > 0) {
                 retText = text.substring(0, indexs[0].begin);
                 for (let i = 0; i < indexs.length; i++) {
-                    retText += "<mark style='background-color: dimgray'>";
+                    retText += "<mark style='background-color: var(--primary-color)'>";
                     retText += indexs[i].user;
                     retText += "</mark>";
                     if (i != indexs.length - 1) {
