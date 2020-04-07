@@ -11,6 +11,7 @@ interface ChannelObject {
     channelName: string;
     channelType: string;
 }
+
 interface Message {
     channelId: string;
     username: string;
@@ -24,7 +25,7 @@ interface Message {
 
 jest.setTimeout(30000);
 
-const { DocumentClient } = require("aws-sdk/clients/dynamodb");
+const {DocumentClient} = require("aws-sdk/clients/dynamodb");
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -38,19 +39,48 @@ const config = {
 
 const ddb = new DocumentClient(config);
 
+
+const PROFILE_IMAGE_S3_PREFIX: string =
+    "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
+const DEFAULT_PROFILE_IMAGE: string = "default.png";
+
 describe("UserDAO", () => {
+
     const user = new UserDAO(ddb);
+
+    beforeEach(() => {
+        ddb.put({
+            TableName: "Users",
+            Item: {
+                username: "testUser",
+                email: "testUser@nothing.com"
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "Users",
+            Key: {
+                username: "testUser",
+            }
+        })
+    });
+
     it("should create a new user in the table", async () => {
-        await user.createNewUser("testUser", "testUser@nothing.com");
+        await user.createNewUser("testUser2", "testUser2@nothing.com");
         const item = await ddb.get({TableName: "Users", Key: {username: "testUser"}}).promise();
         expect(item).toEqual({
             Item: {
-                username: "testUser",
-                email: "testUser@nothing.com",
-                firstName: "Lorem",
-                lastName: "Ipsum"
+                username: "testUser2",
+                email: "testUser2@nothing.com",
             }
         });
+        ddb.delete({
+            TableName: "Users",
+            Key: {
+                username: "testUser2",
+            }
+        })
     });
 
     it("should get user information by username", async () => {
@@ -59,25 +89,83 @@ describe("UserDAO", () => {
             {
                 username: "testUser",
                 email: "testUser@nothing.com",
-                firstName: "Lorem",
-                lastName: "Ipsum"
             }
         ]);
     });
-    it("should update a user's basic data", async () => {
 
+    it("should update a user's email address by username", async () => {
+        await user.updateUser("testUser", "testUpdate@nothing.com");
+        const item = await user.getUserInfoByUsername("testUser");
+        expect(item).toEqual([
+            {
+                username: "testUser",
+                email: "testUpdate@nothing.com",
+            }
+        ]);
     });
+
     it("should return data from a user's profile", async () => {
-
+//TODO: Ask Dylan to explain function
     });
-    it("should return a list of all users", async () => {
 
+    it("should return a list of all users", async () => {
+        ddb.put({
+            TableName: "Users",
+            Item: {
+                username: "testUser2",
+                email: "test2@nothing.com"
+            }
+        });
+        ddb.put({
+            TableName: "Users",
+            Item: {
+                username: "testUser3",
+                email: "test3@nothing.com"
+            }
+        });
+        const item = await user.getAllUsers();
+        expect(item).toEqual([
+            //TODO: see how dynamodb returns scan results
+        ])
     });
 });
+
 describe("ChannelDAO", () => {
+
     const channel = new ChannelDAO(ddb);
+
+    beforeEach(() => {
+        ddb.put({
+            TableName: "Channels",
+            Item: {
+                channelName: "testUser",
+                channelID: "ID01",
+                channelType: "testUser@nothing.com",
+                channelDescription: "Lorem Ipsum",
+                firstUsername: "testUser",
+                firstUserChannelRole: "admin",
+                inviteStatus: "true",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "Channels",
+            Key: {
+                channelID: "ID01",//TODO: check primary key values for ALL items
+            }
+        })
+    });
+
     it("should create a new channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
+        await channel.addNewChannel("testChannel",
+            "public",
+            "testDescript",
+            "testUser",
+            "admin",
+            "true",
+            PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
         const item = await ddb.scan({TableName: "Channel"}).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
@@ -94,7 +182,7 @@ describe("ChannelDAO", () => {
 
     it("should retrieve certain information about a channel", async () => {
         await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
-        const testChannel = await ddb.scan({TableName: "Channel"}).promise();
+        const testChannel = await ddb.get({TableName: "Channel", Key: {channelName: "testChannel"}}).promise();//TODO: find out how to get key, maybe scan and convert?
         let channelId = testChannel.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
         const item = await ddb
@@ -102,6 +190,7 @@ describe("ChannelDAO", () => {
             .promise();
         let expectedItem = [item.Item];
         expect(call).toEqual(expectedItem);
+        //TODO: delete channel by channelid
     });
 
     it("should return a list of all channels", async () => {
@@ -112,96 +201,215 @@ describe("ChannelDAO", () => {
         );
     });
 });
+
 describe("UserChannelDAO", () => {
+
     const userChannel = new UserChannelDAO(ddb);
+
+    beforeEach(() => {
+        ddb.put({
+            TableName: "UserChannel",
+            Item: {
+                username: "testUser",
+                channelId: "ID01",
+                userChannelRole: "admin",
+                channelName: "channel",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "UserChannel",
+            Key: {
+                username: "testUser",
+                channelId: "ID01"
+            }
+        })
+    });
+
     it("should return all users and all channels they are subscribed to", async () => {
     });
+
     it("should subscribe a user to a channel", async () => {
     });
+
     it("should return a list of channels a user is subscribed to", async () => {
     });
+
     it("should return a list of all users subscribed to a channel", async () => {
     });
+
     it("should delete a subscription between a specified user and channel", async () => {
     });
+
     it("should update a displayed profile picture across a user's subscribed channels", async () => {
     });
+
     it("should update a user's displayed status across all subscribed channels", async () => {
     });
 });
+
 describe("MessageDAO", () => {
+
     const msg = new MessageDAO(ddb);
-    const testMessage: Message = {
-        channelId: "string",
+    const testMessage1: Message = {
+        channelId: "channel",
         username: "testUser",
         content: "content1",
         messageId: "ID1",
         insertTime: 1,
-        profileImage: none,
+        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+        deleted: "no",
+        channelType: "Public",
+    };
+    const testMessage2: Message = {
+        channelId: "channel",
+        username: "testUser",
+        content: "content2",
+        messageId: "ID2",
+        insertTime: 2,
+        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
         deleted: "no",
         channelType: "Public",
     };
     const testMessageUpdate: Message = {
-        channelId: "string",
+        channelId: "channel",
         username: "testUser",
-        content: "content2",
+        content: "content3",
         messageId: "ID1",
         insertTime: 1,
-        profileImage: none,
+        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
         deleted: "no",
         channelType: "Public",
     };
+
     it("should retrieve the message history for a given channel", async () => {
     });
+
     it("should get all messages from all channels", async () => {
     });
-    it("should add a new message to a channel", async () => {
 
-        await msg.addNewMessage(testMessage);
-    });
+    it("should add a new message to a channel", async () => {
+        await msg.addNewMessage(testMessage1);
+        const item = ddb.get({
+            TableName: "Messages",
+            Key: {
+                channelID: "channel",
+                messageID: "ID1"
+            }});
+            expect(item).toEqual(testMessage1);
+        });
+
     it("should delete all messages in a channel", async () => {
     });
+
     it("should delete the specified message", async () => {
     });
+
     it("should update the specified message", async () => {
     });
+
 });
+
 describe("ProfileDAO", () => {
+
     const profile = new ProfileDAO(ddb);
+
+    beforeEach(() => {
+        ddb.put({
+            TableName: "Profiles",
+            Item: {
+                firstName: "Test",
+                lastName: "User",
+                username: "TestUser",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                status: "Lorem Ipsum"
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "Profiles",
+            Key: {
+                username: "testUser",
+            }
+        })
+    });
+
     it("should create a new profile from basic user information", async () => {
     });
+
     it("should update all data in a user's profile", async () => {
     });
+
     it("should update a user's status message", async () => {
     });
+
     it("should update a user's profile picture", async () => {
     });
+
     it("should return all data in a user's profile", async () => {
     });
+
 });
+
 describe("NotificationsDAO", () => {
+
     const notification = new NotificationsDAO(ddb);
+
     it("should return all notifications for a user", async () => {
     });
+
     it("should return all friend requests from a user", async () => {
     });
+
     it("should return all notifications from a channel", async () => {
     });
+
     it("should return all notifications from a channel for a user", async () => {
     });
+
     it("should create a new notification from a socket", async () => {
     });
+
     it("should create a new notification from an object", async () => {
     });
+
     it("should delete a notification from the database", async () => {
     });
 });
+
 describe("SettingsDAO", () => {
+
     const settings = new SettingsDAO(ddb);
+
+    beforeEach(() => {
+        ddb.put({
+            TableName: "Settings",
+            Item: {
+                username: "testUser",
+                theme: "dark"
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "Settings",
+            Key: {
+                username: "testUser",
+            }
+        })
+    });
+
     it("should create settings information for a user", async () => {
     });
+
     it("should get settings information for a user", async () => {
     });
+
     it("should update a user's settings", async () => {
     });
+
 });
