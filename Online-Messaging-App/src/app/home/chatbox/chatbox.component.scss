@@ -159,7 +159,7 @@ markdown ::ng-deep p code {
 }
 
 markdown ::ng-deep .lang-type {
-    background-color: var(--primary-color);
+    background-color: red;
     padding: 0.5rem;
     position: relative;
     bottom: 0.7rem;
@@ -300,22 +300,22 @@ mat-expansion-panel:hover {
 }
 
 .mentionList {
-    background-color: white;
+    background-color: var(--soft-black);
 }
 
 .mentionListItem:hover {
-    background-color: yellow;
+    background-color: var(--primary-color);
 }
 
 .selected {
-    background-color: yellow;
+    background-color: var(--primary-color);
 }
 
 #backdrop {
     overflow: auto;
-    background-color: transparent;
+    background-color: white;
     z-index: 1;
-    color: transparent;
+    color: var(--primary-text-color);
 }
 
 .highlights {
@@ -323,11 +323,11 @@ mat-expansion-panel:hover {
     white-space: pre-wrap;
     word-wrap: break-word;
     background-color: transparent;
-    color: transparent;
+    color: var(--primary-text-color);
 }
 
 #messageInput {
-    background-color: transparent;
+    background-color: white;
     margin: 0;
     border-radius: 0;
 }
@@ -335,4 +335,7 @@ mat-expansion-panel:hover {
 mark {
     color: transparent;
     background-color: red !important;
+}
+::ng-deep .mentionList .mat-list-item-content {
+    color: white;
 }
