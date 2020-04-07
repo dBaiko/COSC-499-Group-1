@@ -2,11 +2,24 @@ import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
 import MessageDAO from "../routes/messages/MessageDAO";
+import ProfileDAO from "../routes/profiles/ProfileDAO";
+import {NotificationsDAO} from "../routes/notifications/NotificationsDAO";
+import SettingsDAO from "../routes/settings/settingsDAO";
 
 interface ChannelObject {
     channelId: string;
     channelName: string;
     channelType: string;
+}
+interface Message {
+    channelId: string;
+    username: string;
+    content: string;
+    messageId?: string;
+    insertTime?: number;
+    profileImage: string;
+    deleted: string;
+    channelType?: string;
 }
 
 jest.setTimeout(30000);
@@ -25,12 +38,11 @@ const config = {
 
 const ddb = new DocumentClient(config);
 
-const user = new UserDAO(ddb);
-
-describe("DAO Spec", () => {
+describe("UserDAO", () => {
+    const user = new UserDAO(ddb);
     it("should create a new user in the table", async () => {
         await user.createNewUser("testUser", "testUser@nothing.com");
-        const item = await ddb.get({ TableName: "Users", Key: { username: "testUser" } }).promise();
+        const item = await ddb.get({TableName: "Users", Key: {username: "testUser"}}).promise();
         expect(item).toEqual({
             Item: {
                 username: "testUser",
@@ -52,11 +64,21 @@ describe("DAO Spec", () => {
             }
         ]);
     });
+    it("should update a user's basic data", async () => {
 
+    });
+    it("should return data from a user's profile", async () => {
+
+    });
+    it("should return a list of all users", async () => {
+
+    });
+});
+describe("ChannelDAO", () => {
     const channel = new ChannelDAO(ddb);
     it("should create a new channel", async () => {
         await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
-        const item = await ddb.scan({ TableName: "Channel" }).promise();
+        const item = await ddb.scan({TableName: "Channel"}).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
             Count: 1,
@@ -72,11 +94,11 @@ describe("DAO Spec", () => {
 
     it("should retrieve certain information about a channel", async () => {
         await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
-        const testChannel = await ddb.scan({ TableName: "Channel" }).promise();
+        const testChannel = await ddb.scan({TableName: "Channel"}).promise();
         let channelId = testChannel.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
         const item = await ddb
-            .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "testChannel" } })
+            .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
             .promise();
         let expectedItem = [item.Item];
         expect(call).toEqual(expectedItem);
@@ -84,38 +106,102 @@ describe("DAO Spec", () => {
 
     it("should return a list of all channels", async () => {
         const list = await channel.getAllChannels();
-        const item = await ddb.scan({ TableName: "Channel" }).promise();
+        const item = await ddb.scan({TableName: "Channel"}).promise();
         expect(list).toEqual(
             item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
         );
     });
-
+});
+describe("UserChannelDAO", () => {
     const userChannel = new UserChannelDAO(ddb);
+    it("should return all users and all channels they are subscribed to", async () => {
+    });
     it("should subscribe a user to a channel", async () => {
     });
     it("should return a list of channels a user is subscribed to", async () => {
     });
     it("should return a list of all users subscribed to a channel", async () => {
     });
-    it("should return all users and all channels they are subscribed to", async () => {
+    it("should delete a subscription between a specified user and channel", async () => {
     });
-
-    it("should create a new profile from basic user information", async () => {
+    it("should update a displayed profile picture across a user's subscribed channels", async () => {
     });
-    it("should return only data marked public in a user's profile", async () => {
+    it("should update a user's displayed status across all subscribed channels", async () => {
     });
-    it("should return all data in a user's profile", async () => {
-    });
-    it("should update all data in a user's profile", async () => {
-    });
-
+});
+describe("MessageDAO", () => {
     const msg = new MessageDAO(ddb);
+    const testMessage: Message = {
+        channelId: "string",
+        username: "testUser",
+        content: "content1",
+        messageId: "ID1",
+        insertTime: 1,
+        profileImage: none,
+        deleted: "no",
+        channelType: "Public",
+    };
+    const testMessageUpdate: Message = {
+        channelId: "string",
+        username: "testUser",
+        content: "content2",
+        messageId: "ID1",
+        insertTime: 1,
+        profileImage: none,
+        deleted: "no",
+        channelType: "Public",
+    };
     it("should retrieve the message history for a given channel", async () => {
     });
     it("should get all messages from all channels", async () => {
     });
-    // it("should add a new message to the file", async () => {
-    //     //TODO: create message object to pass.
-    //     await msg.addNewMessage("Lorem Ipsum");
-    // });
+    it("should add a new message to a channel", async () => {
+
+        await msg.addNewMessage(testMessage);
+    });
+    it("should delete all messages in a channel", async () => {
+    });
+    it("should delete the specified message", async () => {
+    });
+    it("should update the specified message", async () => {
+    });
+});
+describe("ProfileDAO", () => {
+    const profile = new ProfileDAO(ddb);
+    it("should create a new profile from basic user information", async () => {
+    });
+    it("should update all data in a user's profile", async () => {
+    });
+    it("should update a user's status message", async () => {
+    });
+    it("should update a user's profile picture", async () => {
+    });
+    it("should return all data in a user's profile", async () => {
+    });
+});
+describe("NotificationsDAO", () => {
+    const notification = new NotificationsDAO(ddb);
+    it("should return all notifications for a user", async () => {
+    });
+    it("should return all friend requests from a user", async () => {
+    });
+    it("should return all notifications from a channel", async () => {
+    });
+    it("should return all notifications from a channel for a user", async () => {
+    });
+    it("should create a new notification from a socket", async () => {
+    });
+    it("should create a new notification from an object", async () => {
+    });
+    it("should delete a notification from the database", async () => {
+    });
+});
+describe("SettingsDAO", () => {
+    const settings = new SettingsDAO(ddb);
+    it("should create settings information for a user", async () => {
+    });
+    it("should get settings information for a user", async () => {
+    });
+    it("should update a user's settings", async () => {
+    });
 });
