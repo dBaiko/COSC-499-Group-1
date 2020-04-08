@@ -162,9 +162,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.getChannelInfo().catch((err) => {
             console.error(err);
         });
-        this.getMessages(this._currentChannel.channelId).catch((err) => {
-            console.error(err);
-        });
+        this.getMessages(this._currentChannel.channelId)
+            .then(() => {
+                for (let message of this.chatMessages) {
+                    this.getReactionsForMessage(message.messageId)
+                        .then((data: Array<ReactionObject>) => {
+                            message.reactions = data;
+                        });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         this.isNearBottom = false;
         this.getSubcribedUsers()
             .then((data: Array<UserChannelObject>) => {
@@ -300,13 +309,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 }
                             }
                             this.chatMessages = data || [];
-
-                            for (let message of this.chatMessages) {
-                                this.getReactionsForMessage(message.messageId)
-                                    .then((data: Array<ReactionObject>) => {
-                                        message.reactions = data;
-                                    });
-                            }
 
                             resolve();
                         },

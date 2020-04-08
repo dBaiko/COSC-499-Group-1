@@ -230,7 +230,8 @@
                                                 chatMessage.content
                                                 }}</markdown>
                                         </p>
-                                        <div *ngIf="chatMessage.reactions" class="reactions" id="reactions">
+                                        <div *ngIf="chatMessage.reactions && chatMessage.reactions.length > 0"
+                                             class="reactions" id="reactions">
                                         <span *ngFor="let reaction of chatMessage.reactions">
                                             <button (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
                                                     *ngIf="reaction.count > 1"

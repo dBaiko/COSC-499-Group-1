@@ -14,7 +14,7 @@ class ReactionsDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public getAllReactionsForMessage(messageId: string): Promise<any> {
+    public getAllReactionsForMessage(messageId: string): Promise<Array<ReactionObject>> {
         let params = {
             TableName: REACTIONS_TABLE_NAME,
             KeyConditionExpression: "messageId = :m",

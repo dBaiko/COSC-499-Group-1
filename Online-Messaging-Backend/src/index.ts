@@ -66,7 +66,7 @@ const users: Array<UserSocket> = [];
 const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
 app.use("/", routes);
-io.origins("http://localhost:4200");
+io.origins("http://localhost:4200 https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com:*");
 io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");
