@@ -3,7 +3,8 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 export interface ReactionObject {
     messageId: string,
     emoji: string,
-    insertTime: number
+    insertTime: number,
+    username: string
 }
 
 const REACTIONS_TABLE_NAME = "Reactions";
@@ -34,12 +35,13 @@ class ReactionsDAO {
 
     }
 
-    public addNewReaction(messageId: string, emoji: string): Promise<any> {
+    public addNewReaction(messageId: string, emoji: string, username: string): Promise<any> {
         let params = {
             Item: {
                 messageId: messageId,
                 emoji: emoji,
-                insertTime: Date.now()
+                insertTime: Date.now(),
+                username: username
             },
             TableName: REACTIONS_TABLE_NAME
         };
@@ -59,13 +61,13 @@ class ReactionsDAO {
 
     }
 
-    public deleteReactionForMessage(messageId: string, emoji: string): Promise<any> {
+    public deleteReactionForMessage(messageId: string, emoji: string, username: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.getAllReactionsForMessage(messageId)
                 .then((data: Array<ReactionObject>) => {
                     let toDelete: ReactionObject;
                     for (let item of data) {
-                        if (item.emoji == emoji) {
+                        if (item.emoji == emoji && item.username == username) {
                             toDelete = item;
                             break;
                         }

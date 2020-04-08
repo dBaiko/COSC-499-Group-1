@@ -11,6 +11,7 @@ import {
     NotificationObject,
     NotificationSocketObject,
     ProfileObject,
+    ReactionObject,
     SettingsObject,
     UserChannelObject,
     UserObject
@@ -249,6 +250,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 }
                             }
                             this.chatMessages = data || [];
+
+                            for (let message of this.chatMessages) {
+                                this.getReactionsForMessage(message.messageId)
+                                    .then((data: Array<ReactionObject>) => {
+                                        message.reactions = data;
+                                    });
+                            }
+
                             resolve();
                         },
                         (err) => {
@@ -646,6 +655,92 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
+    public handleReactionButtonClick(messageId: string, reaction: ReactionObject) {
+        if (reaction.username.includes(this.currentUserProfile.username)) {
+            this.removeEmojiReaction(messageId, reaction.emoji)
+                .then(() => {
+                    reaction.count--;
+                    reaction.username.splice(reaction.username.indexOf(this.currentUserProfile.username), 1);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        } else {
+            this.addNewEmojiReaction(messageId, reaction.emoji)
+                .then(() => {
+                    reaction.count++;
+                    reaction.username.push(this.currentUserProfile.username);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }
+
+    private addNewEmojiReaction(messageId: string, emoji: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    let body = {
+                        emoji: emoji,
+                        username: this.currentUserProfile.username
+                    };
+
+                    this.http.post(this.messagesAPI + messageId + "/reaction", body, httpHeaders).subscribe(
+                        () => {
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private removeEmojiReaction(messageId: string, emoji: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+
+                    this.http.delete(this.messagesAPI + messageId + "/reaction/emoji/" + emoji + "/username/" + this.currentUserProfile.username, httpHeaders).subscribe(
+                        () => {
+                            resolve();
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
     private sendMentionNotification(username): void {
         let message: string = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
         let notifications: NotificationSocketObject = {
@@ -919,6 +1014,35 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
             this.mentionListToSubmit.push(userToMention);
         }
+    }
+
+    private getReactionsForMessage(messageId: string): Promise<Array<ReactionObject>> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.get(this.messagesAPI + messageId + "/reactions", httpHeaders).subscribe(
+                        (data: Array<ReactionObject>) => {
+                            resolve(data);
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
     }
 
 }

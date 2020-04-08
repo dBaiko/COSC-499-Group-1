@@ -226,11 +226,20 @@
                                             >
                                                 <mat-icon>emoji_emotions</mat-icon>
                                             </span>
-
                                             <markdown *ngIf="!chatMessage.editing" class="mark" ngPreserveWhitespaces>{{
                                                 chatMessage.content
                                                 }}</markdown>
                                         </p>
+                                        <div *ngIf="chatMessage.reactions" class="reactions" id="reactions">
+                                        <span *ngFor="let reaction of chatMessage.reactions">
+                                            <button (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
+                                                    *ngIf="reaction.count > 1"
+                                                    class="reaction">{{reaction.emoji}} {{reaction.count}}</button>
+                                            <button (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
+                                                    *ngIf="reaction.count <= 1"
+                                                    class="reaction">{{reaction.emoji}}</button>
+                                        </span>
+                                        </div>
                                         <form
                                             (ngSubmit)="editFormSubmit(editForm, chatMessage)"
                                             *ngIf="chatMessage.editing"

@@ -16,7 +16,7 @@ const PATH_DELETE_MESSAGE: string = "/:messageId/:channelId/:insertTime/:usernam
 const PATH_PUT_MESSAGE: string = "/:messageId/";
 const PATH_GET_MESSAGE_REACTIONS = "/:messageId/reactions";
 const PATH_POST_NEW_REACTION = "/:messageId/reaction/";
-const PATH_DELETE_EMOJI_FOR_MESSAGE = "/:messageId/reaction/";
+const PATH_DELETE_EMOJI_FOR_MESSAGE = "/:messageId/reaction/emoji/:emoji/username/:username";
 
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
@@ -121,10 +121,11 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
                     let prev: ReactionObject = {
                         messageId: "",
                         emoji: "",
-                        insertTime: null
+                        insertTime: null,
+                        username: ""
                     };
 
-                    data.sort();
+                    data = data.sort((a, b) => a.emoji < b.emoji ? 1 : -1);
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].emoji !== prev.emoji) {
                             a.push(data[i].emoji);
@@ -133,6 +134,20 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
                             b[b.length - 1]++;
                         }
                         prev = data[i];
+
+                    }
+
+                    let usernames = [];
+                    let temp: Array<string> = [];
+
+                    for (let i = 0; i < a.length; i++) {
+                        for (let j = 0; j < data.length; j++) {
+                            if (data[j].emoji == a[i] && !temp.includes(data[j].username)) {
+                                temp.push(data[j].username);
+                            }
+                        }
+                        usernames.push(temp);
+                        temp = [];
                     }
 
                     let ret = [];
@@ -140,7 +155,8 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
                     for (let i = 0; i < a.length; i++) {
                         ret.push({
                             emoji: a[i],
-                            count: b[i]
+                            count: b[i],
+                            username: usernames[i]
                         });
                     }
 
@@ -164,7 +180,7 @@ router.post(PATH_POST_NEW_REACTION, (req, res) => {
         (data) => {
             if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
                 let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
-                reactionsDAO.addNewReaction(req.params.messageId, req.body.emoji)
+                reactionsDAO.addNewReaction(req.params.messageId, req.body.emoji, req.body.username)
                     .then(() => {
                         res.status(200).send({
                             status: 200,
@@ -192,9 +208,9 @@ router.delete(PATH_DELETE_EMOJI_FOR_MESSAGE, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-            if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
+            if (data.decodedToken[COGNITO_USERNAME] == req.params.username) {
                 let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
-                reactionsDAO.deleteReactionForMessage(req.params.messageId, req.body.emoji)
+                reactionsDAO.deleteReactionForMessage(req.params.messageId, req.params.emoji, req.params.username)
                     .then(() => {
                         res.status(200).send({
                             status: 200,
