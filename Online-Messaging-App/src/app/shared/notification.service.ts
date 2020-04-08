@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
-import { NotificationSocketObject, UserSocket } from "./app-config";
+import { NotificationSocketObject, ReactionSocketObject, UserSocket } from "./app-config";
 
 const USERNAME_EVENT = "username";
 const EXIT_EVENT = "exit";
 const USER_LIST_EVENT = "userList";
 const NOTIFICATION_EVENT = "notification";
+const REACTION_ADD_EVENT = "reaction_add";
+const REACTION_REMOVE_EVENT = "reaction_remove";
 
 @Injectable()
 export class NotificationService {
@@ -47,6 +49,14 @@ export class NotificationService {
 
     sendNotification(notification: NotificationSocketObject): void {
         NotificationService.socket.emit(NOTIFICATION_EVENT, notification);
+    }
+
+    sendReaction(reaction: ReactionSocketObject): void {
+        NotificationService.socket.emit(REACTION_ADD_EVENT, reaction);
+    }
+
+    removeReaction(reaction: ReactionSocketObject): void {
+        NotificationService.socket.emit(REACTION_REMOVE_EVENT, reaction);
     }
 
     getSocketId(): string {

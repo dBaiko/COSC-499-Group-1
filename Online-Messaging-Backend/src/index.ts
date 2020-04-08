@@ -8,11 +8,18 @@ import { awsConfigPath } from "./config/aws-config";
 import { NotificationObject, NotificationsDAO } from "./routes/notifications/NotificationsDAO";
 import { uuid } from "uuidv4";
 import UserChannelDAO from "./routes/userChannels/UserChannelDAO";
+import ReactionsDAO from "./routes/reactions/ReactionsDAO";
 import socket = require("socket.io");
 
 export interface UserSocket {
     id: string;
     username: string;
+}
+
+export interface ReactionSocketObject {
+    emoji: string,
+    username: string,
+    messageId: string
 }
 
 export interface NotificationSocketObject {
@@ -130,6 +137,18 @@ io.on("connection", (socketIO) => {
                 .emit("broadcastNotification", notificationSocketObject);
         }
         notificationsDAO.socketCreateNewNotification(notificationSocketObject);
+    });
+
+    socketIO.on("reaction_add", (reaction: ReactionSocketObject) => {
+        let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        io.sockets.emit("broadcast_reaction_add", reaction);
+        reactionsDAO.addNewReaction(reaction.messageId, reaction.emoji, reaction.username);
+    });
+
+    socketIO.on("reaction_remove", (reaction: ReactionSocketObject) => {
+        let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        io.sockets.emit("broadcast_reaction_remove", reaction);
+        reactionsDAO.deleteReactionForMessage(reaction.messageId, reaction.emoji, reaction.username);
     });
 
     socketIO.on("exit", (username: string) => {

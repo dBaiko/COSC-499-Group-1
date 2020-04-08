@@ -12,6 +12,7 @@ import {
     NotificationSocketObject,
     ProfileObject,
     ReactionObject,
+    ReactionSocketObject,
     SettingsObject,
     UserChannelObject,
     UserObject
@@ -222,6 +223,55 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         });
         this.textAreaHeight = document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height;
+
+        this.notificationService.addSocketListener("broadcast_reaction_add", (reaction: ReactionSocketObject) => {
+            let messageIndex: number = -1;
+            for (let i = 0; i < this.chatMessages.length; i++) {
+                if (this.chatMessages[i].messageId == reaction.messageId) {
+                    messageIndex = i;
+                    break;
+                }
+            }
+            if (messageIndex != -1) {
+                let reactionIndex = -1;
+                for (let i = 0; i < this.chatMessages[messageIndex].reactions.length; i++) {
+                    if (this.chatMessages[messageIndex].reactions[i].emoji == reaction.emoji) {
+                        reactionIndex = i;
+                        break;
+                    }
+                }
+
+                if (reactionIndex != -1) {
+                    this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
+                    this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                } else {
+                    this.chatMessages[messageIndex].reactions.push({
+                        emoji: reaction.username,
+                        count: 1,
+                        username: [reaction.username]
+                    });
+                }
+
+            }
+        });
+
+        this.notificationService.addSocketListener("broadcast_reaction_remove", (reaction: ReactionSocketObject) => {
+            for (let i = 0; i < this.chatMessages.length; i++) {
+                if (this.chatMessages[i].messageId == reaction.messageId) {
+                    for (let j = 0; j < this.chatMessages[i].reactions.length; j++) {
+                        if (this.chatMessages[i].reactions[j].emoji == reaction.emoji) {
+                            this.chatMessages[i].reactions[j].username.splice(this.chatMessages[i].reactions[j].username.indexOf(reaction.username), 1);
+                            this.chatMessages[i].reactions[j].count--;
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        });
+
     }
 
     ngAfterViewChecked() {
@@ -657,87 +707,25 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     public handleReactionButtonClick(messageId: string, reaction: ReactionObject) {
         if (reaction.username.includes(this.currentUserProfile.username)) {
-            this.removeEmojiReaction(messageId, reaction.emoji)
-                .then(() => {
-                    reaction.count--;
-                    reaction.username.splice(reaction.username.indexOf(this.currentUserProfile.username), 1);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            this.removeEmojiReaction(messageId, reaction.emoji);
         } else {
-            this.addNewEmojiReaction(messageId, reaction.emoji)
-                .then(() => {
-                    reaction.count++;
-                    reaction.username.push(this.currentUserProfile.username);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            this.addNewEmojiReaction(messageId, reaction.emoji);
         }
     }
 
-    private addNewEmojiReaction(messageId: string, emoji: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
-
-                    let body = {
-                        emoji: emoji,
-                        username: this.currentUserProfile.username
-                    };
-
-                    this.http.post(this.messagesAPI + messageId + "/reaction", body, httpHeaders).subscribe(
-                        () => {
-                            resolve();
-                        },
-                        (err) => {
-                            console.log(err);
-                            reject(err);
-                        }
-                    );
-
-                },
-                (err) => {
-                    reject(err);
-                }
-            );
+    private addNewEmojiReaction(messageId: string, emoji: string): void {
+        this.notificationService.sendReaction({
+            emoji: emoji,
+            username: this.currentUserProfile.username,
+            messageId: messageId
         });
     }
 
-    private removeEmojiReaction(messageId: string, emoji: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
-
-
-                    this.http.delete(this.messagesAPI + messageId + "/reaction/emoji/" + emoji + "/username/" + this.currentUserProfile.username, httpHeaders).subscribe(
-                        () => {
-                            resolve();
-                        },
-                        (err) => {
-                            console.log(err);
-                            reject(err);
-                        }
-                    );
-
-                },
-                (err) => {
-                    reject(err);
-                }
-            );
+    private removeEmojiReaction(messageId: string, emoji: string): void {
+        this.notificationService.removeReaction({
+            messageId: messageId,
+            emoji: emoji,
+            username: this.currentUserProfile.username
         });
     }
 

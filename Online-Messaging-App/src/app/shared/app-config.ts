@@ -275,3 +275,9 @@ export interface ReactionObject {
     count: number,
     username: Array<string>
 }
+
+export interface ReactionSocketObject {
+    emoji: string,
+    username: string,
+    messageId: string
+}
