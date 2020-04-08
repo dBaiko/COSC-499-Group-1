@@ -5,6 +5,7 @@ import MessageDAO from "./MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
+import ReactionsDAO, { ReactionObject } from "../reactions/ReactionsDAO";
 
 const router = express.Router();
 const AUTH_KEY = "authorization";
@@ -13,6 +14,10 @@ const COGNITO_USERNAME = "cognito:username";
 const PATH_GET_ALL_MESSAGES: string = "/";
 const PATH_DELETE_MESSAGE: string = "/:messageId/:channelId/:insertTime/:username/";
 const PATH_PUT_MESSAGE: string = "/:messageId/";
+const PATH_GET_MESSAGE_REACTIONS = "/:messageId/reactions";
+const PATH_POST_NEW_REACTION = "/:messageId/reaction/";
+const PATH_DELETE_EMOJI_FOR_MESSAGE = "/:messageId/reaction/";
+
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
 
@@ -101,5 +106,116 @@ router.delete(PATH_DELETE_MESSAGE, (req, res) => {
         }
     );
 });
+
+router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+            reactionsDAO.getAllReactionsForMessage(req.params.messageId)
+                .then((data: Array<ReactionObject>) => {
+
+                    let a = [];
+                    let b = [];
+                    let prev: ReactionObject = {
+                        messageId: "",
+                        emoji: "",
+                        insertTime: null
+                    };
+
+                    data.sort();
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].emoji !== prev.emoji) {
+                            a.push(data[i].emoji);
+                            b.push(1);
+                        } else {
+                            b[b.length - 1]++;
+                        }
+                        prev = data[i];
+                    }
+
+                    let ret = [];
+
+                    for (let i = 0; i < a.length; i++) {
+                        ret.push({
+                            emoji: a[i],
+                            count: b[i]
+                        });
+                    }
+
+                    res.status(200).send(ret);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.post(PATH_POST_NEW_REACTION, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
+                let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+                reactionsDAO.addNewReaction(req.params.messageId, req.body.emoji)
+                    .then(() => {
+                        res.status(200).send({
+                            status: 200,
+                            message: "Reaction added successfully"
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(500).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user data" }
+                });
+            }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.delete(PATH_DELETE_EMOJI_FOR_MESSAGE, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
+                let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+                reactionsDAO.deleteReactionForMessage(req.params.messageId, req.body.emoji)
+                    .then(() => {
+                        res.status(200).send({
+                            status: 200,
+                            message: "Reaction deleted successfully"
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(500).send(err);
+                    });
+            } else {
+                res.status(401).send({
+                    status: 401,
+                    data: { message: "Unauthorized to access user data" }
+                });
+            }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
 
 export = router;
