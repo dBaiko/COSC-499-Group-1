@@ -143,6 +143,7 @@ export interface MessageObject {
     username: string;
     deleted: boolean;
     editing: boolean;
+    reactions?: Array<ReactionObject>
 }
 
 export interface newChannelResponse {
@@ -266,4 +267,17 @@ export interface SettingsObject {
     username: string;
     theme: string;
     explicit: boolean;
+}
+
+
+export interface ReactionObject {
+    emoji: string,
+    count: number,
+    username: Array<string>
+}
+
+export interface ReactionSocketObject {
+    emoji: string,
+    username: string,
+    messageId: string
 }
