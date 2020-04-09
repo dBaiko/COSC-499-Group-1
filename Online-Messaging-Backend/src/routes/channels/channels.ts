@@ -4,7 +4,7 @@ import express from "express";
 import ChannelDAO from "./ChannelDAO";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import { awsConfigPath } from "../../config/aws-config";
-import MessageDAO from "../messages/MessageDAO";
+import { Message, MessageDAO } from "../messages/MessageDAO";
 import aws from "aws-sdk";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
@@ -12,7 +12,7 @@ import { NotificationsDAO } from "../notifications/NotificationsDAO";
 const PATH_GET_ALL_CHANNELS: string = "/";
 const PATH_GET_CHANNEL_BY_ID: string = "/:channelId";
 const PATH_GET_ALL_SUBSCRIBED_USERS_FOR_CHANNEL: string = "/:channelId/users";
-const PATH_GET_ALL_MESSAGES_FOR_CHANNEL: string = "/:channelId/messages/";
+const PATH_GET_ALL_MESSAGES_FOR_CHANNEL: string = "/:channelId/messages/loadCount/:loadCount";
 const PATH_POST_NEW_USER_SUBSCRIPTION_TO_CHANNEL: string = "/:channelId/users";
 const PATH_POST_NEW_CHANNEL: string = "/";
 const PATH_PUT_CHANNEL: string = "/:channelId/";
@@ -104,8 +104,20 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
             let channelIdString = req.params.channelId;
             messageDAO
                 .getMessageHistory(channelIdString)
-                .then((data) => {
-                    res.status(200).send(data);
+                .then((data: Array<Message>) => {
+                    let loadCount: number = Number(req.params.loadCount);
+                    if (loadCount === NaN || loadCount < 0) {
+                        res.status(400).send("loadCount must be a positive number");
+                    }
+
+                    let ret = data.splice(data.length - loadCount - 50, data.length - loadCount - 1);
+                    console.log(ret.length);
+                    console.log(data.length - loadCount - 50);
+                    console.log(data.length - loadCount - 1);
+
+                    res.status(200).send(ret);
+
+
                 })
                 .catch((err) => {
                     res.status(400).send(err);

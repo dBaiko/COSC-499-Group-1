@@ -1,7 +1,7 @@
 /* tslint:disable:no-console */
 import bodyParser from "body-parser";
 import express from "express";
-import MessageDAO from "./MessageDAO";
+import { MessageDAO } from "./MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";

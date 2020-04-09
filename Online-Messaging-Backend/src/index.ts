@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
-import MessageDAO, { Message } from "./routes/messages/MessageDAO";
+import { Message, MessageDAO } from "./routes/messages/MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "./config/aws-config";
 import { NotificationObject, NotificationsDAO } from "./routes/notifications/NotificationsDAO";
