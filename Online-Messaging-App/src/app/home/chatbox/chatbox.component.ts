@@ -44,7 +44,7 @@ const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
 const EMOJI_POPUP: string = "emojiClick";
-
+const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
 
@@ -81,7 +81,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
-
+    emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
 
@@ -232,6 +232,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (!this.settings.explicit) {
                         data.content = this.filterClean(data.content);
                     }
+                    data.reactions = [];
                     this.chatMessages.push(data);
                     setTimeout(this.addLangTypes, 50);
                 }
@@ -1115,6 +1116,27 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
+    }
+    emojiPopupMessage() {
+        if(!this.emojiMessage){
+            this.emojiMessage = true;
+        }
+        else{
+            this.emojiMessage = false;
+        }
+
+    }
+    handleMessageEmojiReaction(emoji: string): void {
+        let text = (this.messageForm.form.value.content as string);
+        if(text == null){
+            text=Constants.EMPTY;
+        }
+        this.messageForm.setValue({content: text + emoji});
+    }
+    emojiClickOutside(){
+        if(this.emojiMessage){
+            this.emojiMessage = false;
+        }
     }
 
 }
