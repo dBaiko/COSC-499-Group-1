@@ -28,7 +28,6 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
-const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
 const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
@@ -43,7 +42,6 @@ const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
-const EMOJI_POPUP: string = "emojiClick";
 
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
@@ -752,11 +750,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.toggleEmoji = true;
             }
         }
-    }
-
-    hideEmojiPopup(chatMessage: MessageObject) {
-        this.toggleEmoji = false;
-        this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {
