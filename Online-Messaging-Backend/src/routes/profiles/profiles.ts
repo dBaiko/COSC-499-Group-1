@@ -31,7 +31,7 @@ interface ProfileObject {
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "src/routes/profiles/temp");
+        callback(null, "temp");
     },
     filename: (req, file, callback) => {
         callback(null, file.originalname);

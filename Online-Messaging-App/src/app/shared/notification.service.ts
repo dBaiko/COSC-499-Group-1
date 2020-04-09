@@ -13,7 +13,7 @@ const REACTION_REMOVE_EVENT = "reaction_remove";
 export class NotificationService {
     private static socket;
     private static instance: NotificationService;
-    private static url = "http://localhost:8080";
+    private static url = "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080";
     private static onlineUsers: Array<UserSocket> = [];
     private static socketId: string;
 

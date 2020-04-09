@@ -6,11 +6,11 @@ export const CognitoConfig = {
 };
 
 export const APIConfig = {
-    usersAPI: "http://localhost:8080/users/",
-    messagesAPI: "http://localhost:8080/messages/",
-    channelsAPI: "http://localhost:8080/channels/",
-    profilesAPI: "http://localhost:8080/profiles/",
-    notificationsAPI: "http://localhost:8080/notifications/"
+    usersAPI: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/users/",
+    messagesAPI: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/messages/",
+    channelsAPI: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/channels/",
+    profilesAPI: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/profiles/",
+    notificationsAPI: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/notifications/"
 };
 
 export const Constants = {

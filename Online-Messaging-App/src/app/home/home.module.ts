@@ -27,7 +27,7 @@ import { ChannelUserListComponent } from "./chatbox/channel-user-list/channel-us
 import { MarkdownModule } from "ngx-markdown";
 
 const socketConfig: SocketIoConfig = {
-    url: "http://localhost:8080",
+    url: "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080",
     options: {}
 };
 

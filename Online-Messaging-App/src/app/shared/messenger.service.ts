@@ -13,7 +13,7 @@ export interface ChatMessage {
 
 @Injectable()
 export class MessengerService {
-    private url = "http://localhost:8080";
+    private url = "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080";
     private socket;
 
     constructor() {
