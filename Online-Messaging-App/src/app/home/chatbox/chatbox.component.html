@@ -126,8 +126,8 @@
                                 </div>
                             </mat-card-header>
                         </div>
-                        <p>{{ error }}</p>
-                        <hr/>
+<!--                        <p>{{ error }}</p>-->
+<!--                        <hr/>-->
                         <i class="errorMessage">{{ friendMessage }}</i>
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
@@ -214,9 +214,13 @@
                                         <p class="message">
                                             <span
                                                 *ngIf="chatMessage.username == currentUserProfile.username"
-                                                class="icons"
-                                            >
-                                                <mat-icon>emoji_emotions</mat-icon>
+                                                class="icons">
+                                                <div id="{{chatMessage.messageId}}" class="emojiPopup emojiPopupHidden">
+                                                    <span *ngFor="let emoji of emojiList">
+                                                        <input class="emoticon" type="button" value="{{emoji}}">
+                                                    </span>
+                                                </div>
+                                                <mat-icon (click)="emojiPopup(chatMessage)" id="emojiClick">emoji_emotions</mat-icon>
                                                 <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
                                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                                             </span>
