@@ -1,7 +1,7 @@
 import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
-import MessageDAO from "../routes/messages/MessageDAO";
+import { MessageDAO } from "../routes/messages/MessageDAO";
 
 interface ChannelObject {
     channelId: string;

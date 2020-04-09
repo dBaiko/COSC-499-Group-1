@@ -29,7 +29,7 @@ const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
 const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
-const MESSAGES_URI: string = "/messages";
+const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
@@ -115,6 +115,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private atBottom = true;
     private textAreaHeight = 0;
     private defaultHeight = 80;
+
+    private loadCount = 0;
 
     constructor(
         private messagerService: MessengerService,
@@ -301,15 +303,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         })
                     };
 
-                    this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
+                    this.http.get(this.channelsURL + channelId + MESSAGES_URI + 0, httpHeaders).subscribe(
                         (data: Array<MessageObject>) => {
+                            console.log(data.length);
                             if (!this.settings.explicit) {
                                 for (let i = 0; i < data.length; i++) {
                                     data[i].content = this.filterClean(data[i].content);
                                 }
                             }
                             this.chatMessages = data || [];
-
+                            this.loadCount = data.length;
                             resolve();
                         },
                         (err) => {
@@ -426,7 +429,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
         this.isNearBottom = !this.atBottom;
+
+        if (element.scrollTop == 0) {
+            this.getMoreMessages();
+        }
     }
+
 
     textAreaSubmit(event) {
         if (event.keyCode == 13 && event.shiftKey) {
@@ -1033,6 +1041,47 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
             );
         });
+    }
+
+    private getMoreMessages(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders).subscribe(
+                    (data: Array<MessageObject>) => {
+                        console.log("got " + data.length);
+                        if (!this.settings.explicit) {
+                            for (let i = 0; i < data.length; i++) {
+                                data[i].content = this.filterClean(data[i].content);
+                            }
+                        }
+
+
+                        this.chatMessages = data.concat(this.chatMessages);
+                        for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
+                            this.getReactionsForMessage(this.chatMessages[i].messageId)
+                                .then((reactions) => {
+                                    this.chatMessages[i].reactions = reactions;
+                                });
+                        }
+
+                        this.loadCount += data.length;
+                    },
+                    (err) => {
+                        this.error = err.toString();
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 
 }
