@@ -5,6 +5,7 @@ import {
     APIConfig,
     ChannelObject,
     Constants,
+    EmojiList,
     InviteChannelObject,
     MessageObject,
     NewUsersSubbedChannelObject,
@@ -15,8 +16,7 @@ import {
     ReactionSocketObject,
     SettingsObject,
     UserChannelObject,
-    UserObject,
-    EmojiList
+    UserObject
 } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
@@ -113,14 +113,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
+    toggleEmoji = false;
     private channelsURL: string = APIConfig.channelsAPI;
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
     private textAreaHeight = 0;
     private defaultHeight = 80;
-    private toggleEmoji  = false;
-
     private loadCount = 0;
 
     constructor(
@@ -258,11 +257,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
 
                 if (reactionIndex != -1) {
-                    this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
-                    this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                    console.log("here");
+                    if (!this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)) {
+                        this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
+                        this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                    }
                 } else {
                     this.chatMessages[messageIndex].reactions.push({
-                        emoji: reaction.username,
+                        emoji: reaction.emoji,
                         count: 1,
                         username: [reaction.username]
                     });
@@ -278,6 +280,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         if (this.chatMessages[i].reactions[j].emoji == reaction.emoji) {
                             this.chatMessages[i].reactions[j].username.splice(this.chatMessages[i].reactions[j].username.indexOf(reaction.username), 1);
                             this.chatMessages[i].reactions[j].count--;
+
+                            if (this.chatMessages[i].reactions[j].count == 0) {
+                                this.chatMessages[i].reactions.splice(j, 1);
+                            }
 
                             break;
                         }
@@ -720,12 +726,34 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
-    public handleReactionButtonClick(messageId: string, reaction: ReactionObject) {
+    public handleNewEmojiReaction(message: MessageObject, emoji: string): void {
+        this.addNewEmojiReaction(message.messageId, emoji);
+        this.emojiPopup(message);
+    }
+
+    public handleReactionButtonClick(messageId: string, reaction: ReactionObject): void {
         if (reaction.username.includes(this.currentUserProfile.username)) {
             this.removeEmojiReaction(messageId, reaction.emoji);
         } else {
             this.addNewEmojiReaction(messageId, reaction.emoji);
         }
+    }
+
+    emojiPopup(chatMessage: MessageObject) {
+        if (this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji) {
+            this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
+            this.toggleEmoji = false;
+        } else {
+            if (!this.toggleEmoji) {
+                this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = true;
+                this.toggleEmoji = true;
+            }
+        }
+    }
+
+    hideEmojiPopup(chatMessage: MessageObject) {
+        this.toggleEmoji = false;
+        this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {
@@ -1087,18 +1115,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
-    }
-
-    emojiPopup(chatMessage: MessageObject) {
-        if(this.toggleEmoji) {
-            document.getElementById(chatMessage.messageId).classList.add("emojiPopupHidden")
-            this.toggleEmoji = false;
-        }
-        else{
-            document.getElementById(chatMessage.messageId).classList.remove("emojiPopupHidden");
-            this.toggleEmoji = true;
-        }
-
     }
 
 }

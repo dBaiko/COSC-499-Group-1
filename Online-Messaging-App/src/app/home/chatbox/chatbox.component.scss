@@ -337,37 +337,43 @@ mark {
     color: transparent;
     background-color: red !important;
 }
+
 .emojiPopup {
-    //display: inline;
-    display: inline-flex;
     flex-wrap: wrap;
     position: relative;
-    bottom: 6.2rem;
-    left: 5.5rem;
+    bottom: 5.2rem;
+    left: 36.5rem;
     overflow: auto;
-    height: 5.5rem;
+    height: 7.5rem;
     width: 12rem;
     flex-direction: row;
-    margin-bottom: -10rem;
-    margin-right: 1.2rem;
+    margin-bottom: -6rem;
     z-index: 100000000;
     background-color: var(--element-hover-color);
 
 }
+
+::ng-deep .mat-card-content > :first-child, .mat-card > :first-child {
+    margin-top: 1rem !important;
+}
+
 .emojiPopup input {
     border: none;
     cursor: pointer;
-    //height: 5rem;
-    //width: 5rem;
 }
 
 .emojiPopupHidden {
-    display:none;
+    display: none;
 }
-.emoticon{
+
+.emoticon {
     background-color: var(--element-hover-color);
-    //font-size: 1.5rem;
-    //padding:0px;
+    font-size: 1.5rem;
+    padding: 0px;
+}
+
+.emoticon:hover {
+    background-color: var(--primary-color);
 }
 
 ::ng-deep .mentionList .mat-list-item-content {
@@ -390,6 +396,7 @@ mark {
     padding: 0.1rem 0.2rem 0.1rem 0.2rem;
     border: none;
     border-radius: 10%;
+    font-size: 1.25rem;
 }
 
 .reaction:hover {

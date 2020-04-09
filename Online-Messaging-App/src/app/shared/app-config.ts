@@ -143,7 +143,8 @@ export interface MessageObject {
     username: string;
     deleted: boolean;
     editing: boolean;
-    reactions?: Array<ReactionObject>
+    reactions?: Array<ReactionObject>;
+    addingEmoji?: boolean;
 }
 
 export interface newChannelResponse {
@@ -268,6 +269,7 @@ export interface SettingsObject {
     theme: string;
     explicit: boolean;
 }
+
 export const EmojiList = [
     "😀",
     "😃",
@@ -1745,9 +1747,7 @@ export const EmojiList = [
     "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "🏴󠁧󠁢󠁷󠁬󠁳󠁿"
-]
-
-
+];
 
 
 export interface ReactionObject {
