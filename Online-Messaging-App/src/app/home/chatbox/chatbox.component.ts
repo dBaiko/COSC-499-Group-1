@@ -5,6 +5,7 @@ import {
     APIConfig,
     ChannelObject,
     Constants,
+    EmojiList,
     InviteChannelObject,
     MessageObject,
     NewUsersSubbedChannelObject,
@@ -29,7 +30,7 @@ const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
 const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
-const MESSAGES_URI: string = "/messages";
+const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
@@ -42,6 +43,7 @@ const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
+const EMOJI_POPUP: string = "emojiClick";
 
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
@@ -79,6 +81,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
+
+    emojiList = EmojiList;
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
@@ -109,12 +113,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() settings: SettingsObject;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
+    toggleEmoji = false;
     private channelsURL: string = APIConfig.channelsAPI;
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
     private textAreaHeight = 0;
     private defaultHeight = 80;
+    private loadCount = 0;
 
     constructor(
         private messagerService: MessengerService,
@@ -251,11 +257,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
 
                 if (reactionIndex != -1) {
-                    this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
-                    this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                    console.log("here");
+                    if (!this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)) {
+                        this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
+                        this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                    }
                 } else {
                     this.chatMessages[messageIndex].reactions.push({
-                        emoji: reaction.username,
+                        emoji: reaction.emoji,
                         count: 1,
                         username: [reaction.username]
                     });
@@ -271,6 +280,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         if (this.chatMessages[i].reactions[j].emoji == reaction.emoji) {
                             this.chatMessages[i].reactions[j].username.splice(this.chatMessages[i].reactions[j].username.indexOf(reaction.username), 1);
                             this.chatMessages[i].reactions[j].count--;
+
+                            if (this.chatMessages[i].reactions[j].count == 0) {
+                                this.chatMessages[i].reactions.splice(j, 1);
+                            }
 
                             break;
                         }
@@ -301,15 +314,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         })
                     };
 
-                    this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
+                    this.http.get(this.channelsURL + channelId + MESSAGES_URI + 0, httpHeaders).subscribe(
                         (data: Array<MessageObject>) => {
+                            console.log(data.length);
                             if (!this.settings.explicit) {
                                 for (let i = 0; i < data.length; i++) {
                                     data[i].content = this.filterClean(data[i].content);
                                 }
                             }
                             this.chatMessages = data || [];
-
+                            this.loadCount = data.length;
                             resolve();
                         },
                         (err) => {
@@ -426,7 +440,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
         this.isNearBottom = !this.atBottom;
+
+        if (element.scrollTop == 0) {
+            this.getMoreMessages();
+        }
     }
+
 
     textAreaSubmit(event) {
         if (event.keyCode == 13 && event.shiftKey) {
@@ -707,12 +726,34 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
-    public handleReactionButtonClick(messageId: string, reaction: ReactionObject) {
+    public handleNewEmojiReaction(message: MessageObject, emoji: string): void {
+        this.addNewEmojiReaction(message.messageId, emoji);
+        this.emojiPopup(message);
+    }
+
+    public handleReactionButtonClick(messageId: string, reaction: ReactionObject): void {
         if (reaction.username.includes(this.currentUserProfile.username)) {
             this.removeEmojiReaction(messageId, reaction.emoji);
         } else {
             this.addNewEmojiReaction(messageId, reaction.emoji);
         }
+    }
+
+    emojiPopup(chatMessage: MessageObject) {
+        if (this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji) {
+            this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
+            this.toggleEmoji = false;
+        } else {
+            if (!this.toggleEmoji) {
+                this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = true;
+                this.toggleEmoji = true;
+            }
+        }
+    }
+
+    hideEmojiPopup(chatMessage: MessageObject) {
+        this.toggleEmoji = false;
+        this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {
@@ -1033,6 +1074,47 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
             );
         });
+    }
+
+    private getMoreMessages(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders).subscribe(
+                    (data: Array<MessageObject>) => {
+                        console.log("got " + data.length);
+                        if (!this.settings.explicit) {
+                            for (let i = 0; i < data.length; i++) {
+                                data[i].content = this.filterClean(data[i].content);
+                            }
+                        }
+
+
+                        this.chatMessages = data.concat(this.chatMessages);
+                        for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
+                            this.getReactionsForMessage(this.chatMessages[i].messageId)
+                                .then((reactions) => {
+                                    this.chatMessages[i].reactions = reactions;
+                                });
+                        }
+
+                        this.loadCount += data.length;
+                    },
+                    (err) => {
+                        this.error = err.toString();
+                    }
+                );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
     }
 
 }

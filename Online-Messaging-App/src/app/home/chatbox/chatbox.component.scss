@@ -159,7 +159,7 @@ markdown ::ng-deep p code {
 }
 
 markdown ::ng-deep .lang-type {
-    background-color: red;
+    background-color: var(--primary-color);
     padding: 0.5rem;
     position: relative;
     bottom: 0.7rem;
@@ -338,12 +338,75 @@ mark {
     background-color: red !important;
 }
 
+.emojiPopup {
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 7.5rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
+
+}
+
+.emojiPopupNot {
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 7.5rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 4.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
+
+}
+
+::ng-deep .mat-card-content > :first-child, .mat-card > :first-child {
+    margin-top: 1rem !important;
+}
+
+.emojiPopup input {
+    border: none;
+    cursor: pointer;
+}
+
+.emojiPopupNot input {
+    border: none;
+    cursor: pointer;
+}
+
+.emojiPopupHidden {
+    display: none;
+}
+
+.emoticon {
+    background-color: var(--element-hover-color);
+    font-size: 1.5rem;
+    padding: 0px;
+}
+
+.emoticon:hover {
+    background-color: var(--primary-color);
+}
+
 ::ng-deep .mentionList .mat-list-item-content {
     color: white;
 }
 
 .reactions {
-    float: right;
     margin-top: -1rem;
     margin-right: 5rem;
 }
@@ -358,6 +421,7 @@ mark {
     padding: 0.1rem 0.2rem 0.1rem 0.2rem;
     border: none;
     border-radius: 10%;
+    font-size: 1.25rem;
 }
 
 .reaction:hover {

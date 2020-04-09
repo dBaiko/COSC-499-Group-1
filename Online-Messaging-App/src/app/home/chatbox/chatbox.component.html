@@ -126,8 +126,8 @@
                                 </div>
                             </mat-card-header>
                         </div>
-                        <p>{{ error }}</p>
-                        <hr/>
+                        <!--                        <p>{{ error }}</p>-->
+                        <!--                        <hr/>-->
                         <i class="errorMessage">{{ friendMessage }}</i>
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
@@ -212,11 +212,20 @@
                                     </div>
                                     <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
                                         <p class="message">
-                                            <span
-                                                *ngIf="chatMessage.username == currentUserProfile.username"
-                                                class="icons"
-                                            >
-                                                <mat-icon>emoji_emotions</mat-icon>
+                                        <span
+                                            *ngIf="chatMessage.username == currentUserProfile.username"
+                                            class="icons">
+                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopup"
+                                                >
+                                                    <span *ngFor="let emoji of emojiList">
+                                                        <input
+                                                            (click)="handleNewEmojiReaction(chatMessage, emoji)"
+                                                            class="emoticon" type="button"
+                                                            value="{{emoji}}">
+                                                    </span>
+                                                </div>
+                                                <mat-icon (click)="emojiPopup(chatMessage)"
+                                                          class="emojiClick">emoji_emotions</mat-icon>
                                                 <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
                                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                                             </span>
@@ -224,7 +233,17 @@
                                                 *ngIf="chatMessage.username != currentUserProfile.username"
                                                 class="icons"
                                             >
-                                                <mat-icon>emoji_emotions</mat-icon>
+                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopupNot"
+                                                >
+                                                    <span *ngFor="let emoji of emojiList">
+                                                        <input
+                                                            (click)="handleNewEmojiReaction(chatMessage, emoji)"
+                                                            class="emoticon" type="button"
+                                                            value="{{emoji}}">
+                                                    </span>
+                                                </div>
+                                                <mat-icon (click)="emojiPopup(chatMessage)"
+                                                          class="emojiClick">emoji_emotions</mat-icon>
                                             </span>
                                             <markdown *ngIf="!chatMessage.editing" class="mark" ngPreserveWhitespaces>{{
                                                 chatMessage.content

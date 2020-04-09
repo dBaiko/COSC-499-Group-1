@@ -21,7 +21,7 @@ interface ChannelObject {
 
 const tableName: string = "Messages";
 
-class MessageDAO {
+export class MessageDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
     constructor(private docClient: DocumentClient) {
@@ -188,5 +188,3 @@ class MessageDAO {
         });
     }
 }
-
-export default MessageDAO;
