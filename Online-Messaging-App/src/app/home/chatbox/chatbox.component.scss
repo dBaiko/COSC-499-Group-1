@@ -339,15 +339,36 @@ mark {
 }
 
 .emojiPopup {
+    //display: inline;
+    display: inline-flex;
     flex-wrap: wrap;
     position: relative;
-    bottom: 5.2rem;
-    left: 36.5rem;
+    bottom: 7.5rem;
+    left: 5.5rem;
     overflow: auto;
     height: 7.5rem;
-    width: 12rem;
+    width: 14rem;
     flex-direction: row;
-    margin-bottom: -6rem;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
+
+}
+
+.emojiPopupNot {
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 7.5rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 4.2rem;
     z-index: 100000000;
     background-color: var(--element-hover-color);
 
@@ -358,6 +379,11 @@ mark {
 }
 
 .emojiPopup input {
+    border: none;
+    cursor: pointer;
+}
+
+.emojiPopupNot input {
     border: none;
     cursor: pointer;
 }
@@ -381,7 +407,6 @@ mark {
 }
 
 .reactions {
-    float: right;
     margin-top: -1rem;
     margin-right: 5rem;
 }

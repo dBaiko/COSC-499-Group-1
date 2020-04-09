@@ -110,7 +110,12 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                         res.status(400).send("loadCount must be a positive number");
                     }
 
-                    res.status(200).send(data.splice(data.length - loadCount - 50, data.length - loadCount - 1));
+                    let ret = data.splice(data.length - loadCount - 50, data.length - loadCount - 1);
+                    console.log(ret.length);
+                    console.log(data.length - loadCount - 50);
+                    console.log(data.length - loadCount - 1);
+
+                    res.status(200).send(ret);
 
 
                 })

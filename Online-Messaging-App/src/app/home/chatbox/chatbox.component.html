@@ -211,20 +211,19 @@
                                         </div>
                                     </div>
                                     <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
-                                        <div *ngIf="chatMessage.addingEmoji" class="emojiPopup"
-                                             id="{{chatMessage.messageId}}">
+                                        <p class="message">
+                                        <span
+                                            *ngIf="chatMessage.username == currentUserProfile.username"
+                                            class="icons">
+                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopup"
+                                                >
                                                     <span *ngFor="let emoji of emojiList">
                                                         <input
                                                             (click)="handleNewEmojiReaction(chatMessage, emoji)"
                                                             class="emoticon" type="button"
                                                             value="{{emoji}}">
                                                     </span>
-                                        </div>
-                                        <p class="message">
-                                        <span
-                                            *ngIf="chatMessage.username == currentUserProfile.username"
-                                            class="icons">
-
+                                                </div>
                                                 <mat-icon (click)="emojiPopup(chatMessage)"
                                                           class="emojiClick">emoji_emotions</mat-icon>
                                                 <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
@@ -234,6 +233,15 @@
                                                 *ngIf="chatMessage.username != currentUserProfile.username"
                                                 class="icons"
                                             >
+                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopupNot"
+                                                >
+                                                    <span *ngFor="let emoji of emojiList">
+                                                        <input
+                                                            (click)="handleNewEmojiReaction(chatMessage, emoji)"
+                                                            class="emoticon" type="button"
+                                                            value="{{emoji}}">
+                                                    </span>
+                                                </div>
                                                 <mat-icon (click)="emojiPopup(chatMessage)"
                                                           class="emojiClick">emoji_emotions</mat-icon>
                                             </span>
