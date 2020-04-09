@@ -228,7 +228,7 @@
                                                     </span>
                                                 </div>
                                                 <mat-icon (click)="emojiPopup(chatMessage)"
-                                                          class="emojiClick">emoji_emotions</mat-icon>
+                                                          class="emojiClick">sentiment_very_satisfied</mat-icon>
                                                 <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
                                                 <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
                                             </span>
@@ -246,7 +246,7 @@
                                                     </span>
                                                 </div>
                                                 <mat-icon (click)="emojiPopup(chatMessage)"
-                                                          class="emojiClick">emoji_emotions</mat-icon>
+                                                          class="emojiClick">sentiment_very_satisfied</mat-icon>
                                             </span>
                                             <markdown *ngIf="!chatMessage.editing" class="mark" ngPreserveWhitespaces>{{
                                                 chatMessage.content
@@ -292,6 +292,16 @@
                         <br/><br/>
                         <div class="footerTop">
                             <mat-card-footer>
+                                <span *ngIf="this.emojiMessage" delayClickOutsideInit="true" (clickOutside)="emojiClickOutside()" id="emojiDiv" class="emojiList">
+                                    <span *ngFor="let emoji of emojiList">
+                                                    <input
+                                                        (click)="handleMessageEmojiReaction(emoji)"
+                                                        class="emoticon" type="button"
+                                                        value="{{emoji}}">
+                                                    </span>
+                                                </span>
+                                <mat-icon (click)="emojiPopupMessage()"
+                                          class="emojiSelect">emoji_emotions</mat-icon>
                                 <form
                                     #messageForm="ngForm"
                                     (ngSubmit)="sendMessage(messageForm.form)"
@@ -315,9 +325,11 @@
                                             </ng-template>
                                         </div>
                                     </mat-list>
+
                                     <mat-form-field>
                                         <mat-label>Message</mat-label>
                                         <label>
+
                                             <div id="backdrop">
                                                 <div class="highlights"></div>
                                             </div>
@@ -332,9 +344,12 @@
                                                 name="content"
                                                 ngModel
                                                 wrap="hard"
-                                            ></textarea>
+                                            >
+                                            </textarea>
                                         </label>
+
                                     </mat-form-field>
+
                                 </form>
                             </mat-card-footer>
                         </div>
