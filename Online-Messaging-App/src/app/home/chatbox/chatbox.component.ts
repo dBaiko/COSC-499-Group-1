@@ -1092,7 +1092,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.http.get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders).subscribe(
                     (data: Array<MessageObject>) => {
                         if (data.length > 0) {
-                            console.log(data);
                             if (!this.settings.explicit) {
                                 for (let i = 0; i < data.length; i++) {
                                     data[i].content = this.filterClean(data[i].content);
