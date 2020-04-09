@@ -134,7 +134,7 @@
                                 <div *ngIf="!chatMessage.username; else elseBlock">
                                     <hr/>
                                     <mat-card-content class="status">
-                                        <p>
+                                        <p id="{{chatMessage.messageId}}">
                                             {{ chatMessage.content }}
                                         </p>
                                     </mat-card-content>
@@ -211,11 +211,14 @@
                                         </div>
                                     </div>
                                     <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
-                                        <p class="message">
+                                        <p class="message" id="{{chatMessage.messageId}}">
                                         <span
                                             *ngIf="chatMessage.username == currentUserProfile.username"
                                             class="icons">
-                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopup"
+                                                <div (clickOutside)="emojiPopup(chatMessage)"
+                                                     *ngIf="chatMessage.addingEmoji"
+                                                     class="emojiPopup"
+                                                     delayClickOutsideInit="true"
                                                 >
                                                     <span *ngFor="let emoji of emojiList">
                                                         <input
@@ -280,7 +283,7 @@
                                     </mat-card-content>
                                     <ng-template #messageDeleted>
                                         <mat-card-content>
-                                            <i class="deletedMessage">Message deleted</i>
+                                            <i class="deletedMessage" id="{{chatMessage.messageId}}">Message deleted</i>
                                         </mat-card-content>
                                     </ng-template>
                                 </ng-template>

@@ -28,7 +28,6 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
-const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
 const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
@@ -121,6 +120,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private textAreaHeight = 0;
     private defaultHeight = 80;
     private loadCount = 0;
+
+    private messageToScrollTo: MessageObject;
 
     constructor(
         private messagerService: MessengerService,
@@ -258,7 +259,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
 
                 if (reactionIndex != -1) {
-                    console.log("here");
                     if (!this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)) {
                         this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
                         this.chatMessages[messageIndex].reactions[reactionIndex].count++;
@@ -317,7 +317,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                     this.http.get(this.channelsURL + channelId + MESSAGES_URI + 0, httpHeaders).subscribe(
                         (data: Array<MessageObject>) => {
-                            console.log(data.length);
+                            this.loadCount = 0;
                             if (!this.settings.explicit) {
                                 for (let i = 0; i < data.length; i++) {
                                     data[i].content = this.filterClean(data[i].content);
@@ -443,6 +443,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.isNearBottom = !this.atBottom;
 
         if (element.scrollTop == 0) {
+            this.messageToScrollTo = this.chatMessages[0];
             this.getMoreMessages();
         }
     }
@@ -750,11 +751,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.toggleEmoji = true;
             }
         }
-    }
-
-    hideEmojiPopup(chatMessage: MessageObject) {
-        this.toggleEmoji = false;
-        this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {
@@ -1089,23 +1085,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                 this.http.get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders).subscribe(
                     (data: Array<MessageObject>) => {
-                        console.log("got " + data.length);
-                        if (!this.settings.explicit) {
-                            for (let i = 0; i < data.length; i++) {
-                                data[i].content = this.filterClean(data[i].content);
+                        if (data.length > 0) {
+                            if (!this.settings.explicit) {
+                                for (let i = 0; i < data.length; i++) {
+                                    data[i].content = this.filterClean(data[i].content);
+                                }
                             }
+
+                            this.chatMessages = data.concat(this.chatMessages);
+
+                            let top = document.getElementById(this.messageToScrollTo.messageId).offsetTop;
+                            this.scrollContainer.nativeElement.scrollTop = top - 150;
+
+
+                            for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
+                                this.getReactionsForMessage(this.chatMessages[i].messageId)
+                                    .then((reactions) => {
+                                        this.chatMessages[i].reactions = reactions;
+                                    });
+                            }
+
+                            this.loadCount += data.length;
                         }
-
-
-                        this.chatMessages = data.concat(this.chatMessages);
-                        for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
-                            this.getReactionsForMessage(this.chatMessages[i].messageId)
-                                .then((reactions) => {
-                                    this.chatMessages[i].reactions = reactions;
-                                });
-                        }
-
-                        this.loadCount += data.length;
                     },
                     (err) => {
                         this.error = err.toString();

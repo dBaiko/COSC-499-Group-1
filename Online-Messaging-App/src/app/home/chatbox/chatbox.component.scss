@@ -316,7 +316,8 @@ mat-expansion-panel:hover {
 #backdrop {
     overflow: auto;
     background-color: white;
-    z-index: 1;
+    z-index: -1 !important;
+    pointer-events: none;
     color: var(--primary-text-color);
 }
 
