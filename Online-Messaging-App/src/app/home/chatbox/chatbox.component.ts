@@ -13,7 +13,8 @@ import {
     ProfileObject,
     SettingsObject,
     UserChannelObject,
-    UserObject
+    UserObject,
+    EmojiList
 } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
@@ -40,6 +41,7 @@ const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
+const EMOJI_POPUP: string = "emojiClick";
 
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
@@ -77,6 +79,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
+
+    emojiList = EmojiList;
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
@@ -113,6 +117,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private atBottom = true;
     private textAreaHeight = 0;
     private defaultHeight = 80;
+    private toggleEmoji  = false;
 
     constructor(
         private messagerService: MessengerService,
@@ -919,6 +924,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.mentionList.includes(userToMention) && !this.mentionListToSubmit.includes(userToMention)) {
             this.mentionListToSubmit.push(userToMention);
         }
+    }
+
+    emojiPopup(chatMessage: MessageObject) {
+        if(this.toggleEmoji) {
+            document.getElementById(chatMessage.messageId).classList.add("emojiPopupHidden")
+            this.toggleEmoji = false;
+        }
+        else{
+            document.getElementById(chatMessage.messageId).classList.remove("emojiPopupHidden");
+            this.toggleEmoji = true;
+        }
+
     }
 
 }

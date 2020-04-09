@@ -336,3 +336,35 @@ mark {
     color: transparent;
     background-color: red !important;
 }
+.emojiPopup {
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 6.2rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 5.5rem;
+    width: 12rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
+
+}
+.emojiPopup input {
+    border: none;
+    cursor: pointer;
+    //height: 5rem;
+    //width: 5rem;
+}
+
+.emojiPopupHidden {
+    display:none;
+}
+.emoticon{
+    background-color: var(--element-hover-color);
+    //font-size: 1.5rem;
+    //padding:0px;
+}
