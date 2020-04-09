@@ -215,7 +215,10 @@
                                         <span
                                             *ngIf="chatMessage.username == currentUserProfile.username"
                                             class="icons">
-                                                <div *ngIf="chatMessage.addingEmoji" class="emojiPopup"
+                                                <div (clickOutside)="emojiPopup(chatMessage)"
+                                                     *ngIf="chatMessage.addingEmoji"
+                                                     class="emojiPopup"
+                                                     delayClickOutsideInit="true"
                                                 >
                                                     <span *ngFor="let emoji of emojiList">
                                                         <input
