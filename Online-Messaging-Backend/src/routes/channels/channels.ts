@@ -108,16 +108,18 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                     let loadCount: number = Number(req.params.loadCount);
                     if (loadCount === NaN || loadCount < 0) {
                         res.status(400).send("loadCount must be a positive number");
+                    } else {
+                        if (loadCount != 0 && data.length < 50) {
+                            res.status(200).send([]);
+                        } else if (data.length < 50) {
+                            res.status(200).send(data);
+                        } else {
+                            let ret = data.splice(data.length - loadCount - 50 - 1, 50);
+
+                            res.status(200).send(ret);
+                        }
+
                     }
-
-                    let ret = data.splice(data.length - loadCount - 50, data.length - loadCount - 1);
-                    console.log(ret.length);
-                    console.log(data.length - loadCount - 50);
-                    console.log(data.length - loadCount - 1);
-
-                    res.status(200).send(ret);
-
-
                 })
                 .catch((err) => {
                     res.status(400).send(err);
