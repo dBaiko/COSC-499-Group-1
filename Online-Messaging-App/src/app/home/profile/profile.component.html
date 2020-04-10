@@ -1,4 +1,4 @@
-<div *ngIf="userProfile" class="wrapper">
+<div *ngIf="userProfile" class="wrapper scrollable">
     <mat-card>
         <div class="icon">
             <mat-card-header>
@@ -19,8 +19,8 @@
                             name="profileImage"
                             type="file"
                         />
-                        <input formControlName="profileImageName" name="imageName" type="hidden" />
-                        <input formControlName="profileImageSize" name="imageSize" type="hidden" />
+                        <input formControlName="profileImageName" name="imageName" type="hidden"/>
+                        <input formControlName="profileImageSize" name="imageSize" type="hidden"/>
                         <mat-error
                             *ngFor="let validation of common.validation_methods.profileImageName"
                             class="profileError"
@@ -72,8 +72,8 @@
             </mat-card-header>
         </div>
         <mat-card-content>
-            <hr />
-            <br />
+            <hr/>
+            <br/>
             <p>
                 <i>{{ editSaveMessage }}</i>
             </p>
@@ -81,11 +81,11 @@
                 <p class="nameHeaders">
                     <b>Status</b
                     ><span
-                        (click)="this.toggleEditingStatus(true)"
-                        *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
-                    >
+                    (click)="this.toggleEditingStatus(true)"
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
+                >
                         Click to update</span
-                    >
+                >
                 </p>
                 <p (click)="this.toggleEditingStatus(true)" *ngIf="!editingStatus">{{ userProfile.statusText }}</p>
                 <form
@@ -108,18 +108,196 @@
                 </form>
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr />
+                <hr/>
                 <div *ngIf="userProfile.email">
                     <p class="nameHeaders"><b>Email</b></p>
                     <p>{{ userProfile.email }}</p>
-                    <hr />
+                    <hr/>
                 </div>
+                <p class="nameHeaders"><b>Bio</b></p>
+                <p *ngIf="userProfile.bio == ' ' || userProfile.bio == '' || userProfile.bio == null; else bio">N/A</p>
+                <ng-template #bio>
+                    <p>{{ userProfile.bio }}</p>
+                </ng-template>
+                <hr/>
                 <p class="nameHeaders"><b>First Name</b></p>
                 <p>{{ userProfile.firstName }}</p>
-                <hr />
+                <hr/>
                 <p class="nameHeaders"><b>Last Name</b></p>
                 <p>{{ userProfile.lastName }}</p>
-                <hr />
+                <hr/>
+                <p class="nameHeaders"><b>Phone</b></p>
+                <p *ngIf="userProfile.phone == ' ' || userProfile.phone == '' || userProfile.phone == null; else phone">
+                    N/A</p>
+                <ng-template #phone>
+                    <p>{{ userProfile.phone }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Competes As</b></p>
+                <p *ngIf="userProfile.gender == ' ' || userProfile.gender == '' || userProfile.gender == null; else gender">
+                    N/A</p>
+                <ng-template #gender>
+                    <p>{{ userProfile.gender }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Date of Birth</b></p>
+                <p *ngIf="userProfile.dateOfBirth == ' ' || userProfile.dateOfBirth == '' || userProfile.dateOfBirth == null; else dateOfBirth">
+                    N/A</p>
+                <ng-template #dateOfBirth>
+                    <p>{{ userProfile.dateOfBirth }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Citizenship</b></p>
+                <p *ngIf="userProfile.citizenship == ' ' || userProfile.citizenship == '' || userProfile.citizenship == null; else citizenship">
+                    N/A</p>
+                <ng-template #citizenship>
+                    <p>{{ userProfile.citizenship }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Grade</b></p>
+                <p *ngIf="userProfile.grade == 0 || userProfile.grade == null; else grade">N/A</p>
+                <ng-template #grade>
+                    <p>{{ userProfile.grade }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>High School Graduation Year</b></p>
+                <p *ngIf="userProfile.gradYear == 0 || userProfile.gradYear == null; else gradYear">N/A</p>
+                <ng-template #gradYear>
+                    <p>{{ userProfile.gradYear }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Previous Collegiate Competitor</b></p>
+                <p *ngIf="userProfile.previousCollegiate == null; else prevCollegiate">
+                    N/A</p>
+                <ng-template #prevCollegiate>
+                    <p *ngIf="userProfile.previousCollegiate">Yes</p>
+                    <p *ngIf="!userProfile.previousCollegiate">No</p>
+                </ng-template>
+                <hr/>
+                <h2>Address Information</h2>
+                <p class="nameHeaders"><b>Street Address</b></p>
+                <p *ngIf="userProfile.street == ' ' || userProfile.street == '' || userProfile.street == null else street">
+                    N/A</p>
+                <ng-template #street>
+                    <p>{{ userProfile.street }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Unit/Apt</b></p>
+                <p *ngIf="userProfile.unitNumber == ' ' || userProfile.unitNumber == '' || userProfile.unitNumber == null; else unitNumber">
+                    N/A</p>
+                <ng-template #unitNumber>
+                    <p>{{ userProfile.unitNumber }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>City</b></p>
+                <p *ngIf="userProfile.city == ' ' || userProfile.city == '' || userProfile.city == null; else city">
+                    N/A</p>
+                <ng-template #city>
+                    <p>{{ userProfile.city }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Province/State</b></p>
+                <p *ngIf="userProfile.province == ' ' || userProfile.province == '' || userProfile.province == null; else province">
+                    N/A</p>
+                <ng-template #province>
+                    <p>{{ userProfile.province }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Country</b></p>
+                <p *ngIf="userProfile.country == ' ' || userProfile.country == '' || userProfile.country == null; else country">
+                    N/A</p>
+                <ng-template #country>
+                    <p>{{ userProfile.country }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Postal/Zip Code</b></p>
+                <p *ngIf="userProfile.postalCode == ' ' || userProfile.postalCode == '' || userProfile.postalCode == null; else postalCode">
+                    N/A</p>
+                <ng-template #postalCode>
+                    <p>{{ userProfile.postalCode }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Athletics Club Name</b></p>
+                <p *ngIf="userProfile.club == ' ' || userProfile.club == '' || userProfile.club == null; else club">
+                    N/A</p>
+                <ng-template #club>
+                    <p>{{ userProfile.club }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Health Injury Status</b></p>
+                <p *ngIf="userProfile.injuryStatus == ' ' || userProfile.injuryStatus == '' || userProfile.injuryStatus == null; else injuryStatus">
+                    N/A</p>
+                <ng-template #injuryStatus>
+                    <p>{{ userProfile.injuryStatus }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Instagram Handle</b></p>
+                <p *ngIf="userProfile.instagram == ' ' || userProfile.instagram == '' || userProfile.instagram == null; else instagram">
+                    N/A</p>
+                <ng-template #instagram>
+                    <p>{{ userProfile.instagram }}</p>
+                </ng-template>
+                <hr/>
+                <p class="nameHeaders"><b>Languages Spoken</b></p>
+                <p *ngIf="userProfile.languages == [' ']; else languages">N/A</p>
+                <ng-template #languages>
+                    <p>{{ userProfile.languages }}</p>
+                </ng-template>
+                <hr/>
+                <h2>Coach Information</h2>
+                <p class="nameHeaders"><b>Coach's First Name</b></p>
+                <p *ngIf="userProfile.coachFirstName !== ' ' && userProfile.coachFirstName !== '' && userProfile.coachFirstName != null; else NA">
+                    {{ userProfile.coachFirstName }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Coach's Last Name</b></p>
+                <p *ngIf="userProfile.coachLastName !== ' ' && userProfile.coachLastName !== '' && userProfile.coachLastName != null; else NA">
+                    {{ userProfile.coachLastName }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Coach's Phone Number</b></p>
+                <p *ngIf="userProfile.coachPhone !== ' ' && userProfile.coachPhone !== '' && userProfile.coachPhone != null; else NA">
+                    {{ userProfile.coachPhone }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Coach's Email</b></p>
+                <p *ngIf="userProfile.coachEmail !== ' ' && userProfile.coachEmail !== '' && userProfile.coachEmail != null; else NA">
+                    {{ userProfile.coachEmail }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Estimated Budget Per Semester</b></p>
+                <p *ngIf="userProfile.budget !== ' ' && userProfile.budget !== '' && userProfile.budget != null; else NA">{{ userProfile.budget }}</p>
+                <hr/>
+                <h2>Parents Information</h2>
+                <p class="nameHeaders"><b>Parent's First Name</b></p>
+                <p *ngIf="userProfile.parentFirstName !== ' ' && userProfile.parentFirstName !== '' && userProfile.parentFirstName != null; else NA">
+                    {{ userProfile.parentFirstName }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Parent's Last Name</b></p>
+                <p *ngIf="userProfile.parentLastName !== ' ' && userProfile.parentLastName !== '' && userProfile.parentLastName != null; else NA">
+                    {{ userProfile.parentLastName }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Parent's Phone Number</b></p>
+                <p *ngIf="userProfile.parentPhone !== ' ' && userProfile.parentPhone !== '' && userProfile.parentPhone != null; else NA">
+                    {{ userProfile.parentPhone }}
+                </p>
+                <hr/>
+                <p class="nameHeaders"><b>Parent's Email</b></p>
+                <p *ngIf="userProfile.parentEmail !== ' ' && userProfile.parentEmail !== '' && userProfile.parentEmail != null; else NA">
+                    {{ userProfile.parentEmail }}
+                </p>
+                <hr/>
+                <ng-template #NA>
+                    <p>N/A</p>
+                </ng-template>
+                <h6>
+                    <i
+                    >By adding your coach’s and/or parent/guardian’s contact information, you give permission for
+                        Streamline Athletes to communicate with them about your recruitment.</i
+                    >
+                </h6>
             </div>
             <div
                 *ngIf="
@@ -131,11 +309,11 @@
             >
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
-                <hr />
+                <hr/>
                 <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm">
                     <p class="nameHeaders"><b>Email</b></p>
                     <label for="email"></label
-                    ><input autocomplete="off" formControlName="email" id="email" name="email" required type="email" />
+                    ><input autocomplete="off" formControlName="email" id="email" name="email" required type="email"/>
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
                             *ngIf="
@@ -150,17 +328,44 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr />
+                    <hr/>
+                    <p class="nameHeaders"><b>Bio</b></p>
+                    <label for="bio"></label
+                    ><textarea
+                    autocomplete="off"
+                    cols="50"
+                    formControlName="bio"
+                    id="bio"
+                    maxlength="150"
+                    name="bio"
+                    rows="5"
+                    type="text"
+                ></textarea>
+                    <mat-error *ngFor="let validation of common.validation_methods.bio">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'bio',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
                     <p class="nameHeaders"><b>First Name</b></p>
                     <label for="firstName"></label
                     ><input
-                        autocomplete="off"
-                        formControlName="firstName"
-                        id="firstName"
-                        name="firstName"
-                        required
-                        type="text"
-                    />
+                    autocomplete="off"
+                    formControlName="firstName"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    type="text"
+                />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
                             *ngIf="
@@ -175,17 +380,17 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr />
+                    <hr/>
                     <p class="nameHeaders"><b>Last Name</b></p>
                     <label for="lastName"></label
                     ><input
-                        autocomplete="off"
-                        formControlName="lastName"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        type="text"
-                    />
+                    autocomplete="off"
+                    formControlName="lastName"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    type="text"
+                />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
                             *ngIf="
@@ -200,7 +405,916 @@
                             {{ validation.message }}
                         </mat-error>
                     </mat-error>
-                    <hr />
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Phone</b></p>
+                    <label for="phone"></label
+                    ><input autocomplete="off" formControlName="phone" id="phone" name="phone" type="text"/>
+                    <mat-error *ngFor="let validation of common.validation_methods.phone">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'phone',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Competes as</b></p>
+                    <label for="gender"></label>
+                    <mat-select formControlName="gender" id="gender" name="gender">
+                        <mat-option value="Male">Male</mat-option>
+                        <mat-option value="Female">Female</mat-option>
+                    </mat-select>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Date of Birth</b></p>
+                    <label for="dateOfBirth"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="dateOfBirth"
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Citizenship</b></p>
+                    <label for="citizenship"></label>
+                    <mat-select formControlName="citizenship" id="citizenship" name="citizenship">
+                        <mat-option value="Afghanistan">Afghanistan</mat-option>
+                        <mat-option value="Åland Islands">Åland Islands</mat-option>
+                        <mat-option value="Albania">Albania</mat-option>
+                        <mat-option value="Algeria">Algeria</mat-option>
+                        <mat-option value="AS">American Samoa</mat-option>
+                        <mat-option value="Andorra">Andorra</mat-option>
+                        <mat-option value="Angola">Angola</mat-option>
+                        <mat-option value="Anguilla">Anguilla</mat-option>
+                        <mat-option value="Antarctica">Antarctica</mat-option>
+                        <mat-option value="AG">Antigua and Barbuda</mat-option>
+                        <mat-option value="Argentina">Argentina</mat-option>
+                        <mat-option value="Armenia">Armenia</mat-option>
+                        <mat-option value="Aruba">Aruba</mat-option>
+                        <mat-option value="Australia">Australia</mat-option>
+                        <mat-option value="Austria">Austria</mat-option>
+                        <mat-option value="Azerbaijan">Azerbaijan</mat-option>
+                        <mat-option value="Bahamas">Bahamas</mat-option>
+                        <mat-option value="Bahrain">Bahrain</mat-option>
+                        <mat-option value="Bangladesh">Bangladesh</mat-option>
+                        <mat-option value="Barbados">Barbados</mat-option>
+                        <mat-option value="Belarus">Belarus</mat-option>
+                        <mat-option value="Belgium">Belgium</mat-option>
+                        <mat-option value="Belize">Belize</mat-option>
+                        <mat-option value="Benin">Benin</mat-option>
+                        <mat-option value="Bermuda">Bermuda</mat-option>
+                        <mat-option value="Bhutan">Bhutan</mat-option>
+                        <mat-option value="BO">Bolivia, Plurinational State of</mat-option>
+                        <mat-option value="BQ">Bonaire, Sint Eustatius and Saba</mat-option>
+                        <mat-option value="BA">Bosnia and Herzegovina</mat-option>
+                        <mat-option value="Botswana">Botswana</mat-option>
+                        <mat-option value="BV">Bouvet Island</mat-option>
+                        <mat-option value="Brazil">Brazil</mat-option>
+                        <mat-option value="IO">British Indian Ocean Territory</mat-option>
+                        <mat-option value="BN">Brunei Darussalam</mat-option>
+                        <mat-option value="Bulgaria">Bulgaria</mat-option>
+                        <mat-option value="BF">Burkina Faso</mat-option>
+                        <mat-option value="Burundi">Burundi</mat-option>
+                        <mat-option value="Cambodia">Cambodia</mat-option>
+                        <mat-option value="Cameroon">Cameroon</mat-option>
+                        <mat-option value="Canada">Canada</mat-option>
+                        <mat-option value="CV">Cape Verde</mat-option>
+                        <mat-option value="KY">Cayman Islands</mat-option>
+                        <mat-option value="CF">Central African Republic</mat-option>
+                        <mat-option value="Chad">Chad</mat-option>
+                        <mat-option value="Chile">Chile</mat-option>
+                        <mat-option value="China">China</mat-option>
+                        <mat-option value="CX">Christmas Island</mat-option>
+                        <mat-option value="CC">Cocos (Keeling) Islands</mat-option>
+                        <mat-option value="Colombia">Colombia</mat-option>
+                        <mat-option value="Comoros">Comoros</mat-option>
+                        <mat-option value="Congo">Congo</mat-option>
+                        <mat-option value="CD">Congo, the Democratic Republic of the</mat-option>
+                        <mat-option value="CK">Cook Islands</mat-option>
+                        <mat-option value="CR">Costa Rica</mat-option>
+                        <mat-option value="CI">Côte d'Ivoire</mat-option>
+                        <mat-option value="Croatia">Croatia</mat-option>
+                        <mat-option value="Cuba">Cuba</mat-option>
+                        <mat-option value="CW">Curaçao</mat-option>
+                        <mat-option value="Cyprus">Cyprus</mat-option>
+                        <mat-option value="CZ">Czech Republic</mat-option>
+                        <mat-option value="Denmark">Denmark</mat-option>
+                        <mat-option value="Djibouti">Djibouti</mat-option>
+                        <mat-option value="Dominica">Dominica</mat-option>
+                        <mat-option value="DO">Dominican Republic</mat-option>
+                        <mat-option value="Ecuador">Ecuador</mat-option>
+                        <mat-option value="Egypt">Egypt</mat-option>
+                        <mat-option value="SV">El Salvador</mat-option>
+                        <mat-option value="GQ">Equatorial Guinea</mat-option>
+                        <mat-option value="Eritrea">Eritrea</mat-option>
+                        <mat-option value="Estonia">Estonia</mat-option>
+                        <mat-option value="Ethiopia">Ethiopia</mat-option>
+                        <mat-option value="FK">Falkland Islands (Malvinas)</mat-option>
+                        <mat-option value="FO">Faroe Islands</mat-option>
+                        <mat-option value="Fiji">Fiji</mat-option>
+                        <mat-option value="Finland">Finland</mat-option>
+                        <mat-option value="France">France</mat-option>
+                        <mat-option value="GF">French Guiana</mat-option>
+                        <mat-option value="PF">French Polynesia</mat-option>
+                        <mat-option value="TF">French Southern Territories</mat-option>
+                        <mat-option value="Gabon">Gabon</mat-option>
+                        <mat-option value="Gambia">Gambia</mat-option>
+                        <mat-option value="Georgia">Georgia</mat-option>
+                        <mat-option value="Germany">Germany</mat-option>
+                        <mat-option value="Ghana">Ghana</mat-option>
+                        <mat-option value="Gibraltar">Gibraltar</mat-option>
+                        <mat-option value="Greece">Greece</mat-option>
+                        <mat-option value="Greenland">Greenland</mat-option>
+                        <mat-option value="Grenada">Grenada</mat-option>
+                        <mat-option value="Guadeloupe">Guadeloupe</mat-option>
+                        <mat-option value="Guam">Guam</mat-option>
+                        <mat-option value="Guatemala">Guatemala</mat-option>
+                        <mat-option value="Guernsey">Guernsey</mat-option>
+                        <mat-option value="Guinea">Guinea</mat-option>
+                        <mat-option value="GW">Guinea-Bissau</mat-option>
+                        <mat-option value="Guyana">Guyana</mat-option>
+                        <mat-option value="Haiti">Haiti</mat-option>
+                        <mat-option value="HM">Heard Island and McDonald Islands</mat-option>
+                        <mat-option value="VA">Holy See (Vatican City State)</mat-option>
+                        <mat-option value="Honduras">Honduras</mat-option>
+                        <mat-option value="HK">Hong Kong</mat-option>
+                        <mat-option value="Hungary">Hungary</mat-option>
+                        <mat-option value="Iceland">Iceland</mat-option>
+                        <mat-option value="India">India</mat-option>
+                        <mat-option value="Indonesia">Indonesia</mat-option>
+                        <mat-option value="IR">Iran, Islamic Republic of</mat-option>
+                        <mat-option value="Iraq">Iraq</mat-option>
+                        <mat-option value="Ireland">Ireland</mat-option>
+                        <mat-option value="IM">Isle of Man</mat-option>
+                        <mat-option value="Israel">Israel</mat-option>
+                        <mat-option value="Italy">Italy</mat-option>
+                        <mat-option value="Jamaica">Jamaica</mat-option>
+                        <mat-option value="Japan">Japan</mat-option>
+                        <mat-option value="Jersey">Jersey</mat-option>
+                        <mat-option value="Jordan">Jordan</mat-option>
+                        <mat-option value="Kazakhstan">Kazakhstan</mat-option>
+                        <mat-option value="Kenya">Kenya</mat-option>
+                        <mat-option value="Kiribati">Kiribati</mat-option>
+                        <mat-option value="KP">Korea, Democratic People's Republic of</mat-option>
+                        <mat-option value="KR">Korea, Republic of</mat-option>
+                        <mat-option value="Kuwait">Kuwait</mat-option>
+                        <mat-option value="Kyrgyzstan">Kyrgyzstan</mat-option>
+                        <mat-option value="LA">Lao People's Democratic Republic</mat-option>
+                        <mat-option value="Latvia">Latvia</mat-option>
+                        <mat-option value="Lebanon">Lebanon</mat-option>
+                        <mat-option value="Lesotho">Lesotho</mat-option>
+                        <mat-option value="Liberia">Liberia</mat-option>
+                        <mat-option value="Libya">Libya</mat-option>
+                        <mat-option value="Liechtenstein">Liechtenstein</mat-option>
+                        <mat-option value="Lithuania">Lithuania</mat-option>
+                        <mat-option value="Luxembourg">Luxembourg</mat-option>
+                        <mat-option value="Macao">Macao</mat-option>
+                        <mat-option value="MK">Macedonia, the former Yugoslav Republic of</mat-option>
+                        <mat-option value="Madagascar">Madagascar</mat-option>
+                        <mat-option value="Malawi">Malawi</mat-option>
+                        <mat-option value="Malaysia">Malaysia</mat-option>
+                        <mat-option value="Maldives">Maldives</mat-option>
+                        <mat-option value="Mali">Mali</mat-option>
+                        <mat-option value="Malta">Malta</mat-option>
+                        <mat-option value="MH">Marshall Islands</mat-option>
+                        <mat-option value="Martinique">Martinique</mat-option>
+                        <mat-option value="Mauritania">Mauritania</mat-option>
+                        <mat-option value="Mauritius">Mauritius</mat-option>
+                        <mat-option value="Mayotte">Mayotte</mat-option>
+                        <mat-option value="Mexico">Mexico</mat-option>
+                        <mat-option value="FM">Micronesia, Federated States of</mat-option>
+                        <mat-option value="MD">Moldova, Republic of</mat-option>
+                        <mat-option value="Monaco">Monaco</mat-option>
+                        <mat-option value="Mongolia">Mongolia</mat-option>
+                        <mat-option value="Montenegro">Montenegro</mat-option>
+                        <mat-option value="Montserrat">Montserrat</mat-option>
+                        <mat-option value="Morocco">Morocco</mat-option>
+                        <mat-option value="Mozambique">Mozambique</mat-option>
+                        <mat-option value="Myanmar">Myanmar</mat-option>
+                        <mat-option value="Namibia">Namibia</mat-option>
+                        <mat-option value="Nauru">Nauru</mat-option>
+                        <mat-option value="Nepal">Nepal</mat-option>
+                        <mat-option value="Netherlands">Netherlands</mat-option>
+                        <mat-option value="NC">New Caledonia</mat-option>
+                        <mat-option value="NZ">New Zealand</mat-option>
+                        <mat-option value="Nicaragua">Nicaragua</mat-option>
+                        <mat-option value="Niger">Niger</mat-option>
+                        <mat-option value="Nigeria">Nigeria</mat-option>
+                        <mat-option value="Niue">Niue</mat-option>
+                        <mat-option value="NF">Norfolk Island</mat-option>
+                        <mat-option value="MP">Northern Mariana Islands</mat-option>
+                        <mat-option value="Norway">Norway</mat-option>
+                        <mat-option value="Oman">Oman</mat-option>
+                        <mat-option value="Pakistan">Pakistan</mat-option>
+                        <mat-option value="Palau">Palau</mat-option>
+                        <mat-option value="PS">Palestinian Territory, Occupied</mat-option>
+                        <mat-option value="Panama">Panama</mat-option>
+                        <mat-option value="PG">Papua New Guinea</mat-option>
+                        <mat-option value="Paraguay">Paraguay</mat-option>
+                        <mat-option value="Peru">Peru</mat-option>
+                        <mat-option value="Philippines">Philippines</mat-option>
+                        <mat-option value="Pitcairn">Pitcairn</mat-option>
+                        <mat-option value="Poland">Poland</mat-option>
+                        <mat-option value="Portugal">Portugal</mat-option>
+                        <mat-option value="PR">Puerto Rico</mat-option>
+                        <mat-option value="Qatar">Qatar</mat-option>
+                        <mat-option value="RE">Réunion</mat-option>
+                        <mat-option value="Romania">Romania</mat-option>
+                        <mat-option value="RU">Russian Federation</mat-option>
+                        <mat-option value="Rwanda">Rwanda</mat-option>
+                        <mat-option value="BL">Saint Barthélemy</mat-option>
+                        <mat-option value="SH">Saint Helena, Ascension and Tristan da Cunha</mat-option>
+                        <mat-option value="KN">Saint Kitts and Nevis</mat-option>
+                        <mat-option value="LC">Saint Lucia</mat-option>
+                        <mat-option value="MF">Saint Martin (French part)</mat-option>
+                        <mat-option value="PM">Saint Pierre and Miquelon</mat-option>
+                        <mat-option value="VC">Saint Vincent and the Grenadines</mat-option>
+                        <mat-option value="Samoa">Samoa</mat-option>
+                        <mat-option value="SM">San Marino</mat-option>
+                        <mat-option value="ST">Sao Tome and Principe</mat-option>
+                        <mat-option value="SA">Saudi Arabia</mat-option>
+                        <mat-option value="Senegal">Senegal</mat-option>
+                        <mat-option value="Serbia">Serbia</mat-option>
+                        <mat-option value="Seychelles">Seychelles</mat-option>
+                        <mat-option value="SL">Sierra Leone</mat-option>
+                        <mat-option value="Singapore">Singapore</mat-option>
+                        <mat-option value="SX">Sint Maarten (Dutch part)</mat-option>
+                        <mat-option value="Slovakia">Slovakia</mat-option>
+                        <mat-option value="Slovenia">Slovenia</mat-option>
+                        <mat-option value="SB">Solomon Islands</mat-option>
+                        <mat-option value="Somalia">Somalia</mat-option>
+                        <mat-option value="ZA">South Africa</mat-option>
+                        <mat-option value="GS">South Georgia and the South Sandwich Islands</mat-option>
+                        <mat-option value="SS">South Sudan</mat-option>
+                        <mat-option value="Spain">Spain</mat-option>
+                        <mat-option value="LK">Sri Lanka</mat-option>
+                        <mat-option value="Sudan">Sudan</mat-option>
+                        <mat-option value="Suriname">Suriname</mat-option>
+                        <mat-option value="SJ">Svalbard and Jan Mayen</mat-option>
+                        <mat-option value="Swaziland">Swaziland</mat-option>
+                        <mat-option value="Sweden">Sweden</mat-option>
+                        <mat-option value="Switzerland">Switzerland</mat-option>
+                        <mat-option value="SY">Syrian Arab Republic</mat-option>
+                        <mat-option value="TW">Taiwan, Province of China</mat-option>
+                        <mat-option value="Tajikistan">Tajikistan</mat-option>
+                        <mat-option value="TZ">Tanzania, United Republic of</mat-option>
+                        <mat-option value="Thailand">Thailand</mat-option>
+                        <mat-option value="TL">Timor-Leste</mat-option>
+                        <mat-option value="Togo">Togo</mat-option>
+                        <mat-option value="Tokelau">Tokelau</mat-option>
+                        <mat-option value="Tonga">Tonga</mat-option>
+                        <mat-option value="TT">Trinidad and Tobago</mat-option>
+                        <mat-option value="Tunisia">Tunisia</mat-option>
+                        <mat-option value="Turkey">Turkey</mat-option>
+                        <mat-option value="Turkmenistan">Turkmenistan</mat-option>
+                        <mat-option value="TC">Turks and Caicos Islands</mat-option>
+                        <mat-option value="Tuvalu">Tuvalu</mat-option>
+                        <mat-option value="Uganda">Uganda</mat-option>
+                        <mat-option value="Ukraine">Ukraine</mat-option>
+                        <mat-option value="AE">United Arab Emirates</mat-option>
+                        <mat-option value="GB">United Kingdom</mat-option>
+                        <mat-option value="US">United States</mat-option>
+                        <mat-option value="UM">United States Minor Outlying Islands</mat-option>
+                        <mat-option value="Uruguay">Uruguay</mat-option>
+                        <mat-option value="Uzbekistan">Uzbekistan</mat-option>
+                        <mat-option value="Vanuatu">Vanuatu</mat-option>
+                        <mat-option value="VE">Venezuela, Bolivarian Republic of</mat-option>
+                        <mat-option value="VN">Viet Nam</mat-option>
+                        <mat-option value="VG">Virgin Islands, British</mat-option>
+                        <mat-option value="VI">Virgin Islands, U.S.</mat-option>
+                        <mat-option value="WF">Wallis and Futuna</mat-option>
+                        <mat-option value="EH">Western Sahara</mat-option>
+                        <mat-option value="Yemen">Yemen</mat-option>
+                        <mat-option value="Zambia">Zambia</mat-option>
+                        <mat-option value="Zimbabwe">Zimbabwe</mat-option>
+                    </mat-select>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Grade</b></p>
+                    <label for="grade"></label>
+                    <mat-select formControlName="grade" id="grade" name="grade">
+                        <mat-option value="8">8</mat-option>
+                        <mat-option value="9">9</mat-option>
+                        <mat-option value="10">10</mat-option>
+                        <mat-option value="11">11</mat-option>
+                        <mat-option value="12">12</mat-option>
+                        <mat-option value="13">Graduated</mat-option>
+                    </mat-select>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>High School Graduation Year</b></p>
+                    <label for="gradYear"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="gradYear"
+                    id="gradYear"
+                    max="2100"
+                    min="1960"
+                    name="gradYear"
+                    step="1"
+                    type="number"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Previous Collegiate Competitor</b></p>
+                    <label for="previousCollegiate"></label>
+                    <mat-select formControlName="previousCollegiate" id="previousCollegiate" name="previousCollegiate">
+                        <mat-option value="true">Yes</mat-option>
+                        <mat-option value="false">No</mat-option>
+                        >
+                    </mat-select>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Street Address</b></p>
+                    <label for="street"></label
+                    ><input autocomplete="off" formControlName="street" id="street" name="street" type="text"/>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Unit/Apt</b></p>
+                    <label for="unitNumber"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="unitNumber"
+                    id="unitNumber"
+                    name="unitNumber"
+                    type="text"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>City</b></p>
+                    <label for="city"></label
+                    ><input autocomplete="off" formControlName="city" id="city" name="city" type="text"/>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Province/State</b></p>
+                    <label for="province"></label
+                    ><input autocomplete="off" formControlName="province" id="province" name="province" type="text"/>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Country</b></p>
+                    <label for="country"></label>
+                    <mat-select formControlName="country" id="country" name="country">
+                        <mat-option value="Afghanistan">Afghanistan</mat-option>
+                        <mat-option value="Åland Islands">Åland Islands</mat-option>
+                        <mat-option value="Albania">Albania</mat-option>
+                        <mat-option value="Algeria">Algeria</mat-option>
+                        <mat-option value="AS">American Samoa</mat-option>
+                        <mat-option value="Andorra">Andorra</mat-option>
+                        <mat-option value="Angola">Angola</mat-option>
+                        <mat-option value="Anguilla">Anguilla</mat-option>
+                        <mat-option value="Antarctica">Antarctica</mat-option>
+                        <mat-option value="AG">Antigua and Barbuda</mat-option>
+                        <mat-option value="Argentina">Argentina</mat-option>
+                        <mat-option value="Armenia">Armenia</mat-option>
+                        <mat-option value="Aruba">Aruba</mat-option>
+                        <mat-option value="Australia">Australia</mat-option>
+                        <mat-option value="Austria">Austria</mat-option>
+                        <mat-option value="Azerbaijan">Azerbaijan</mat-option>
+                        <mat-option value="Bahamas">Bahamas</mat-option>
+                        <mat-option value="Bahrain">Bahrain</mat-option>
+                        <mat-option value="Bangladesh">Bangladesh</mat-option>
+                        <mat-option value="Barbados">Barbados</mat-option>
+                        <mat-option value="Belarus">Belarus</mat-option>
+                        <mat-option value="Belgium">Belgium</mat-option>
+                        <mat-option value="Belize">Belize</mat-option>
+                        <mat-option value="Benin">Benin</mat-option>
+                        <mat-option value="Bermuda">Bermuda</mat-option>
+                        <mat-option value="Bhutan">Bhutan</mat-option>
+                        <mat-option value="BO">Bolivia, Plurinational State of</mat-option>
+                        <mat-option value="BQ">Bonaire, Sint Eustatius and Saba</mat-option>
+                        <mat-option value="BA">Bosnia and Herzegovina</mat-option>
+                        <mat-option value="Botswana">Botswana</mat-option>
+                        <mat-option value="BV">Bouvet Island</mat-option>
+                        <mat-option value="Brazil">Brazil</mat-option>
+                        <mat-option value="IO">British Indian Ocean Territory</mat-option>
+                        <mat-option value="BN">Brunei Darussalam</mat-option>
+                        <mat-option value="Bulgaria">Bulgaria</mat-option>
+                        <mat-option value="BF">Burkina Faso</mat-option>
+                        <mat-option value="Burundi">Burundi</mat-option>
+                        <mat-option value="Cambodia">Cambodia</mat-option>
+                        <mat-option value="Cameroon">Cameroon</mat-option>
+                        <mat-option value="Canada">Canada</mat-option>
+                        <mat-option value="CV">Cape Verde</mat-option>
+                        <mat-option value="KY">Cayman Islands</mat-option>
+                        <mat-option value="CF">Central African Republic</mat-option>
+                        <mat-option value="Chad">Chad</mat-option>
+                        <mat-option value="Chile">Chile</mat-option>
+                        <mat-option value="China">China</mat-option>
+                        <mat-option value="CX">Christmas Island</mat-option>
+                        <mat-option value="CC">Cocos (Keeling) Islands</mat-option>
+                        <mat-option value="Colombia">Colombia</mat-option>
+                        <mat-option value="Comoros">Comoros</mat-option>
+                        <mat-option value="Congo">Congo</mat-option>
+                        <mat-option value="CD">Congo, the Democratic Republic of the</mat-option>
+                        <mat-option value="CK">Cook Islands</mat-option>
+                        <mat-option value="CR">Costa Rica</mat-option>
+                        <mat-option value="CI">Côte d'Ivoire</mat-option>
+                        <mat-option value="Croatia">Croatia</mat-option>
+                        <mat-option value="Cuba">Cuba</mat-option>
+                        <mat-option value="CW">Curaçao</mat-option>
+                        <mat-option value="Cyprus">Cyprus</mat-option>
+                        <mat-option value="CZ">Czech Republic</mat-option>
+                        <mat-option value="Denmark">Denmark</mat-option>
+                        <mat-option value="Djibouti">Djibouti</mat-option>
+                        <mat-option value="Dominica">Dominica</mat-option>
+                        <mat-option value="DO">Dominican Republic</mat-option>
+                        <mat-option value="Ecuador">Ecuador</mat-option>
+                        <mat-option value="Egypt">Egypt</mat-option>
+                        <mat-option value="SV">El Salvador</mat-option>
+                        <mat-option value="GQ">Equatorial Guinea</mat-option>
+                        <mat-option value="Eritrea">Eritrea</mat-option>
+                        <mat-option value="Estonia">Estonia</mat-option>
+                        <mat-option value="Ethiopia">Ethiopia</mat-option>
+                        <mat-option value="FK">Falkland Islands (Malvinas)</mat-option>
+                        <mat-option value="FO">Faroe Islands</mat-option>
+                        <mat-option value="Fiji">Fiji</mat-option>
+                        <mat-option value="Finland">Finland</mat-option>
+                        <mat-option value="France">France</mat-option>
+                        <mat-option value="GF">French Guiana</mat-option>
+                        <mat-option value="PF">French Polynesia</mat-option>
+                        <mat-option value="TF">French Southern Territories</mat-option>
+                        <mat-option value="Gabon">Gabon</mat-option>
+                        <mat-option value="Gambia">Gambia</mat-option>
+                        <mat-option value="Georgia">Georgia</mat-option>
+                        <mat-option value="Germany">Germany</mat-option>
+                        <mat-option value="Ghana">Ghana</mat-option>
+                        <mat-option value="Gibraltar">Gibraltar</mat-option>
+                        <mat-option value="Greece">Greece</mat-option>
+                        <mat-option value="Greenland">Greenland</mat-option>
+                        <mat-option value="Grenada">Grenada</mat-option>
+                        <mat-option value="Guadeloupe">Guadeloupe</mat-option>
+                        <mat-option value="Guam">Guam</mat-option>
+                        <mat-option value="Guatemala">Guatemala</mat-option>
+                        <mat-option value="Guernsey">Guernsey</mat-option>
+                        <mat-option value="Guinea">Guinea</mat-option>
+                        <mat-option value="GW">Guinea-Bissau</mat-option>
+                        <mat-option value="Guyana">Guyana</mat-option>
+                        <mat-option value="Haiti">Haiti</mat-option>
+                        <mat-option value="HM">Heard Island and McDonald Islands</mat-option>
+                        <mat-option value="VA">Holy See (Vatican City State)</mat-option>
+                        <mat-option value="Honduras">Honduras</mat-option>
+                        <mat-option value="HK">Hong Kong</mat-option>
+                        <mat-option value="Hungary">Hungary</mat-option>
+                        <mat-option value="Iceland">Iceland</mat-option>
+                        <mat-option value="India">India</mat-option>
+                        <mat-option value="Indonesia">Indonesia</mat-option>
+                        <mat-option value="IR">Iran, Islamic Republic of</mat-option>
+                        <mat-option value="Iraq">Iraq</mat-option>
+                        <mat-option value="Ireland">Ireland</mat-option>
+                        <mat-option value="IM">Isle of Man</mat-option>
+                        <mat-option value="Israel">Israel</mat-option>
+                        <mat-option value="Italy">Italy</mat-option>
+                        <mat-option value="Jamaica">Jamaica</mat-option>
+                        <mat-option value="Japan">Japan</mat-option>
+                        <mat-option value="Jersey">Jersey</mat-option>
+                        <mat-option value="Jordan">Jordan</mat-option>
+                        <mat-option value="Kazakhstan">Kazakhstan</mat-option>
+                        <mat-option value="Kenya">Kenya</mat-option>
+                        <mat-option value="Kiribati">Kiribati</mat-option>
+                        <mat-option value="KP">Korea, Democratic People's Republic of</mat-option>
+                        <mat-option value="KR">Korea, Republic of</mat-option>
+                        <mat-option value="Kuwait">Kuwait</mat-option>
+                        <mat-option value="Kyrgyzstan">Kyrgyzstan</mat-option>
+                        <mat-option value="LA">Lao People's Democratic Republic</mat-option>
+                        <mat-option value="Latvia">Latvia</mat-option>
+                        <mat-option value="Lebanon">Lebanon</mat-option>
+                        <mat-option value="Lesotho">Lesotho</mat-option>
+                        <mat-option value="Liberia">Liberia</mat-option>
+                        <mat-option value="Libya">Libya</mat-option>
+                        <mat-option value="Liechtenstein">Liechtenstein</mat-option>
+                        <mat-option value="Lithuania">Lithuania</mat-option>
+                        <mat-option value="Luxembourg">Luxembourg</mat-option>
+                        <mat-option value="Macao">Macao</mat-option>
+                        <mat-option value="MK">Macedonia, the former Yugoslav Republic of</mat-option>
+                        <mat-option value="Madagascar">Madagascar</mat-option>
+                        <mat-option value="Malawi">Malawi</mat-option>
+                        <mat-option value="Malaysia">Malaysia</mat-option>
+                        <mat-option value="Maldives">Maldives</mat-option>
+                        <mat-option value="Mali">Mali</mat-option>
+                        <mat-option value="Malta">Malta</mat-option>
+                        <mat-option value="MH">Marshall Islands</mat-option>
+                        <mat-option value="Martinique">Martinique</mat-option>
+                        <mat-option value="Mauritania">Mauritania</mat-option>
+                        <mat-option value="Mauritius">Mauritius</mat-option>
+                        <mat-option value="Mayotte">Mayotte</mat-option>
+                        <mat-option value="Mexico">Mexico</mat-option>
+                        <mat-option value="FM">Micronesia, Federated States of</mat-option>
+                        <mat-option value="MD">Moldova, Republic of</mat-option>
+                        <mat-option value="Monaco">Monaco</mat-option>
+                        <mat-option value="Mongolia">Mongolia</mat-option>
+                        <mat-option value="Montenegro">Montenegro</mat-option>
+                        <mat-option value="Montserrat">Montserrat</mat-option>
+                        <mat-option value="Morocco">Morocco</mat-option>
+                        <mat-option value="Mozambique">Mozambique</mat-option>
+                        <mat-option value="Myanmar">Myanmar</mat-option>
+                        <mat-option value="Namibia">Namibia</mat-option>
+                        <mat-option value="Nauru">Nauru</mat-option>
+                        <mat-option value="Nepal">Nepal</mat-option>
+                        <mat-option value="Netherlands">Netherlands</mat-option>
+                        <mat-option value="NC">New Caledonia</mat-option>
+                        <mat-option value="NZ">New Zealand</mat-option>
+                        <mat-option value="Nicaragua">Nicaragua</mat-option>
+                        <mat-option value="Niger">Niger</mat-option>
+                        <mat-option value="Nigeria">Nigeria</mat-option>
+                        <mat-option value="Niue">Niue</mat-option>
+                        <mat-option value="NF">Norfolk Island</mat-option>
+                        <mat-option value="MP">Northern Mariana Islands</mat-option>
+                        <mat-option value="Norway">Norway</mat-option>
+                        <mat-option value="Oman">Oman</mat-option>
+                        <mat-option value="Pakistan">Pakistan</mat-option>
+                        <mat-option value="Palau">Palau</mat-option>
+                        <mat-option value="PS">Palestinian Territory, Occupied</mat-option>
+                        <mat-option value="Panama">Panama</mat-option>
+                        <mat-option value="PG">Papua New Guinea</mat-option>
+                        <mat-option value="Paraguay">Paraguay</mat-option>
+                        <mat-option value="Peru">Peru</mat-option>
+                        <mat-option value="Philippines">Philippines</mat-option>
+                        <mat-option value="Pitcairn">Pitcairn</mat-option>
+                        <mat-option value="Poland">Poland</mat-option>
+                        <mat-option value="Portugal">Portugal</mat-option>
+                        <mat-option value="PR">Puerto Rico</mat-option>
+                        <mat-option value="Qatar">Qatar</mat-option>
+                        <mat-option value="RE">Réunion</mat-option>
+                        <mat-option value="Romania">Romania</mat-option>
+                        <mat-option value="RU">Russian Federation</mat-option>
+                        <mat-option value="Rwanda">Rwanda</mat-option>
+                        <mat-option value="BL">Saint Barthélemy</mat-option>
+                        <mat-option value="SH">Saint Helena, Ascension and Tristan da Cunha</mat-option>
+                        <mat-option value="KN">Saint Kitts and Nevis</mat-option>
+                        <mat-option value="LC">Saint Lucia</mat-option>
+                        <mat-option value="MF">Saint Martin (French part)</mat-option>
+                        <mat-option value="PM">Saint Pierre and Miquelon</mat-option>
+                        <mat-option value="VC">Saint Vincent and the Grenadines</mat-option>
+                        <mat-option value="Samoa">Samoa</mat-option>
+                        <mat-option value="SM">San Marino</mat-option>
+                        <mat-option value="ST">Sao Tome and Principe</mat-option>
+                        <mat-option value="SA">Saudi Arabia</mat-option>
+                        <mat-option value="Senegal">Senegal</mat-option>
+                        <mat-option value="Serbia">Serbia</mat-option>
+                        <mat-option value="Seychelles">Seychelles</mat-option>
+                        <mat-option value="SL">Sierra Leone</mat-option>
+                        <mat-option value="Singapore">Singapore</mat-option>
+                        <mat-option value="SX">Sint Maarten (Dutch part)</mat-option>
+                        <mat-option value="Slovakia">Slovakia</mat-option>
+                        <mat-option value="Slovenia">Slovenia</mat-option>
+                        <mat-option value="SB">Solomon Islands</mat-option>
+                        <mat-option value="Somalia">Somalia</mat-option>
+                        <mat-option value="ZA">South Africa</mat-option>
+                        <mat-option value="GS">South Georgia and the South Sandwich Islands</mat-option>
+                        <mat-option value="SS">South Sudan</mat-option>
+                        <mat-option value="Spain">Spain</mat-option>
+                        <mat-option value="LK">Sri Lanka</mat-option>
+                        <mat-option value="Sudan">Sudan</mat-option>
+                        <mat-option value="Suriname">Suriname</mat-option>
+                        <mat-option value="SJ">Svalbard and Jan Mayen</mat-option>
+                        <mat-option value="Swaziland">Swaziland</mat-option>
+                        <mat-option value="Sweden">Sweden</mat-option>
+                        <mat-option value="Switzerland">Switzerland</mat-option>
+                        <mat-option value="SY">Syrian Arab Republic</mat-option>
+                        <mat-option value="TW">Taiwan, Province of China</mat-option>
+                        <mat-option value="Tajikistan">Tajikistan</mat-option>
+                        <mat-option value="TZ">Tanzania, United Republic of</mat-option>
+                        <mat-option value="Thailand">Thailand</mat-option>
+                        <mat-option value="TL">Timor-Leste</mat-option>
+                        <mat-option value="Togo">Togo</mat-option>
+                        <mat-option value="Tokelau">Tokelau</mat-option>
+                        <mat-option value="Tonga">Tonga</mat-option>
+                        <mat-option value="TT">Trinidad and Tobago</mat-option>
+                        <mat-option value="Tunisia">Tunisia</mat-option>
+                        <mat-option value="Turkey">Turkey</mat-option>
+                        <mat-option value="Turkmenistan">Turkmenistan</mat-option>
+                        <mat-option value="TC">Turks and Caicos Islands</mat-option>
+                        <mat-option value="Tuvalu">Tuvalu</mat-option>
+                        <mat-option value="Uganda">Uganda</mat-option>
+                        <mat-option value="Ukraine">Ukraine</mat-option>
+                        <mat-option value="AE">United Arab Emirates</mat-option>
+                        <mat-option value="GB">United Kingdom</mat-option>
+                        <mat-option value="US">United States</mat-option>
+                        <mat-option value="UM">United States Minor Outlying Islands</mat-option>
+                        <mat-option value="Uruguay">Uruguay</mat-option>
+                        <mat-option value="Uzbekistan">Uzbekistan</mat-option>
+                        <mat-option value="Vanuatu">Vanuatu</mat-option>
+                        <mat-option value="VE">Venezuela, Bolivarian Republic of</mat-option>
+                        <mat-option value="VN">Viet Nam</mat-option>
+                        <mat-option value="VG">Virgin Islands, British</mat-option>
+                        <mat-option value="VI">Virgin Islands, U.S.</mat-option>
+                        <mat-option value="WF">Wallis and Futuna</mat-option>
+                        <mat-option value="EH">Western Sahara</mat-option>
+                        <mat-option value="Yemen">Yemen</mat-option>
+                        <mat-option value="Zambia">Zambia</mat-option>
+                        <mat-option value="Zimbabwe">Zimbabwe</mat-option>
+                    </mat-select>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Postal/Zip Code</b></p>
+                    <label for="postalCode"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="postalCode"
+                    id="postalCode"
+                    name="postalCode"
+                    type="text"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Athletics Club Name</b></p>
+                    <label for="club"></label
+                    ><input autocomplete="off" formControlName="club" id="club" name="club" type="text"/>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Health Injury Status</b></p>
+                    <label for="injuryStatus"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="injuryStatus"
+                    id="injuryStatus"
+                    name="injuryStatus"
+                    type="text"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Instagram Handle</b></p>
+                    <label for="instagram"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="instagram"
+                    id="instagram"
+                    name="instagram"
+                    type="text"
+                />
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Languages Spoken</b></p>
+
+                    <mat-checkbox
+                        formControlName="languagesEnglish"
+                        id="languagesEnglish"
+                        name="languagesEnglish"
+                        value="English"
+                    >English
+                    </mat-checkbox
+                    >
+                    <mat-checkbox
+                        formControlName="languagesFrench"
+                        id="languagesFrench"
+                        name="languagesFrench"
+                        value="French"
+                    >French
+                    </mat-checkbox
+                    >
+                    <mat-checkbox
+                        formControlName="languagesSpanish"
+                        id="languagesSpanish"
+                        name="languagesSpanish"
+                        value="Spanish"
+                    >Spanish
+                    </mat-checkbox
+                    >
+                    <mat-checkbox
+                        formControlName="languagesMandarin"
+                        id="languagesMandarin"
+                        name="languagesMandarin"
+                        value="Mandarin"
+                    >Mandarin
+                    </mat-checkbox
+                    >
+                    <mat-checkbox
+                        formControlName="languagesOther"
+                        id="languagesOther"
+                        name="languagesOther"
+                        value="Other"
+                    >Other
+                    </mat-checkbox
+                    >
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Coach's First Name</b></p>
+                    <label for="coachFirstName"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="coachFirstName"
+                    id="coachFirstName"
+                    name="coachFirstName"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.firstName">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'coachFirstName',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Coach's Last Name</b></p>
+                    <label for="coachLastName"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="coachLastName"
+                    id="coachLastName"
+                    name="coachLastName"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.lastName">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'coachLastName',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Coach's Phone Number</b></p>
+                    <label for="coachPhone"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="coachPhone"
+                    id="coachPhone"
+                    name="coachPhone"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.phone">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'coachPhone',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Coach's Email</b></p>
+                    <label for="coachEmail"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="coachEmail"
+                    id="coachEmail"
+                    name="coachEmail"
+                    type="email"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.email">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'coachEmail',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+                    <p class="nameHeaders"><b>Estimated Budget Per Semester</b></p>
+                    <label for="budget"></label
+                    ><input autocomplete="off" formControlName="budget" id="budget" name="budget" type="text"/>
+
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Parent's First Name</b></p>
+                    <label for="parentFirstName"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="parentFirstName"
+                    id="parentFirstName"
+                    name="parentFirstName"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.firstName">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'parentFirstName',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Parent's Last Name</b></p>
+                    <label for="parentLastName"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="parentLastName"
+                    id="parentLastName"
+                    name="parentLastName"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.lastName">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'parentLastName',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Parent's Phone Number</b></p>
+                    <label for="parentPhone"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="parentPhone"
+                    id="parentPhone"
+                    name="parentPhone"
+                    type="text"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.phone">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'parentPhone',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
+
+                    <p class="nameHeaders"><b>Parent's Email</b></p>
+                    <label for="parentEmail"></label
+                    ><input
+                    autocomplete="off"
+                    formControlName="parentEmail"
+                    id="parentEmail"
+                    name="parentEmail"
+                    type="email"
+                />
+                    <mat-error *ngFor="let validation of common.validation_methods.email">
+                        <mat-error
+                            *ngIf="
+                                formValidationService.checkIfFormElementInvalid(
+                                    editForm,
+                                    'parentEmail',
+                                    validation,
+                                    submitAttempt
+                                )
+                            "
+                        >
+                            {{ validation.message }}
+                        </mat-error>
+                    </mat-error>
+                    <hr/>
                     <button *ngIf="editing" mat-button type="submit">
                         Save
                     </button>
