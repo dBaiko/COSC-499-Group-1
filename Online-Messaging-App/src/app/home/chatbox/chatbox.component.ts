@@ -28,7 +28,6 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
-const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
 const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
@@ -44,7 +43,7 @@ const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
 const EMOJI_POPUP: string = "emojiClick";
-
+const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
 
@@ -81,7 +80,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
-
+    emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
 
@@ -111,6 +110,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
+    @Input() onlineUserList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
     toggleEmoji = false;
@@ -754,9 +754,27 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    hideEmojiPopup(chatMessage: MessageObject) {
-        this.toggleEmoji = false;
-        this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
+    emojiPopupMessage() {
+        if (!this.emojiMessage) {
+            this.emojiMessage = true;
+        } else {
+            this.emojiMessage = false;
+        }
+
+    }
+
+    handleMessageEmojiReaction(emoji: string): void {
+        let text = (this.messageForm.form.value.content as string);
+        if (text == null) {
+            text = Constants.EMPTY;
+        }
+        this.messageForm.setValue({ content: text + emoji });
+    }
+
+    emojiClickOutside() {
+        if (this.emojiMessage) {
+            this.emojiMessage = false;
+        }
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {
