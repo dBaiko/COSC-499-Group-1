@@ -292,7 +292,8 @@
                         <br/><br/>
                         <div class="footerTop">
                             <mat-card-footer>
-                                <span *ngIf="this.emojiMessage" delayClickOutsideInit="true" (clickOutside)="emojiClickOutside()" id="emojiDiv" class="emojiList">
+                                <span (clickOutside)="emojiClickOutside()" *ngIf="this.emojiMessage"
+                                      class="emojiList" delayClickOutsideInit="true" id="emojiDiv">
                                     <span *ngFor="let emoji of emojiList">
                                                     <input
                                                         (click)="handleMessageEmojiReaction(emoji)"
@@ -301,7 +302,8 @@
                                                     </span>
                                                 </span>
                                 <mat-icon (click)="emojiPopupMessage()"
-                                          class="emojiSelect">emoji_emotions</mat-icon>
+                                          class="emojiSelect">emoji_emotions
+                                </mat-icon>
                                 <form
                                     #messageForm="ngForm"
                                     (ngSubmit)="sendMessage(messageForm.form)"
@@ -358,7 +360,8 @@
             </div>
         </div>
         <div class="sidebar">
-            <app-channel-user-list (profileViewEvent)="goToProfile($event)" [subscribedUsers]="subscribedUsers">
+            <app-channel-user-list (profileViewEvent)="goToProfile($event)" [onlineUserList]="onlineUserList"
+                                   [subscribedUsers]="subscribedUsers">
             </app-channel-user-list>
         </div>
     </div>
