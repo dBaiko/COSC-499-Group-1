@@ -57,6 +57,29 @@ input {
 input:focus {
     border: 2px solid var(--element-hover-color);
 }
+mat-select {
+    width: 70%;
+    padding: 10px 10px;
+    color: var(--primary-text-color);
+    background-color: var(--element-hover-color);
+}
+mat-select:focus {
+    border: 2px solid var(--element-hover-color);
+}
+
+::ng-deep.mat-select-value-text {
+    color: var(--primary-text-color) !important;
+}
+
+textarea {
+    width: 70%;
+    padding: 10px 10px;
+    color: var(--primary-text-color);
+    background-color: var(--element-hover-color);
+}
+textarea:focus {
+    border: 2px solid var(--element-hover-color);
+}
 
 button {
     border-radius: 3px;
@@ -82,4 +105,17 @@ button {
 
 .profileError {
     font-size: 0.7rem;
+}
+.scrollable {
+    height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+mat-checkbox {
+    margin-right: 1vw;
+}
+
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: var(--primary-color);
 }

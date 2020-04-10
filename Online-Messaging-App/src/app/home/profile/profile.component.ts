@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { ImageCompressor } from "../../shared/ImageCompressor";
+import {count} from "rxjs/operators";
 
 const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
@@ -86,7 +87,66 @@ export class ProfileComponent implements OnInit {
                     this.formValidationService.noWhitespaceValidator,
                     this.formValidationService.noBadWordsValidator
                 ])
-            )
+            ),
+            phone: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.isNanValidator,
+                    Validators.maxLength(15)
+                ])
+            ),
+            bio: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.noBadWordsValidator,
+                    Validators.maxLength(150)
+                ])
+            ),
+            coachFirstName: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
+            ),
+            coachLastName: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
+            ),
+            coachPhone: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.isNanValidator,
+                    Validators.maxLength(15)
+                ])
+            ),
+            coachEmail: new FormControl(Constants.EMPTY, Validators.compose([ Validators.email])),
+            parentFirstName: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
+            ),
+            parentLastName: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.noWhitespaceValidator,
+                    this.formValidationService.noBadWordsValidator
+                ])
+            ),
+            parentPhone: new FormControl(
+                Constants.EMPTY,
+                Validators.compose([
+                    this.formValidationService.isNanValidator,
+                    Validators.maxLength(15)
+                ])
+            ),
+            parentEmail: new FormControl(Constants.EMPTY, Validators.compose([ Validators.email])),
+
         });
 
         this.imageForm = new FormGroup({
@@ -265,11 +325,38 @@ export class ProfileComponent implements OnInit {
     editFormSubmit(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.editForm.valid) {
-            this.editUser(form.value.email, form.value.firstName, form.value.lastName);
+            this.editUser(form.value.email, form.value.firstName, form.value.lastName, form.value.phone, form.value.bio, form.value.gender, form.value.dateOfBirth,form.value.citizenship,form.value.grade
+            ,form.value.gradYear,form.value.previousCollegiate,form.value.street,form.value.unitNumber,form.value.city,form.value.province,form.value.country,form.value.postalCode,form.value.club,
+                form.value.injuryStatus,form.value.instagram,form.value.languages,form.value.coachFirstName,form.value.coachLastName,form.value.coachPhone,form.value.coachEmail,form.value.parentFirstName,
+                form.value.parentLastName,form.value.parentPhone,form.value.parentEmail,form.value.budget);
         }
     }
 
-    editUser(email: string, firstName: string, lastName: string) {
+    editUser(email: string, firstName: string, lastName: string, phone: string, bio: string, gender: string,
+             dateOfBirth: string,
+             citizenship: string,
+             grade: number,
+             gradYear: number,
+             previousCollegiate: boolean,
+             street: string,
+             unitNumber: string,
+             city: string,
+             province: string,
+             country: string,
+             postalCode: string,
+             club: string,
+             injuryStatus: string,
+             instagram: string,
+             languages: Array<string>,
+             coachFirstName: string,
+             coachLastName: string,
+             coachPhone: string,
+             coachEmail: string,
+             parentFirstName: string,
+             parentLastName: string,
+             parentPhone: string,
+             parentEmail: string,
+             budget: string) {
         let username = this.userProfile.username;
 
         let user: UserObject = {
@@ -281,6 +368,33 @@ export class ProfileComponent implements OnInit {
             username: username,
             firstName: firstName,
             lastName: lastName,
+            phone: phone,
+            bio: bio,
+            gender: gender,
+            dateOfBirth: dateOfBirth,
+            citizenship: citizenship,
+            grade: grade,
+            gradYear: gradYear,
+            previousCollegiate: previousCollegiate,
+            street: street,
+            unitNumber: unitNumber,
+            city: city,
+            province: province,
+            country: country,
+            postalCode: postalCode,
+            club: club,
+            injuryStatus: injuryStatus,
+            instagram: instagram,
+            languages: languages,
+            coachFirstName: coachFirstName,
+            coachLastName: coachLastName,
+            coachPhone: coachPhone,
+            coachEmail: coachEmail,
+            parentFirstName: parentFirstName,
+            parentLastName: parentLastName,
+            parentPhone: parentPhone,
+            parentEmail: parentEmail,
+            budget: budget,
             profileImage: this.userProfile.profileImage,
             statusText: this.userProfile.statusText
         };

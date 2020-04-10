@@ -115,6 +115,32 @@ export const VALIDATION_MESSAGES = {
             message: "Channel name cannot contain swears"
         }
     ],
+
+    phone: [
+        {
+            type: "NaN",
+            message: "Phone number must only contain numbers"
+        },
+        {
+            type: "maxlength",
+            message: "Phone number cannot be more than 15 characters"
+        },
+    ],
+
+    bio: [
+        {
+            type: "maxlength",
+            message: "Bio cannot be more than 150 characters"
+        },
+        {
+            type: "badWord",
+            message: "Bio cannot contain swears"
+        }
+    ],
+
+
+
+
     channelType: [{ type: "required", message: "Channel type is required" }],
     profileImageName: [{ type: "badFileType", message: "Image file type must be png or jpg" }],
     profileImageSize: [{ type: "badFileSize", message: "Image file size must be less than 1Mb" }],
@@ -231,6 +257,33 @@ export interface UserProfileObject {
     lastName: string;
     profileImage: string;
     statusText: string;
+    phone?: string;
+    bio?: string;
+    gender?: string;
+    dateOfBirth?: string;
+    citizenship?: string;
+    grade?: number;
+    gradYear?: number;
+    previousCollegiate?: boolean;
+    street?: string;
+    unitNumber?: string;
+    city?: string;
+    province?: string;
+    country?: string;
+    postalCode?: string;
+    club?: string;
+    injuryStatus?: string;
+    instagram?: string;
+    languages?: Array<string>;
+    coachFirstName?: string;
+    coachLastName?: string;
+    coachPhone?: string;
+    coachEmail?: string;
+    parentFirstName?: string;
+    parentLastName?: string;
+    parentPhone?: string;
+    parentEmail?: string;
+    budget?: string;
 }
 
 export interface ChannelIdAndType {
@@ -262,6 +315,33 @@ export interface ProfileObject {
     lastName: string;
     profileImage: string;
     statusText: string;
+    phone?: string;
+    bio?: string;
+    gender?: string;
+    dateOfBirth?: string;
+    citizenship?: string;
+    grade?: number;
+    gradYear?: number;
+    previousCollegiate?: boolean;
+    street?: string;
+    unitNumber?: string;
+    city?: string;
+    province?: string;
+    country?: string;
+    postalCode?: string;
+    club?: string;
+    injuryStatus?: string;
+    instagram?: string;
+    languages?: Array<string>;
+    coachFirstName?: string;
+    coachLastName?: string;
+    coachPhone?: string;
+    coachEmail?: string;
+    parentFirstName?: string;
+    parentLastName?: string;
+    parentPhone?: string;
+    parentEmail?: string;
+    budget?: string;
 }
 
 export interface SettingsObject {

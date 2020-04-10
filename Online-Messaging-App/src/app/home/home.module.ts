@@ -25,6 +25,7 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { ClickOutsideModule } from "ng-click-outside";
 import { ChannelUserListComponent } from "./chatbox/channel-user-list/channel-user-list.component";
 import { MarkdownModule } from "ngx-markdown";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -58,7 +59,8 @@ const socketConfig: SocketIoConfig = {
         MatSlideToggleModule,
         MarkdownModule.forRoot({
             sanitize: SecurityContext.NONE
-        })
+        }),
+        MatCheckboxModule
     ],
     exports: [
         HeaderComponent,
