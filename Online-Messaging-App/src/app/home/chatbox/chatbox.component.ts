@@ -173,10 +173,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.getMessages(this._currentChannel.channelId)
             .then(() => {
                 for (let message of this.chatMessages) {
-                    this.getReactionsForMessage(message.messageId)
-                        .then((data: Array<ReactionObject>) => {
-                            message.reactions = data;
-                        });
+                    this.getReactionsForMessage(message.messageId).then((data: Array<ReactionObject>) => {
+                        message.reactions = data;
+                    });
                 }
             })
             .catch((err) => {
@@ -260,7 +259,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
 
                 if (reactionIndex != -1) {
-                    if (!this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)) {
+                    if (
+                        !this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)
+                    ) {
                         this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
                         this.chatMessages[messageIndex].reactions[reactionIndex].count++;
                     }
@@ -271,7 +272,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         username: [reaction.username]
                     });
                 }
-
             }
         });
 
@@ -280,7 +280,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 if (this.chatMessages[i].messageId == reaction.messageId) {
                     for (let j = 0; j < this.chatMessages[i].reactions.length; j++) {
                         if (this.chatMessages[i].reactions[j].emoji == reaction.emoji) {
-                            this.chatMessages[i].reactions[j].username.splice(this.chatMessages[i].reactions[j].username.indexOf(reaction.username), 1);
+                            this.chatMessages[i].reactions[j].username.splice(
+                                this.chatMessages[i].reactions[j].username.indexOf(reaction.username),
+                                1
+                            );
                             this.chatMessages[i].reactions[j].count--;
 
                             if (this.chatMessages[i].reactions[j].count == 0) {
@@ -295,7 +298,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 }
             }
         });
-
     }
 
     ngAfterViewChecked() {
@@ -449,7 +451,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-
     textAreaSubmit(event) {
         if (event.keyCode == 13 && event.shiftKey) {
         } else if (event.keyCode == 13 && !this.selectingFromMention) {
@@ -465,7 +466,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     handleMentioning(event) {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         if (text) {
             if (this.selectingFromMention) {
                 if (event.keyCode == 38 || event.keyCode == 40) {
@@ -483,7 +484,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     }
                 } else if (event.keyCode == 13) {
                     let userToMention = this.mentionList[this.selectedMentionIndex];
-                    this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
+                    this.messageForm.setValue({
+                        content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " "
+                    });
                     this.addMentionIfMentionable(userToMention);
                     this.resetMentionList();
                 } else {
@@ -523,14 +526,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     clickMentionList(username: string) {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + username + " " });
         this.addMentionIfMentionable(username);
         this.resetMentionList();
     }
 
     handleInput() {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         let highlightedText = this.applyHighlights(text);
         document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
     }
@@ -542,7 +545,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let result;
             let indexs = [];
             while ((result = atUsernameRegExp.exec(text))) {
-                if (!/<mark style='background-color: var(--primary-color)'>/g.test(text.substring(result.index - 40, result.index))) {
+                if (
+                    !/<mark style='background-color: var(--primary-color)'>/g.test(
+                        text.substring(result.index - 40, result.index)
+                    )
+                ) {
                     let endIndex = text.substring(result.index).indexOf(" ");
                     if (endIndex == -1) {
                         endIndex = text.length;
@@ -569,14 +576,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (i != indexs.length - 1) {
                         retText += text.substring(indexs[i].end, indexs[i + 1].begin);
                     }
-
                 }
                 return retText;
             }
 
             return text;
-        } else
-            return null;
+        } else return null;
     }
 
     handleScroll() {
@@ -760,11 +765,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } else {
             this.emojiMessage = false;
         }
-
     }
 
     handleMessageEmojiReaction(emoji: string): void {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         if (text == null) {
             text = Constants.EMPTY;
         }
@@ -794,7 +798,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private sendMentionNotification(username): void {
-        let message: string = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        let message: string =
+            this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
         let notifications: NotificationSocketObject = {
             fromUser: {
                 username: this.auth.getAuthenticatedUser().getUsername(),
@@ -851,15 +856,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (i != indexs.length - 1) {
                         retText += text.substring(indexs[i].end, indexs[i + 1].begin);
                     }
-
                 }
                 retText += text.substring(indexs[indexs.length - 1].end, text.length);
                 return retText;
             }
 
             return text;
-        } else
-            return null;
+        } else return null;
     }
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
@@ -1088,7 +1091,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             reject(err);
                         }
                     );
-
                 },
                 (err) => {
                     reject(err);
@@ -1107,40 +1109,39 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http.get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders).subscribe(
-                    (data: Array<MessageObject>) => {
-                        if (data.length > 0) {
-                            if (!this.settings.explicit) {
-                                for (let i = 0; i < data.length; i++) {
-                                    data[i].content = this.filterClean(data[i].content);
+                this.http
+                    .get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders)
+                    .subscribe(
+                        (data: Array<MessageObject>) => {
+                            if (data.length > 0) {
+                                if (!this.settings.explicit) {
+                                    for (let i = 0; i < data.length; i++) {
+                                        data[i].content = this.filterClean(data[i].content);
+                                    }
                                 }
-                            }
 
-                            this.chatMessages = data.concat(this.chatMessages);
+                                this.chatMessages = data.concat(this.chatMessages);
 
-                            let top = document.getElementById(this.messageToScrollTo.messageId).offsetTop;
-                            this.scrollContainer.nativeElement.scrollTop = top - 150;
+                                let top = document.getElementById(this.messageToScrollTo.messageId).offsetTop;
+                                this.scrollContainer.nativeElement.scrollTop = top - 150;
 
-
-                            for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
-                                this.getReactionsForMessage(this.chatMessages[i].messageId)
-                                    .then((reactions) => {
+                                for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
+                                    this.getReactionsForMessage(this.chatMessages[i].messageId).then((reactions) => {
                                         this.chatMessages[i].reactions = reactions;
                                     });
-                            }
+                                }
 
-                            this.loadCount += data.length;
+                                this.loadCount += data.length;
+                            }
+                        },
+                        (err) => {
+                            this.error = err.toString();
                         }
-                    },
-                    (err) => {
-                        this.error = err.toString();
-                    }
-                );
+                    );
             },
             (err) => {
                 console.log(err);
             }
         );
     }
-
 }

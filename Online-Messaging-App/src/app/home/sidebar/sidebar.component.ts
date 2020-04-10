@@ -584,17 +584,25 @@ export class SidebarComponent implements OnInit {
                     })
                 };
 
-                this.http.delete(this.notificationsAPI + CHANNEL_ID_URI + channelId + USERNAME_URI + this.currentUserProfile.username, httpHeaders).subscribe(
-                    () => {
-                    },
-                    (err) => {
-                        console.error(err);
-                    }
-                );
+                this.http
+                    .delete(
+                        this.notificationsAPI +
+                        CHANNEL_ID_URI +
+                        channelId +
+                        USERNAME_URI +
+                        this.currentUserProfile.username,
+                        httpHeaders
+                    )
+                    .subscribe(
+                        () => {
+                        },
+                        (err) => {
+                            console.error(err);
+                        }
+                    );
             },
             (err) => {
             }
         );
     }
-
 }

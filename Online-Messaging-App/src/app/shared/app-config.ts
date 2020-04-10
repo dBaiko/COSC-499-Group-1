@@ -124,7 +124,7 @@ export const VALIDATION_MESSAGES = {
         {
             type: "maxlength",
             message: "Phone number cannot be more than 15 characters"
-        },
+        }
     ],
 
     bio: [
@@ -137,9 +137,6 @@ export const VALIDATION_MESSAGES = {
             message: "Bio cannot contain swears"
         }
     ],
-
-
-
 
     channelType: [{ type: "required", message: "Channel type is required" }],
     profileImageName: [{ type: "badFileType", message: "Image file type must be png or jpg" }],
@@ -1830,15 +1827,14 @@ export const EmojiList = [
     "🏴󠁧󠁢󠁷󠁬󠁳󠁿"
 ];
 
-
 export interface ReactionObject {
-    emoji: string,
-    count: number,
-    username: Array<string>
+    emoji: string;
+    count: number;
+    username: Array<string>;
 }
 
 export interface ReactionSocketObject {
-    emoji: string,
-    username: string,
-    messageId: string
+    emoji: string;
+    username: string;
+    messageId: string;
 }

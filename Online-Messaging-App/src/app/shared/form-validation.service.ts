@@ -28,6 +28,9 @@ export class FormValidationService {
     }
 
     public isNanValidator(control: AbstractControl): { [key: string]: boolean } | null {
+        if (control.value == "" || control.value == " " || control.value == null) {
+            return null;
+        }
         if (isNaN(control.value)) {
             return { NaN: true };
         }
