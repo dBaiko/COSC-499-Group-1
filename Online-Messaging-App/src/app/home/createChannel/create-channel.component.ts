@@ -122,5 +122,4 @@ export class CreateChannelComponent implements OnInit {
     clickOutsideClose(): void {
         this.dialogRef.close(null);
     }
-
 }

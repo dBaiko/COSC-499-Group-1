@@ -5,7 +5,7 @@ import UserChannelDAO from "../userChannels/UserChannelDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
-import ProfileDAO from "../profiles/ProfileDAO";
+import {ProfileDAO} from "../profiles/ProfileDAO";
 import SettingsDAO from "../settings/settingsDAO";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
 

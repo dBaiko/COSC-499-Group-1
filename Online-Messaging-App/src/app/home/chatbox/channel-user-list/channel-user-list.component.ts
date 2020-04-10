@@ -49,7 +49,6 @@ export class ChannelUserListComponent implements OnInit {
 
     private getUserList(): void {
         if (this.subscribedUsers) {
-
             this.socketOnlineUsers = this.notificationService.getOnlineUsers();
 
             let onlineUsersNames: Array<string> = [];
