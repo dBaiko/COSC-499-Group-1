@@ -74,6 +74,9 @@ export const VALIDATION_MESSAGES = {
         { type: "required", message: "Please confirm your password" },
         { type: "misMatch", message: "Passwords do not match" }
     ],
+    oldPassword: [
+        { type: "required", message: "Old password is requuired" }
+    ],
     firstName: [
         { type: "required", message: "First name is required" },
         {

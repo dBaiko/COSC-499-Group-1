@@ -27,6 +27,7 @@ const LIGHT = "light";
 const USER_LIST_EVENT = "userList";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
+const USERS_API = APIConfig.usersAPI;
 
 @Component({
     selector: "app-home",
@@ -226,7 +227,13 @@ export class HomeComponent implements OnInit {
                                 profileImage: profile.profileImage + Constants.QUESTION_MARK + Math.random(),
                                 statusText: profile.statusText
                             };
-                            resolve();
+
+                            this.http.get(USERS_API + username, httpHeaders).subscribe(
+                                (data: Array<UserObject>) => {
+                                    this.currentUserProfile.email = data[0].email;
+                                    resolve();
+                                }
+                            );
                         },
                         (err) => {
                             console.log(err);
