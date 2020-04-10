@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from "@angular/core";
-import { APIConfig, Constants, ProfileObject, UserObject, UserProfileObject } from "../../shared/app-config";
+import { APIConfig, Constants, ProfileObject, UserProfileObject } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -7,7 +7,6 @@ import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { ImageCompressor } from "../../shared/ImageCompressor";
 
-const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
 const FIRSTNAME_FORM_NAME = "firstName";
 const BIO_FORM_NAME = "bio";
@@ -106,7 +105,6 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit() {
         this.editForm = new FormGroup({
-            email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
@@ -246,20 +244,6 @@ export class ProfileComponent implements OnInit {
                             parentEmail: profile.parentEmail,
                             budget: profile.budget
                         };
-
-                        if (username === this.auth.getAuthenticatedUser().getUsername()) {
-                            this.http.get(this.usersAPI + username, httpHeaders).subscribe(
-                                (data: Array<UserObject>) => {
-                                    let user: UserObject = data[0];
-                                    if (user) {
-                                        this.userProfile.email = user.email;
-                                    }
-                                },
-                                (err) => {
-                                    console.log(err);
-                                }
-                            );
-                        }
                     },
                     (err) => {
                         console.log(err);
@@ -274,7 +258,6 @@ export class ProfileComponent implements OnInit {
 
     toggleEditing(editing: boolean) {
         this.editing = editing;
-        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
         this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
         this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
         this.editForm.get(BIO_FORM_NAME).setValue(this.userProfile.bio);
@@ -439,7 +422,6 @@ export class ProfileComponent implements OnInit {
             if (form.value.languagesMandarin) languages.push("Mandarin");
             if (form.value.languagesOther) languages.push("Other");
             this.editUser(
-                form.value.email,
                 form.value.firstName,
                 form.value.lastName,
                 form.value.phone,
@@ -474,7 +456,6 @@ export class ProfileComponent implements OnInit {
     }
 
     editUser(
-        email: string,
         firstName: string,
         lastName: string,
         phone: string,
@@ -506,10 +487,6 @@ export class ProfileComponent implements OnInit {
         budget: string
     ) {
         let username = this.userProfile.username;
-        let user: UserObject = {
-            username: username,
-            email: email
-        };
 
         let profile: ProfileObject = {
             username: username,
@@ -555,7 +532,7 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.usersAPI + username, user, httpHeaders).subscribe(
+                this.http.put(this.usersAPI + username, profile.username, httpHeaders).subscribe(
                     () => {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {
