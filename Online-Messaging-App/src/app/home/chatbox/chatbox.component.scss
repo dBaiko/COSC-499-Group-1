@@ -8,14 +8,16 @@ mat-card {
 mat-form-field {
     border-radius: 0.5rem;
     background-color: var(--element-color);
-    width: 86%;
-    margin-right: 50vh;
+    width: 100%;
+    float:left;
     color: var(--primary-text-color);
+    border: 1px solid var(--primary-color);
 }
 
 #scrollable {
     overflow-y: auto;
     margin-top: 1rem;
+    height: 76% !important;
 }
 
 .messagePicture {
@@ -48,11 +50,10 @@ mat-card-title {
 }
 
 mat-card-footer {
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+    width: 93%;
+    position: absolute;
+    bottom: 3.2rem;
     text-align: center;
-    margin-top: 10vh;
 }
 
 p {
@@ -146,7 +147,7 @@ mat-label {
 }
 
 #messageForm {
-    width: 68%;
+    width: 100%;
 }
 
 markdown ::ng-deep p code {
@@ -258,7 +259,7 @@ mat-expansion-panel:hover {
 }
 
 .defaultHeight {
-    height: 80%;
+    height: 76% !important;
 }
 
 .page {
@@ -315,7 +316,8 @@ mat-expansion-panel:hover {
 #backdrop {
     overflow: auto;
     background-color: white;
-    z-index: 1;
+    z-index: -1 !important;
+    pointer-events: none;
     color: var(--primary-text-color);
 }
 
@@ -396,6 +398,8 @@ mark {
     background-color: var(--element-hover-color);
     font-size: 1.5rem;
     padding: 0px;
+    outline:none;
+
 }
 
 .emoticon:hover {
@@ -427,4 +431,39 @@ mark {
 .reaction:hover {
     background-color: var(--primary-color);
     cursor: pointer;
+}
+.emojiSelect{
+    cursor: pointer;
+    position: absolute;
+    bottom: 3.5rem;
+    right: 1rem;
+    z-index: 100000;
+    color: var(--primary-text-color);
+}
+
+#messageInputField{
+}
+.emojiList{
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: absolute;
+    bottom: 14.5rem;
+    right: 2rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
+}
+.emojiListHidden{
+    display:none;
+}
+.emojiList input{
+    border: none;
+    cursor: pointer;
+
 }

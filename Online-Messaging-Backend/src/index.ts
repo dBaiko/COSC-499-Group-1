@@ -120,8 +120,7 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("username", (user: UserSocket) => {
         addUser(user, socketIO.id);
-        console.log(users);
-        socketIO.emit("userList", users);
+        io.sockets.emit("userList", users);
     });
 
     socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
@@ -155,11 +154,17 @@ io.on("connection", (socketIO) => {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
                 users.splice(i, 1);
-                console.log(users);
-                socketIO.emit("userList", users);
+                io.sockets.emit("userList", users);
             }
         }
+        console.log(users);
     });
+
+    socketIO.on("disconnect", (data: any) => {
+        removeUser(socketIO.id);
+        io.sockets.emit("userList", users);
+    });
+
 });
 
 function addUser(user: UserSocket, id: string): void {
@@ -172,4 +177,12 @@ function addUser(user: UserSocket, id: string): void {
         username: user.username,
         id: id
     });
+}
+
+function removeUser(id: string): void {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].id == id) {
+            users.splice(i, 1);
+        }
+    }
 }

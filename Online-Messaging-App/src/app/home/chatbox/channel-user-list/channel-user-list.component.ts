@@ -25,34 +25,19 @@ export class ChannelUserListComponent implements OnInit {
     @Input()
     set subscribedUsers(value: Array<UserChannelObject>) {
         this._subscribedUsers = value;
-        this.socketOnlineUsers = this.notificationService.getOnlineUsers();
+        this.getUserList();
+    }
 
-        let onlineUsersNames: Array<string> = [];
+    private _onlineUserList: Array<UserSocket>;
 
-        this.socketOnlineUsers.forEach((user) => {
-            onlineUsersNames.push(user.username);
-        });
+    get onlineUserList(): Array<UserSocket> {
+        return this.onlineUserList;
+    }
 
-        this.offlineUsers = [];
-        this.onlineUsers = [];
-
-        for (let i = 0; i < this.subscribedUsers.length; i++) {
-            let user = this.subscribedUsers[i];
-            user.profileImage += Constants.QUESTION_MARK + Math.random();
-            if (!onlineUsersNames.includes(user.username)) {
-                this.offlineUsers.push(user);
-            } else {
-                this.onlineUsers.push({
-                    username: user.username,
-                    channelId: user.channelId,
-                    userChannelRole: user.userChannelRole,
-                    channelName: user.channelName,
-                    channelType: user.channelType,
-                    profileImage: user.profileImage,
-                    statusText: user.statusText
-                });
-            }
-        }
+    @Input()
+    set onlineUserList(value: Array<UserSocket>) {
+        this._onlineUserList = value;
+        this.getUserList();
     }
 
     ngOnInit(): void {
@@ -60,5 +45,39 @@ export class ChannelUserListComponent implements OnInit {
 
     goToProfile(username: string) {
         this.profileViewEvent.emit(username);
+    }
+
+    private getUserList(): void {
+        if (this.subscribedUsers) {
+
+            this.socketOnlineUsers = this.notificationService.getOnlineUsers();
+
+            let onlineUsersNames: Array<string> = [];
+
+            this.socketOnlineUsers.forEach((user) => {
+                onlineUsersNames.push(user.username);
+            });
+
+            this.offlineUsers = [];
+            this.onlineUsers = [];
+
+            for (let i = 0; i < this.subscribedUsers.length; i++) {
+                let user = this.subscribedUsers[i];
+                user.profileImage += Constants.QUESTION_MARK + Math.random();
+                if (!onlineUsersNames.includes(user.username)) {
+                    this.offlineUsers.push(user);
+                } else {
+                    this.onlineUsers.push({
+                        username: user.username,
+                        channelId: user.channelId,
+                        userChannelRole: user.userChannelRole,
+                        channelName: user.channelName,
+                        channelType: user.channelType,
+                        profileImage: user.profileImage,
+                        statusText: user.statusText
+                    });
+                }
+            }
+        }
     }
 }
