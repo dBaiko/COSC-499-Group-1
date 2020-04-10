@@ -80,10 +80,92 @@ export class ProfileDAO {
     }
 
     public updateProfile(profile: ProfileObject) {
+        if (!profile.languages || profile.languages.length==0) {
+            profile.languages=[" "];
+        }
+        if (!profile.phone) {
+            profile.phone=" ";
+        }
+        if (!profile.bio) {
+            profile.bio = " ";
+        }
+        if (!profile.gender) {
+            profile.gender = " ";
+        }
+        if (!profile.dateOfBirth) {
+            profile.dateOfBirth = " ";
+        }
+        if (!profile.citizenship) {
+            profile.citizenship = " ";
+        }
+        if (!profile.grade) {
+            profile.grade = 0;
+        }
+        if (!profile.gradYear) {
+            profile.gradYear = 2000;
+        }
+        if (!profile.previousCollegiate) {
+            profile.previousCollegiate = false;
+        }
+        if (!profile.street) {
+            profile.street = " ";
+        }
+        if (!profile.unitNumber) {
+            profile.unitNumber = " ";
+        }
+        if (!profile.city) {
+            profile.city = " ";
+        }
+        if (!profile.province) {
+            profile.province = " ";
+        }
+        if (!profile.country) {
+            profile.country = " ";
+        }
+        if (!profile.postalCode) {
+            profile.postalCode = " ";
+        }
+        if (!profile.club) {
+            profile.club = " ";
+        }
+        if (!profile.injuryStatus) {
+            profile.injuryStatus = " ";
+        }
+        if (!profile.instagram) {
+            profile.instagram = " ";
+        }
+        if (!profile.coachFirstName) {
+            profile.coachFirstName = " ";
+        }
+        if (!profile.coachLastName) {
+            profile.coachLastName = " ";
+        }
+        if (!profile.coachPhone) {
+            profile.coachPhone = " ";
+        }
+        if (!profile.coachEmail) {
+            profile.coachEmail = " ";
+        }
+        if (!profile.parentFirstName) {
+            profile.parentFirstName = " ";
+        }
+        if (!profile.parentLastName) {
+            profile.parentLastName = " ";
+        }
+        if (!profile.parentPhone) {
+            profile.parentPhone = " ";
+        }
+        if (!profile.parentEmail) {
+            profile.parentEmail = " ";
+        }
+        if (!profile.budget) {
+            profile.budget = " ";
+        }
+        console.log(profile);
         const params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {
-                username: profile
+                username: profile.username
             },
             UpdateExpression:
                 "SET firstName = :f, lastName=:l, phone = :p, bio = :b, gender = :g, dateOfBirth = :d, citizenship = :c," +
@@ -91,7 +173,7 @@ export class ProfileDAO {
                 " city = :city, province = :prov, country = :country, postalCode = :post, club = :club," +
                 " injuryStatus = :inj, instagram = :insta, languages = :lang, coachFirstName = :cf, coachLastName = :cl," +
                 " coachPhone = :cp, coachEmail = :ce, parentFirstName = :pf, parentLastName = :pl, parentPhone = :pp," +
-                " parentEmail = pe, budget = :bud",
+                " parentEmail = :pe, budget = :bud",
             ExpressionAttributeValues: {
                 ":f": profile.firstName,
                 ":l": profile.lastName,
@@ -106,7 +188,7 @@ export class ProfileDAO {
                 ":s": profile.street,
                 ":u": profile.unitNumber,
                 ":city": profile.city,
-                ":province": profile.province,
+                ":prov": profile.province,
                 ":country": profile.country,
                 ":post": profile.postalCode,
                 ":club": profile.club,

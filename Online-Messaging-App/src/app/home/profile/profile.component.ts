@@ -11,6 +11,44 @@ import {count} from "rxjs/operators";
 const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
 const FIRSTNAME_FORM_NAME = "firstName";
+const BIO_FORM_NAME = "bio";
+const GENDER_FORM_NAME = "gender";
+const PHONE_FORM_NAME = "phone";
+const DATEOFBIRTH_FORM_NAME = "dateOfBirth";
+const CITIZENSHIP_FORM_NAME = "citizenship";
+const GRADE_FORM_NAME = "grade";
+const GRADYEAR_FORM_NAME = "gradYear";
+const PREVIOUSCOLLEGIATE_FORM_NAME = "previousCollegiate";
+const STREET_FORM_NAME = "street";
+const UNITNUMBER_FORM_NAME = "unitNumber";
+const CITY_FORM_NAME = "city";
+const PROVINCE_FORM_NAME = "province";
+const COUNTRY_FORM_NAME = "country";
+const POSTALCODE_FORM_NAME = "postalCode";
+const CLUB_FORM_NAME = "club";
+const INJURYSTATUS_FORM_NAME = "injuryStatus";
+const INSTAGRAM_FORM_NAME = "instagram";
+const LANGUAGESENGLISH_FORM_NAME = "languagesEnglish";
+const LANGUAGESSPANISH_FORM_NAME = "languagesSpanish";
+const LANGUAGESFRENCH_FORM_NAME = "languagesFrench";
+const LANGUAGESMANDARIN_FORM_NAME = "languagesMandarin";
+const LANGUAGESOTHER_FORM_NAME = "languagesOther";
+const COACHFIRSTNAME_FORM_NAME = "coachFirstName";
+const COACHLASTNAME_FORM_NAME = "coachLastName";
+const COACHPHONE_FORM_NAME = "coachPhone";
+const COACHEMAIL_FORM_NAME = "coachEmail";
+const PARENTFIRSTNAME_FORM_NAME = "parentFirstName";
+const PARENTLASTNAME_FORM_NAME = "parentLastName";
+const PARENTPHONE_FORM_NAME = "parentPhone";
+const PARENTEMAIL_FORM_NAME = "parentEmail";
+const BUDGET_FORM_NAME = "budget";
+const ENGLISH = "English";
+const SPANISH = "Spanish";
+const FRENCH = "French";
+const MANDARIN = "Mandarin";
+const OTHER = "Other";
+
+
 
 const STATUS_URI: string = "/status/";
 const PROFILE_IMAGE_URI = "/profile-image/";
@@ -105,14 +143,13 @@ export class ProfileComponent implements OnInit {
             coachFirstName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
-                    this.formValidationService.noWhitespaceValidator,
+
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
             coachLastName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
-                    this.formValidationService.noWhitespaceValidator,
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
@@ -124,17 +161,16 @@ export class ProfileComponent implements OnInit {
                 ])
             ),
             coachEmail: new FormControl(Constants.EMPTY, Validators.compose([ Validators.email])),
+
             parentFirstName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
-                    this.formValidationService.noWhitespaceValidator,
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
             parentLastName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
-                    this.formValidationService.noWhitespaceValidator,
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
@@ -146,7 +182,27 @@ export class ProfileComponent implements OnInit {
                 ])
             ),
             parentEmail: new FormControl(Constants.EMPTY, Validators.compose([ Validators.email])),
-
+            languagesEnglish: new FormControl(),
+            languagesFrench: new FormControl(),
+            languagesSpanish: new FormControl(),
+            languagesMandarin: new FormControl(),
+            languagesOther: new FormControl(),
+            gender: new FormControl(),
+            dateOfBirth: new FormControl(),
+            citizenship: new FormControl(),
+            grade: new FormControl(),
+            gradYear: new FormControl(),
+            previousCollegiate: new FormControl(),
+            street: new FormControl(),
+            unitNumber: new FormControl(),
+            city: new FormControl(),
+            province: new FormControl(),
+            country: new FormControl(),
+            postalCode: new FormControl(),
+            club: new FormControl(),
+            injuryStatus: new FormControl(),
+            instagram: new FormControl(),
+            budget: new FormControl(),
         });
 
         this.imageForm = new FormGroup({
@@ -188,7 +244,34 @@ export class ProfileComponent implements OnInit {
                             lastName: profile.lastName,
                             email: null,
                             profileImage: profile.profileImage + Constants.QUESTION_MARK + Math.random(),
-                            statusText: profile.statusText
+                            statusText: profile.statusText,
+                            phone: profile.phone,
+                            bio: profile.bio,
+                            gender: profile.gender,
+                            dateOfBirth: profile.dateOfBirth,
+                            citizenship: profile.citizenship,
+                            grade: profile.grade,
+                            gradYear: profile.gradYear,
+                        previousCollegiate: profile.previousCollegiate,
+                        street: profile.street,
+                        unitNumber: profile.unitNumber,
+                        city: profile.city,
+                        province: profile.province,
+                        country: profile.country,
+                        postalCode: profile.postalCode,
+                        club: profile.club,
+                        injuryStatus: profile.injuryStatus,
+                        instagram: profile.instagram,
+                        languages: profile.languages,
+                        coachFirstName: profile.coachFirstName,
+                        coachLastName: profile.coachLastName,
+                        coachPhone: profile.coachPhone,
+                        coachEmail: profile.coachEmail,
+                        parentFirstName: profile.parentFirstName,
+                        parentLastName: profile.parentLastName,
+                        parentPhone: profile.parentPhone,
+                        parentEmail: profile.parentEmail,
+                        budget: profile.budget
                         };
 
                         if (username === this.auth.getAuthenticatedUser().getUsername()) {
@@ -221,6 +304,50 @@ export class ProfileComponent implements OnInit {
         this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
         this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
         this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
+        this.editForm.get(BIO_FORM_NAME).setValue(this.userProfile.bio);
+        this.editForm.get(PHONE_FORM_NAME).setValue(this.userProfile.phone);
+        this.editForm.get(GENDER_FORM_NAME).setValue(this.userProfile.gender);
+        this.editForm.get(DATEOFBIRTH_FORM_NAME).setValue(this.userProfile.dateOfBirth);
+        this.editForm.get(CITIZENSHIP_FORM_NAME).setValue(this.userProfile.citizenship);
+        this.editForm.get(GRADE_FORM_NAME).setValue(this.userProfile.grade);
+        this.editForm.get(GRADYEAR_FORM_NAME).setValue(this.userProfile.gradYear);
+        this.editForm.get(PREVIOUSCOLLEGIATE_FORM_NAME).setValue(this.userProfile.previousCollegiate);
+        this.editForm.get(STREET_FORM_NAME).setValue(this.userProfile.street);
+        this.editForm.get(UNITNUMBER_FORM_NAME).setValue(this.userProfile.unitNumber);
+        this.editForm.get(CITY_FORM_NAME).setValue(this.userProfile.city);
+        this.editForm.get(PROVINCE_FORM_NAME).setValue(this.userProfile.province);
+        this.editForm.get(COUNTRY_FORM_NAME).setValue(this.userProfile.country);
+        this.editForm.get(POSTALCODE_FORM_NAME).setValue(this.userProfile.postalCode);
+        this.editForm.get(CLUB_FORM_NAME).setValue(this.userProfile.club);
+        this.editForm.get(INJURYSTATUS_FORM_NAME).setValue(this.userProfile.injuryStatus);
+        this.editForm.get(INSTAGRAM_FORM_NAME).setValue(this.userProfile.instagram);
+        this.editForm.get(COACHFIRSTNAME_FORM_NAME).setValue(this.userProfile.coachFirstName);
+        this.editForm.get(COACHLASTNAME_FORM_NAME).setValue(this.userProfile.coachLastName);
+        this.editForm.get(COACHPHONE_FORM_NAME).setValue(this.userProfile.coachPhone);
+        this.editForm.get(COACHEMAIL_FORM_NAME).setValue(this.userProfile.coachEmail);
+        this.editForm.get(PARENTFIRSTNAME_FORM_NAME).setValue(this.userProfile.parentFirstName);
+        this.editForm.get(PARENTLASTNAME_FORM_NAME).setValue(this.userProfile.parentLastName);
+        this.editForm.get(PARENTPHONE_FORM_NAME).setValue(this.userProfile.parentPhone);
+        this.editForm.get(PARENTEMAIL_FORM_NAME).setValue(this.userProfile.parentEmail);
+        this.editForm.get(BUDGET_FORM_NAME).setValue(this.userProfile.budget);
+        if (this.userProfile.languages.length == 0 || this.userProfile.languages == [" "]) {
+            this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(false);
+            this.editForm.get(LANGUAGESFRENCH_FORM_NAME).setValue(false);
+            this.editForm.get(LANGUAGESSPANISH_FORM_NAME).setValue(false);
+            this.editForm.get(LANGUAGESMANDARIN_FORM_NAME).setValue(false);
+            this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(false);
+        }else {
+            if (this.userProfile.languages.includes(ENGLISH))
+                this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(true);
+            if (this.userProfile.languages.includes(SPANISH))
+                this.editForm.get(LANGUAGESSPANISH_FORM_NAME).setValue(true);
+            if (this.userProfile.languages.includes(FRENCH))
+                this.editForm.get(LANGUAGESFRENCH_FORM_NAME).setValue(true);
+            if (this.userProfile.languages.includes(MANDARIN))
+                this.editForm.get(LANGUAGESMANDARIN_FORM_NAME).setValue(true);
+            if (this.userProfile.languages.includes(OTHER))
+                this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(true);
+        }
     }
 
     toggleEditingStatus(editingStatus: boolean) {
@@ -325,9 +452,20 @@ export class ProfileComponent implements OnInit {
     editFormSubmit(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.editForm.valid) {
+            let languages = [];
+            if (form.value.languagesEnglish)
+                languages.push("English");
+            if (form.value.languagesFrench)
+                languages.push("French");
+            if (form.value.languagesSpanish)
+                languages.push("Spanish");
+            if (form.value.languagesMandarin)
+                languages.push("Mandarin");
+            if (form.value.languagesOther)
+                languages.push("Other");
             this.editUser(form.value.email, form.value.firstName, form.value.lastName, form.value.phone, form.value.bio, form.value.gender, form.value.dateOfBirth,form.value.citizenship,form.value.grade
             ,form.value.gradYear,form.value.previousCollegiate,form.value.street,form.value.unitNumber,form.value.city,form.value.province,form.value.country,form.value.postalCode,form.value.club,
-                form.value.injuryStatus,form.value.instagram,form.value.languages,form.value.coachFirstName,form.value.coachLastName,form.value.coachPhone,form.value.coachEmail,form.value.parentFirstName,
+                form.value.injuryStatus,form.value.instagram,languages,form.value.coachFirstName,form.value.coachLastName,form.value.coachPhone,form.value.coachEmail,form.value.parentFirstName,
                 form.value.parentLastName,form.value.parentPhone,form.value.parentEmail,form.value.budget);
         }
     }
@@ -358,7 +496,6 @@ export class ProfileComponent implements OnInit {
              parentEmail: string,
              budget: string) {
         let username = this.userProfile.username;
-
         let user: UserObject = {
             username: username,
             email: email

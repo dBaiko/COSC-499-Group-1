@@ -313,6 +313,7 @@ export interface ProfileObject {
     username: string;
     firstName: string;
     lastName: string;
+    email?: string;
     profileImage: string;
     statusText: string;
     phone?: string;
