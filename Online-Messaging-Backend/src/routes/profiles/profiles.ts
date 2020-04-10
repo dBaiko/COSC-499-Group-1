@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import express from "express";
-import ProfileDAO from "./ProfileDAO";
+import { ProfileDAO, ProfileObject } from "./ProfileDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
@@ -22,12 +22,6 @@ const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
 const PATH_UPDATE_STATUS: string = "/:username/status/";
 const AUTH_KEY = "authorization";
 const COGNITO_USERNAME = "cognito:username";
-
-interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-}
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -51,7 +45,7 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
             ) {
                 const updateProfile = new ProfileDAO(docClient);
                 updateProfile
-                    .updateProfile(req.body.username, req.body.firstName, req.body.lastName)
+                    .updateProfile(req.body)
                     .then(() => {
                         res.status(200).send({
                             status: 200,
