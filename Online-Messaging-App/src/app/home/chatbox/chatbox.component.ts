@@ -110,6 +110,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
+    @Input() onlineUserList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
     toggleEmoji = false;
@@ -753,6 +754,29 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
+    emojiPopupMessage() {
+        if (!this.emojiMessage) {
+            this.emojiMessage = true;
+        } else {
+            this.emojiMessage = false;
+        }
+
+    }
+
+    handleMessageEmojiReaction(emoji: string): void {
+        let text = (this.messageForm.form.value.content as string);
+        if (text == null) {
+            text = Constants.EMPTY;
+        }
+        this.messageForm.setValue({ content: text + emoji });
+    }
+
+    emojiClickOutside() {
+        if (this.emojiMessage) {
+            this.emojiMessage = false;
+        }
+    }
+
     private addNewEmojiReaction(messageId: string, emoji: string): void {
         this.notificationService.sendReaction({
             emoji: emoji,
@@ -1117,27 +1141,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
-    }
-    emojiPopupMessage() {
-        if(!this.emojiMessage){
-            this.emojiMessage = true;
-        }
-        else{
-            this.emojiMessage = false;
-        }
-
-    }
-    handleMessageEmojiReaction(emoji: string): void {
-        let text = (this.messageForm.form.value.content as string);
-        if(text == null){
-            text=Constants.EMPTY;
-        }
-        this.messageForm.setValue({content: text + emoji});
-    }
-    emojiClickOutside(){
-        if(this.emojiMessage){
-            this.emojiMessage = false;
-        }
     }
 
 }

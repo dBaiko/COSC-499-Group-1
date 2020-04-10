@@ -120,8 +120,7 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("username", (user: UserSocket) => {
         addUser(user, socketIO.id);
-        console.log(users);
-        socketIO.emit("userList", users);
+        io.sockets.emit("userList", users);
     });
 
     socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
@@ -155,10 +154,10 @@ io.on("connection", (socketIO) => {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
                 users.splice(i, 1);
-                console.log(users);
-                socketIO.emit("userList", users);
+                io.sockets.emit("userList", users);
             }
         }
+        console.log(users);
     });
 });
 
