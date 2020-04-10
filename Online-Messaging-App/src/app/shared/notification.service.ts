@@ -14,8 +14,8 @@ export class NotificationService {
     private static socket;
     private static instance: NotificationService;
     private static url = "http://localhost:8080";
-    private static onlineUsers: Array<UserSocket> = [];
     private static socketId: string;
+    private onlineUsers: Array<UserSocket> = [];
 
     constructor() {
     }
@@ -27,16 +27,17 @@ export class NotificationService {
         return NotificationService.instance;
     }
 
+    public setOnlineUsers(userList: Array<UserSocket>) {
+        NotificationService.instance.onlineUsers = userList;
+    }
+
     public getOnlineUsers(): Array<UserSocket> {
-        return NotificationService.onlineUsers;
+        return NotificationService.instance.onlineUsers;
     }
 
     public getSocket(username: string): void {
-        NotificationService.onlineUsers = [];
+        NotificationService.instance.onlineUsers = [];
         NotificationService.socket = Socket(NotificationService.url);
-        NotificationService.socket.on(USER_LIST_EVENT, (userList: Array<UserSocket>) => {
-            NotificationService.onlineUsers = userList;
-        });
 
         NotificationService.socket.on("connect", () => {
             NotificationService.socketId = NotificationService.socket.id;
@@ -64,9 +65,9 @@ export class NotificationService {
     }
 
     getOnlineUserByUsername(username: string): UserSocket {
-        for (let i = 0; i < NotificationService.onlineUsers.length; i++) {
-            if (NotificationService.onlineUsers[i].username === username) {
-                return NotificationService.onlineUsers[i];
+        for (let i = 0; i < NotificationService.instance.onlineUsers.length; i++) {
+            if (NotificationService.instance.onlineUsers[i].username === username) {
+                return NotificationService.instance.onlineUsers[i];
             }
         }
         return null;
