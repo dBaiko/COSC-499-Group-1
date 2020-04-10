@@ -79,6 +79,7 @@ export class HomeComponent implements OnInit {
             this.notificationService.addSocketListener(USER_LIST_EVENT, (userList: Array<UserSocket>) => {
                 this.notificationService.setOnlineUsers(userList);
                 this.onlineUserList = userList;
+                console.log(userList);
             });
         }
 
