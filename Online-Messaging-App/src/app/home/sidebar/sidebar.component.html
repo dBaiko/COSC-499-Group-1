@@ -29,7 +29,7 @@
                             <p *ngIf="publicChannel.notificationCount >= 10" class="messageNotification">10+</p>
                         </a>
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe(publicChannel.channelId)">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(publicChannel)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -47,7 +47,7 @@
                             <p class="messageNotification">{{ privateChannel.notificationCount }}</p>
                         </a>
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe(privateChannel.channelId)">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(privateChannel)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>
@@ -70,7 +70,7 @@
                             <p class="messageNotification">{{ friendChannel.notificationCount }}</p>
                         </a>
                         <a>
-                            <mat-icon (click)="confirmUnsubscribe(friendChannel.channelId)">clear</mat-icon>
+                            <mat-icon (click)="confirmUnsubscribe(friendChannel)">clear</mat-icon>
                         </a>
                     </mat-list-item>
                 </div>

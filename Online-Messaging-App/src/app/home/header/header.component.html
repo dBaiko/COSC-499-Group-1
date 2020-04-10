@@ -18,7 +18,9 @@
                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                             src="{{ currentUserProfile.profileImage }}"
                     />
+                    <span class="username">
                     {{ user.username }}
+                    </span>
                 </button>
                 <mat-menu #userMenu="matMenu" class="menuList" disableOptionCentering disabled xPosition="after">
                     <div class="userMenu">
