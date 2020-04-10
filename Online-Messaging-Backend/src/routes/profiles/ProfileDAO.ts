@@ -7,6 +7,39 @@ import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
 import SendData = ManagedUpload.SendData;
 
+export interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string,
+    bio: string,
+    gender: string,
+    dateOfBirth: string,
+    citizenship: string,
+    grade: number,
+    gradYear: number,
+    previousCollegiate: boolean,
+    street: string,
+    unitNumber: string,
+    city: string,
+    province: string,
+    country: string,
+    postalCode: string,
+    club: string,
+    injuryStatus: string,
+    instagram: string,
+    languages: Array<string>,
+    coachFirstName: string,
+    coachLastName: string,
+    coachPhone: string,
+    coachEmail: string,
+    parentFirstName: string,
+    parentLastName: string,
+    parentEmail: string,
+    parentPhone: string,
+    budget: string
+}
+
 aws.config.loadFromPath(awsConfigPath);
 const PROFILES_TABLE_NAME = "Profiles";
 
@@ -14,7 +47,7 @@ const PROFILE_IMAGE_S3_PREFIX: string =
     "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 const DEFAULT_PROFILE_IMAGE: string = "default.png";
 
-class ProfileDAO {
+export class ProfileDAO {
     constructor(private docClient: DocumentClient) {
     }
 
@@ -46,20 +79,53 @@ class ProfileDAO {
         });
     }
 
-    public updateProfile(username: string, firstName: string, lastName: string) {
+    public updateProfile(profile: ProfileObject) {
         const params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {
-                username: username
+                username: profile
             },
-            UpdateExpression: "SET firstName = :f, lastName=:l",
+            UpdateExpression:
+                "SET firstName = :f, lastName=:l, phone = :p, bio = :b, gender = :g, dateOfBirth = :d, citizenship = :c," +
+                " grade = :grade, gradYear = :gradYear, previousCollegiate = :prev, street = :s, unitNumber = :u," +
+                " city = :city, province = :prov, country = :country, postalCode = :post, club = :club," +
+                " injuryStatus = :inj, instagram = :insta, languages = :lang, coachFirstName = :cf, coachLastName = :cl," +
+                " coachPhone = :cp, coachEmail = :ce, parentFirstName = :pf, parentLastName = :pl, parentPhone = :pp," +
+                " parentEmail = pe, budget = :bud",
             ExpressionAttributeValues: {
-                ":f": firstName,
-                ":l": lastName
+                ":f": profile.firstName,
+                ":l": profile.lastName,
+                ":p": profile.phone,
+                ":b": profile.bio,
+                ":g": profile.gender,
+                ":d": profile.dateOfBirth,
+                ":c": profile.citizenship,
+                ":grade": profile.grade,
+                ":gradYear": profile.gradYear,
+                ":prev": profile.previousCollegiate,
+                ":s": profile.street,
+                ":u": profile.unitNumber,
+                ":city": profile.city,
+                ":province": profile.province,
+                ":country": profile.country,
+                ":post": profile.postalCode,
+                ":club": profile.club,
+                ":inj": profile.injuryStatus,
+                ":insta": profile.instagram,
+                ":lang": profile.languages.toString(),
+                ":cf": profile.coachFirstName,
+                ":cl": profile.coachLastName,
+                ":cp": profile.coachPhone,
+                ":ce": profile.coachEmail,
+                ":pf": profile.parentFirstName,
+                ":pl": profile.parentLastName,
+                ":pp": profile.parentPhone,
+                ":pe": profile.parentEmail,
+                ":bud": profile.budget
             }
         };
 
-        console.log("Updating profile for user " + username + "...");
+        console.log("Updating profile for user " + profile.username + "...");
         return new Promise((resolve, reject) => {
             this.docClient.update(params, (err, data) => {
                 if (err) {
@@ -190,5 +256,3 @@ class ProfileDAO {
         });
     }
 }
-
-export default ProfileDAO;
