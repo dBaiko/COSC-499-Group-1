@@ -4,11 +4,11 @@
             <mat-card-header>
                 <div (mouseenter)="imageHover = !imageHover" (mouseleave)="imageHover = !imageHover">
                     <img
-                        alt="assets/icon-alt.PNG"
-                        class="profilePicture"
-                        id="profileImage"
-                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                        src="{{ this.userProfile.profileImage }}"
+                            alt="assets/icon-alt.PNG"
+                            class="profilePicture"
+                            id="profileImage"
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ this.userProfile.profileImage }}"
                     />
                     <form (ngSubmit)="imageFormSubmit()" [formGroup]="imageForm">
                         <input
@@ -22,11 +22,11 @@
                         <input formControlName="profileImageName" name="imageName" type="hidden"/>
                         <input formControlName="profileImageSize" name="imageSize" type="hidden"/>
                         <mat-error
-                            *ngFor="let validation of common.validation_methods.profileImageName"
-                            class="profileError"
+                                *ngFor="let validation of common.validation_methods.profileImageName"
+                                class="profileError"
                         >
                             <mat-error
-                                *ngIf="
+                                    *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         imageForm,
                                         'profileImageName',
@@ -39,11 +39,11 @@
                             </mat-error>
                         </mat-error>
                         <mat-error
-                            *ngFor="let validation of common.validation_methods.profileImageSize"
-                            class="profileError"
+                                *ngFor="let validation of common.validation_methods.profileImageSize"
+                                class="profileError"
                         >
                             <mat-error
-                                *ngIf="
+                                    *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         imageForm,
                                         'profileImageSize',
@@ -58,12 +58,12 @@
                         <button id="hiddenButton" style="display:none;" type="submit"></button>
                     </form>
                     <button
-                        (click)="fileInput.click()"
-                        *ngIf="
+                            (click)="fileInput.click()"
+                            *ngIf="
                             this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && imageHover
                         "
-                        id="imageButton"
-                        mat-button
+                            id="imageButton"
+                            mat-button
                     >
                         Select File
                     </button>
@@ -81,27 +81,27 @@
                 <p class="nameHeaders">
                     <b>Status</b
                     ><span
-                    (click)="this.toggleEditingStatus(true)"
-                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
+                        (click)="this.toggleEditingStatus(true)"
+                        *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()"
                 >
                         Click to update</span
                 >
                 </p>
                 <p (click)="this.toggleEditingStatus(true)" *ngIf="!editingStatus">{{ userProfile.statusText }}</p>
                 <form
-                    (ngSubmit)="statusFormSubmit(statusForm)"
-                    *ngIf="
+                        (ngSubmit)="statusFormSubmit(statusForm)"
+                        *ngIf="
                         this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && editingStatus
                     "
-                    [formGroup]="statusForm"
+                        [formGroup]="statusForm"
                 >
                     <label>
                         <input
-                            autocomplete="off"
-                            formControlName="statusText"
-                            maxlength="25"
-                            name="statusText"
-                            type="text"
+                                autocomplete="off"
+                                formControlName="statusText"
+                                maxlength="25"
+                                name="statusText"
+                                type="text"
                         />
                     </label>
                     <button mat-button type="submit">Update</button>
@@ -129,7 +129,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Competes As</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.gender == ' ' || userProfile.gender == '' || userProfile.gender == null;
                         else gender
                     "
@@ -142,7 +142,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Date of Birth</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.dateOfBirth == ' ' ||
                             userProfile.dateOfBirth == '' ||
                             userProfile.dateOfBirth == null;
@@ -157,7 +157,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Citizenship</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.citizenship == ' ' ||
                             userProfile.citizenship == '' ||
                             userProfile.citizenship == null;
@@ -194,7 +194,7 @@
                 <h2>Address Information</h2>
                 <p class="nameHeaders"><b>Street Address</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.street == ' ' || userProfile.street == '' || userProfile.street == null;
                         else street
                     "
@@ -207,7 +207,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Unit/Apt</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.unitNumber == ' ' || userProfile.unitNumber == '' || userProfile.unitNumber == null;
                         else unitNumber
                     "
@@ -228,7 +228,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Province/State</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.province == ' ' || userProfile.province == '' || userProfile.province == null;
                         else province
                     "
@@ -241,7 +241,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Country</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.country == ' ' || userProfile.country == '' || userProfile.country == null;
                         else country
                     "
@@ -254,7 +254,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Postal/Zip Code</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.postalCode == ' ' || userProfile.postalCode == '' || userProfile.postalCode == null;
                         else postalCode
                     "
@@ -275,7 +275,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Health Injury Status</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.injuryStatus == ' ' ||
                             userProfile.injuryStatus == '' ||
                             userProfile.injuryStatus == null;
@@ -290,7 +290,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Instagram Handle</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.instagram == ' ' || userProfile.instagram == '' || userProfile.instagram == null;
                         else instagram
                     "
@@ -310,7 +310,7 @@
                 <h2>Coach Information</h2>
                 <p class="nameHeaders"><b>Coach's First Name</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.coachFirstName !== ' ' &&
                             userProfile.coachFirstName !== '' &&
                             userProfile.coachFirstName != null;
@@ -322,7 +322,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Coach's Last Name</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.coachLastName !== ' ' &&
                             userProfile.coachLastName !== '' &&
                             userProfile.coachLastName != null;
@@ -334,7 +334,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Coach's Phone Number</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.coachPhone !== ' ' &&
                             userProfile.coachPhone !== '' &&
                             userProfile.coachPhone != null;
@@ -346,7 +346,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Coach's Email</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.coachEmail !== ' ' &&
                             userProfile.coachEmail !== '' &&
                             userProfile.coachEmail != null;
@@ -358,7 +358,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Estimated Budget Per Semester</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.budget !== ' ' && userProfile.budget !== '' && userProfile.budget != null;
                         else NA
                     "
@@ -369,7 +369,7 @@
                 <h2>Parents Information</h2>
                 <p class="nameHeaders"><b>Parent's First Name</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.parentFirstName !== ' ' &&
                             userProfile.parentFirstName !== '' &&
                             userProfile.parentFirstName != null;
@@ -381,7 +381,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Parent's Last Name</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.parentLastName !== ' ' &&
                             userProfile.parentLastName !== '' &&
                             userProfile.parentLastName != null;
@@ -393,7 +393,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Parent's Phone Number</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.parentPhone !== ' ' &&
                             userProfile.parentPhone !== '' &&
                             userProfile.parentPhone != null;
@@ -405,7 +405,7 @@
                 <hr/>
                 <p class="nameHeaders"><b>Parent's Email</b></p>
                 <p
-                    *ngIf="
+                        *ngIf="
                         userProfile.parentEmail !== ' ' &&
                             userProfile.parentEmail !== '' &&
                             userProfile.parentEmail != null;
@@ -426,12 +426,12 @@
                 </h6>
             </div>
             <div
-                *ngIf="
+                    *ngIf="
                     userProfile &&
                     editing &&
                     this.userProfile.username === this.auth.getAuthenticatedUser().getUsername()
                 "
-                class="profileInfo"
+                    class="profileInfo"
             >
                 <p class="nameHeaders"><b>Username</b></p>
                 <p>{{ userProfile.username }}</p>
@@ -440,18 +440,18 @@
                     <p class="nameHeaders"><b>Bio</b></p>
                     <label for="bio"></label
                     ><textarea
-                    autocomplete="off"
-                    cols="50"
-                    formControlName="bio"
-                    id="bio"
-                    maxlength="150"
-                    name="bio"
-                    rows="5"
-                    type="text"
+                        autocomplete="off"
+                        cols="50"
+                        formControlName="bio"
+                        id="bio"
+                        maxlength="150"
+                        name="bio"
+                        rows="5"
+                        type="text"
                 ></textarea>
                     <mat-error *ngFor="let validation of common.validation_methods.bio">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'bio',
@@ -467,16 +467,16 @@
                     <p class="nameHeaders"><b>First Name</b></p>
                     <label for="firstName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="firstName"
-                    id="firstName"
-                    name="firstName"
-                    required
-                    type="text"
+                        autocomplete="off"
+                        formControlName="firstName"
+                        id="firstName"
+                        name="firstName"
+                        required
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'firstName',
@@ -492,16 +492,16 @@
                     <p class="nameHeaders"><b>Last Name</b></p>
                     <label for="lastName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="lastName"
-                    id="lastName"
-                    name="lastName"
-                    required
-                    type="text"
+                        autocomplete="off"
+                        formControlName="lastName"
+                        id="lastName"
+                        name="lastName"
+                        required
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'lastName',
@@ -520,7 +520,7 @@
                     ><input autocomplete="off" formControlName="phone" id="phone" name="phone" type="text"/>
                     <mat-error *ngFor="let validation of common.validation_methods.phone">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'phone',
@@ -545,11 +545,11 @@
                     <p class="nameHeaders"><b>Date of Birth</b></p>
                     <label for="dateOfBirth"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="dateOfBirth"
-                    id="dateOfBirth"
-                    name="dateOfBirth"
-                    type="date"
+                        autocomplete="off"
+                        formControlName="dateOfBirth"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        type="date"
                 />
 
                     <hr/>
@@ -825,14 +825,14 @@
                     <p class="nameHeaders"><b>High School Graduation Year</b></p>
                     <label for="gradYear"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="gradYear"
-                    id="gradYear"
-                    max="2100"
-                    min="1960"
-                    name="gradYear"
-                    step="1"
-                    type="number"
+                        autocomplete="off"
+                        formControlName="gradYear"
+                        id="gradYear"
+                        max="2100"
+                        min="1960"
+                        name="gradYear"
+                        step="1"
+                        type="number"
                 />
 
                     <hr/>
@@ -855,11 +855,11 @@
                     <p class="nameHeaders"><b>Unit/Apt</b></p>
                     <label for="unitNumber"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="unitNumber"
-                    id="unitNumber"
-                    name="unitNumber"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="unitNumber"
+                        id="unitNumber"
+                        name="unitNumber"
+                        type="text"
                 />
 
                     <hr/>
@@ -1135,11 +1135,11 @@
                     <p class="nameHeaders"><b>Postal/Zip Code</b></p>
                     <label for="postalCode"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="postalCode"
-                    id="postalCode"
-                    name="postalCode"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="postalCode"
+                        id="postalCode"
+                        name="postalCode"
+                        type="text"
                 />
 
                     <hr/>
@@ -1153,11 +1153,11 @@
                     <p class="nameHeaders"><b>Health Injury Status</b></p>
                     <label for="injuryStatus"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="injuryStatus"
-                    id="injuryStatus"
-                    name="injuryStatus"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="injuryStatus"
+                        id="injuryStatus"
+                        name="injuryStatus"
+                        type="text"
                 />
 
                     <hr/>
@@ -1165,11 +1165,11 @@
                     <p class="nameHeaders"><b>Instagram Handle</b></p>
                     <label for="instagram"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="instagram"
-                    id="instagram"
-                    name="instagram"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="instagram"
+                        id="instagram"
+                        name="instagram"
+                        type="text"
                 />
 
                     <hr/>
@@ -1177,38 +1177,38 @@
                     <p class="nameHeaders"><b>Languages Spoken</b></p>
 
                     <mat-checkbox
-                        formControlName="languagesEnglish"
-                        id="languagesEnglish"
-                        name="languagesEnglish"
-                        value="English"
+                            formControlName="languagesEnglish"
+                            id="languagesEnglish"
+                            name="languagesEnglish"
+                            value="English"
                     >English
                     </mat-checkbox>
                     <mat-checkbox
-                        formControlName="languagesFrench"
-                        id="languagesFrench"
-                        name="languagesFrench"
-                        value="French"
+                            formControlName="languagesFrench"
+                            id="languagesFrench"
+                            name="languagesFrench"
+                            value="French"
                     >French
                     </mat-checkbox>
                     <mat-checkbox
-                        formControlName="languagesSpanish"
-                        id="languagesSpanish"
-                        name="languagesSpanish"
-                        value="Spanish"
+                            formControlName="languagesSpanish"
+                            id="languagesSpanish"
+                            name="languagesSpanish"
+                            value="Spanish"
                     >Spanish
                     </mat-checkbox>
                     <mat-checkbox
-                        formControlName="languagesMandarin"
-                        id="languagesMandarin"
-                        name="languagesMandarin"
-                        value="Mandarin"
+                            formControlName="languagesMandarin"
+                            id="languagesMandarin"
+                            name="languagesMandarin"
+                            value="Mandarin"
                     >Mandarin
                     </mat-checkbox>
                     <mat-checkbox
-                        formControlName="languagesOther"
-                        id="languagesOther"
-                        name="languagesOther"
-                        value="Other"
+                            formControlName="languagesOther"
+                            id="languagesOther"
+                            name="languagesOther"
+                            value="Other"
                     >Other
                     </mat-checkbox>
 
@@ -1217,15 +1217,15 @@
                     <p class="nameHeaders"><b>Coach's First Name</b></p>
                     <label for="coachFirstName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="coachFirstName"
-                    id="coachFirstName"
-                    name="coachFirstName"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="coachFirstName"
+                        id="coachFirstName"
+                        name="coachFirstName"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'coachFirstName',
@@ -1242,15 +1242,15 @@
                     <p class="nameHeaders"><b>Coach's Last Name</b></p>
                     <label for="coachLastName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="coachLastName"
-                    id="coachLastName"
-                    name="coachLastName"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="coachLastName"
+                        id="coachLastName"
+                        name="coachLastName"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'coachLastName',
@@ -1267,15 +1267,15 @@
                     <p class="nameHeaders"><b>Coach's Phone Number</b></p>
                     <label for="coachPhone"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="coachPhone"
-                    id="coachPhone"
-                    name="coachPhone"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="coachPhone"
+                        id="coachPhone"
+                        name="coachPhone"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.phone">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'coachPhone',
@@ -1292,15 +1292,15 @@
                     <p class="nameHeaders"><b>Coach's Email</b></p>
                     <label for="coachEmail"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="coachEmail"
-                    id="coachEmail"
-                    name="coachEmail"
-                    type="email"
+                        autocomplete="off"
+                        formControlName="coachEmail"
+                        id="coachEmail"
+                        name="coachEmail"
+                        type="email"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'coachEmail',
@@ -1322,15 +1322,15 @@
                     <p class="nameHeaders"><b>Parent's First Name</b></p>
                     <label for="parentFirstName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="parentFirstName"
-                    id="parentFirstName"
-                    name="parentFirstName"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="parentFirstName"
+                        id="parentFirstName"
+                        name="parentFirstName"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'parentFirstName',
@@ -1347,15 +1347,15 @@
                     <p class="nameHeaders"><b>Parent's Last Name</b></p>
                     <label for="parentLastName"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="parentLastName"
-                    id="parentLastName"
-                    name="parentLastName"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="parentLastName"
+                        id="parentLastName"
+                        name="parentLastName"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'parentLastName',
@@ -1372,15 +1372,15 @@
                     <p class="nameHeaders"><b>Parent's Phone Number</b></p>
                     <label for="parentPhone"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="parentPhone"
-                    id="parentPhone"
-                    name="parentPhone"
-                    type="text"
+                        autocomplete="off"
+                        formControlName="parentPhone"
+                        id="parentPhone"
+                        name="parentPhone"
+                        type="text"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.phone">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'parentPhone',
@@ -1397,15 +1397,15 @@
                     <p class="nameHeaders"><b>Parent's Email</b></p>
                     <label for="parentEmail"></label
                     ><input
-                    autocomplete="off"
-                    formControlName="parentEmail"
-                    id="parentEmail"
-                    name="parentEmail"
-                    type="email"
+                        autocomplete="off"
+                        formControlName="parentEmail"
+                        id="parentEmail"
+                        name="parentEmail"
+                        type="email"
                 />
                     <mat-error *ngFor="let validation of common.validation_methods.email">
                         <mat-error
-                            *ngIf="
+                                *ngIf="
                                 formValidationService.checkIfFormElementInvalid(
                                     editForm,
                                     'parentEmail',
@@ -1424,9 +1424,9 @@
                 </form>
             </div>
             <button
-                (click)="toggleEditing(true)"
-                *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
-                mat-button
+                    (click)="toggleEditing(true)"
+                    *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
+                    mat-button
             >
                 Edit
             </button>

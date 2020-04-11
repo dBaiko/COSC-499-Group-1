@@ -5,6 +5,7 @@ import aws from "aws-sdk";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
 import { NotificationObject, NotificationsDAO } from "./NotificationsDAO";
 import { uuid } from "uuidv4";
+import { sanitizeInput } from "../../index";
 
 const PATH_POST_NEW_NOTIFICATION: string = "/";
 const PATH_DELETE_NOTIFICATION: string = "/:notificationId/insertedTime/:insertedTime";
@@ -30,12 +31,12 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
             const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
             let newNotification: NotificationObject = {
-                channelId: req.body.channelId,
-                channelName: req.body.channelName,
-                channelType: req.body.channelType,
-                username: req.body.username,
-                message: req.body.message,
-                type: req.body.type,
+                channelId: sanitizeInput(req.body.channelId),
+                channelName: sanitizeInput(req.body.channelName),
+                channelType: sanitizeInput(req.body.channelType),
+                username: sanitizeInput(req.body.username),
+                message: sanitizeInput(req.body.message),
+                type: sanitizeInput(req.body.type),
                 fromFriend: req.body.fromFriend,
                 notificationId: uuid(),
                 insertedTime: Date.now()

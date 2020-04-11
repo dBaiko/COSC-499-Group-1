@@ -228,12 +228,10 @@ export class HomeComponent implements OnInit {
                                 statusText: profile.statusText
                             };
 
-                            this.http.get(USERS_API + username, httpHeaders).subscribe(
-                                (data: Array<UserObject>) => {
-                                    this.currentUserProfile.email = data[0].email;
-                                    resolve();
-                                }
-                            );
+                            this.http.get(USERS_API + username, httpHeaders).subscribe((data: Array<UserObject>) => {
+                                this.currentUserProfile.email = data[0].email;
+                                resolve();
+                            });
                         },
                         (err) => {
                             console.log(err);

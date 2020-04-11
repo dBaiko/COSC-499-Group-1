@@ -74,9 +74,7 @@ export const VALIDATION_MESSAGES = {
         { type: "required", message: "Please confirm your password" },
         { type: "misMatch", message: "Passwords do not match" }
     ],
-    oldPassword: [
-        { type: "required", message: "Old password is requuired" }
-    ],
+    oldPassword: [{ type: "required", message: "Old password is requuired" }],
     firstName: [
         { type: "required", message: "First name is required" },
         {
@@ -145,6 +143,12 @@ export const VALIDATION_MESSAGES = {
     profileImageName: [{ type: "badFileType", message: "Image file type must be png or jpg" }],
     profileImageSize: [{ type: "badFileSize", message: "Image file size must be less than 1Mb" }],
     channelDescription: [{ type: "required", message: "Channel Description is required" }]
+};
+
+export const SANITIZE_CONFIG = {
+    allowedTags: [],
+    allowedAttributes: {},
+    disallowedTagsMode: "escape"
 };
 
 export interface UserObject {

@@ -2,6 +2,7 @@ import { AuthenticationService } from "./authentication.service";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Constants, UserObject, VALIDATION_MESSAGES } from "./app-config";
+import * as sanitize from "sanitize-html";
 
 @Injectable()
 export class CommonService {
@@ -51,5 +52,17 @@ export class CommonService {
             return false;
         }
         return match.substring(0, search.length) == search;
+    }
+
+    public santizeText(text: string): string {
+        text = sanitize(text, {
+            allowedTags: [],
+            allowedAttributes: {},
+            disallowedTagsMode: "escape"
+        });
+        if (text === null || text === "null") {
+            return Constants.EMPTY;
+        }
+        return text;
     }
 }

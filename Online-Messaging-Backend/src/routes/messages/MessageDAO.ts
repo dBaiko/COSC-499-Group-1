@@ -1,6 +1,7 @@
 /* tslint:disable:no-console */
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import ReactionsDAO from "../reactions/ReactionsDAO";
+import { sanitizeInput } from "../../index";
 
 export interface Message {
     channelId: string;
@@ -128,6 +129,11 @@ export class MessageDAO {
     }
 
     public updateMessage(message: Message): Promise<any> {
+        message.channelId = sanitizeInput(message.channelId);
+        message.channelType = sanitizeInput(message.channelType);
+        message.username = sanitizeInput(message.username);
+        message.content = sanitizeInput(message.content);
+        message.profileImage = sanitizeInput(message.content);
         return new Promise<any>((resolve, reject) => {
             let updateObject = {
                 TableName: tableName,
@@ -176,7 +182,8 @@ export class MessageDAO {
                     reject(err);
                 } else {
                     let reactionsDAO: ReactionsDAO = new ReactionsDAO(this.docClient);
-                    reactionsDAO.deleteAllReactionsForMessage(messageId)
+                    reactionsDAO
+                        .deleteAllReactionsForMessage(messageId)
                         .then(() => {
                             resolve();
                         })
