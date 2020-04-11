@@ -5,9 +5,10 @@ import UserChannelDAO from "../userChannels/UserChannelDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
-import ProfileDAO from "../profiles/ProfileDAO";
+import { ProfileDAO } from "../profiles/ProfileDAO";
 import SettingsDAO from "../settings/settingsDAO";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
+import { sanitizeInput } from "../../index";
 
 const router = express.Router();
 
@@ -41,15 +42,19 @@ const DEFAULT_THEME: string = "light";
 router.post(PATH_POST_NEW_USER, (req, res) => {
     const userRegistration = new UserDAO(docClient);
     userRegistration
-        .createNewUser(req.body.username, req.body.email)
+        .createNewUser(sanitizeInput(req.body.username), sanitizeInput(req.body.email))
         .then(() => {
             const profileDAO: ProfileDAO = new ProfileDAO(docClient);
             profileDAO
-                .createProfile(req.body.username, req.body.firstName, req.body.lastName)
+                .createProfile(
+                    sanitizeInput(req.body.username),
+                    sanitizeInput(req.body.firstName),
+                    sanitizeInput(req.body.lastName)
+                )
                 .then(() => {
                     const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
                     settingsDAO
-                        .createSettingsInfo(req.body.username, DEFAULT_THEME)
+                        .createSettingsInfo(sanitizeInput(req.body.username), DEFAULT_THEME)
                         .then(() => {
                             res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
                         })
@@ -132,7 +137,7 @@ router.put(PATH_PUT_USER, (req, res) => {
             ) {
                 const userDAO = new UserDAO(docClient);
                 userDAO
-                    .updateUser(req.body.username, req.body.email)
+                    .updateUser(sanitizeInput(req.body.username), sanitizeInput(req.body.email))
                     .then(() => {
                         res.status(200).send({
                             status: 200,
@@ -274,7 +279,7 @@ router.put(PATH_PUT_SETTINGS_FOR_USER, (req, res) => {
             ) {
                 const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
                 settingsDAO
-                    .updateSettings(req.body.username, req.body.theme, req.body.explicit)
+                    .updateSettings(sanitizeInput(req.body.username), sanitizeInput(req.body.theme), req.body.explicit)
                     .then(() => {
                         res.status(200).send({
                             status: 200,

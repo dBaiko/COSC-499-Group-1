@@ -9,6 +9,7 @@ import {
     ProfileObject,
     UserChannelObject
 } from "../../shared/app-config";
+import { CommonService } from "../../shared/common.service";
 
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
@@ -34,7 +35,7 @@ export class ChannelBrowserComponent implements OnInit {
     private channelsAPI = APIConfig.channelsAPI;
     private usersAPI = APIConfig.usersAPI;
 
-    constructor(private http: HttpClient, private auth: AuthenticationService) {
+    constructor(private http: HttpClient, private auth: AuthenticationService, private common: CommonService) {
     }
 
     private _newChannel: ChannelAndNumUsers;
@@ -108,6 +109,7 @@ export class ChannelBrowserComponent implements OnInit {
     onKey($event: Event) {
         //set search value as whatever is entered on search bar every keystroke
         this.search = ($event.target as HTMLInputElement).value;
+        this.search = this.common.santizeText(this.search);
 
         this.sendQuery();
     }

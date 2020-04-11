@@ -5,7 +5,41 @@ import { awsConfigPath } from "../../config/aws-config";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { sanitizeInput } from "../../index";
 import SendData = ManagedUpload.SendData;
+
+export interface ProfileObject {
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    bio: string;
+    gender: string;
+    dateOfBirth: string;
+    citizenship: string;
+    grade: number;
+    gradYear: number;
+    previousCollegiate: boolean;
+    street: string;
+    unitNumber: string;
+    city: string;
+    province: string;
+    country: string;
+    postalCode: string;
+    club: string;
+    injuryStatus: string;
+    instagram: string;
+    languages: Array<string>;
+    coachFirstName: string;
+    coachLastName: string;
+    coachPhone: string;
+    coachEmail: string;
+    parentFirstName: string;
+    parentLastName: string;
+    parentEmail: string;
+    parentPhone: string;
+    budget: string;
+}
 
 aws.config.loadFromPath(awsConfigPath);
 const PROFILES_TABLE_NAME = "Profiles";
@@ -14,7 +48,7 @@ const PROFILE_IMAGE_S3_PREFIX: string =
     "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 const DEFAULT_PROFILE_IMAGE: string = "default.png";
 
-class ProfileDAO {
+export class ProfileDAO {
     constructor(private docClient: DocumentClient) {
     }
 
@@ -46,20 +80,161 @@ class ProfileDAO {
         });
     }
 
-    public updateProfile(username: string, firstName: string, lastName: string) {
+    public updateProfile(profile: ProfileObject) {
+        if (!profile.languages || profile.languages.length == 0) {
+            profile.languages = [" "];
+        }
+        if (!profile.phone) {
+            profile.phone = " ";
+        }
+        if (!profile.bio) {
+            profile.bio = " ";
+        }
+        if (!profile.gender) {
+            profile.gender = " ";
+        }
+        if (!profile.dateOfBirth) {
+            profile.dateOfBirth = " ";
+        }
+        if (!profile.citizenship) {
+            profile.citizenship = " ";
+        }
+        if (!profile.grade) {
+            profile.grade = 0;
+        }
+        if (!profile.gradYear) {
+            profile.gradYear = 2000;
+        }
+        if (!profile.previousCollegiate) {
+            profile.previousCollegiate = false;
+        }
+        if (!profile.street) {
+            profile.street = " ";
+        }
+        if (!profile.unitNumber) {
+            profile.unitNumber = " ";
+        }
+        if (!profile.city) {
+            profile.city = " ";
+        }
+        if (!profile.province) {
+            profile.province = " ";
+        }
+        if (!profile.country) {
+            profile.country = " ";
+        }
+        if (!profile.postalCode) {
+            profile.postalCode = " ";
+        }
+        if (!profile.club) {
+            profile.club = " ";
+        }
+        if (!profile.injuryStatus) {
+            profile.injuryStatus = " ";
+        }
+        if (!profile.instagram) {
+            profile.instagram = " ";
+        }
+        if (!profile.coachFirstName) {
+            profile.coachFirstName = " ";
+        }
+        if (!profile.coachLastName) {
+            profile.coachLastName = " ";
+        }
+        if (!profile.coachPhone) {
+            profile.coachPhone = " ";
+        }
+        if (!profile.coachEmail) {
+            profile.coachEmail = " ";
+        }
+        if (!profile.parentFirstName) {
+            profile.parentFirstName = " ";
+        }
+        if (!profile.parentLastName) {
+            profile.parentLastName = " ";
+        }
+        if (!profile.parentPhone) {
+            profile.parentPhone = " ";
+        }
+        if (!profile.parentEmail) {
+            profile.parentEmail = " ";
+        }
+        if (!profile.budget) {
+            profile.budget = " ";
+        }
+
+        profile.firstName = sanitizeInput(profile.firstName);
+        profile.lastName = sanitizeInput(profile.lastName);
+        profile.phone = sanitizeInput(profile.phone);
+        profile.bio = sanitizeInput(profile.bio);
+        profile.gender = sanitizeInput(profile.gender);
+        profile.dateOfBirth = sanitizeInput(profile.dateOfBirth);
+        profile.citizenship = sanitizeInput(profile.citizenship);
+        profile.street = sanitizeInput(profile.street);
+        profile.unitNumber = sanitizeInput(profile.unitNumber);
+        profile.city = sanitizeInput(profile.city);
+        profile.province = sanitizeInput(profile.province);
+        profile.country = sanitizeInput(profile.country);
+        profile.postalCode = sanitizeInput(profile.postalCode);
+        profile.club = sanitizeInput(profile.club);
+        profile.injuryStatus = sanitizeInput(profile.injuryStatus);
+        profile.instagram = sanitizeInput(profile.instagram);
+        profile.coachFirstName = sanitizeInput(profile.coachFirstName);
+        profile.coachLastName = sanitizeInput(profile.coachLastName);
+        profile.coachPhone = sanitizeInput(profile.coachPhone);
+        profile.coachEmail = sanitizeInput(profile.coachEmail);
+        profile.parentFirstName = sanitizeInput(profile.parentFirstName);
+        profile.parentLastName = sanitizeInput(profile.parentLastName);
+        profile.parentPhone = sanitizeInput(profile.parentPhone);
+        profile.parentEmail = sanitizeInput(profile.parentEmail);
+        profile.budget = sanitizeInput(profile.budget);
+
         const params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {
-                username: username
+                username: profile.username
             },
-            UpdateExpression: "SET firstName = :f, lastName=:l",
+            UpdateExpression:
+                "SET firstName = :f, lastName=:l, phone = :p, bio = :b, gender = :g, dateOfBirth = :d, citizenship = :c," +
+                " grade = :grade, gradYear = :gradYear, previousCollegiate = :prev, street = :s, unitNumber = :u," +
+                " city = :city, province = :prov, country = :country, postalCode = :post, club = :club," +
+                " injuryStatus = :inj, instagram = :insta, languages = :lang, coachFirstName = :cf, coachLastName = :cl," +
+                " coachPhone = :cp, coachEmail = :ce, parentFirstName = :pf, parentLastName = :pl, parentPhone = :pp," +
+                " parentEmail = :pe, budget = :bud",
             ExpressionAttributeValues: {
-                ":f": firstName,
-                ":l": lastName
+                ":f": profile.firstName,
+                ":l": profile.lastName,
+                ":p": profile.phone,
+                ":b": profile.bio,
+                ":g": profile.gender,
+                ":d": profile.dateOfBirth,
+                ":c": profile.citizenship,
+                ":grade": profile.grade,
+                ":gradYear": profile.gradYear,
+                ":prev": profile.previousCollegiate,
+                ":s": profile.street,
+                ":u": profile.unitNumber,
+                ":city": profile.city,
+                ":prov": profile.province,
+                ":country": profile.country,
+                ":post": profile.postalCode,
+                ":club": profile.club,
+                ":inj": profile.injuryStatus,
+                ":insta": profile.instagram,
+                ":lang": profile.languages.toString(),
+                ":cf": profile.coachFirstName,
+                ":cl": profile.coachLastName,
+                ":cp": profile.coachPhone,
+                ":ce": profile.coachEmail,
+                ":pf": profile.parentFirstName,
+                ":pl": profile.parentLastName,
+                ":pp": profile.parentPhone,
+                ":pe": profile.parentEmail,
+                ":bud": profile.budget
             }
         };
 
-        console.log("Updating profile for user " + username + "...");
+        console.log("Updating profile for user " + profile.username + "...");
         return new Promise((resolve, reject) => {
             this.docClient.update(params, (err, data) => {
                 if (err) {
@@ -190,5 +365,3 @@ class ProfileDAO {
         });
     }
 }
-
-export default ProfileDAO;

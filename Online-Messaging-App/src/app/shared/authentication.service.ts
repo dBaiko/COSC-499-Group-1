@@ -19,7 +19,10 @@ const FAMILY_NAME: string = "family_name";
 export class AuthenticationService {
     cognitoUser: CognitoUser;
 
-    constructor() {}
+    user: CognitoUserSession;
+
+    constructor() {
+    }
 
     public register(
         username: string,
@@ -82,6 +85,7 @@ export class AuthenticationService {
         return new Observable<Object>((observer) => {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess(result) {
+                    this.user = result;
                     observer.next(result);
                     observer.complete();
                 },
@@ -122,5 +126,20 @@ export class AuthenticationService {
                 });
             });
         }
+    }
+
+    changePassword(oldPassword: string, newPassword: string): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            let user = this.getAuthenticatedUser();
+            user.getSession(() => {
+                user.changePassword(oldPassword, newPassword, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+        });
     }
 }
