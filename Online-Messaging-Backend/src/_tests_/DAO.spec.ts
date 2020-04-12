@@ -104,10 +104,6 @@ describe("UserDAO", () => {
         ]);
     });
 
-    it("should return data from a user's profile", async () => {
-//TODO: Ask Dylan to explain function
-    });
-
     it("should return a list of all users", async () => {
         ddb.put({
             TableName: "Users",
@@ -182,7 +178,7 @@ describe("ChannelDAO", () => {
 
     it("should retrieve certain information about a channel", async () => {
         await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
-        const testChannel = await ddb.get({TableName: "Channel", Key: {channelName: "testChannel"}}).promise();//TODO: find out how to get key, maybe scan and convert?
+        const testChannel = await ddb.get({TableName: "Channel", Key: {channelName: "testChannel"}}).promise();
         let channelId = testChannel.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
         const item = await ddb
