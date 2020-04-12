@@ -50,6 +50,7 @@ describe("UserDAO", () => {
         username: string;
         email: string;
     }
+
     const user = new UserDAO(ddb);
 
     beforeEach(() => {
@@ -329,7 +330,7 @@ describe("MessageDAO", () => {
         insertTime: 1,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
         deleted: "no",
-        channelType: "Public",
+        channelType: "Public"
     };
     const testMessage2: Message = {
         channelId: "channel",
@@ -339,7 +340,7 @@ describe("MessageDAO", () => {
         insertTime: 2,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
         deleted: "no",
-        channelType: "Public",
+        channelType: "Public"
     };
     const testMessageUpdate: Message = {
         channelId: "channel",
@@ -349,33 +350,136 @@ describe("MessageDAO", () => {
         insertTime: 1,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
         deleted: "no",
-        channelType: "Public",
+        channelType: "Public"
+    };
+    const testMessageChannel2: Message = {
+        channelId: "channel2",
+        username: "testUser",
+        content: "content4",
+        messageId: "ID3",
+        insertTime: 3,
+        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+        deleted: "no",
+        channelType: "Public"
+    };
+    const testMessage3: Message = {
+        channelId: "channel",
+        username: "testUser",
+        content: "content5",
+        messageId: "ID5",
+        insertTime: 5,
+        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+        deleted: "no",
+        channelType: "Public"
     };
 
+    beforeEach(() => {
+        ddb.put({
+            TableName: "Messages", Item: {
+                channelId: "channel",
+                username: "testUser",
+                content: "content1",
+                messageId: "ID1",
+                insertTime: 1,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                deleted: "no",
+                channelType: "Public"
+            }
+        });
+        ddb.put({
+            TableName: "Messages", Item: {
+                channelId: "channel",
+                username: "testUser",
+                content: "content2",
+                messageId: "ID2",
+                insertTime: 2,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                deleted: "no",
+                channelType: "Public"
+            }
+        });
+        ddb.put({
+            TableName: "Messages", Item: {
+                channelId: "channel2",
+                username: "testUser",
+                content: "content4",
+                messageId: "ID3",
+                insertTime: 3,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                deleted: "no",
+                channelType: "Public"
+            }
+        });
+    });
+    afterEach(() => {
+        ddb.delete({
+            TableName: "Messages", Key: {
+                channelId: "channel1",
+                insertTime: 1
+            }
+        });
+        ddb.delete({
+            TableName: "Messages", Key: {
+                channelId: "channel1",
+                insertTime: 2
+            }
+        });
+        ddb.delete({
+            TableName: "Messages", Key: {
+                channelId: "channel2",
+                insertTime: 3
+            }
+        });
+    });
+
     it("should retrieve the message history for a given channel", async () => {
+        const item = await msg.getMessageHistory("channel");
+        expect(item.Items[0]).toEqual(testMessage1);
+        expect(item.Items[1]).toEqual(testMessage2);
     });
 
     it("should get all messages from all channels", async () => {
+        const item = await msg.getAllMessageHistory();
+        const expected = ddb.scan({TableName: "Messages"});
+        expect(item).toEqual(expected.Items);
     });
 
     it("should add a new message to a channel", async () => {
-        await msg.addNewMessage(testMessage1);
+        await msg.addNewMessage(testMessage3);
         const item = ddb.get({
             TableName: "Messages",
             Key: {
                 channelID: "channel",
-                messageID: "ID1"
-            }});
-            expect(item).toEqual(testMessage1);
+                messageID: "ID5"
+            }
         });
+        expect(item).toEqual(testMessage3);
+    });
 
     it("should delete all messages in a channel", async () => {
+        await msg.deleteAllMessagesForChannel("channel");
+        const item = ddb.scan({TableName: "Messages"});
+        expect(item.Items[0]).toEqual(testMessageChannel2);
+        expect(item.Count).toEqual(1);
     });
 
     it("should delete the specified message", async () => {
+        await msg.deleteMessage("ID1", "channel", 1);
+        const item = ddb.scan({TableName: "Messages"});
+        expect(item.Count).toEqual(2);
+        expect(item.Items[0]).toEqual(testMessage2);
+        expect(item.Items[1]).toEqual(testMessageChannel2);
     });
 
     it("should update the specified message", async () => {
+        await msg.updateMessage(testMessageUpdate);
+        const item = ddb.get({
+            TableName: "Messages", Key: {
+                channelID: "channel",
+                insertTime: 1
+            }
+        });
+        expect(item).toEqual(testMessageUpdate);
     });
 
 });
