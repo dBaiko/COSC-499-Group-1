@@ -5,12 +5,15 @@ import {
     APIConfig,
     ChannelObject,
     Constants,
+    EmojiList,
     InviteChannelObject,
     MessageObject,
     NewUsersSubbedChannelObject,
     NotificationObject,
     NotificationSocketObject,
     ProfileObject,
+    ReactionObject,
+    ReactionSocketObject,
     SettingsObject,
     UserChannelObject,
     UserObject
@@ -25,9 +28,8 @@ const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
 const STAR_REGEX: RegExp = /\*/g;
 const NEW_LINE_REGEX: RegExp = /(?:\r\n|\r|\n)/g;
-const BREAK_TAG: string = "<br>";
 const STAR_REPLACE_VALUE: string = "\\*";
-const MESSAGES_URI: string = "/messages";
+const MESSAGES_URI: string = "/messages/loadCount/";
 const USERS_URI: string = "/users";
 const NOTIFICATIONS_URI = "/notifications";
 const NOTIFICATION_MESSAGE: string = "You have been invited to join ";
@@ -40,7 +42,8 @@ const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
-
+const EMOJI_POPUP: string = "emojiClick";
+const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
 
@@ -77,6 +80,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
+    emojiMessage: boolean = false;
+    emojiList = EmojiList;
     filter = new Filter();
 
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
@@ -105,14 +110,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
+    @Input() onlineUserList: Array<UserObject>;
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
+    toggleEmoji = false;
     private channelsURL: string = APIConfig.channelsAPI;
     private messagesAPI: string = APIConfig.messagesAPI;
     private isNearBottom = false;
     private atBottom = true;
     private textAreaHeight = 0;
     private defaultHeight = 80;
+    private loadCount = 0;
+
+    private messageToScrollTo: MessageObject;
 
     constructor(
         private messagerService: MessengerService,
@@ -160,9 +170,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.getChannelInfo().catch((err) => {
             console.error(err);
         });
-        this.getMessages(this._currentChannel.channelId).catch((err) => {
-            console.error(err);
-        });
+        this.getMessages(this._currentChannel.channelId)
+            .then(() => {
+                for (let message of this.chatMessages) {
+                    this.getReactionsForMessage(message.messageId).then((data: Array<ReactionObject>) => {
+                        message.reactions = data;
+                    });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         this.isNearBottom = false;
         this.getSubcribedUsers()
             .then((data: Array<UserChannelObject>) => {
@@ -215,12 +233,71 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (!this.settings.explicit) {
                         data.content = this.filterClean(data.content);
                     }
+                    data.reactions = [];
                     this.chatMessages.push(data);
                     setTimeout(this.addLangTypes, 50);
                 }
             }
         });
         this.textAreaHeight = document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height;
+
+        this.notificationService.addSocketListener("broadcast_reaction_add", (reaction: ReactionSocketObject) => {
+            let messageIndex: number = -1;
+            for (let i = 0; i < this.chatMessages.length; i++) {
+                if (this.chatMessages[i].messageId == reaction.messageId) {
+                    messageIndex = i;
+                    break;
+                }
+            }
+            if (messageIndex != -1) {
+                let reactionIndex = -1;
+                for (let i = 0; i < this.chatMessages[messageIndex].reactions.length; i++) {
+                    if (this.chatMessages[messageIndex].reactions[i].emoji == reaction.emoji) {
+                        reactionIndex = i;
+                        break;
+                    }
+                }
+
+                if (reactionIndex != -1) {
+                    if (
+                        !this.chatMessages[messageIndex].reactions[reactionIndex].username.includes(reaction.username)
+                    ) {
+                        this.chatMessages[messageIndex].reactions[reactionIndex].username.push(reaction.username);
+                        this.chatMessages[messageIndex].reactions[reactionIndex].count++;
+                    }
+                } else {
+                    this.chatMessages[messageIndex].reactions.push({
+                        emoji: reaction.emoji,
+                        count: 1,
+                        username: [reaction.username]
+                    });
+                }
+            }
+        });
+
+        this.notificationService.addSocketListener("broadcast_reaction_remove", (reaction: ReactionSocketObject) => {
+            for (let i = 0; i < this.chatMessages.length; i++) {
+                if (this.chatMessages[i].messageId == reaction.messageId) {
+                    for (let j = 0; j < this.chatMessages[i].reactions.length; j++) {
+                        if (this.chatMessages[i].reactions[j].emoji == reaction.emoji) {
+                            this.chatMessages[i].reactions[j].username.splice(
+                                this.chatMessages[i].reactions[j].username.indexOf(reaction.username),
+                                1
+                            );
+                            this.chatMessages[i].reactions[j].count--;
+
+                            if (this.chatMessages[i].reactions[j].count == 0) {
+                                this.chatMessages[i].reactions.splice(j, 1);
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+            }
+        });
     }
 
     ngAfterViewChecked() {
@@ -241,14 +318,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         })
                     };
 
-                    this.http.get(this.channelsURL + channelId + MESSAGES_URI, httpHeaders).subscribe(
+                    this.http.get(this.channelsURL + channelId + MESSAGES_URI + 0, httpHeaders).subscribe(
                         (data: Array<MessageObject>) => {
+                            this.loadCount = 0;
                             if (!this.settings.explicit) {
                                 for (let i = 0; i < data.length; i++) {
                                     data[i].content = this.filterClean(data[i].content);
                                 }
                             }
                             this.chatMessages = data || [];
+                            this.loadCount = data.length;
                             resolve();
                         },
                         (err) => {
@@ -270,6 +349,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
             this.handleInput();
+            value.content = this.common.santizeText(value.content);
             value.content = this.markUpMentions(value.content);
             if (this.mentionListToSubmit.includes("everyone")) {
                 for (let user of this.mentionList) {
@@ -323,7 +403,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     onKey($event: Event) {
         //set search value as whatever is entered on search bar every keystroke
-        this.inviteSearch = ($event.target as HTMLInputElement).value;
+        this.inviteSearch = this.common.santizeText(($event.target as HTMLInputElement).value);
         this.inviteFormSubmit();
     }
 
@@ -365,6 +445,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         // using ceiling and floor here to normalize the differences in browsers way of calculating these values
         this.atBottom = Math.ceil(element.scrollHeight - element.scrollTop) === Math.floor(element.offsetHeight);
         this.isNearBottom = !this.atBottom;
+
+        if (element.scrollTop == 0) {
+            this.messageToScrollTo = this.chatMessages[0];
+            this.getMoreMessages();
+        }
     }
 
     textAreaSubmit(event) {
@@ -382,7 +467,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     handleMentioning(event) {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         if (text) {
             if (this.selectingFromMention) {
                 if (event.keyCode == 38 || event.keyCode == 40) {
@@ -400,7 +485,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     }
                 } else if (event.keyCode == 13) {
                     let userToMention = this.mentionList[this.selectedMentionIndex];
-                    this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " " });
+                    this.messageForm.setValue({
+                        content: text.substring(0, text.lastIndexOf("@") + 1) + userToMention + " "
+                    });
                     this.addMentionIfMentionable(userToMention);
                     this.resetMentionList();
                 } else {
@@ -440,14 +527,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     clickMentionList(username: string) {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
         this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + username + " " });
         this.addMentionIfMentionable(username);
         this.resetMentionList();
     }
 
     handleInput() {
-        let text = (this.messageForm.form.value.content as string);
+        let text = this.messageForm.form.value.content as string;
+        text = this.common.santizeText(text);
         let highlightedText = this.applyHighlights(text);
         document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
     }
@@ -459,7 +547,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             let result;
             let indexs = [];
             while ((result = atUsernameRegExp.exec(text))) {
-                if (!/<mark style='background-color: dimgray'>/g.test(text.substring(result.index - 40, result.index))) {
+                if (
+                    !/<mark style='background-color: var(--primary-color)'>/g.test(
+                        text.substring(result.index - 40, result.index)
+                    )
+                ) {
                     let endIndex = text.substring(result.index).indexOf(" ");
                     if (endIndex == -1) {
                         endIndex = text.length;
@@ -480,20 +572,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             if (indexs.length > 0) {
                 retText = text.substring(0, indexs[0].begin);
                 for (let i = 0; i < indexs.length; i++) {
-                    retText += "<mark style='background-color: dimgray'>";
+                    retText += "<mark style='background-color: var(--primary-color)'>";
                     retText += indexs[i].user;
                     retText += "</mark>";
                     if (i != indexs.length - 1) {
                         retText += text.substring(indexs[i].end, indexs[i + 1].begin);
                     }
-
                 }
                 return retText;
             }
 
             return text;
-        } else
-            return null;
+        } else return null;
     }
 
     handleScroll() {
@@ -605,6 +695,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     editMessage(message: MessageObject, newContent: string) {
+        newContent = this.common.santizeText(newContent);
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -646,8 +737,72 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return false;
     }
 
+    public handleNewEmojiReaction(message: MessageObject, emoji: string): void {
+        this.addNewEmojiReaction(message.messageId, emoji);
+        this.emojiPopup(message);
+    }
+
+    public handleReactionButtonClick(messageId: string, reaction: ReactionObject): void {
+        if (reaction.username.includes(this.currentUserProfile.username)) {
+            this.removeEmojiReaction(messageId, reaction.emoji);
+        } else {
+            this.addNewEmojiReaction(messageId, reaction.emoji);
+        }
+    }
+
+    emojiPopup(chatMessage: MessageObject) {
+        if (this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji) {
+            this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
+            this.toggleEmoji = false;
+        } else {
+            if (!this.toggleEmoji) {
+                this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = true;
+                this.toggleEmoji = true;
+            }
+        }
+    }
+
+    emojiPopupMessage() {
+        if (!this.emojiMessage) {
+            this.emojiMessage = true;
+        } else {
+            this.emojiMessage = false;
+        }
+    }
+
+    handleMessageEmojiReaction(emoji: string): void {
+        let text = this.messageForm.form.value.content as string;
+        if (text == null) {
+            text = Constants.EMPTY;
+        }
+        this.messageForm.setValue({ content: text + emoji });
+    }
+
+    emojiClickOutside() {
+        if (this.emojiMessage) {
+            this.emojiMessage = false;
+        }
+    }
+
+    private addNewEmojiReaction(messageId: string, emoji: string): void {
+        this.notificationService.sendReaction({
+            emoji: emoji,
+            username: this.currentUserProfile.username,
+            messageId: messageId
+        });
+    }
+
+    private removeEmojiReaction(messageId: string, emoji: string): void {
+        this.notificationService.removeReaction({
+            messageId: messageId,
+            emoji: emoji,
+            username: this.currentUserProfile.username
+        });
+    }
+
     private sendMentionNotification(username): void {
-        let message: string = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        let message: string =
+            this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
         let notifications: NotificationSocketObject = {
             fromUser: {
                 username: this.auth.getAuthenticatedUser().getUsername(),
@@ -704,15 +859,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     if (i != indexs.length - 1) {
                         retText += text.substring(indexs[i].end, indexs[i + 1].begin);
                     }
-
                 }
                 retText += text.substring(indexs[indexs.length - 1].end, text.length);
                 return retText;
             }
 
             return text;
-        } else
-            return null;
+        } else return null;
     }
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
@@ -921,4 +1074,77 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
+    private getReactionsForMessage(messageId: string): Promise<Array<ReactionObject>> {
+        return new Promise<any>((resolve, reject) => {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    this.http.get(this.messagesAPI + messageId + "/reactions", httpHeaders).subscribe(
+                        (data: Array<ReactionObject>) => {
+                            resolve(data);
+                        },
+                        (err) => {
+                            console.log(err);
+                            reject(err);
+                        }
+                    );
+                },
+                (err) => {
+                    reject(err);
+                }
+            );
+        });
+    }
+
+    private getMoreMessages(): void {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http
+                    .get(this.channelsURL + this._currentChannel.channelId + MESSAGES_URI + this.loadCount, httpHeaders)
+                    .subscribe(
+                        (data: Array<MessageObject>) => {
+                            if (data.length > 0) {
+                                if (!this.settings.explicit) {
+                                    for (let i = 0; i < data.length; i++) {
+                                        data[i].content = this.filterClean(data[i].content);
+                                    }
+                                }
+
+                                this.chatMessages = data.concat(this.chatMessages);
+
+                                let top = document.getElementById(this.messageToScrollTo.messageId).offsetTop;
+                                this.scrollContainer.nativeElement.scrollTop = top - 150;
+
+                                for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
+                                    this.getReactionsForMessage(this.chatMessages[i].messageId).then((reactions) => {
+                                        this.chatMessages[i].reactions = reactions;
+                                    });
+                                }
+
+                                this.loadCount += data.length;
+                            }
+                        },
+                        (err) => {
+                            this.error = err.toString();
+                        }
+                    );
+            },
+            (err) => {
+                console.log(err);
+            }
+        );
+    }
 }

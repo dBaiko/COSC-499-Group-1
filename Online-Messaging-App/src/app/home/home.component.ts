@@ -13,7 +13,8 @@ import {
     NewUsersSubbedChannelObject,
     ProfileObject,
     SettingsObject,
-    UserObject
+    UserObject,
+    UserSocket
 } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
 
@@ -23,8 +24,10 @@ const CHAT_BOX = "chatBox;";
 const DARK = "dark";
 const LIGHT = "light";
 
+const USER_LIST_EVENT = "userList";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
+const USERS_API = APIConfig.usersAPI;
 
 @Component({
     selector: "app-home",
@@ -45,6 +48,8 @@ export class HomeComponent implements OnInit {
     userList: Array<UserObject> = [];
     settings: SettingsObject;
 
+    onlineUserList: Array<UserSocket> = [];
+
     sidebarOpened: boolean = true;
 
     @ViewChild("sidenav") sidebar;
@@ -55,24 +60,29 @@ export class HomeComponent implements OnInit {
     constructor(
         private auth: AuthenticationService,
         public common: CommonService,
-        fb: FormBuilder,
+        public fb: FormBuilder,
         private cookieService: CookieService,
         private notificationService: NotificationService,
         private http: HttpClient
     ) {
-        this.userLoggedIn = auth.isLoggedIn();
+    }
+
+    ngOnInit(): void {
+        this.userLoggedIn = this.auth.isLoggedIn();
         if (this.userLoggedIn) {
-            this.options = fb.group({
+            this.options = this.fb.group({
                 bottom: 0,
                 fixed: false,
                 top: 0
             });
             this.notificationService = NotificationService.getInstance();
             this.notificationService.getSocket(this.auth.getAuthenticatedUser().getUsername());
+            this.notificationService.addSocketListener(USER_LIST_EVENT, (userList: Array<UserSocket>) => {
+                this.notificationService.setOnlineUsers(userList);
+                this.onlineUserList = userList;
+            });
         }
-    }
 
-    ngOnInit(): void {
         if (this.auth.isLoggedIn()) {
             let user: string = this.auth.getAuthenticatedUser().getUsername();
             if (this.cookieService.get(user)) {
@@ -217,7 +227,11 @@ export class HomeComponent implements OnInit {
                                 profileImage: profile.profileImage + Constants.QUESTION_MARK + Math.random(),
                                 statusText: profile.statusText
                             };
-                            resolve();
+
+                            this.http.get(USERS_API + username, httpHeaders).subscribe((data: Array<UserObject>) => {
+                                this.currentUserProfile.email = data[0].email;
+                                resolve();
+                            });
                         },
                         (err) => {
                             console.log(err);

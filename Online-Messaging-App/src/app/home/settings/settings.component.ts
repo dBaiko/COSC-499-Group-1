@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../shared/authentication.service";
-import { APIConfig, SettingsObject } from "../../shared/app-config";
+import { APIConfig, Constants, SettingsObject, UserObject, UserProfileObject } from "../../shared/app-config";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormValidationService } from "../../shared/form-validation.service";
+import { CommonService } from "../../shared/common.service";
 
 const SETTINGS_URI = "/settings";
 const DARK = "dark";
@@ -17,12 +20,41 @@ export class SettingsComponent implements OnInit {
     @Output() explicitEvent = new EventEmitter<boolean>();
     @Input()
     settings: SettingsObject;
+
+    @Input() userProfile: UserProfileObject;
+    passwordForm: FormGroup;
+    emailForm: FormGroup;
+    errorMessage: string;
+    successMessage: string;
+    changePasswordSubmitAttempt: boolean = false;
+    emailFormSubmitAttempt: boolean = false;
+    editingEmail: boolean = false;
     private usersAPI: string = APIConfig.usersAPI;
 
-    constructor(private auth: AuthenticationService, private http: HttpClient) {
+    constructor(
+        private auth: AuthenticationService,
+        private http: HttpClient,
+        public formValidationService: FormValidationService,
+        public common: CommonService
+    ) {
     }
 
     ngOnInit() {
+        this.passwordForm = new FormGroup(
+            {
+                password: new FormControl(
+                    Constants.EMPTY,
+                    Validators.compose([Validators.required, Validators.minLength(8)])
+                ),
+                confirmPassword: new FormControl(Constants.EMPTY, Validators.compose([Validators.required])),
+                oldPassword: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
+            },
+            { validators: this.formValidationService.checkIfPasswordsMatch }
+        );
+
+        this.emailForm = new FormGroup({
+            email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email]))
+        });
     }
 
     themeToggle($event): void {
@@ -42,6 +74,58 @@ export class SettingsComponent implements OnInit {
         } else {
             this.explicitEvent.emit(false);
             this.saveExplicit(false);
+        }
+    }
+
+    changePasswordFormSubmit(form: FormGroup): void {
+        this.changePasswordSubmitAttempt = true;
+        this.successMessage = Constants.EMPTY;
+        this.errorMessage = Constants.EMPTY;
+        if (form.valid) {
+            this.auth
+                .changePassword(form.value.oldPassword, form.value.password)
+                .then((result) => {
+                    this.successMessage = "Password updated successfully";
+                })
+                .catch((err: Error) => {
+                    this.errorMessage = err.message;
+                });
+        }
+    }
+
+    emailFormSubmit(form: FormGroup): void {
+        this.emailFormSubmitAttempt = true;
+        if (form.valid) {
+            this.auth.getCurrentSessionId().subscribe(
+                (data) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
+
+                    let body = {
+                        username: this.userProfile.username,
+                        email: this.common.santizeText(form.value.email)
+                    };
+
+                    this.http
+                        .put(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), body, httpHeaders)
+                        .subscribe(
+                            (data: Array<UserObject>) => {
+                                this.editingEmail = false;
+                                this.userProfile.email = this.common.santizeText(form.value.email);
+                            },
+                            (err) => {
+                                console.log(err);
+                            }
+                        );
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
         }
     }
 

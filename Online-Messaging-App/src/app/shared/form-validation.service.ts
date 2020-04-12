@@ -27,9 +27,26 @@ export class FormValidationService {
         return null;
     }
 
+    public isNanValidator(control: AbstractControl): { [key: string]: boolean } | null {
+        if (control.value == "" || control.value == " " || control.value == null) {
+            return null;
+        }
+        if (isNaN(control.value)) {
+            return { NaN: true };
+        }
+        return null;
+    }
+
     public noBadWordsValidator(control: AbstractControl): { [key: string]: boolean } | null {
         if (filter.isProfane(control.value)) {
             return { badWord: true };
+        }
+        return null;
+    }
+
+    public dateValidator(control: AbstractControl): { [key: string]: boolean } | null {
+        if (false) {
+            return { pattern: true };
         }
         return null;
     }

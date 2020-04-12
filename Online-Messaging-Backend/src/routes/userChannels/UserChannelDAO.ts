@@ -2,7 +2,7 @@
 
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import ChannelDAO from "../channels/ChannelDAO";
-import MessageDAO from "../messages/MessageDAO";
+import { MessageDAO } from "../messages/MessageDAO";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
 const CHANNELID_USERNAME_INDEX = "channelId-username-index";

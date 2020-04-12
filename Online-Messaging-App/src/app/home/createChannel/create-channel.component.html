@@ -1,4 +1,4 @@
-<div class="container">
+<div (clickOutside)="clickOutsideClose()" class="container" delayClickOutsideInit="true">
     <div class="background">
         <form (ngSubmit)="newChannel(newChannelForm)" [formGroup]="newChannelForm" autocomplete="off">
             <div class="center">

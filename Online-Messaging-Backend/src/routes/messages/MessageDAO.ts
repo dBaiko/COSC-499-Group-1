@@ -1,5 +1,7 @@
 /* tslint:disable:no-console */
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import ReactionsDAO from "../reactions/ReactionsDAO";
+import { sanitizeInput } from "../../index";
 
 export interface Message {
     channelId: string;
@@ -20,7 +22,7 @@ interface ChannelObject {
 
 const tableName: string = "Messages";
 
-class MessageDAO {
+export class MessageDAO {
     private channelIdQueryDeclaration = "channelId = :channelId";
 
     constructor(private docClient: DocumentClient) {
@@ -127,6 +129,11 @@ class MessageDAO {
     }
 
     public updateMessage(message: Message): Promise<any> {
+        message.channelId = sanitizeInput(message.channelId);
+        message.channelType = sanitizeInput(message.channelType);
+        message.username = sanitizeInput(message.username);
+        message.content = sanitizeInput(message.content);
+        message.profileImage = sanitizeInput(message.content);
         return new Promise<any>((resolve, reject) => {
             let updateObject = {
                 TableName: tableName,
@@ -174,11 +181,17 @@ class MessageDAO {
                     console.log(err);
                     reject(err);
                 } else {
-                    resolve();
+                    let reactionsDAO: ReactionsDAO = new ReactionsDAO(this.docClient);
+                    reactionsDAO
+                        .deleteAllReactionsForMessage(messageId)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
                 }
             });
         });
     }
 }
-
-export default MessageDAO;

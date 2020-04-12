@@ -2,17 +2,25 @@ import cors from "cors";
 import express from "express";
 import cspComponent from "./config/csp-component";
 import routes from "./routes";
-import MessageDAO, { Message } from "./routes/messages/MessageDAO";
+import { Message, MessageDAO } from "./routes/messages/MessageDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "./config/aws-config";
 import { NotificationObject, NotificationsDAO } from "./routes/notifications/NotificationsDAO";
 import { uuid } from "uuidv4";
 import UserChannelDAO from "./routes/userChannels/UserChannelDAO";
+import ReactionsDAO from "./routes/reactions/ReactionsDAO";
+import sanitize from "sanitize-html";
 import socket = require("socket.io");
 
 export interface UserSocket {
     id: string;
     username: string;
+}
+
+export interface ReactionSocketObject {
+    emoji: string;
+    username: string;
+    messageId: string;
 }
 
 export interface NotificationSocketObject {
@@ -59,13 +67,19 @@ const users: Array<UserSocket> = [];
 const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
 app.use("/", routes);
-io.origins("http://localhost:4200");
+io.origins(
+    "http://localhost:4200 https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com:* http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:*"
+);
 io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");
 
     socketIO.on("message", (message: Message) => {
         if (message.content) {
+            message.content = sanitizeInput(message.content);
+            message.profileImage = sanitizeInput(message.profileImage);
+            message.username = sanitizeInput(message.username);
+            message.channelType = sanitizeInput(message.channelType);
             message["insertTime"] = Date.now();
             message["messageId"] = uuid();
             io.sockets.emit("broadcast", message);
@@ -86,7 +100,8 @@ io.on("connection", (socketIO) => {
             }
 
             let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
-            userChannelDAO.getAllSubscribedUsers(message.channelId)
+            userChannelDAO
+                .getAllSubscribedUsers(message.channelId)
                 .then((data: Array<UserChannelObject>) => {
                     for (let i = 0; i < data.length; i++) {
                         let messageNotification: NotificationObject = {
@@ -113,18 +128,19 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("username", (user: UserSocket) => {
         addUser(user, socketIO.id);
-        console.log(users);
-        socketIO.emit("userList", users);
+        io.sockets.emit("userList", users);
     });
 
     socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
         notificationSocketObject.notification.notificationId = uuid();
         notificationSocketObject.notification.insertedTime = Date.now();
+        notificationSocketObject.notification.message = sanitizeInput(notificationSocketObject.notification.message);
+        notificationSocketObject.notification.username = sanitizeInput(notificationSocketObject.notification.username);
+        notificationSocketObject.notification.channelType = sanitizeInput(notificationSocketObject.notification.channelType);
+        notificationSocketObject.notification.channelName = sanitizeInput(notificationSocketObject.notification.channelName);
         if (notificationSocketObject.notification.fromFriend == null)
             notificationSocketObject.notification.fromFriend = "%";
-        console.log(users);
         if (notificationSocketObject.toUser != null) {
-            console.log(notificationSocketObject);
             socketIO.broadcast
                 .to(notificationSocketObject.toUser.id)
                 .emit("broadcastNotification", notificationSocketObject);
@@ -132,14 +148,37 @@ io.on("connection", (socketIO) => {
         notificationsDAO.socketCreateNewNotification(notificationSocketObject);
     });
 
+    socketIO.on("reaction_add", (reaction: ReactionSocketObject) => {
+        let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        reaction.username = sanitizeInput(reaction.username);
+        reaction.emoji = sanitizeInput(reaction.emoji);
+        reaction.messageId = sanitizeInput(reaction.messageId);
+        io.sockets.emit("broadcast_reaction_add", reaction);
+        reactionsDAO.addNewReaction(reaction.messageId, reaction.emoji, reaction.username);
+    });
+
+    socketIO.on("reaction_remove", (reaction: ReactionSocketObject) => {
+        let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        reaction.username = sanitizeInput(reaction.username);
+        reaction.emoji = sanitizeInput(reaction.emoji);
+        reaction.messageId = sanitizeInput(reaction.messageId);
+        io.sockets.emit("broadcast_reaction_remove", reaction);
+        reactionsDAO.deleteReactionForMessage(reaction.messageId, reaction.emoji, reaction.username);
+    });
+
     socketIO.on("exit", (username: string) => {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
                 users.splice(i, 1);
-                console.log(users);
-                socketIO.emit("userList", users);
+                io.sockets.emit("userList", users);
             }
         }
+        console.log(users);
+    });
+
+    socketIO.on("disconnect", (data: any) => {
+        removeUser(socketIO.id);
+        io.sockets.emit("userList", users);
     });
 });
 
@@ -153,4 +192,24 @@ function addUser(user: UserSocket, id: string): void {
         username: user.username,
         id: id
     });
+}
+
+function removeUser(id: string): void {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].id == id) {
+            users.splice(i, 1);
+        }
+    }
+}
+
+export function sanitizeInput(text: string): string {
+    text = sanitize(text, {
+        allowedTags: [],
+        allowedAttributes: {},
+        disallowedTagsMode: "escape"
+    });
+    if (text === null || text === "null") {
+        return "";
+    }
+    return text;
 }
