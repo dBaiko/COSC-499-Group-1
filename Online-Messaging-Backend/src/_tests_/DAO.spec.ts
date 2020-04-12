@@ -1,8 +1,8 @@
 import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
-import MessageDAO from "../routes/messages/MessageDAO";
-import ProfileDAO from "../routes/profiles/ProfileDAO";
+import {MessageDAO} from "../routes/messages/MessageDAO";
+import {ProfileDAO} from "../routes/profiles/ProfileDAO";
 import {NotificationsDAO} from "../routes/notifications/NotificationsDAO";
 import SettingsDAO from "../routes/settings/settingsDAO";
 
@@ -46,6 +46,10 @@ const DEFAULT_PROFILE_IMAGE: string = "default.png";
 
 describe("UserDAO", () => {
 
+    interface UserObject {
+        username: string;
+        email: string;
+    }
     const user = new UserDAO(ddb);
 
     beforeEach(() => {
@@ -121,7 +125,8 @@ describe("UserDAO", () => {
         });
         const item = await user.getAllUsers();
         expect(item).toEqual([
-            //TODO: see how dynamodb returns scan results
+            ddb.scan("Users").Items.sort(
+                (a: UserObject, b: UserObject) => (a.username > b.username ? 1 : -1)).promise()
         ])
     });
 });
@@ -149,7 +154,8 @@ describe("ChannelDAO", () => {
         ddb.delete({
             TableName: "Channels",
             Key: {
-                channelID: "ID01",//TODO: check primary key values for ALL items
+                channelID: "ID01",
+                channelName: "testUser"
             }
         })
     });
@@ -177,16 +183,14 @@ describe("ChannelDAO", () => {
     });
 
     it("should retrieve certain information about a channel", async () => {
-        await channel.addNewChannel("testChannel", "public", "testUser", "admin", null, null, null);
-        const testChannel = await ddb.get({TableName: "Channel", Key: {channelName: "testChannel"}}).promise();
-        let channelId = testChannel.Items[0].channelId;
+        const testChannelScan = await ddb.scan({TableName: "Channel"}).promise();
+        let channelId = testChannelScan.Items[0].channelId;
         const call = await channel.getChannelInfo(channelId);
         const item = await ddb
             .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
             .promise();
         let expectedItem = [item.Item];
         expect(call).toEqual(expectedItem);
-        //TODO: delete channel by channelid
     });
 
     it("should return a list of all channels", async () => {
