@@ -2,7 +2,7 @@ import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
 import {MessageDAO} from "../routes/messages/MessageDAO";
-import {ProfileDAO} from "../routes/profiles/ProfileDAO";
+import {ProfileDAO, ProfileObject} from "../routes/profiles/ProfileDAO";
 import {NotificationsDAO} from "../routes/notifications/NotificationsDAO";
 import SettingsDAO from "../routes/settings/settingsDAO";
 
@@ -485,7 +485,7 @@ describe("MessageDAO", () => {
 });
 
 describe("ProfileDAO", () => {
-
+//TODO: get help with profiles
     const profile = new ProfileDAO(ddb);
 
     beforeEach(() => {
@@ -510,18 +510,61 @@ describe("ProfileDAO", () => {
     });
 
     it("should create a new profile from basic user information", async () => {
+        await profile.createProfile("test2", "new", "test");
+        expect(ddb.get({TableName: "Profiles", Key: {username: "test2"}}).Item == null).toBeFalsy();
     });
 
-    it("should update all data in a user's profile", async () => {
+    it("should update all data in a user's profile.  If data is missing, it is represented by white space", async () => {
+        const testProfileUpdate: ProfileObject = {
+            username: "testUser",
+            firstName: "test",
+            lastName: "user",
+            phone: "5555555555",
+            bio: "Lorem Ipsum",
+            gender: "Male",
+            dateOfBirth: string,
+            citizenship: string,
+            grade: number,
+            gradYear: number,
+            previousCollegiate: boolean,
+            street: string,
+            unitNumber: string,
+            city: string,
+            province: string,
+            country: string,
+            postalCode: string,
+            club: string,
+            injuryStatus: string,
+            instagram: string,
+            languages: Array < string >,
+            coachFirstName: string,
+            coachLastName: string,
+            coachPhone: string,
+            coachEmail: string,
+            parentFirstName: string,
+            parentLastName:,
+            parentEmail:,
+            parentPhone:,
+            budget:,
+        };
     });
 
     it("should update a user's status message", async () => {
+        await profile.updateStatus("testUser", "updated");
+        const item = ddb.get({TableName: "Profiles", Key: {username: "testUser"}}).Items.status;
+        expect(item).toEqual("updated");
     });
 
     it("should update a user's profile picture", async () => {
+        await profile.updateProfileImage(1.png, "testUser");
+        const item = ddb.get({TableName: "Profiles", Key: {username: "testUser"}}).Items.profileImage;
+        expect(item).toEqual(PROFILE_IMAGE_S3_PREFIX +"testUser.png");
     });
 
     it("should return all data in a user's profile", async () => {
+        const item = await profile.getUserProfile("testUser");
+        const expected = ddb.get({TableName: "Profiles", Key: {username: "Testuser"}});
+        expect(item == expected.Items).toBeTruthy();
     });
 
 });
