@@ -215,7 +215,29 @@ describe("UserChannelDAO", () => {
                 userChannelRole: "admin",
                 channelName: "channel",
                 channelType: "public",
-                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+            }
+        });
+        ddb.put({
+            TableName: "UserChannel",
+            Item: {
+                username: "testUser",
+                channelId: "ID02",
+                userChannelRole: "user",
+                channelName: "channel2",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+            }
+        });
+        ddb.put({
+            TableName: "UserChannel",
+            Item: {
+                username: "testUser2",
+                channelId: "ID01",
+                userChannelRole: "user",
+                channelName: "channel2",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
             }
         });
     });
@@ -226,28 +248,73 @@ describe("UserChannelDAO", () => {
                 username: "testUser",
                 channelId: "ID01"
             }
-        })
+        });
+        ddb.delete({
+            TableName: "UserChannel",
+            Key: {
+                username: "testUser",
+                channelId: "ID02"
+            }
+        });
+        ddb.delete({
+            TableName: "UserChannel",
+            Key: {
+                username: "testUser2",
+                channelId: "ID01"
+            }
+        });
     });
 
     it("should return all users and all channels they are subscribed to", async () => {
+        const item = ddb.scan("UserChannel").promise();
+        expect(userChannel.getAll()).toEqual(item.Items);
     });
 
     it("should subscribe a user to a channel", async () => {
+        const item = await userChannel.addNewUserToChannel(
+            "addTest",
+            "ID01",
+            "user",
+            "channel",
+            "public",
+            PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
+        const get = ddb.get({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}});
+        expect(item).toEqual(get.Items);
+        ddb.delete({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}})
     });
 
     it("should return a list of channels a user is subscribed to", async () => {
+        const item = await userChannel.getAllSubscribedChannels("testUser");
+        const expected = ddb.get({tableName: "UserChannel", username: "testUser"});
+        expect(item).toEqual(expected.Items);
     });
 
     it("should return a list of all users subscribed to a channel", async () => {
+        const item = await userChannel.getAllSubscribedUsers("ID01");
+        const expected = ddb.get({tableName: "UserChannel", channelId: "ID01"});
+        expect(item).toEqual(expected.Items);
     });
 
     it("should delete a subscription between a specified user and channel", async () => {
+        await userChannel.deleteChannelSubscription("testUser", "ID02");
+        const item = ddb.scan({tableName: "UserChannel"});
+        expect(item.Count).toEqual(2);
     });
 
-    it("should update a displayed profile picture across a user's subscribed channels", async () => {
+    it("should update the user's displayed profile picture across all subscribed channels", async () => {
+        await userChannel.updateProfilePicture("testUser");
+        const sub1 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID01"});
+        const sub2 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID02"});
+        expect(sub1.profileImage).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
+        expect(sub2.profileImage).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
     });
 
     it("should update a user's displayed status across all subscribed channels", async () => {
+        await userChannel.updateStatus("testUser", "Lorem Ipsum");
+        const sub1 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID01"});
+        const sub2 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID02"});
+        expect(sub1.statusText).toEqual("Lorem Ipsum");
+        expect(sub2.statusText).toEqual("Lorem Ipsum");
     });
 });
 
