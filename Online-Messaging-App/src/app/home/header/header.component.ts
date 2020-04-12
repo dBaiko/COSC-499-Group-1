@@ -96,8 +96,17 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    toggleOpen(): void {
-        this.open = !this.open;
+    toggleOpen($event): void {
+        if($event){
+            let target = $event.target as HTMLElement;
+            console.log(target.classList);
+            if(!target.classList.contains("mat-button-wrapper")){
+                this.open = !this.open;
+            }
+        }
+        else{
+            this.open = !this.open;
+        }
     }
 
     notificationChannelEmitter(view: string, channelId: string, type: string): void {
@@ -185,7 +194,6 @@ export class HeaderComponent implements OnInit {
                 console.log(err);
             }
         );
-
         this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
         this.notificationChannelEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);

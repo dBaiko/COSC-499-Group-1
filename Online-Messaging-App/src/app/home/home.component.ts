@@ -252,5 +252,6 @@ export class HomeComponent implements OnInit {
         document.documentElement.style.setProperty("--element-color", theme["element-color"]);
         document.documentElement.style.setProperty("--hover-color", theme["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", theme["element-hover-color"]);
+        document.documentElement.style.setProperty("--line-colour", theme["line-colour"]);
     }
 }

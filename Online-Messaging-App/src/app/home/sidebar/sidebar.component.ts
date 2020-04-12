@@ -64,7 +64,7 @@ export class SidebarComponent implements OnInit {
 
     selectedChannelId: string;
 
-    private channelBrowser = "channelBrowser";
+    channelBrowser = "channelBrowser";
     private profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
     private channelsURL: string = APIConfig.channelsAPI;

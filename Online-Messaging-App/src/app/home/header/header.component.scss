@@ -2,7 +2,7 @@
     background-color: var(--primary-color);
     color: white;
     vertical-align: center;
-    min-height: 3.5rem;
+    min-height: 3.3rem;
 }
 
 #title {
@@ -204,4 +204,7 @@ mat-label {
 }
 .username{
     margin-left: 0.3rem;
+}
+#generalNotification{
+    cursor:pointer;
 }
