@@ -18,7 +18,9 @@
                             onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                             src="{{ currentUserProfile.profileImage }}"
                     />
+                    <span class="username">
                     {{ user.username }}
+                    </span>
                 </button>
                 <mat-menu #userMenu="matMenu" class="menuList" disableOptionCentering disabled xPosition="after">
                     <div class="userMenu">
@@ -38,7 +40,7 @@
         </div>
     </div>
 </div>
-<div (clickOutside)="toggleOpen()" *ngIf="open" delayClickOutsideInit="true" id="notificationList">
+<div (clickOutside)="toggleOpen($event)" *ngIf="open" delayClickOutsideInit="true" id="notificationList">
     <div *ngIf="publicInvites.length > 0">
         <span class="title">Public Invites</span>
         <div *ngFor="let notification of publicInvites">
@@ -89,7 +91,7 @@
         <div *ngFor="let notification of generalNotification">
             <div
                     (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
-                    class="notificationOption"
+                    class="notificationOption" id="generalNotification"
             >
                 <mat-card>
                     <mat-card-title class="message">{{ notification.message }}</mat-card-title>
@@ -97,7 +99,7 @@
                     <div class="inviteButtons">
                         <button
                                 (click)="removeNotification(notification); deleteNotification(notification)"
-                                class="inviteButton"
+                                class="inviteButton xbutton"
                                 mat-button
                         >
                             X
