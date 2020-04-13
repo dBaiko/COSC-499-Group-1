@@ -6,6 +6,7 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
 import ReactionsDAO, { ReactionObject } from "../reactions/ReactionsDAO";
+import { sanitizeInput } from "../../index";
 
 const router = express.Router();
 const AUTH_KEY = "authorization";
@@ -17,7 +18,6 @@ const PATH_PUT_MESSAGE: string = "/:messageId/";
 const PATH_GET_MESSAGE_REACTIONS = "/:messageId/reactions";
 const PATH_POST_NEW_REACTION = "/:messageId/reaction/";
 const PATH_DELETE_EMOJI_FOR_MESSAGE = "/:messageId/reaction/emoji/:emoji/username/:username";
-
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
 
@@ -113,9 +113,9 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
             let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
-            reactionsDAO.getAllReactionsForMessage(req.params.messageId)
+            reactionsDAO
+                .getAllReactionsForMessage(req.params.messageId)
                 .then((data: Array<ReactionObject>) => {
-
                     let a = [];
                     let b = [];
                     let prev: ReactionObject = {
@@ -125,7 +125,7 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
                         username: ""
                     };
 
-                    data = data.sort((a, b) => a.emoji < b.emoji ? 1 : -1);
+                    data = data.sort((a, b) => (a.emoji < b.emoji ? 1 : -1));
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].emoji !== prev.emoji) {
                             a.push(data[i].emoji);
@@ -134,7 +134,6 @@ router.get(PATH_GET_MESSAGE_REACTIONS, (req, res) => {
                             b[b.length - 1]++;
                         }
                         prev = data[i];
-
                     }
 
                     let usernames = [];
@@ -180,7 +179,12 @@ router.post(PATH_POST_NEW_REACTION, (req, res) => {
         (data) => {
             if (data.decodedToken[COGNITO_USERNAME] == req.body.username) {
                 let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
-                reactionsDAO.addNewReaction(req.params.messageId, req.body.emoji, req.body.username)
+                reactionsDAO
+                    .addNewReaction(
+                        req.params.messageId,
+                        sanitizeInput(req.body.emoji),
+                        sanitizeInput(req.body.username)
+                    )
                     .then(() => {
                         res.status(200).send({
                             status: 200,
@@ -210,7 +214,8 @@ router.delete(PATH_DELETE_EMOJI_FOR_MESSAGE, (req, res) => {
         (data) => {
             if (data.decodedToken[COGNITO_USERNAME] == req.params.username) {
                 let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
-                reactionsDAO.deleteReactionForMessage(req.params.messageId, req.params.emoji, req.params.username)
+                reactionsDAO
+                    .deleteReactionForMessage(req.params.messageId, req.params.emoji, req.params.username)
                     .then(() => {
                         res.status(200).send({
                             status: 200,
@@ -232,6 +237,5 @@ router.delete(PATH_DELETE_EMOJI_FOR_MESSAGE, (req, res) => {
         }
     );
 });
-
 
 export = router;

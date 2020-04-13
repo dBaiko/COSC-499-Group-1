@@ -58,7 +58,7 @@ export class FriendsBrowserComponent implements OnInit {
 
     onKey($event: Event) {
         //set search value as whatever is entered on search bar every keystroke
-        this.search = ($event.target as HTMLInputElement).value;
+        this.search = this.common.santizeText(($event.target as HTMLInputElement).value);
         this.searching = true;
         this.sendQuery();
         this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());

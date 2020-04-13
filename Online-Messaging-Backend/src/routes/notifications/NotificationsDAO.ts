@@ -201,7 +201,6 @@ export class NotificationsDAO {
     }
 
     public deleteNotification(notificationId: string, insertedTime: number): Promise<any> {
-        console.log(notificationId);
         const params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             Key: {

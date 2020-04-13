@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from "@angular/core";
-import { APIConfig, Constants, ProfileObject, UserObject, UserProfileObject } from "../../shared/app-config";
+import { APIConfig, Constants, ProfileObject, UserProfileObject } from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -7,7 +7,6 @@ import { CommonService } from "../../shared/common.service";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { ImageCompressor } from "../../shared/ImageCompressor";
 
-const EMAIL_FORM_NAME = "email";
 const LASTNAME_FORM_NAME = "lastName";
 const FIRSTNAME_FORM_NAME = "firstName";
 const BIO_FORM_NAME = "bio";
@@ -106,7 +105,6 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit() {
         this.editForm = new FormGroup({
-            email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email])),
             firstName: new FormControl(
                 Constants.EMPTY,
                 Validators.compose([
@@ -246,20 +244,6 @@ export class ProfileComponent implements OnInit {
                             parentEmail: profile.parentEmail,
                             budget: profile.budget
                         };
-
-                        if (username === this.auth.getAuthenticatedUser().getUsername()) {
-                            this.http.get(this.usersAPI + username, httpHeaders).subscribe(
-                                (data: Array<UserObject>) => {
-                                    let user: UserObject = data[0];
-                                    if (user) {
-                                        this.userProfile.email = user.email;
-                                    }
-                                },
-                                (err) => {
-                                    console.log(err);
-                                }
-                            );
-                        }
                     },
                     (err) => {
                         console.log(err);
@@ -274,7 +258,6 @@ export class ProfileComponent implements OnInit {
 
     toggleEditing(editing: boolean) {
         this.editing = editing;
-        this.editForm.get(EMAIL_FORM_NAME).setValue(this.userProfile.email);
         this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
         this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
         this.editForm.get(BIO_FORM_NAME).setValue(this.userProfile.bio);
@@ -319,7 +302,8 @@ export class ProfileComponent implements OnInit {
                     this.editForm.get(LANGUAGESFRENCH_FORM_NAME).setValue(true);
                 if (this.userProfile.languages.includes(MANDARIN))
                     this.editForm.get(LANGUAGESMANDARIN_FORM_NAME).setValue(true);
-                if (this.userProfile.languages.includes(OTHER)) this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(true);
+                if (this.userProfile.languages.includes(OTHER))
+                    this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(true);
             }
         } else {
             this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(false);
@@ -350,13 +334,13 @@ export class ProfileComponent implements OnInit {
                         this.profilesAPI + username + STATUS_URI,
                         {
                             username: username,
-                            status: form.value.statusText
+                            status: this.common.santizeText(form.value.statusText)
                         },
                         httpHeaders
                     )
                     .subscribe(
                         () => {
-                            this.userProfile.statusText = form.value.statusText;
+                            this.userProfile.statusText = this.common.santizeText(form.value.statusText);
                             this.toggleEditingStatus(false);
                             this.profileUpdateEvent.emit();
                         },
@@ -439,7 +423,6 @@ export class ProfileComponent implements OnInit {
             if (form.value.languagesMandarin) languages.push("Mandarin");
             if (form.value.languagesOther) languages.push("Other");
             this.editUser(
-                form.value.email,
                 form.value.firstName,
                 form.value.lastName,
                 form.value.phone,
@@ -474,7 +457,6 @@ export class ProfileComponent implements OnInit {
     }
 
     editUser(
-        email: string,
         firstName: string,
         lastName: string,
         phone: string,
@@ -506,10 +488,32 @@ export class ProfileComponent implements OnInit {
         budget: string
     ) {
         let username = this.userProfile.username;
-        let user: UserObject = {
-            username: username,
-            email: email
-        };
+
+        firstName = this.common.santizeText(firstName);
+        lastName = this.common.santizeText(lastName);
+        phone = this.common.santizeText(phone);
+        bio = this.common.santizeText(bio);
+        gender = this.common.santizeText(gender);
+        dateOfBirth = this.common.santizeText(dateOfBirth);
+        citizenship = this.common.santizeText(citizenship);
+        street = this.common.santizeText(street);
+        unitNumber = this.common.santizeText(unitNumber);
+        city = this.common.santizeText(city);
+        province = this.common.santizeText(province);
+        country = this.common.santizeText(country);
+        postalCode = this.common.santizeText(postalCode);
+        club = this.common.santizeText(club);
+        injuryStatus = this.common.santizeText(injuryStatus);
+        instagram = this.common.santizeText(instagram);
+        coachFirstName = this.common.santizeText(coachFirstName);
+        coachLastName = this.common.santizeText(coachLastName);
+        coachPhone = this.common.santizeText(coachPhone);
+        coachEmail = this.common.santizeText(coachEmail);
+        parentFirstName = this.common.santizeText(parentFirstName);
+        parentLastName = this.common.santizeText(parentLastName);
+        parentPhone = this.common.santizeText(parentPhone);
+        parentEmail = this.common.santizeText(parentEmail);
+        budget = this.common.santizeText(budget);
 
         let profile: ProfileObject = {
             username: username,
@@ -555,7 +559,7 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.usersAPI + username, user, httpHeaders).subscribe(
+                this.http.put(this.usersAPI + username, profile.username, httpHeaders).subscribe(
                     () => {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {

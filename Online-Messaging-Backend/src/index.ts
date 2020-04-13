@@ -9,6 +9,7 @@ import { NotificationObject, NotificationsDAO } from "./routes/notifications/Not
 import { uuid } from "uuidv4";
 import UserChannelDAO from "./routes/userChannels/UserChannelDAO";
 import ReactionsDAO from "./routes/reactions/ReactionsDAO";
+import sanitize from "sanitize-html";
 import socket = require("socket.io");
 
 export interface UserSocket {
@@ -17,9 +18,9 @@ export interface UserSocket {
 }
 
 export interface ReactionSocketObject {
-    emoji: string,
-    username: string,
-    messageId: string
+    emoji: string;
+    username: string;
+    messageId: string;
 }
 
 export interface NotificationSocketObject {
@@ -66,13 +67,19 @@ const users: Array<UserSocket> = [];
 const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
 app.use("/", routes);
-io.origins("http://localhost:4200 https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com:* http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:*");
+io.origins(
+    "http://localhost:4200 https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com:* http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:*"
+);
 io.on("connection", (socketIO) => {
     // tslint:disable-next-line:no-console
     console.log("a user connected");
 
     socketIO.on("message", (message: Message) => {
         if (message.content) {
+            message.content = sanitizeInput(message.content);
+            message.profileImage = sanitizeInput(message.profileImage);
+            message.username = sanitizeInput(message.username);
+            message.channelType = sanitizeInput(message.channelType);
             message["insertTime"] = Date.now();
             message["messageId"] = uuid();
             io.sockets.emit("broadcast", message);
@@ -93,7 +100,8 @@ io.on("connection", (socketIO) => {
             }
 
             let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
-            userChannelDAO.getAllSubscribedUsers(message.channelId)
+            userChannelDAO
+                .getAllSubscribedUsers(message.channelId)
                 .then((data: Array<UserChannelObject>) => {
                     for (let i = 0; i < data.length; i++) {
                         let messageNotification: NotificationObject = {
@@ -126,11 +134,13 @@ io.on("connection", (socketIO) => {
     socketIO.on("notification", (notificationSocketObject: NotificationSocketObject) => {
         notificationSocketObject.notification.notificationId = uuid();
         notificationSocketObject.notification.insertedTime = Date.now();
+        notificationSocketObject.notification.message = sanitizeInput(notificationSocketObject.notification.message);
+        notificationSocketObject.notification.username = sanitizeInput(notificationSocketObject.notification.username);
+        notificationSocketObject.notification.channelType = sanitizeInput(notificationSocketObject.notification.channelType);
+        notificationSocketObject.notification.channelName = sanitizeInput(notificationSocketObject.notification.channelName);
         if (notificationSocketObject.notification.fromFriend == null)
             notificationSocketObject.notification.fromFriend = "%";
-        console.log(users);
         if (notificationSocketObject.toUser != null) {
-            console.log(notificationSocketObject);
             socketIO.broadcast
                 .to(notificationSocketObject.toUser.id)
                 .emit("broadcastNotification", notificationSocketObject);
@@ -140,12 +150,18 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("reaction_add", (reaction: ReactionSocketObject) => {
         let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        reaction.username = sanitizeInput(reaction.username);
+        reaction.emoji = sanitizeInput(reaction.emoji);
+        reaction.messageId = sanitizeInput(reaction.messageId);
         io.sockets.emit("broadcast_reaction_add", reaction);
         reactionsDAO.addNewReaction(reaction.messageId, reaction.emoji, reaction.username);
     });
 
     socketIO.on("reaction_remove", (reaction: ReactionSocketObject) => {
         let reactionsDAO: ReactionsDAO = new ReactionsDAO(docClient);
+        reaction.username = sanitizeInput(reaction.username);
+        reaction.emoji = sanitizeInput(reaction.emoji);
+        reaction.messageId = sanitizeInput(reaction.messageId);
         io.sockets.emit("broadcast_reaction_remove", reaction);
         reactionsDAO.deleteReactionForMessage(reaction.messageId, reaction.emoji, reaction.username);
     });
@@ -164,7 +180,6 @@ io.on("connection", (socketIO) => {
         removeUser(socketIO.id);
         io.sockets.emit("userList", users);
     });
-
 });
 
 function addUser(user: UserSocket, id: string): void {
@@ -185,4 +200,16 @@ function removeUser(id: string): void {
             users.splice(i, 1);
         }
     }
+}
+
+export function sanitizeInput(text: string): string {
+    text = sanitize(text, {
+        allowedTags: [],
+        allowedAttributes: {},
+        disallowedTagsMode: "escape"
+    });
+    if (text === null || text === "null") {
+        return "";
+    }
+    return text;
 }

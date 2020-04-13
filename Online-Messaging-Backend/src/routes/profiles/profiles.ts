@@ -5,6 +5,7 @@ import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
 import multer from "multer";
+import { sanitizeInput } from "../../index";
 
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
@@ -117,7 +118,7 @@ router.put(PATH_UPDATE_STATUS, (req, res) => {
             ) {
                 const updateProfile = new ProfileDAO(docClient);
                 updateProfile
-                    .updateStatus(req.body.username, req.body.status)
+                    .updateStatus(sanitizeInput(req.body.username), sanitizeInput(req.body.status))
                     .then(() => {
                         res.status(200).send({});
                     })
