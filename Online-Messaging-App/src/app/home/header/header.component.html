@@ -12,11 +12,11 @@
             <div class="headInfo">
                 <button [mat-menu-trigger-for]="userMenu" id="username" mat-button>
                     <img
-                            *ngIf="currentUserProfile"
-                            alt="assets/icon-alt.PNG"
-                            class="userProfilePicture"
-                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                            src="{{ currentUserProfile.profileImage }}"
+                        *ngIf="currentUserProfile"
+                        alt="assets/icon-alt.PNG"
+                        class="userProfilePicture"
+                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                        src="{{ currentUserProfile.profileImage }}"
                     />
                     <span class="username">
                     {{ user.username }}
@@ -32,7 +32,7 @@
                 </mat-menu>
             </div>
             <div class="userMenu" id="notification">
-                <button (click)="toggleOpen()" mat-button>
+                <button (click)="toggleOpen($event)" mat-button>
                     <mat-icon>notifications</mat-icon>
                     <mat-label *ngIf="notificationCount > 0">{{ notificationCount }}</mat-label>
                 </button>
@@ -90,17 +90,17 @@
         <span class="title">General</span>
         <div *ngFor="let notification of generalNotification">
             <div
-                    (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
-                    class="notificationOption" id="generalNotification"
+                (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
+                class="notificationOption" id="generalNotification"
             >
                 <mat-card>
                     <mat-card-title class="message">{{ notification.message }}</mat-card-title>
                     <br/>
                     <div class="inviteButtons">
                         <button
-                                (click)="removeNotification(notification); deleteNotification(notification)"
-                                class="inviteButton xbutton"
-                                mat-button
+                            (click)="removeNotification(notification); deleteNotification(notification)"
+                            class="inviteButton xbutton"
+                            mat-button
                         >
                             X
                         </button>
@@ -111,13 +111,13 @@
     </div>
 
     <mat-card
-            *ngIf="
+        *ngIf="
             privateInvites.length == 0 &&
             publicInvites.length == 0 &&
             friendInvites.length == 0 &&
             generalNotification.length == 0
         "
-            disabled
+        disabled
     >
         <mat-card-title>No notifications</mat-card-title>
     </mat-card>
