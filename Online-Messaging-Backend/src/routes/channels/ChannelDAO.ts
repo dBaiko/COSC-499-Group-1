@@ -111,6 +111,15 @@ class ChannelDAO {
     ): Promise<any> {
         const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
+
+        if (inviteStatus == null || inviteStatus == "") {
+            inviteStatus = " ";
+        }
+
+        if (channelDescription == null || channelDescription == "") {
+            channelDescription = " ";
+        }
+
         const params = {
             Item: {
                 channelId,
