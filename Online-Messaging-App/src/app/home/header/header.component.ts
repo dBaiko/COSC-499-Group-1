@@ -97,14 +97,12 @@ export class HeaderComponent implements OnInit {
     }
 
     toggleOpen($event): void {
-        if($event){
+        if ($event) {
             let target = $event.target as HTMLElement;
-            console.log(target.classList);
-            if(!target.classList.contains("mat-button-wrapper")){
+            if (!target.classList.contains("mat-button-wrapper")) {
                 this.open = !this.open;
             }
-        }
-        else{
+        } else {
             this.open = !this.open;
         }
     }

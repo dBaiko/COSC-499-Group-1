@@ -37,8 +37,6 @@ export class LoginFormComponent implements OnInit {
     }
 
     login(username: string, password: string): void {
-        username = this.common.santizeText(username);
-        password = this.common.santizeText(password);
         this.auth.login(username, password).subscribe(
             () => {
                 this.common.moveToHome();
@@ -46,6 +44,7 @@ export class LoginFormComponent implements OnInit {
             (err) => {
                 if (err.code == NOT_AUTH_EX) {
                     this.loginForm.get(Constants.USERNAME).setErrors({ invalidLogin: true });
+                    console.log(err);
                 }
             }
         );
