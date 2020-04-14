@@ -173,7 +173,9 @@ export class ProfileComponent implements OnInit {
             club: new FormControl(),
             injuryStatus: new FormControl(),
             instagram: new FormControl(),
-            budget: new FormControl()
+            budget: new FormControl(),
+            coachEmail: new FormControl(),
+            parentEmail: new FormControl()
         });
 
         this.imageForm = new FormGroup({
@@ -559,7 +561,7 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.usersAPI + username, profile.username, httpHeaders).subscribe(
+                this.http.put(this.usersAPI + username, profile, httpHeaders).subscribe(
                     () => {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {

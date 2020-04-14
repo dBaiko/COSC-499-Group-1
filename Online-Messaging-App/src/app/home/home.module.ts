@@ -26,6 +26,7 @@ import { ClickOutsideModule } from "ng-click-outside";
 import { ChannelUserListComponent } from "./chatbox/channel-user-list/channel-user-list.component";
 import { MarkdownModule } from "ngx-markdown";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MarkupTutorialComponent } from './chatbox/markup-tutorial/markup-tutorial.component';
 
 const socketConfig: SocketIoConfig = {
     url: "http://localhost:8080",
@@ -45,7 +46,8 @@ const socketConfig: SocketIoConfig = {
         FriendsBrowserComponent,
         UnsubscribeConfirmComponent,
         SettingsComponent,
-        ChannelUserListComponent
+        ChannelUserListComponent,
+        MarkupTutorialComponent
     ],
     imports: [
         CommonModule,
