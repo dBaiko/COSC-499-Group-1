@@ -1,125 +1,125 @@
 mat-card {
-  background-color: var(--element-color);
-  border-radius: 0;
-  height: 100%;
-  //margin-right: 1vh;
-  //margin-top: 1vh;
-  //margin-left: 1vh;
+    background-color: var(--element-color);
+    border-radius: 0;
+    height: 100%;
+    //margin-right: 1vh;
+    //margin-top: 1vh;
+    //margin-left: 1vh;
 }
 
 mat-form-field {
-  background-color: var(--element-color);
-  width: 100%;
-  color: var(--primary-text-color);
-  left: 0;
-  margin-bottom: 1vh;
-  margin-top: 1vh;
+    background-color: var(--element-color);
+    width: 100%;
+    color: var(--primary-text-color);
+    left: 0;
+    margin-bottom: 1vh;
+    margin-top: 1vh;
 }
 
 hr {
-  border: 1px solid var(--background-color);
+    border: 1px solid var(--background-color);
 }
 
 .mat-card-title .mat-card-header {
-  margin-bottom: 0 !important;
-  color: var(--primary-text-color);
+    margin-bottom: 0 !important;
+    color: var(--primary-text-color);
 }
 
 .mat-card-title {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .mat-card-header {
-  margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .mat-card-title {
-  margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 mat-card-title {
-  color: var(--primary-text-color);
-  padding: 10px 0 10px 0;
+    color: var(--primary-text-color);
+    padding: 10px 0 10px 0;
 }
 
 .headerTop {
-  background-color: var(--element-color);
-  top: 4rem;
-  margin-top: 1vh !important;
+    background-color: var(--element-color);
+    top: 4rem;
+    margin-top: 1vh !important;
 }
 
 mat-label {
-  color: var(--primary-text-color);
-  padding-left: 0.5rem;
+    color: var(--primary-text-color);
+    padding-left: 0.5rem;
 }
 
 .container {
-  height: 100%;
+    height: 100%;
 }
 
 #searchBar {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .join {
-  background-color: var(--primary-color);
-  margin-right: 5vh;
-  color: white;
-  text-align: center;
-  cursor: pointer;
+    background-color: var(--primary-color);
+    margin-right: 5vh;
+    color: white;
+    text-align: center;
+    cursor: pointer;
 }
 
 .joined {
-  margin-right: 5vh;
-  color: var(--primary-text-color);
-  text-align: center;
+    margin-right: 5vh;
+    color: var(--primary-text-color);
+    text-align: center;
 }
 
 .joinCreate:focus {
-  outline: 0;
+    outline: 0;
 }
 
 .joinCreate:hover {
-  background-color: var(--element-hover-color);
+    background-color: var(--element-hover-color);
 }
 
 mat-expansion-panel {
-  background-color: var(--element-color);
-  color: var(--primary-text-color);
-  border-radius: 0 !important;
+    background-color: var(--element-color);
+    color: var(--primary-text-color);
+    border-radius: 0 !important;
 }
 
 mat-expansion-panel:hover {
-  background-color: var(--element-hover-color);
+    background-color: var(--element-hover-color);
 }
 
 mat-expansion-panel.mat-expanded {
-  background-color: var(--element-hover-color);
+    background-color: var(--element-hover-color);
 }
 
 mat-panel-title,
 mat-panel-description {
-  color: var(--primary-text-color);
+    color: var(--primary-text-color);
 }
 
 mat-panel-title {
-  width: 20vh;
+    width: 20vh;
 }
 
 .mat-card {
-  padding: 0;
+    padding: 0;
 }
 
 #scrollable {
-  height: 82%;
-  overflow-y: auto;
-  z-index: 5;
-  padding: 0;
+    height: 82%;
+    overflow-y: auto;
+    z-index: 5;
+    padding: 0;
 }
 
 .searchInput {
-  padding-left: 0.4rem;
+    padding-left: 0.4rem;
 }

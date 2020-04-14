@@ -4,7 +4,6 @@ import { HomeComponent } from "./home/home.component";
 import { RegisterFormComponent } from "./register/register-form.component";
 import { LoginFormComponent } from "./login/login-form.component";
 import { ProfileComponent } from "./home/profile/profile.component";
-import { UserGuideComponent} from "./home/user-guide/user-guide.component";
 
 export const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -17,4 +16,5 @@ export const routes: Routes = [
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

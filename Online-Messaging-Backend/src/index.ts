@@ -149,8 +149,12 @@ io.on("connection", (socketIO) => {
         notificationSocketObject.notification.insertedTime = Date.now();
         notificationSocketObject.notification.message = sanitizeInput(notificationSocketObject.notification.message);
         notificationSocketObject.notification.username = sanitizeInput(notificationSocketObject.notification.username);
-        notificationSocketObject.notification.channelType = sanitizeInput(notificationSocketObject.notification.channelType);
-        notificationSocketObject.notification.channelName = sanitizeInput(notificationSocketObject.notification.channelName);
+        notificationSocketObject.notification.channelType = sanitizeInput(
+            notificationSocketObject.notification.channelType
+        );
+        notificationSocketObject.notification.channelName = sanitizeInput(
+            notificationSocketObject.notification.channelName
+        );
         if (notificationSocketObject.notification.fromFriend == null)
             notificationSocketObject.notification.fromFriend = "%";
         if (notificationSocketObject.toUser != null) {

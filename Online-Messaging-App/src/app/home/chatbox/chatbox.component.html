@@ -131,7 +131,8 @@
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
                                 <div
-                                    *ngIf="chatMessage.username == null || chatMessage.username == ' '; else elseBlock">
+                                    *ngIf="chatMessage.username == null || chatMessage.username == ' '; else elseBlock"
+                                >
                                     <hr/>
                                     <mat-card-content class="status">
                                         <p id="{{ chatMessage.messageId }}">
@@ -211,7 +212,11 @@
                                         </div>
                                     </div>
                                     <mat-card-content
-                                        *ngIf="chatMessage.deleted != 'true' && chatMessage.deleted != 'adminTrue'; else messageDeleted">
+                                        *ngIf="
+                                            chatMessage.deleted != 'true' && chatMessage.deleted != 'adminTrue';
+                                            else messageDeleted
+                                        "
+                                    >
                                         <p class="message" id="{{ chatMessage.messageId }}">
                                             <span
                                                 *ngIf="chatMessage.username == currentUserProfile.username"
@@ -232,19 +237,31 @@
                                                         />
                                                     </span>
                                                 </div>
-                                                <mat-icon (click)="emojiPopup(chatMessage)"
-                                                          *ngIf="chatMessage.username == currentUserProfile.username"
-                                                          class="emojiClick"
+                                                <mat-icon
+                                                    (click)="emojiPopup(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                    class="emojiClick"
                                                 >sentiment_very_satisfied</mat-icon
                                                 >
-                                                <mat-icon (click)="toggleEditingMessage(chatMessage)"
-                                                          *ngIf="chatMessage.username == currentUserProfile.username">edit</mat-icon>
-                                                <mat-icon (click)="deleteMessage(chatMessage)"
-                                                          *ngIf="userIsAdmin() && chatMessage.username != currentUserProfile.username"
-                                                          class="adminDelete">delete</mat-icon>
-                                                <mat-icon (click)="deleteMessage(chatMessage)"
-                                                          *ngIf="chatMessage.username == currentUserProfile.username"
-                                                >delete</mat-icon>
+                                                <mat-icon
+                                                    (click)="toggleEditingMessage(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                >edit</mat-icon
+                                                >
+                                                <mat-icon
+                                                    (click)="deleteMessage(chatMessage)"
+                                                    *ngIf="
+                                                        userIsAdmin() &&
+                                                        chatMessage.username != currentUserProfile.username
+                                                    "
+                                                    class="adminDelete"
+                                                >delete</mat-icon
+                                                >
+                                                <mat-icon
+                                                    (click)="deleteMessage(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                >delete</mat-icon
+                                                >
                                             </span>
                                             <span
                                                 *ngIf="chatMessage.username != currentUserProfile.username"
@@ -344,8 +361,7 @@
                                         />
                                     </span>
                                 </span>
-                                <mat-icon (click)="toggleMarkupTutorialOpen()" class="helpSelect">help
-                                </mat-icon>
+                                <mat-icon (click)="toggleMarkupTutorialOpen()" class="helpSelect">help</mat-icon>
                                 <mat-icon (click)="emojiPopupMessage()" class="emojiSelect">emoji_emotions</mat-icon>
                                 <form
                                     #messageForm="ngForm"

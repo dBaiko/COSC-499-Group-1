@@ -229,5 +229,4 @@ export class MessageDAO {
             });
         });
     }
-
 }

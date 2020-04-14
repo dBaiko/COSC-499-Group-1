@@ -32,8 +32,12 @@
                         >
                         <mat-menu #menu="matMenu">
                             <button (click)="goToProfile(user.username)" mat-menu-item>View profile</button>
-                            <button (click)="banUser(user)" *ngIf="user.username != currentUserProfile.username"
-                                    mat-menu-item>Ban user
+                            <button
+                                (click)="banUser(user)"
+                                *ngIf="user.username != currentUserProfile.username"
+                                mat-menu-item
+                            >
+                                Ban user
                             </button>
                         </mat-menu>
                     </mat-list-item>
@@ -90,8 +94,12 @@
                         >
                         <mat-menu #menu="matMenu">
                             <button (click)="goToProfile(user.username)" mat-menu-item>View profile</button>
-                            <button (click)="banUser(user)" *ngIf="user.username != currentUserProfile.username"
-                                    mat-menu-item>Ban user
+                            <button
+                                (click)="banUser(user)"
+                                *ngIf="user.username != currentUserProfile.username"
+                                mat-menu-item
+                            >
+                                Ban user
                             </button>
                         </mat-menu>
                     </mat-list-item>
@@ -121,7 +129,7 @@
             </mat-nav-list>
             <div *ngIf="userIsAdmin() && this.bannedUsers.length > 0">
                 <mat-card-title>Banned Users</mat-card-title>
-                <hr>
+                <hr/>
                 <mat-nav-list>
                     <div *ngFor="let user of bannedUsers">
                         <mat-list-item [mat-menu-trigger-for]="menu" class="clickable">
@@ -133,14 +141,14 @@
                                 src="{{ user.profileImage }}"
                             />
                             <span matLine>
-                            {{ user.username }}
+                                {{ user.username }}
                                 <img
                                     *ngIf="user.userChannelRole == 'admin'"
                                     class="adminImage"
                                     inline="true"
                                     src="assets/crown.png"
                                 />
-                        </span>
+                            </span>
                             <span class="statusMessage" matLine
                             ><i>{{ user.statusText }}</i></span
                             >
