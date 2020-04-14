@@ -19,6 +19,8 @@ const PATH_POST_NEW_CHANNEL: string = "/";
 const PATH_PUT_CHANNEL: string = "/:channelId/";
 const PATH_PUT_CHANNEL_INVITE_STATUS: string = "/:channelId/inviteStatus/:inviteStatus/";
 const PATH_GET_ALL_NOTIFICATIONS_FOR_CHANNEL = "/:channelId/notifications";
+const PATH_BAN_USER = "/:channelId/users/:username/ban";
+const PATH_UNBAN_USER = "/:channelId/users/:username/unban";
 
 const AUTH_KEY = "authorization";
 
@@ -272,6 +274,52 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_CHANNEL, (req, res) => {
             res.status(err.status).send(err);
         }
     );
+});
+
+router.put(PATH_BAN_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        () => {
+            let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
+            userChannelDAO.banUser(req.params.channelId, req.params.username)
+                .then(() => {
+                    res.status(200).send({
+                        status: 200,
+                        data: { message: "User banned successfully" }
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).status(err);
+        }
+    );
+
+});
+
+router.put(PATH_UNBAN_USER, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        () => {
+            let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
+            userChannelDAO.unBanUser(req.params.channelId, req.params.username)
+                .then(() => {
+                    res.status(200).send({
+                        status: 200,
+                        data: { message: "User unbanned successfully" }
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).send(err);
+                });
+        },
+        (err) => {
+            res.status(err.status).status(err);
+        }
+    );
+
 });
 
 export = router;

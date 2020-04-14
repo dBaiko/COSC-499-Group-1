@@ -76,10 +76,23 @@ io.on("connection", (socketIO) => {
 
     socketIO.on("message", (message: Message) => {
         if (message.content) {
+            console.log(message.content);
             message.content = sanitizeInput(message.content);
+            if (message.content == null || message.content == "") {
+                message.content = " ";
+            }
             message.profileImage = sanitizeInput(message.profileImage);
+            if (message.profileImage == null || message.profileImage == "") {
+                message.profileImage = " ";
+            }
             message.username = sanitizeInput(message.username);
+            if (message.channelType == null || message.channelType == "") {
+                message.channelType = " ";
+            }
             message.channelType = sanitizeInput(message.channelType);
+            if (message.username == null || message.username == "") {
+                message.username = " ";
+            }
             message["insertTime"] = Date.now();
             message["messageId"] = uuid();
             io.sockets.emit("broadcast", message);
@@ -164,6 +177,24 @@ io.on("connection", (socketIO) => {
         reaction.messageId = sanitizeInput(reaction.messageId);
         io.sockets.emit("broadcast_reaction_remove", reaction);
         reactionsDAO.deleteReactionForMessage(reaction.messageId, reaction.emoji, reaction.username);
+    });
+
+    socketIO.on("userBanned", (user: UserChannelObject) => {
+        for (let socketUser of users) {
+            if (socketUser.username == user.username) {
+                socketIO.broadcast.to(socketUser.id).emit("kickEvent", user);
+            }
+            socketIO.broadcast.to(socketUser.id).emit("ban_broadcast");
+        }
+    });
+
+    socketIO.on("userUnBanned", (user: UserChannelObject) => {
+        for (let socketUser of users) {
+            if (socketUser.username == user.username) {
+                socketIO.broadcast.to(socketUser.id).emit("unBanEvent", user);
+            }
+            socketIO.broadcast.to(socketUser.id).emit("ban_broadcast");
+        }
     });
 
     socketIO.on("exit", (username: string) => {
