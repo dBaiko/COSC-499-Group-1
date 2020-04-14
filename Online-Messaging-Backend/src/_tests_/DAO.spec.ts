@@ -606,7 +606,8 @@ describe("SettingsDAO", () => {
             TableName: "Settings",
             Item: {
                 username: "testUser",
-                theme: "dark"
+                theme: "dark",
+                explicit: true,
             }
         });
     });
@@ -620,12 +621,24 @@ describe("SettingsDAO", () => {
     });
 
     it("should create settings information for a user", async () => {
+        await settings.createSettingsInfo("test2", "dark");
+        const item = ddb.get({TableName: "Settings", Key: {username: "test2"}}).Items;
+        expect(item.Theme).toEqual("dark");
+        expect(item.explicit).toBeNull();
     });
 
     it("should get settings information for a user", async () => {
+        const item = await settings.getSettingsInfoByUsername("testUser");
+        const expected = (ddb.get({TableName: "Settings", Key: {username: "testUser"}}).Items).promise();
+        expect(item).toEqual(expected);
     });
 
     it("should update a user's settings", async () => {
+        await settings.updateSettings("testUser", "light", false);
+        expect(ddb.scan({TableName: "Settings"}).Count).toEqual(1);
+        const item = ddb.get({TableName: "Settings", Key: {username: "testUser"}}).Items;
+        expect(item.theme).toEqual("light");
+        expect(item.explicit).toBeTruthy();
     });
 
 });
