@@ -63,8 +63,8 @@ export class SidebarComponent implements OnInit {
     chatBox = "chatBox";
     settings = "settings";
     selectedChannelId: string;
-     channelBrowser = "channelBrowser";
-     profile = "profile";
+    channelBrowser = "channelBrowser";
+    profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
     private channelsURL: string = APIConfig.channelsAPI;
     private notificationsAPI: string = APIConfig.notificationsAPI;
@@ -144,7 +144,6 @@ export class SidebarComponent implements OnInit {
                 } else {
                     this.selectPublicChannel();
                     this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-
                 }
             })
             .catch((err) => {
@@ -247,8 +246,7 @@ export class SidebarComponent implements OnInit {
                                             }
                                             if (i == data.length - 1) {
                                                 resolve(notificationData);
-                                            }
-                                            else if(data.length == 0) {
+                                            } else if (data.length == 0) {
                                                 resolve([]);
                                             }
                                         })

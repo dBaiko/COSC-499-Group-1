@@ -54,7 +54,6 @@ input {
   background-color: var(--element-hover-color);
 }
 
-
 input:focus {
   border: 2px solid var(--element-hover-color);
 }
@@ -67,9 +66,6 @@ mat-select {
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
 }
-
-
-
 
 ::ng-deep.mat-select-value-text {
   color: var(--primary-text-color) !important;
@@ -126,22 +122,26 @@ mat-checkbox {
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
   background-color: var(--primary-color);
 }
+
 .columnLayout {
-    width: 90%;
-    overflow: hidden;
-    margin:auto;
-    background-color: var(--element-color);
+  width: 90%;
+  overflow: hidden;
+  margin: auto;
+  background-color: var(--element-color);
 }
+
 .columnLeft {
-    float: left;
-    width: 45%;
-    background-color: var(--element-color);
+  float: left;
+  width: 45%;
+  background-color: var(--element-color);
 }
+
 .columnRight {
-    float:right;
-    width: 45%;
-    background-color: var(--element-color);
+  float: right;
+  width: 45%;
+  background-color: var(--element-color);
 }
+
 .columnClear {
-    clear: both;
+  clear: both;
 }

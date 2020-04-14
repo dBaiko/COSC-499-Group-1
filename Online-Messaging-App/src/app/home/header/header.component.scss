@@ -1,210 +1,212 @@
 .header {
-    background-color: var(--primary-color);
-    color: white;
-    vertical-align: center;
-    min-height: 3.3rem;
+  background-color: var(--primary-color);
+  color: white;
+  vertical-align: center;
+  min-height: 3.3rem;
 }
 
 #title {
-    vertical-align: center;
-    margin-left: 0.5rem;
-    font-size: 1em;
-    display: inline;
-    position: relative;
-    top: 1rem;
+  vertical-align: center;
+  margin-left: 0.5rem;
+  font-size: 1em;
+  display: inline;
+  position: relative;
+  top: 1rem;
 }
 
 .floater {
-    float: right;
-    min-width: 50px;
-    display: inline;
+  float: right;
+  min-width: 50px;
+  display: inline;
 }
 
 .headInfo {
-    display: inline;
-    position: relative;
-    bottom: 1rem;
-    width: 5%;
-    //margin-left: 7vw;
-    //margin-right: -2.5%;
+  display: inline;
+  position: relative;
+  bottom: 1rem;
+  width: 5%;
+  //margin-left: 7vw;
+  //margin-right: -2.5%;
 }
 
 #notification {
-    display: inline;
-    position: relative;
-    bottom: 1rem;
-    width: 1%;
-    background-color: var(--primary-color);
+  display: inline;
+  position: relative;
+  bottom: 1rem;
+  width: 1%;
+  background-color: var(--primary-color);
 }
 
 #username {
-    margin-right: 1vw;
-    z-index: 1;
+  margin-right: 1vw;
+  z-index: 1;
 }
 
 .userMenu {
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 0;
-    left: 0 !important;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 0;
+  left: 0 !important;
 }
 
 a {
-    width: 100%;
-    background-color: var(--primary-color);
+  width: 100%;
+  background-color: var(--primary-color);
 }
 
 a:hover {
-    background-color: var(--primary-color);
-    border-radius: inherit;
+  background-color: var(--primary-color);
+  border-radius: inherit;
 }
 
 .wrapButton {
-    width: 95%;
-    float: right;
+  width: 95%;
+  float: right;
 }
 
 button {
-    margin-left: 1vw;
+  margin-left: 1vw;
 }
 
 button:hover {
-    background-color: var(--primary-color);
-    border-radius: 0;
+  background-color: var(--primary-color);
+  border-radius: 0;
 }
 
 ::ng-deep .mat-menu-panel {
-    background-color: var(--primary-color);
-    border-radius: 0 !important;
-    color: white;
-    padding: 0 !important;
-    max-width: none !important;
-    overflow: scroll;
-    position: absolute;
-    right: 5rem;
+  background-color: var(--primary-color);
+  border-radius: 0 !important;
+  color: white;
+  padding: 0 !important;
+  max-width: none !important;
+  overflow: scroll;
+  position: absolute;
+  right: 5rem;
 }
 
 ::ng-deep .mat-menu-item {
-    overflow: scroll;
+  overflow: scroll;
 }
 
 ::ng-deep .mat-menu-item {
-    padding: 0 !important;
-    background-color: var(--primary-color);
+  padding: 0 !important;
+  background-color: var(--primary-color);
 }
 
 .notificationOption mat-card {
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 0;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 0;
 }
 
 #notificationList {
-    max-height: 25rem;
-    overflow: auto;
-    top: 6vh;
-    z-index: 100;
-    position: fixed;
-    right: 0;
-    width: 21rem;
-    background-color: var(--primary-color);
-    font-size: 1rem;
-    border-top: 1px solid black;
+  max-height: 25rem;
+  overflow: auto;
+  top: 6vh;
+  z-index: 100;
+  position: fixed;
+  right: 0;
+  width: 21rem;
+  background-color: var(--primary-color);
+  font-size: 1rem;
+  border-top: 1px solid black;
 }
 
 #notificationList mat-card .mat-card-title {
-    font-size: 0.75rem;
+  font-size: 0.75rem;
 }
 
 #notificationList mat-card {
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    border-radius: 0;
-    background-color: var(--primary-color);
-    color: white;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-radius: 0;
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .inviteButtons {
-    position: absolute;
-    right: 1%;
-    top: 48%;
-    font-size: 0.75rem;
+  position: absolute;
+  right: 1%;
+  top: 48%;
+  font-size: 0.75rem;
 }
 
 .inviteButton {
-    font-size: 0.75rem;
-    border-radius: 0;
-    float: right;
+  font-size: 0.75rem;
+  border-radius: 0;
+  float: right;
 }
 
 .inviteButton:hover {
-    background-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
 
 .title {
-    margin-left: 10px;
-    color: white;
+  margin-left: 10px;
+  color: white;
 }
 
 #notification {
-    ::ng-deep {
-        .mat-select-arrow {
-            visibility: hidden;
-        }
+  ::ng-deep {
+    .mat-select-arrow {
+      visibility: hidden;
     }
+  }
 }
 
 mat-label {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    border-radius: 50%;
-    font-size: 1rem;
-    color: #fff;
-    text-align: center;
-    background: var(--secondary-color);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  background: var(--secondary-color);
 }
 
 .userMenu:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .userMenu a {
-    margin: 3rem;
+  margin: 3rem;
 }
 
 .userMenu a:hover {
-    background-color: #003e7c;
+  background-color: #003e7c;
 }
 
 .userMenu {
-    text-align: center;
-    width: 15em;
+  text-align: center;
+  width: 15em;
 }
 
 .userProfilePicture {
-    width: 3rem;
-    border-radius: 50%;
-    right: 80%;
+  width: 3rem;
+  border-radius: 50%;
+  right: 80%;
 }
 
 .userMenu logout-form:hover {
-    background-color: #003e7c;
+  background-color: #003e7c;
 }
 
 .menuButton {
-    position: relative;
-    top: 0.4rem;
-    border-radius: 50%;
-    padding: 0.7em 0.5em 0.2em 0.5em;
+  position: relative;
+  top: 0.4rem;
+  border-radius: 50%;
+  padding: 0.7em 0.5em 0.2em 0.5em;
 }
 
 .menuButton:hover {
-    background-color: #005cbe;
-    cursor: pointer;
+  background-color: #005cbe;
+  cursor: pointer;
 }
-.username{
-    margin-left: 0.3rem;
+
+.username {
+  margin-left: 0.3rem;
 }
-#generalNotification{
-    cursor:pointer;
+
+#generalNotification {
+  cursor: pointer;
 }

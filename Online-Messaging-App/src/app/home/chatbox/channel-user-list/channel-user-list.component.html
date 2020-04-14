@@ -12,19 +12,19 @@
                 <div *ngFor="let user of onlineUsers" class="onlineUsers">
                     <mat-list-item (click)="goToProfile(user.username)" class="clickable">
                         <img
-                                class="userProfilePicture"
-                                inline="true"
-                                matListAvatar
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="{{ user.profileImage }}"
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
                         />
                         <span matLine>
                             {{ user.username }}
                             <img
-                                    *ngIf="user.userChannelRole == 'admin'"
-                                    class="adminImage"
-                                    inline="true"
-                                    src="assets/crown.png"
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
                             />
                         </span>
                         <br/>
@@ -43,19 +43,19 @@
                 <div *ngFor="let user of offlineUsers" class="offlineUsers">
                     <mat-list-item (click)="goToProfile(user.username)" class="clickable">
                         <img
-                                class="userProfilePicture"
-                                inline="true"
-                                matListAvatar
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="{{ user.profileImage }}"
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
                         />
                         <span matLine>
                             {{ user.username }}
                             <img
-                                    *ngIf="user.userChannelRole == 'admin'"
-                                    class="adminImage"
-                                    inline="true"
-                                    src="assets/crown.png"
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
                             />
                         </span>
                         <br/>
