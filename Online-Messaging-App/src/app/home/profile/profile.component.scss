@@ -124,3 +124,13 @@ mat-checkbox {
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
   background-color: var(--primary-color);
 }
+.columnLayout {
+    width: 80%;
+    margin:auto;
+}
+.columnLeft {
+    float: left;
+}
+.columnRight {
+    float:right;
+}

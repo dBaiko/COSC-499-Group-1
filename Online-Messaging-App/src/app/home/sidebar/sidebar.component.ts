@@ -61,11 +61,10 @@ export class SidebarComponent implements OnInit {
     friendChannelSelect: boolean;
     list;
     chatBox = "chatBox";
-
+    settings = "settings";
     selectedChannelId: string;
-
-    private channelBrowser = "channelBrowser";
-    private profile = "profile";
+     channelBrowser = "channelBrowser";
+     profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
     private channelsURL: string = APIConfig.channelsAPI;
     private notificationsAPI: string = APIConfig.notificationsAPI;

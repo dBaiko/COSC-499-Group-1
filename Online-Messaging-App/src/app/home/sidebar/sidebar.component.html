@@ -80,5 +80,16 @@
     <br/>
     <div class="bottom">
         <button (click)="createChannel()" class="joinCreate">Create Channel</button>
+        <div class="sidebarIconNav">
+            <div class="iconHover">
+        <mat-icon (click)="switchDisplay(channelBrowser)">home</mat-icon>
+            </div>
+            <div class="iconHover">
+        <mat-icon (click)="switchDisplay(profile)">contacts</mat-icon>
+            </div>
+            <div class="iconHover">
+        <mat-icon (click)="switchDisplay(settings)">settings</mat-icon>
+            </div>
+        </div>
     </div>
 </mat-sidenav-container>

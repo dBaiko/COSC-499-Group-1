@@ -153,6 +153,8 @@ export class ProfileComponent implements OnInit {
                 Constants.EMPTY,
                 Validators.compose([this.formValidationService.isNanValidator, Validators.maxLength(15)])
             ),
+            coachEmail: new FormControl(),
+            parentEmail: new FormControl(),
             languagesEnglish: new FormControl(),
             languagesFrench: new FormControl(),
             languagesSpanish: new FormControl(),

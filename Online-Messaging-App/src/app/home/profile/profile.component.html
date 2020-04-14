@@ -78,6 +78,8 @@
                 <i>{{ editSaveMessage }}</i>
             </p>
             <div *ngIf="userProfile && !editing" class="profileInfo">
+                <div class ="columnLayout">
+                    <div class="columnLeft">
                 <p class="nameHeaders">
                     <b>Status</b
                     ><span
@@ -265,6 +267,8 @@
                     <p>{{ userProfile.postalCode }}</p>
                 </ng-template>
                 <hr/>
+                    </div>
+                    <div class="columnRight">
                 <p class="nameHeaders"><b>Athletics Club Name</b></p>
                 <p *ngIf="userProfile.club == ' ' || userProfile.club == '' || userProfile.club == null; else club">
                     N/A
@@ -418,13 +422,19 @@
                 <ng-template #NA>
                     <p>N/A</p>
                 </ng-template>
-                <h6>
+                    </div>
+                <h6 style="clear: both">
                     <i
                     >By adding your coach’s and/or parent/guardian’s contact information, you give permission for
                         Streamline Athletes to communicate with them about your recruitment.</i
                     >
                 </h6>
+                </div>
             </div>
+
+<!--           EDIT PROFILE FORM-->
+<!--            sadsads-->
+<!--            asdsadassasdsada-->
             <div
                 *ngIf="
                     userProfile &&
@@ -1423,7 +1433,7 @@
                     </button>
                 </form>
             </div>
-            <button
+            <button style="clear: both"
                 (click)="toggleEditing(true)"
                 *ngIf="this.userProfile.username === this.auth.getAuthenticatedUser().getUsername() && !editing"
                 mat-button
