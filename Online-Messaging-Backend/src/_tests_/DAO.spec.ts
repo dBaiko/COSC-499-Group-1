@@ -73,12 +73,10 @@ describe("UserDAO", () => {
 
     it("should create a new user in the table", async () => {
         await user.createNewUser("testUser2", "testUser2@nothing.com");
-        const item = await ddb.get({TableName: "Users", Key: {username: "testUser"}}).promise();
-        expect(item).toEqual({
-            Item: {
-                username: "testUser2",
-                email: "testUser2@nothing.com",
-            }
+        const item = await ddb.get({TableName: "Users", Key: {username: "testUser2"}}).promise();
+        expect(item.Items).toEqual({
+            username: "testUser2",
+            email: "testUser2@nothing.com",
         });
         ddb.delete({
             TableName: "Users",
@@ -92,8 +90,10 @@ describe("UserDAO", () => {
         const item = await user.getUserInfoByUsername("testUser");
         expect(item).toEqual([
             {
-                username: "testUser",
                 email: "testUser@nothing.com",
+                firstName: "Lorem",
+                lastName: "Ipsum",
+                username: "testUser",
             }
         ]);
     });
@@ -167,18 +167,17 @@ describe("ChannelDAO", () => {
             "testDescript",
             "testUser",
             "admin",
-            "true",
+            null,
             PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
         const item = await ddb.scan({TableName: "Channel"}).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
             Count: 1,
-            Items: [
+            Items:
                 {
                     channelName: "testChannel",
                     channelType: "public"
-                }
-            ],
+                },
             ScannedCount: 1
         });
     });
@@ -190,7 +189,7 @@ describe("ChannelDAO", () => {
         const item = await ddb
             .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
             .promise();
-        let expectedItem = [item.Item];
+        let expectedItem = item.Item;
         expect(call).toEqual(expectedItem);
     });
 
