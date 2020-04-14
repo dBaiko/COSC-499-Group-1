@@ -89,7 +89,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
-
+    @ViewChild("sidenav") sidebar;
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
 
     mentioning: boolean = false;
@@ -105,7 +105,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     channelDescForm: FormGroup;
 
     @ViewChild(TEXT_AREA_IDENTIFIER) textArea: ElementRef;
-
+    sidebarOpened: boolean = true;
     inviting: boolean = false;
     editingChannelDescription: boolean = false;
     inviteSearch: string = Constants.EMPTY;
@@ -880,6 +880,20 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.sendUserUnBannedStatus(user);
         this.usersWithoutBanned.push(user.username);
         this.resetMentionList();
+    }
+
+    toggleSideBarOpen(value: boolean) {
+        if (value) {
+            this.sidebarOpened = true;
+            document.getElementById("content").classList.add("contentOpened");
+            document.getElementById("sidebar").classList.remove("sidebarClosed");
+            document.getElementById("info").classList.add("backgroundDarker");
+        } else {
+            this.sidebarOpened = false;
+            document.getElementById("content").classList.remove("contentOpened");
+            document.getElementById("sidebar").classList.add("sidebarClosed");
+            document.getElementById("info").classList.remove("backgroundDarker");
+        }
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {

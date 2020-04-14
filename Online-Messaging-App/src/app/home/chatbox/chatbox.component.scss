@@ -289,9 +289,13 @@ mat-expansion-panel:hover {
 
 .content {
     height: 100%;
-    margin-right: 250px;
+    //margin-right: 250px;
     clear: both;
     //min-height: 600px;
+}
+
+.contentOpened {
+    margin-right: 250px;
 }
 
 .container {
@@ -305,6 +309,10 @@ mat-expansion-panel:hover {
     float: right;
     min-height: 600px;
     height: 100%;
+}
+
+.sidebarClosed {
+    display: none;
 }
 
 .mentionList {
@@ -484,6 +492,31 @@ mark {
 .emojiList input {
     border: none;
     cursor: pointer;
+}
+
+.sidebarHidden {
+    display: none;
+}
+
+mat-sidenav {
+    box-shadow: none !important;
+}
+
+.backgroundDarker {
+    //filter:blur(2px);
+}
+
+#chevron-right {
+    color: var(--primary-text-color);
+}
+
+@media (max-width: 450px) {
+    .backgroundDarker {
+        filter: blur(2px);
+    }
+    .contentOpened {
+        margin-right: 0px;
+    }
 }
 
 .adminDelete {

@@ -1,9 +1,9 @@
 <div class="page">
     <div class="wrapper">
         <div class="content-wrapper">
-            <div class="content">
+            <div class="content contentOpened" id="content">
                 <div class="container">
-                    <mat-card class="scrollMe">
+                    <mat-card class="scrollMe" id="info">
                         <div class="headerTop">
                             <mat-card-header class="chat-box-header">
                                 <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
@@ -62,6 +62,11 @@
                                     <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
                                         Send Invite
                                     </button>
+                                    <span class="menuButton">
+                                        <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sidebarOpened"
+                                        >chevron_left</mat-icon
+                                        >
+                                    </span>
                                     <div
                                         (clickOutside)="closeInviting()"
                                         *ngIf="inviting"
@@ -117,6 +122,18 @@
                                                             >
                                                                 Send Invite
                                                             </button>
+                                                            <span class="menuButton">
+                                                                <mat-icon
+                                                                    (click)="toggleSideBarOpen(true)"
+                                                                    *ngIf="!sidebarOpened"
+                                                                >chevron_left</mat-icon
+                                                                >
+                                                                <mat-icon
+                                                                    (click)="toggleSideBarOpen(false)"
+                                                                    *ngIf="sidebarOpened"
+                                                                >chevron_right</mat-icon
+                                                                >
+                                                            </span>
                                                         </ng-template>
                                                     </ng-template>
                                                 </mat-card-content>
@@ -424,7 +441,11 @@
                 </div>
             </div>
         </div>
-        <div class="sidebar">
+        <div class="sidebar " id="sidebar">
+            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"
+            >chevron_right
+            </mat-icon
+            >
             <app-channel-user-list
                 (newBannedUserEvent)="handleNewBannedUser($event)"
                 (newUnBannedUserEvent)="handleNewUnBannedUser($event)"
