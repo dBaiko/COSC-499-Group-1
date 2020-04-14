@@ -16,6 +16,18 @@ export class ChannelUserListComponent implements OnInit {
     constructor(private notificationService: NotificationService) {
     }
 
+    private _newUserEvent: string;
+
+    get newUserEvent(): string {
+        return this._newUserEvent;
+    }
+
+    @Input()
+    set newUserEvent(value: string) {
+        this._newUserEvent = value;
+        this.getUserList();
+    }
+
     private _subscribedUsers: Array<UserChannelObject>;
 
     get subscribedUsers(): Array<UserChannelObject> {
