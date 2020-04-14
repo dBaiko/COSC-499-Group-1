@@ -171,7 +171,7 @@ export interface MessageObject {
     messageId: string;
     profileImage: string;
     username: string;
-    deleted: boolean;
+    deleted: string;
     editing: boolean;
     reactions?: Array<ReactionObject>;
     addingEmoji?: boolean;

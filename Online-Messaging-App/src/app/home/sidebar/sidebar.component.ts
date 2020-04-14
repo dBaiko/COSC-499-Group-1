@@ -101,6 +101,21 @@ export class SidebarComponent implements OnInit {
         }
     }
 
+    private _newBannedUser: UserChannelObject;
+
+    get newBannedUser(): UserChannelObject {
+        return this._newBannedUser;
+    }
+
+    @Input()
+    set newBannedUser(user: UserChannelObject) {
+        this._newBannedUser = user;
+        this.getSubscribedChannels(true)
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     private _subbedChannel: ChannelObject;
 
     get subbedChannel(): ChannelObject {
@@ -121,7 +136,7 @@ export class SidebarComponent implements OnInit {
 
     ngOnInit(): void {
         let user: string = this.auth.getAuthenticatedUser().getUsername();
-        this.getSubscribedChannels()
+        this.getSubscribedChannels(false)
             .then((data: Array<UserChannelObject>) => {
                 if (this.cookieService.get(user)) {
                     this.switchDisplay(this.chatBox);
@@ -176,7 +191,7 @@ export class SidebarComponent implements OnInit {
         );
     }
 
-    getSubscribedChannels(): Promise<any> {
+    getSubscribedChannels(banFlag: boolean): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
@@ -198,9 +213,15 @@ export class SidebarComponent implements OnInit {
                                 this.privateChannels = [];
                                 this.friendsChannels = [];
                                 this.userSubscribedChannels = data;
-                                if (this.userSubscribedChannels.length > 0) {
+                                if (this.userSubscribedChannels.length > 0 && banFlag == false) {
                                     this.channelEvent.emit(this.userSubscribedChannels[0]);
                                     this.userSubscribedChannels[0][SELECTED] = true;
+                                } else if (this.userSubscribedChannels.length > 0) {
+                                    for (let user of this.userSubscribedChannels) {
+                                        if (user.channelId == this.selectedChannelId) {
+                                            user[SELECTED] = true;
+                                        }
+                                    }
                                 }
                                 for (let i = 0; i < data.length; i++) {
                                     let item = data[i];
@@ -540,6 +561,10 @@ export class SidebarComponent implements OnInit {
         }
     }
 
+    handleUserClickBannedChannel(): void {
+        alert("You cannot access a channel in which you are banned.");
+    }
+
     private getChannelNotifications(channelId: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
@@ -592,7 +617,7 @@ export class SidebarComponent implements OnInit {
                         CHANNEL_ID_URI +
                         channelId +
                         USERNAME_URI +
-                        this.currentUserProfile.username,
+                        this.auth.getAuthenticatedUser().getUsername(),
                         httpHeaders
                     )
                     .subscribe(

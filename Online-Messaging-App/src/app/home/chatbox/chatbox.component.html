@@ -127,12 +127,11 @@
                             </mat-card-header>
                         </div>
                         <hr id="hrHeader"/>
-                        <!--                        <p>{{ error }}</p>-->
-                        <!--                        <hr/>-->
                         <i class="errorMessage">{{ friendMessage }}</i>
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
-                                <div *ngIf="!chatMessage.username; else elseBlock">
+                                <div
+                                    *ngIf="chatMessage.username == null || chatMessage.username == ' '; else elseBlock">
                                     <hr/>
                                     <mat-card-content class="status">
                                         <p id="{{ chatMessage.messageId }}">
@@ -211,7 +210,8 @@
                                             </mat-card-header>
                                         </div>
                                     </div>
-                                    <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
+                                    <mat-card-content
+                                        *ngIf="chatMessage.deleted != 'true' && chatMessage.deleted != 'adminTrue'; else messageDeleted">
                                         <p class="message" id="{{ chatMessage.messageId }}">
                                             <span
                                                 *ngIf="chatMessage.username == currentUserProfile.username"
@@ -232,11 +232,19 @@
                                                         />
                                                     </span>
                                                 </div>
-                                                <mat-icon (click)="emojiPopup(chatMessage)" class="emojiClick"
+                                                <mat-icon (click)="emojiPopup(chatMessage)"
+                                                          *ngIf="chatMessage.username == currentUserProfile.username"
+                                                          class="emojiClick"
                                                 >sentiment_very_satisfied</mat-icon
                                                 >
-                                                <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
-                                                <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
+                                                <mat-icon (click)="toggleEditingMessage(chatMessage)"
+                                                          *ngIf="chatMessage.username == currentUserProfile.username">edit</mat-icon>
+                                                <mat-icon (click)="deleteMessage(chatMessage)"
+                                                          *ngIf="userIsAdmin() && chatMessage.username != currentUserProfile.username"
+                                                          class="adminDelete">delete</mat-icon>
+                                                <mat-icon (click)="deleteMessage(chatMessage)"
+                                                          *ngIf="chatMessage.username == currentUserProfile.username"
+                                                >delete</mat-icon>
                                             </span>
                                             <span
                                                 *ngIf="chatMessage.username != currentUserProfile.username"
@@ -301,11 +309,18 @@
                                         </form>
                                     </mat-card-content>
                                     <ng-template #messageDeleted>
-                                        <mat-card-content>
+                                        <mat-card-content *ngIf="chatMessage.deleted == 'adminTrue'; else deleted">
                                             <i class="deletedMessage" id="{{ chatMessage.messageId }}"
-                                            >Message deleted</i
+                                            >Message removed by admin</i
                                             >
                                         </mat-card-content>
+                                        <ng-template #deleted>
+                                            <mat-card-content>
+                                                <i class="deletedMessage" id="{{ chatMessage.messageId }}"
+                                                >Message deleted</i
+                                                >
+                                            </mat-card-content>
+                                        </ng-template>
                                     </ng-template>
                                 </ng-template>
                             </div>
@@ -329,6 +344,8 @@
                                         />
                                     </span>
                                 </span>
+                                <mat-icon (click)="toggleMarkupTutorialOpen()" class="helpSelect">help
+                                </mat-icon>
                                 <mat-icon (click)="emojiPopupMessage()" class="emojiSelect">emoji_emotions</mat-icon>
                                 <form
                                     #messageForm="ngForm"
@@ -393,8 +410,12 @@
         </div>
         <div class="sidebar">
             <app-channel-user-list
+                (newBannedUserEvent)="handleNewBannedUser($event)"
+                (newUnBannedUserEvent)="handleNewUnBannedUser($event)"
                 (profileViewEvent)="goToProfile($event)"
+                [currentUserProfile]="currentUserProfile"
                 [onlineUserList]="onlineUserList"
+                [subscribedUsersUsernames]="subscribedUsersUsernames"
                 [subscribedUsers]="subscribedUsers"
             >
             </app-channel-user-list>

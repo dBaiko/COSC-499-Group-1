@@ -175,7 +175,9 @@ export class ProfileComponent implements OnInit {
             club: new FormControl(),
             injuryStatus: new FormControl(),
             instagram: new FormControl(),
-            budget: new FormControl()
+            budget: new FormControl(),
+            coachEmail: new FormControl(),
+            parentEmail: new FormControl()
         });
 
         this.imageForm = new FormGroup({
@@ -331,6 +333,11 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
+                let statusText = this.common.santizeText(form.value.statusText);
+                if (statusText == null || statusText == Constants.EMPTY) {
+                    statusText = " ";
+                }
+
                 this.http
                     .put(
                         this.profilesAPI + username + STATUS_URI,
@@ -342,7 +349,7 @@ export class ProfileComponent implements OnInit {
                     )
                     .subscribe(
                         () => {
-                            this.userProfile.statusText = this.common.santizeText(form.value.statusText);
+                            this.userProfile.statusText = statusText;
                             this.toggleEditingStatus(false);
                             this.profileUpdateEvent.emit();
                         },

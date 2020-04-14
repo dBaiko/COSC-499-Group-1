@@ -179,6 +179,15 @@ p {
     margin: 5px;
 }
 
+.banned {
+    background-color: red;
+    border-radius: 10%;
+    margin-right: 1rem;
+    width: unset;
+    height: unset;
+    padding: 0.25rem;
+}
+
 .border {
     background-color: red;
     border-radius: 100px;

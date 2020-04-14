@@ -443,8 +443,17 @@ mark {
     cursor: pointer;
     position: absolute;
     bottom: 3.5rem;
+    right: 2.5rem;
+    z-index: 100;
+    color: var(--primary-text-color);
+}
+
+.helpSelect {
+    cursor: pointer;
+    position: absolute;
+    bottom: 3.5rem;
     right: 1rem;
-    z-index: 100000;
+    z-index: 100;
     color: var(--primary-text-color);
 }
 
@@ -475,4 +484,8 @@ mark {
 .emojiList input {
     border: none;
     cursor: pointer;
+}
+
+.adminDelete {
+    color: red;
 }
