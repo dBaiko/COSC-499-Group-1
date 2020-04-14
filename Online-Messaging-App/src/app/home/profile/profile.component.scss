@@ -48,33 +48,35 @@ button {
 }
 
 input {
-  width: 70%;
+  width: 90%;
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
 }
+
 
 input:focus {
   border: 2px solid var(--element-hover-color);
 }
 
 mat-select {
-  width: 70%;
+  width: 90%;
+  border: 2px solid;
+  border-color: var(--element-hover-color);
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
 }
 
-mat-select:focus {
-  border: 2px solid var(--element-hover-color);
-}
+
+
 
 ::ng-deep.mat-select-value-text {
   color: var(--primary-text-color) !important;
 }
 
 textarea {
-  width: 70%;
+  width: 90%;
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
@@ -125,12 +127,21 @@ mat-checkbox {
   background-color: var(--primary-color);
 }
 .columnLayout {
-    width: 80%;
+    width: 90%;
+    overflow: hidden;
     margin:auto;
+    background-color: var(--element-color);
 }
 .columnLeft {
     float: left;
+    width: 45%;
+    background-color: var(--element-color);
 }
 .columnRight {
     float:right;
+    width: 45%;
+    background-color: var(--element-color);
+}
+.columnClear {
+    clear: both;
 }

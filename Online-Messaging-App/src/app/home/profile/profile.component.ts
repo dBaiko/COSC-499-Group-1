@@ -561,7 +561,7 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.usersAPI + username, profile.username, httpHeaders).subscribe(
+                this.http.put(this.usersAPI + username, profile, httpHeaders).subscribe(
                     () => {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {
