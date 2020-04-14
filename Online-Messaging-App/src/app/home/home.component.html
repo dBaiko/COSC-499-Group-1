@@ -71,10 +71,7 @@
                         </app-settings>
                     </div>
                     <div *ngSwitchCase="'userGuide'" class="scrollMe">
-                        <app-user-guide
-                            (explicitEvent)="setExplicit($event)"
-                            (themeEvent)="changeTheme($event)"
-                        >
+                        <app-user-guide (explicitEvent)="setExplicit($event)" (themeEvent)="changeTheme($event)">
                         </app-user-guide>
                     </div>
                 </div>

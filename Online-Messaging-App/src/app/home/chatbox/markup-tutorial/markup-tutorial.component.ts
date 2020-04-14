@@ -7,7 +7,6 @@ import { MatDialogRef } from "@angular/material/dialog";
     styleUrls: ["./markup-tutorial.component.scss"]
 })
 export class MarkupTutorialComponent implements OnInit {
-
     constructor(public dialogRef: MatDialogRef<MarkupTutorialComponent>) {
     }
 

@@ -312,12 +312,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
 
         this.notificationService.addSocketListener("ban_broadcast", () => {
-            this.getSubcribedUsers()
-                .catch((err) => {
-                    console.log(err);
-                });
+            this.getSubcribedUsers().catch((err) => {
+                console.log(err);
+            });
         });
-
     }
 
     ngAfterViewChecked() {
@@ -665,7 +663,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     channelId: chatMessage.channelId,
                                     channelName: this.currentChannel.channelName,
                                     channelType: this.currentChannel.channelType,
-                                    message: "The admin " + this.currentUserProfile.username + " has removed your message on the channel " + this.currentChannel.channelName + ".",
+                                    message:
+                                        "The admin " +
+                                        this.currentUserProfile.username +
+                                        " has removed your message on the channel " +
+                                        this.currentChannel.channelName +
+                                        ".",
                                     type: "general",
                                     username: chatMessage.username,
                                     fromFriend: this.currentUserProfile.username,
@@ -708,7 +711,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             }
                         );
                 }
-
             },
             (err) => {
                 console.log(err);
@@ -853,7 +855,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     toggleMarkupTutorialOpen() {
         this.markupTutorialOpen = !this.markupTutorialOpen;
 
-
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
@@ -867,7 +868,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.markupTutorialOpen = false;
             });
         }
-
     }
 
     handleNewBannedUser(user: UserChannelObject) {

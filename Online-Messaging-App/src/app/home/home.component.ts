@@ -108,7 +108,6 @@ export class HomeComponent implements OnInit {
         this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
             this.handleNewUnBannedUserEvent(user);
         });
-
     }
 
     receiveId($event) {

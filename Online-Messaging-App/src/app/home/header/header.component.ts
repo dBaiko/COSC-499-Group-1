@@ -13,7 +13,7 @@ import {
     UserChannelObject
 } from "../../shared/app-config";
 import { NotificationService } from "../../shared/notification.service";
-import {CommonService} from "../../shared/common.service";
+import { CommonService } from "../../shared/common.service";
 
 const MY_SELECT_CHILD: string = "mySelect";
 const NOTIFICATIONS_URI: string = "/notifications";

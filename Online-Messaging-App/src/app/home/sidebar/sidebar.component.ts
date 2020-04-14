@@ -110,10 +110,9 @@ export class SidebarComponent implements OnInit {
     @Input()
     set newBannedUser(user: UserChannelObject) {
         this._newBannedUser = user;
-        this.getSubscribedChannels(true)
-            .catch((err) => {
-                console.log(err);
-            });
+        this.getSubscribedChannels(true).catch((err) => {
+            console.log(err);
+        });
     }
 
     private _subbedChannel: ChannelObject;

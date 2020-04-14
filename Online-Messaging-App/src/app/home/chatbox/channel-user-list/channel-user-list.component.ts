@@ -28,7 +28,11 @@ export class ChannelUserListComponent implements OnInit {
     private socketOnlineUsers: Array<UserSocket> = [];
     private channelsUrl: string = APIConfig.channelsAPI;
 
-    constructor(private notificationService: NotificationService, private http: HttpClient, private auth: AuthenticationService) {
+    constructor(
+        private notificationService: NotificationService,
+        private http: HttpClient,
+        private auth: AuthenticationService
+    ) {
     }
 
     private _newUserEvent: string;
@@ -98,22 +102,24 @@ export class ChannelUserListComponent implements OnInit {
 
                 user.userChannelRole = "banned";
 
-                this.http.put(this.channelsUrl + user.channelId + "/users/" + user.username + "/ban", {}, httpHeaders).subscribe(
-                    () => {
-                        if (this.onlineUsers.includes(user)) {
-                            this.onlineUsers.splice(this.onlineUsers.indexOf(user), 1);
-                        } else if (this.offlineUsers.includes(user)) {
-                            this.offlineUsers.splice(this.offlineUsers.indexOf(user), 1);
+                this.http
+                    .put(this.channelsUrl + user.channelId + "/users/" + user.username + "/ban", {}, httpHeaders)
+                    .subscribe(
+                        () => {
+                            if (this.onlineUsers.includes(user)) {
+                                this.onlineUsers.splice(this.onlineUsers.indexOf(user), 1);
+                            } else if (this.offlineUsers.includes(user)) {
+                                this.offlineUsers.splice(this.offlineUsers.indexOf(user), 1);
+                            }
+                            this.bannedUsers.push(user);
+                            this.sendBanNotificationToUser(user);
+                            this.notificationService.sendBanUserEvent(user);
+                            this.newBannedUserEvent.emit(user);
+                        },
+                        (err) => {
+                            console.log(err);
                         }
-                        this.bannedUsers.push(user);
-                        this.sendBanNotificationToUser(user);
-                        this.notificationService.sendBanUserEvent(user);
-                        this.newBannedUserEvent.emit(user);
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
+                    );
             },
             (err) => {
                 console.log(err);
@@ -131,31 +137,33 @@ export class ChannelUserListComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.channelsUrl + user.channelId + "/users/" + user.username + "/unban", {}, httpHeaders).subscribe(
-                    () => {
-                        this.bannedUsers.splice(this.bannedUsers.indexOf(user), 1);
+                this.http
+                    .put(this.channelsUrl + user.channelId + "/users/" + user.username + "/unban", {}, httpHeaders)
+                    .subscribe(
+                        () => {
+                            this.bannedUsers.splice(this.bannedUsers.indexOf(user), 1);
 
-                        this.socketOnlineUsers = this.notificationService.getOnlineUsers();
+                            this.socketOnlineUsers = this.notificationService.getOnlineUsers();
 
-                        let onlineUsersNames: Array<string> = [];
+                            let onlineUsersNames: Array<string> = [];
 
-                        this.socketOnlineUsers.forEach((user) => {
-                            onlineUsersNames.push(user.username);
-                        });
+                            this.socketOnlineUsers.forEach((user) => {
+                                onlineUsersNames.push(user.username);
+                            });
 
-                        if (!onlineUsersNames.includes(user.username)) {
-                            this.offlineUsers.push(user);
-                        } else {
-                            this.onlineUsers.push(user);
+                            if (!onlineUsersNames.includes(user.username)) {
+                                this.offlineUsers.push(user);
+                            } else {
+                                this.onlineUsers.push(user);
+                            }
+                            this.sendUnBanNotificationToUser(user);
+                            this.notificationService.sendUnbannedUserEvent(user);
+                            this.newUnBannedUserEvent.emit(user);
+                        },
+                        (err) => {
+                            console.log(err);
                         }
-                        this.sendUnBanNotificationToUser(user);
-                        this.notificationService.sendUnbannedUserEvent(user);
-                        this.newUnBannedUserEvent.emit(user);
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
+                    );
             },
             (err) => {
                 console.log(err);
@@ -248,5 +256,4 @@ export class ChannelUserListComponent implements OnInit {
 
         this.notificationService.sendNotification(notification);
     }
-
 }

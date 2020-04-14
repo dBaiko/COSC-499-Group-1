@@ -281,7 +281,8 @@ router.put(PATH_BAN_USER, (req, res) => {
     jwtVerificationService.verifyJWTToken(token).subscribe(
         () => {
             let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
-            userChannelDAO.banUser(req.params.channelId, req.params.username)
+            userChannelDAO
+                .banUser(req.params.channelId, req.params.username)
                 .then(() => {
                     res.status(200).send({
                         status: 200,
@@ -296,7 +297,6 @@ router.put(PATH_BAN_USER, (req, res) => {
             res.status(err.status).status(err);
         }
     );
-
 });
 
 router.put(PATH_UNBAN_USER, (req, res) => {
@@ -304,7 +304,8 @@ router.put(PATH_UNBAN_USER, (req, res) => {
     jwtVerificationService.verifyJWTToken(token).subscribe(
         () => {
             let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
-            userChannelDAO.unBanUser(req.params.channelId, req.params.username)
+            userChannelDAO
+                .unBanUser(req.params.channelId, req.params.username)
                 .then(() => {
                     res.status(200).send({
                         status: 200,
@@ -319,7 +320,6 @@ router.put(PATH_UNBAN_USER, (req, res) => {
             res.status(err.status).status(err);
         }
     );
-
 });
 
 export = router;
