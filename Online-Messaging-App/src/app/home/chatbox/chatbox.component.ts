@@ -115,6 +115,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     channelNotifications: Array<NotificationObject> = [];
     channelNotificationsUsernames: Array<string> = [];
     friendMessage: string = null;
+    newUserEvent: string = Constants.EMPTY;
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
@@ -153,6 +154,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value) {
             this._newUserSubbedChannel = value;
             this.sendStatus(value);
+            this.newUserEvent = value.username;
         }
     }
 
