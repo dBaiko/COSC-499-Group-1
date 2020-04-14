@@ -3,7 +3,7 @@ export const awsConfigPath = "/Users/karanmeetkhatra/Documents/AWSJustForDylansP
 //export const awsConfigPath = "D:\\School\\COSC499\\Project Secrets\\aws-dynamodb-config.json";
 // export const awsConfigPath = "C:\\Users\\dylan\\Documents\\Intellij Workspace\\AWS\\aws-dynamodb-config.json";
 // export const awsConfigPath = "C:\\Users\\Micha\\aws\\aws-dynamodb-config.json";
-//export const awsConfigPath = "D:\\School\\COSC499\\Project Secrets\\aws-dynamodb-config.json"
+export const awsConfigPath = "D:\\School\\COSC499\\Project Secrets\\aws-dynamodb-config.json";
 // export const awsConfigPath = "/home/ubuntu/aws-dynamodb-config.json";
 
 import { JWK } from "jwk-to-pem";

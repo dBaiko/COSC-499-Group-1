@@ -2,25 +2,38 @@
     <mat-button-toggle-group *ngIf="publicChannelSelect" class="channelSelector mat-elevation-z0">
         <mat-button-toggle (click)="selectPublicChannel()" checked class="checked public">Public</mat-button-toggle>
         <mat-button-toggle (click)="selectPrivateChannel()" class="private">Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()" class="friend">Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" class="friend">Friends</mat-button-toggle>
     </mat-button-toggle-group>
     <mat-button-toggle-group *ngIf="privateChannelSelect" class="channelSelector mat-elevation-z0">
         <mat-button-toggle (click)="selectPublicChannel()" class="public">Public</mat-button-toggle>
         <mat-button-toggle (click)="selectPrivateChannel()" checked class="checked private">Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()" class="friend">Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" class="friend">Friends</mat-button-toggle>
     </mat-button-toggle-group>
     <mat-button-toggle-group *ngIf="friendChannelSelect" class="channelSelector mat-elevation-z0">
         <mat-button-toggle (click)="selectPublicChannel()" class="public">Public</mat-button-toggle>
         <mat-button-toggle (click)="selectPrivateChannel()" class="private">Private</mat-button-toggle>
-        <mat-button-toggle (click)="selectFriend()" checked class="checked friend">Friend</mat-button-toggle>
+        <mat-button-toggle (click)="selectFriend()" checked class="checked friend">Friends</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="scrollable">
         <div *ngIf="publicChannelSelect">
             <mat-nav-list>
                 <div *ngFor="let publicChannel of publicChannels">
                     <mat-list-item
-                            (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
-                            [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="handleUserClickBannedChannel()"
+                        *ngIf="publicChannel.userChannelRole == 'banned'"
+                    >
+                        <h3 matLine>{{ publicChannel.channelName }}</h3>
+                        <a>
+                            <p class="banned">Banned</p>
+                        </a>
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe(publicChannel)">clear</mat-icon>
+                        </a>
+                    </mat-list-item>
+                    <mat-list-item
+                        (click)="selectChannel(publicChannel.channelId, 'public'); switchDisplay(chatBox)"
+                        *ngIf="publicChannel.userChannelRole != 'banned'"
+                        [ngClass]="publicChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ publicChannel.channelName }}</h3>
                         <a *ngIf="publicChannel.notificationCount > 0" class="border">
                             <p *ngIf="publicChannel.notificationCount < 10" class="messageNotification">
@@ -40,11 +53,27 @@
             <mat-nav-list>
                 <div *ngFor="let privateChannel of privateChannels">
                     <mat-list-item
-                            (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
-                            [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="handleUserClickBannedChannel()"
+                        *ngIf="privateChannel.userChannelRole == 'banned'"
+                    >
+                        <h3 matLine>{{ privateChannel.channelName }}</h3>
+                        <a>
+                            <p class="banned">Banned</p>
+                        </a>
+                        <a>
+                            <mat-icon (click)="confirmUnsubscribe(privateChannel)">clear</mat-icon>
+                        </a>
+                    </mat-list-item>
+                    <mat-list-item
+                        (click)="selectChannel(privateChannel.channelId, 'private'); switchDisplay(chatBox)"
+                        *ngIf="privateChannel.userChannelRole != 'banned'"
+                        [ngClass]="privateChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ privateChannel.channelName }}</h3>
                         <a *ngIf="privateChannel.notificationCount" class="border">
-                            <p class="messageNotification">{{ privateChannel.notificationCount }}</p>
+                            <p *ngIf="privateChannel.notificationCount < 10" class="messageNotification">
+                                {{ privateChannel.notificationCount }}
+                            </p>
+                            <p *ngIf="privateChannel.notificationCount >= 10" class="messageNotification">10+</p>
                         </a>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(privateChannel)">clear</mat-icon>
@@ -56,18 +85,21 @@
 
         <div *ngIf="friendChannelSelect">
             <app-friends-browser
-                    (newFriendChannelEvent)="setNewChannel($event)"
-                    [friendList]="friendsChannels"
-                    [userList]="userList"
+                (newFriendChannelEvent)="setNewChannel($event)"
+                [friendList]="friendsChannels"
+                [userList]="userList"
             ></app-friends-browser>
             <mat-nav-list>
                 <div *ngFor="let friendChannel of friendsChannels">
                     <mat-list-item
-                            (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
-                            [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
+                        (click)="selectChannel(friendChannel.channelId, 'friend'); switchDisplay(chatBox)"
+                        [ngClass]="friendChannel.selected ? 'channelRan' : 'channelHeader'"
                     ><h3 matLine>{{ this.parseFriendChannelName(friendChannel.channelName) }}</h3>
                         <a *ngIf="friendChannel.notificationCount" class="border">
-                            <p class="messageNotification">{{ friendChannel.notificationCount }}</p>
+                            <p *ngIf="friendChannel.notificationCount < 10" class="messageNotification">
+                                {{ friendChannel.notificationCount }}
+                            </p>
+                            <p *ngIf="friendChannel.notificationCount >= 10" class="messageNotification">10+</p>
                         </a>
                         <a>
                             <mat-icon (click)="confirmUnsubscribe(friendChannel)">clear</mat-icon>
@@ -79,7 +111,7 @@
     </div>
     <br/>
     <div class="bottom">
-        <button id="create"(click)="switchDisplay(channelBrowser)" class="joinCreate">Browse Channels</button>
+        <button (click)="switchDisplay(channelBrowser)" class="joinCreate" id="create">Browse Channels</button>
         <button (click)="createChannel()" class="joinCreate">Create Channel</button>
     </div>
 </mat-sidenav-container>

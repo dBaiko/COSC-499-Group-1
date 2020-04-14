@@ -1,289 +1,290 @@
 mat-card {
-  background-color: var(--element-color);
-  border-radius: 0;
-  border-top: 1px solid #f8f8f8;
-  height: 100%;
+    background-color: var(--element-color);
+    border-radius: 0;
+    border-top: 1px solid #f8f8f8;
+    height: 100%;
 }
 
 mat-form-field {
-  border-radius: 0.5rem;
-  background-color: var(--element-color);
-  width: 100%;
-  float: left;
-  color: var(--primary-text-color);
-  border: 1px solid var(--primary-color);
+    border-radius: 0.5rem;
+    background-color: var(--element-color);
+    width: 100%;
+    float: left;
+    color: var(--primary-text-color);
+    border: 1px solid var(--primary-color);
 }
 
 #scrollable {
-  overflow-y: auto;
-  //margin-top: 1rem;
-  height: 76% !important;
+    overflow-y: auto;
+    //margin-top: 1rem;
+    height: 76% !important;
 }
 
 .messagePicture {
-  width: 2em;
-  height: 2em;
-  border-radius: 50%;
-  vertical-align: middle;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    vertical-align: middle;
 }
 
 .clickable {
-  cursor: pointer;
-  color: var(--primary-color);
+    cursor: pointer;
+    color: var(--primary-color);
 }
 
 hr {
-  border: 1px solid var(--line-colour);
+    border: 1px solid var(--line-colour);
     margin-right: 1rem;
 }
 
 hr::ng-deep pre {
-  border: 1px solid var(--line-colour);
+    border: 1px solid var(--line-colour);
 }
-#hrHeader{
+
+#hrHeader {
     margin-bottom: 0rem;
 }
 
 mat-card-title {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .headerTop {
-  background-color: var(--element-color);
-  width: 100%;
+    background-color: var(--element-color);
+    width: 100%;
 }
 
 mat-card-footer {
-  width: 98%;
-  position: absolute;
-  bottom: 3.2rem;
-  text-align: center;
+    width: 98%;
+    position: absolute;
+    bottom: 3.2rem;
+    text-align: center;
 }
 
 p {
-  color: var(--primary-text-color);
+    color: var(--primary-text-color);
 }
 
 mat-label {
-  color: var(--primary-text-color);
-  padding-left: 0.5rem;
+    color: var(--primary-text-color);
+    padding-left: 0.5rem;
 }
 
 .chat-box-header {
-  width: 100%;
+    width: 100%;
 }
 
 .invite {
-  color: var(--primary-text-color);
-  border-radius: 0;
-  position: absolute;
-  right: 1.1%;
+    color: var(--primary-text-color);
+    border-radius: 0;
+    position: absolute;
+    right: 1.1%;
 }
 
 .inviteButton {
-  border-radius: 0;
-  background-color: var(--primary-color);
-  color: white;
+    border-radius: 0;
+    background-color: var(--primary-color);
+    color: white;
     margin-top: 0.5rem;
 }
 
 .inviteButton:hover {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 .inviteSearch {
-  color: var(--primary-text-color);
+    color: var(--primary-text-color);
 }
 
 .invite mat-card {
-  background-color: var(--primary-color);
-  width: 92%;
-  margin-top: 0;
-  color: var(--primary-text-color);
+    background-color: var(--primary-color);
+    width: 92%;
+    margin-top: 0;
+    color: var(--primary-text-color);
 }
 
 .search mat-card-content {
-  position: absolute;
-  right: 1%;
-  top: 25%;
+    position: absolute;
+    right: 1%;
+    top: 25%;
 }
 
 .search button {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .search button:hover {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 .invite mat-form-field {
-  border-radius: 0;
-  width: 100%;
-  margin-right: 20vh;
-  margin-bottom: 0;
+    border-radius: 0;
+    width: 100%;
+    margin-right: 20vh;
+    margin-bottom: 0;
 }
 
 .search {
-  background-color: var(--soft-black);
-  border: 1px solid black;
-  padding: 1px;
+    background-color: var(--soft-black);
+    border: 1px solid black;
+    padding: 1px;
 }
 
 .subedOrSent {
-  margin-right: 1.25rem;
-  color: white;
+    margin-right: 1.25rem;
+    color: white;
 }
 
 .sendInviteButton {
-  color: white;
+    color: white;
 }
 
 .errorMessage {
-  color: dimgrey;
+    color: dimgrey;
 }
 
 .usernameInvite {
-  color: white;
+    color: white;
 }
 
 ::placeholder {
-  color: white;
-  opacity: 1;
+    color: white;
+    opacity: 1;
 }
 
 #messageForm {
-  width: 100%;
+    width: 100%;
 }
 
 markdown ::ng-deep p code {
-  background-color: var(--soft-black);
-  padding-left: 0.3em;
-  padding-right: 0.3em;
-  border-radius: 10%;
-  color: white;
-  font-family: Consolas;
+    background-color: var(--soft-black);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 10%;
+    color: white;
+    font-family: Consolas;
 }
 
 markdown ::ng-deep .lang-type {
-  background-color: var(--primary-color);
-  padding: 0.5rem;
-  position: relative;
-  bottom: 0.7rem;
-  left: -1rem;
-  border-radius: 10%;
+    background-color: var(--primary-color);
+    padding: 0.5rem;
+    position: relative;
+    bottom: 0.7rem;
+    left: -1rem;
+    border-radius: 10%;
 }
 
 markdown ::ng-deep pre {
-  background-color: var(--soft-black);
-  width: 95%;
+    background-color: var(--soft-black);
+    width: 95%;
 }
 
 .message {
-  font-size: 1.2em;
-  clear: both;
+    font-size: 1.2em;
+    clear: both;
 }
 
 .message:hover {
-  background-color: var(--element-hover-color);
+    background-color: var(--element-hover-color);
 }
 
 .message mat-icon {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .message:hover mat-icon {
-  visibility: visible;
+    visibility: visible;
 }
 
 .icons {
-  float: right;
+    float: right;
 }
 
 .icons:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .status {
-  text-align: center;
+    text-align: center;
 }
 
 .deletedMessage {
-  font-size: 1em;
-  color: dimgrey;
+    font-size: 1em;
+    color: dimgrey;
 }
 
 .inputArea {
-  width: 70%;
-  padding: 10px 10px;
-  background-color: var(--element-hover-color);
+    width: 70%;
+    padding: 10px 10px;
+    background-color: var(--element-hover-color);
 }
 
 .channelDescriptionTextArea {
-  background-color: var(--scroll-background);
-  color: #424242;
+    background-color: var(--scroll-background);
+    color: #424242;
 }
 
 .channelDescButton {
-  border-radius: 0;
-  margin-left: 1em;
+    border-radius: 0;
+    margin-left: 1em;
 }
 
 .channelDescButton:hover {
-  background-color: #717171;
+    background-color: #717171;
 }
 
 #descMessage {
-  font-size: 0.75rem;
-  color: #636363;
+    font-size: 0.75rem;
+    color: #636363;
 }
 
 .mat-form-field-underline {
-  display: none;
+    display: none;
 }
 
 textarea {
-  color: var(--primary-text-color);
-  resize: none;
-  overflow-y: scroll;
-  max-height: 10rem;
+    color: var(--primary-text-color);
+    resize: none;
+    overflow-y: scroll;
+    max-height: 10rem;
 }
 
 .chat-box-title {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 mat-expansion-panel {
-  width: 85%;
-  background-color: var(--element-color);
-  color: var(--primary-text-color);
-  margin-left: -1.5em;
+    width: 85%;
+    background-color: var(--element-color);
+    color: var(--primary-text-color);
+    margin-left: -1.5em;
 }
 
 mat-expansion-panel:hover {
-  background-color: var(--element-hover-color);
+    background-color: var(--element-hover-color);
 }
 
 .defaultHeight {
-  height: 76% !important;
+    height: 76% !important;
 }
 
 .page {
-  height: 100%;
+    height: 100%;
 }
 
 .wrapper {
-  height: 100%;
-  // max-width: 1160px;
-  margin: 0 auto;
-  position: relative;
-  //padding: 0 20px;
-  //min-height: 600px;
+    height: 100%;
+    // max-width: 1160px;
+    margin: 0 auto;
+    position: relative;
+    //padding: 0 20px;
+    //min-height: 600px;
 }
 
 .content-wrapper {
-  height: 100%;
-  float: left;
-  width: 100%;
+    height: 100%;
+    float: left;
+    width: 100%;
 }
 
 .content {
@@ -297,189 +298,198 @@ mat-expansion-panel:hover {
 }
 
 .container {
-  height: 100%;
+    height: 100%;
 }
 
 .sidebar {
-  position: relative;
-  width: 250px;
-  margin-left: -250px;
-  float: right;
-  min-height: 600px;
-  height: 100%;
+    position: relative;
+    width: 250px;
+    margin-left: -250px;
+    float: right;
+    min-height: 600px;
+    height: 100%;
 }
 .sidebarClosed{
     display:none;
 }
 
 .mentionList {
-  background-color: var(--soft-black);
+    background-color: var(--soft-black);
 }
 
 .mentionListItem:hover {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 .selected {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 #backdrop {
-  overflow: auto;
-  background-color: white;
-  z-index: -1 !important;
-  pointer-events: none;
-  color: var(--primary-text-color);
+    overflow: auto;
+    background-color: white;
+    z-index: -1 !important;
+    pointer-events: none;
+    color: var(--primary-text-color);
 }
 
 .highlights {
-  position: absolute;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  background-color: transparent;
-  color: var(--primary-text-color);
+    position: absolute;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: transparent;
+    color: var(--primary-text-color);
 }
 
 #messageInput {
-  background-color: white;
-  margin: 0;
-  border-radius: 0;
+    background-color: white;
+    margin: 0;
+    border-radius: 0;
 }
 
 mark {
-  color: transparent;
-  background-color: red !important;
+    color: transparent;
+    background-color: red !important;
 }
 
 .emojiPopup {
-  //display: inline;
-  display: inline-flex;
-  flex-wrap: wrap;
-  position: relative;
-  bottom: 7.5rem;
-  left: 5.5rem;
-  overflow: auto;
-  height: 7.5rem;
-  width: 14rem;
-  flex-direction: row;
-  margin-bottom: -10rem;
-  margin-right: 1.2rem;
-  z-index: 100000000;
-  background-color: var(--element-hover-color);
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 7.5rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
 }
 
 .emojiPopupNot {
-  //display: inline;
-  display: inline-flex;
-  flex-wrap: wrap;
-  position: relative;
-  bottom: 7.5rem;
-  left: 5.5rem;
-  overflow: auto;
-  height: 7.5rem;
-  width: 14rem;
-  flex-direction: row;
-  margin-bottom: -10rem;
-  margin-right: 4.2rem;
-  z-index: 100000000;
-  background-color: var(--element-hover-color);
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: relative;
+    bottom: 7.5rem;
+    left: 5.5rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 4.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
 }
 
 ::ng-deep .mat-card-content > :first-child,
 .mat-card > :first-child {
-  margin-top: 1rem !important;
+    margin-top: 1rem !important;
 }
 
 .emojiPopup input {
-  border: none;
-  cursor: pointer;
+    border: none;
+    cursor: pointer;
 }
 
 .emojiPopupNot input {
-  border: none;
-  cursor: pointer;
+    border: none;
+    cursor: pointer;
 }
 
 .emojiPopupHidden {
-  display: none;
+    display: none;
 }
 
 .emoticon {
-  background-color: var(--element-hover-color);
-  font-size: 1.5rem;
-  padding: 0px;
-  outline: none;
+    background-color: var(--element-hover-color);
+    font-size: 1.5rem;
+    padding: 0px;
+    outline: none;
 }
 
 .emoticon:hover {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 ::ng-deep .mentionList .mat-list-item-content {
-  color: white;
+    color: white;
 }
 
 .reactions {
-  margin-top: -1rem;
-  margin-right: 5rem;
+    margin-top: -1rem;
+    margin-right: 5rem;
 }
 
 #reactions {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 .reaction {
-  background-color: dimgrey;
-  margin-right: 0.3rem;
+    background-color: dimgrey;
+    margin-right: 0.3rem;
     margin-top: 0.1rem;
-  padding: 0.1rem 0.2rem 0.1rem 0.2rem;
-  border: none;
-  border-radius: 10%;
-  font-size: 1.25rem;
+    padding: 0.1rem 0.2rem 0.1rem 0.2rem;
+    border: none;
+    border-radius: 10%;
+    font-size: 1.25rem;
     text-align: center;
 }
 
 .reaction:hover {
-  background-color: var(--primary-color);
-  cursor: pointer;
+    background-color: var(--primary-color);
+    cursor: pointer;
 }
 
 .emojiSelect {
-  cursor: pointer;
-  position: absolute;
-  bottom: 3.5rem;
-  right: 1rem;
-  z-index: 100000;
-  color: var(--primary-text-color);
+    cursor: pointer;
+    position: absolute;
+    bottom: 3.5rem;
+    right: 2.5rem;
+    z-index: 100;
+    color: var(--primary-text-color);
+}
+
+.helpSelect {
+    cursor: pointer;
+    position: absolute;
+    bottom: 3.5rem;
+    right: 1rem;
+    z-index: 100;
+    color: var(--primary-text-color);
 }
 
 #messageInputField {
 }
 
 .emojiList {
-  //display: inline;
-  display: inline-flex;
-  flex-wrap: wrap;
-  position: absolute;
-  bottom: 14.5rem;
-  right: 2rem;
-  overflow: auto;
-  height: 7.5rem;
-  width: 14rem;
-  flex-direction: row;
-  margin-bottom: -10rem;
-  margin-right: 1.2rem;
-  z-index: 100000000;
-  background-color: var(--element-hover-color);
+    //display: inline;
+    display: inline-flex;
+    flex-wrap: wrap;
+    position: absolute;
+    bottom: 14.5rem;
+    right: 2rem;
+    overflow: auto;
+    height: 7.5rem;
+    width: 14rem;
+    flex-direction: row;
+    margin-bottom: -10rem;
+    margin-right: 1.2rem;
+    z-index: 100000000;
+    background-color: var(--element-hover-color);
 }
 
 .emojiListHidden {
-  display: none;
+    display: none;
 }
 
 .emojiList input {
-  border: none;
-  cursor: pointer;
+    border: none;
+    cursor: pointer;
 }
 .sidebarHidden{
     display:none;
@@ -501,4 +511,8 @@ mat-sidenav{
     .contentOpened{
         margin-right:0px;
     }
+}
+
+.adminDelete {
+    color: red;
 }

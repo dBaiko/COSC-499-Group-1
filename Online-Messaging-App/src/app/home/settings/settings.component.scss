@@ -38,3 +38,30 @@ mat-icon {
 ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: #9e9e9e;
 }
+mat-form-field {
+    margin-top: 2px;
+    color: var(--primary-text-color);
+    background-color: var(--element-color);
+}
+::ng-deep .mat-button.mat-primary .mat-button-focus-overlay {
+    background-color: black;
+}
+mat-label {
+    color: var(--primary-text-color);
+}
+mat-error {
+    color: var(--primary-text-color);
+}
+::ng-deep .mat-input-invalid .mat-input-placeholder {
+    color: var(--primary-text-color) !important;
+}
+
+::ng-deep .mat-input-invalid .mat-input-ripple {
+    color: var(--primary-text-color) !important;
+}
+mat-hint {
+    color: var(--primary-text-color);
+}
+#noMargin {
+    margin-top: 0px;
+}

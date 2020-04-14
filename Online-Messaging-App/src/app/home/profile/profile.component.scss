@@ -1,126 +1,147 @@
 mat-card {
-  background: var(--element-color);
+    background: var(--element-color);
 }
 
 mat-card-content {
-  margin-left: 1vh;
-  margin-right: 1vh;
-  padding-bottom: 3vh;
-  color: var(--primary-text-color);
+    margin-left: 1vh;
+    margin-right: 1vh;
+    padding-bottom: 3vh;
+    color: var(--primary-text-color);
 }
 
 mat-card-header {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 mat-icon {
-  margin-bottom: 0.5vh;
+    margin-bottom: 0.5vh;
 }
 
 .icon {
-  font-size: 64px;
+    font-size: 64px;
 }
 
 .wrapper {
-  width: 60%;
-  margin: auto;
+    width: 60%;
+    margin: auto;
 }
 
 button {
-  float: right;
-  margin-right: 5vh;
-  color: var(--primary-text-color);
-  background-color: var(--element-color);
-  width: 14vh;
+    float: right;
+    margin-right: 5vh;
+    color: var(--primary-text-color);
+    background-color: var(--element-color);
+    width: 14vh;
 }
 
 #settingsTitle {
-  font-size: 43px;
-  margin-left: 1vh;
+    font-size: 43px;
+    margin-left: 1vh;
 }
 
 .wrapper {
-  margin-top: 2vh;
+    margin-top: 2vh;
 }
 
 .nameHeaders {
-  font-size: 1.1em;
+    font-size: 1.1em;
 }
 
 input {
-  width: 70%;
-  padding: 10px 10px;
-  color: var(--primary-text-color);
-  background-color: var(--element-hover-color);
+    width: 90%;
+    padding: 10px 10px;
+    color: var(--primary-text-color);
+    background-color: var(--element-hover-color);
 }
 
 input:focus {
-  border: 2px solid var(--element-hover-color);
+    border: 2px solid var(--element-hover-color);
 }
 
 mat-select {
-  width: 70%;
-  padding: 10px 10px;
-  color: var(--primary-text-color);
-  background-color: var(--element-hover-color);
-}
-
-mat-select:focus {
-  border: 2px solid var(--element-hover-color);
+    width: 90%;
+    border: 2px solid;
+    border-color: white;
+    padding: 10px 10px;
+    color: var(--primary-text-color);
+    background-color: var(--element-hover-color);
 }
 
 ::ng-deep.mat-select-value-text {
-  color: var(--primary-text-color) !important;
+    color: var(--primary-text-color) !important;
 }
 
 textarea {
-  width: 70%;
-  padding: 10px 10px;
-  color: var(--primary-text-color);
-  background-color: var(--element-hover-color);
+    width: 90%;
+    padding: 10px 10px;
+    color: var(--primary-text-color);
+    background-color: var(--element-hover-color);
 }
 
 textarea:focus {
-  border: 2px solid var(--element-hover-color);
+    border: 2px solid var(--element-hover-color);
 }
 
 button {
-  border-radius: 3px;
-  background-color: var(--primary-color);
-  color: white;
+    border-radius: 3px;
+    background-color: var(--primary-color);
+    color: white;
 }
 
 .profilePicture {
-  border-radius: 50%;
+    border-radius: 50%;
 }
 
 #imageInput {
-  display: none;
+    display: none;
 }
 
 #imageButton {
-  z-index: 100;
-  position: absolute;
-  top: 19vh;
-  left: 4.9rem;
-  font-size: 0.75rem;
+    z-index: 100;
+    position: absolute;
+    top: 19vh;
+    left: 4.9rem;
+    font-size: 0.75rem;
 }
 
 .profileError {
-  font-size: 0.7rem;
+    font-size: 0.7rem;
 }
 
 .scrollable {
-  height: 90%;
-  overflow-y: auto;
-  overflow-x: hidden;
+    height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 mat-checkbox {
-  margin-right: 1vw;
+    margin-right: 1vw;
 }
 
 ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
+}
+
+.columnLayout {
+    width: 90%;
+    overflow: hidden;
+    margin: auto;
+    background-color: var(--element-color);
+}
+
+.columnLeft {
+    float: left;
+    width: 45%;
+    background-color: var(--element-color);
+}
+
+.columnRight {
+    float: right;
+    width: 45%;
+    background-color: var(--element-color);
+}
+
+.columnClear {
+    clear: both;
 }

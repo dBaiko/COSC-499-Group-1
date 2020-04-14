@@ -13,6 +13,7 @@ import {
     UserChannelObject
 } from "../../shared/app-config";
 import { NotificationService } from "../../shared/notification.service";
+import { CommonService } from "../../shared/common.service";
 
 const MY_SELECT_CHILD: string = "mySelect";
 const NOTIFICATIONS_URI: string = "/notifications";
@@ -58,13 +59,15 @@ export class HeaderComponent implements OnInit {
     channelBrowser = "channelBrowser";
     profile = "profile";
     settings = "settings";
+    userGuide = "userGuide";
     private channelsAPI = APIConfig.channelsAPI;
 
     constructor(
         private _eref: ElementRef,
         private auth: AuthenticationService,
         private notificationService: NotificationService,
-        private http: HttpClient
+        private http: HttpClient,
+        public common: CommonService
     ) {
         this.userLoggedIn = auth.isLoggedIn();
     }

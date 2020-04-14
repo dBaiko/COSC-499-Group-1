@@ -23,6 +23,8 @@ import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -46,6 +48,10 @@ const EMOJI_POPUP: string = "emojiClick";
 const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
+
+const DIALOG_WIDTH = "50%";
+const DIALOG_CLASS = "dialog-class";
+const DIALOG_HEIGHT = "60%";
 
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
@@ -94,6 +100,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     selectedMentionIndex: number = -1;
     selectingFromMention: boolean = false;
 
+    markupTutorialOpen: boolean = false;
+
     editForm: FormGroup;
     channelDescForm: FormGroup;
 
@@ -105,9 +113,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     inviteSearchList: Array<UserObject> = [];
     subscribedUsers: Array<UserChannelObject> = [];
     subscribedUsersUsernames: Array<string> = [];
+    usersWithoutBanned: Array<string> = [];
     channelNotifications: Array<NotificationObject> = [];
     channelNotificationsUsernames: Array<string> = [];
     friendMessage: string = null;
+    newUserEvent: string = Constants.EMPTY;
     @Input() channelName: string;
     @Input() userList: Array<UserObject>;
     @Input() settings: SettingsObject;
@@ -129,6 +139,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private messagerService: MessengerService,
         private http: HttpClient,
         private auth: AuthenticationService,
+        private dialog: MatDialog,
         private notificationService: NotificationService,
         public common: CommonService
     ) {
@@ -145,6 +156,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value) {
             this._newUserSubbedChannel = value;
             this.sendStatus(value);
+            this.newUserEvent = value.username;
         }
     }
 
@@ -298,6 +310,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     break;
                 }
             }
+        });
+
+        this.notificationService.addSocketListener("ban_broadcast", () => {
+            this.getSubcribedUsers().catch((err) => {
+                console.log(err);
+            });
         });
     }
 
@@ -624,31 +642,81 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     })
                 };
 
-                this.http
-                    .delete(
-                        this.messagesAPI +
-                        chatMessage.messageId +
-                        Constants.SLASH +
-                        chatMessage.channelId +
-                        Constants.SLASH +
-                        chatMessage.insertTime +
-                        Constants.SLASH +
-                        chatMessage.username,
-                        httpHeaders
-                    )
-                    .subscribe(
-                        () => {
-                        },
-                        (err) => {
-                            this.error = err.toString();
-                        }
-                    );
+                if (this.userIsAdmin() && chatMessage.username != this.currentUserProfile.username) {
+                    this.http
+                        .delete(
+                            this.messagesAPI +
+                            chatMessage.messageId +
+                            Constants.SLASH +
+                            chatMessage.channelId +
+                            Constants.SLASH +
+                            chatMessage.insertTime +
+                            Constants.SLASH +
+                            chatMessage.username +
+                            "/adminUsername/" +
+                            this.currentUserProfile.username,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            () => {
+                                this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = "adminTrue";
+                                let notification: NotificationObject = {
+                                    channelId: chatMessage.channelId,
+                                    channelName: this.currentChannel.channelName,
+                                    channelType: this.currentChannel.channelType,
+                                    message:
+                                        "The admin " +
+                                        this.currentUserProfile.username +
+                                        " has removed your message on the channel " +
+                                        this.currentChannel.channelName +
+                                        ".",
+                                    type: "general",
+                                    username: chatMessage.username,
+                                    fromFriend: this.currentUserProfile.username,
+                                    notificationId: null,
+                                    insertedTime: null
+                                };
+                                let notificationSocketObject: NotificationSocketObject = {
+                                    fromUser: {
+                                        id: this.notificationService.getSocketId(),
+                                        username: this.currentUserProfile.username
+                                    },
+                                    toUser: this.notificationService.getOnlineUserByUsername(chatMessage.username),
+                                    notification: notification
+                                };
+                                this.notificationService.sendNotification(notificationSocketObject);
+                            },
+                            (err) => {
+                                this.error = err.toString();
+                            }
+                        );
+                } else {
+                    this.http
+                        .delete(
+                            this.messagesAPI +
+                            chatMessage.messageId +
+                            Constants.SLASH +
+                            chatMessage.channelId +
+                            Constants.SLASH +
+                            chatMessage.insertTime +
+                            Constants.SLASH +
+                            chatMessage.username,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            () => {
+                                this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = "true";
+                            },
+                            (err) => {
+                                this.error = err.toString();
+                            }
+                        );
+                }
             },
             (err) => {
                 console.log(err);
             }
         );
-        this.chatMessages[this.chatMessages.indexOf(chatMessage)].deleted = true;
     }
 
     toggleEditingChannelDescription() {
@@ -785,6 +853,36 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
+    toggleMarkupTutorialOpen() {
+        this.markupTutorialOpen = !this.markupTutorialOpen;
+
+        if (this.markupTutorialOpen) {
+            let dialogConfig = new MatDialogConfig();
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+            dialogConfig.width = DIALOG_WIDTH;
+            dialogConfig.height = DIALOG_HEIGHT;
+            dialogConfig.panelClass = DIALOG_CLASS;
+
+            let dialogRef = this.dialog.open(MarkupTutorialComponent, dialogConfig);
+            dialogRef.afterClosed().subscribe(() => {
+                this.markupTutorialOpen = false;
+            });
+        }
+    }
+
+    handleNewBannedUser(user: UserChannelObject) {
+        this.sendUserBannedStatus(user);
+        this.usersWithoutBanned.splice(this.mentionList.indexOf(user.username), 1);
+        this.resetMentionList();
+    }
+
+    handleNewUnBannedUser(user: UserChannelObject) {
+        this.sendUserUnBannedStatus(user);
+        this.usersWithoutBanned.push(user.username);
+        this.resetMentionList();
+    }
+
     private addNewEmojiReaction(messageId: string, emoji: string): void {
         this.notificationService.sendReaction({
             emoji: emoji,
@@ -869,6 +967,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } else return null;
     }
 
+    private sendUserBannedStatus(user: UserChannelObject): void {
+        let chatMessage = {
+            channelId: user.channelId,
+            username: null,
+            content: user.username + " has been removed from the channel by the admin",
+            profileImage: null
+        };
+        this.isNearBottom = false;
+        this.messagerService.sendMessage(chatMessage);
+    }
+
+    private sendUserUnBannedStatus(user: UserChannelObject): void {
+        let chatMessage = {
+            channelId: user.channelId,
+            username: null,
+            content: user.username + " has been unbanned from the channel by the admin",
+            profileImage: null
+        };
+        this.isNearBottom = false;
+        this.messagerService.sendMessage(chatMessage);
+    }
+
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
         if (!this.subscribedUsersUsernames.includes(newUsersSubbedChannel.username)) {
             if (newUsersSubbedChannel.joined) {
@@ -908,10 +1028,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         (data: Array<UserChannelObject>) => {
                             this.subscribedUsers = data;
                             let usernames: Array<string> = [];
+                            let usersWithoutBanned: Array<string> = [];
                             for (let i in data) {
                                 usernames.push(data[i].username);
+                                if (data[i].userChannelRole != "banned") {
+                                    usersWithoutBanned.push(data[i].username);
+                                }
                             }
                             this.subscribedUsersUsernames = usernames;
+                            this.usersWithoutBanned = usersWithoutBanned;
                             this.resetMentionList();
                             resolve(data);
                         },
@@ -967,23 +1092,27 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     private getChannelInfo(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
+                (cogData) => {
+                    if (this.currentChannel) {
+                        let httpHeaders = {
+                            headers: new HttpHeaders({
+                                "Content-Type": "application/json",
+                                Authorization: "Bearer " + cogData.getJwtToken()
+                            })
+                        };
 
-                    this.http.get(this.channelsURL + this.currentChannel.channelId, httpHeaders).subscribe(
-                        (data: InviteChannelObject) => {
-                            this.currentChannel.channelDescription = data.channelDescription;
-                            resolve(data);
-                        },
-                        (err) => {
-                            reject(err);
-                        }
-                    );
+                        this.http.get(this.channelsURL + this.currentChannel.channelId, httpHeaders).subscribe(
+                            (data: InviteChannelObject) => {
+                                if (data) {
+                                    this.currentChannel.channelDescription = data.channelDescription;
+                                }
+                                resolve(data);
+                            },
+                            (err) => {
+                                reject(err);
+                            }
+                        );
+                    }
                 },
                 (err) => {
                     reject(err);
@@ -1042,7 +1171,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     private resetMentionList(): void {
         this.selectingFromMention = false;
-        this.mentionList = [...this.subscribedUsersUsernames];
+        this.mentionList = [...this.usersWithoutBanned];
         this.mentionList.push("everyone");
         this.selectedMentionIndex = -1;
         this.mentioning = false;

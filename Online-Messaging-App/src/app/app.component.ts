@@ -65,6 +65,5 @@ export class AppComponent {
         document.documentElement.style.setProperty("--hover-color", LightThemeColors["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", LightThemeColors["element-hover-color"]);
         document.documentElement.style.setProperty("--line-colour", LightThemeColors["line-colour"]);
-
     }
 }
