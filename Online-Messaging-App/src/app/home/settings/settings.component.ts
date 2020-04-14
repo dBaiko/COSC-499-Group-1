@@ -31,13 +31,21 @@ export class SettingsComponent implements OnInit {
     editingEmail: boolean = false;
     private usersAPI: string = APIConfig.usersAPI;
 
-    constructor(private auth: AuthenticationService, private http: HttpClient, public formValidationService: FormValidationService, public common: CommonService) {
+    constructor(
+        private auth: AuthenticationService,
+        private http: HttpClient,
+        public formValidationService: FormValidationService,
+        public common: CommonService
+    ) {
     }
 
     ngOnInit() {
         this.passwordForm = new FormGroup(
             {
-                password: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.minLength(8)])),
+                password: new FormControl(
+                    Constants.EMPTY,
+                    Validators.compose([Validators.required, Validators.minLength(8)])
+                ),
                 confirmPassword: new FormControl(Constants.EMPTY, Validators.compose([Validators.required])),
                 oldPassword: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
             },
@@ -47,7 +55,6 @@ export class SettingsComponent implements OnInit {
         this.emailForm = new FormGroup({
             email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email]))
         });
-
     }
 
     themeToggle($event): void {
@@ -75,7 +82,8 @@ export class SettingsComponent implements OnInit {
         this.successMessage = Constants.EMPTY;
         this.errorMessage = Constants.EMPTY;
         if (form.valid) {
-            this.auth.changePassword(form.value.oldPassword, form.value.password)
+            this.auth
+                .changePassword(form.value.oldPassword, form.value.password)
                 .then((result) => {
                     this.successMessage = "Password updated successfully";
                 })
@@ -99,26 +107,24 @@ export class SettingsComponent implements OnInit {
 
                     let body = {
                         username: this.userProfile.username,
-                        email: form.value.email
+                        email: this.common.santizeText(form.value.email)
                     };
 
-                    this.http.put(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), body, httpHeaders).subscribe(
-                        (data: Array<UserObject>) => {
-                            let user: UserObject = data[0];
-                            if (user) {
-                                this.userProfile.email = user.email;
+                    this.http
+                        .put(this.usersAPI + this.auth.getAuthenticatedUser().getUsername(), body, httpHeaders)
+                        .subscribe(
+                            (data: Array<UserObject>) => {
                                 this.editingEmail = false;
+                                this.userProfile.email = this.common.santizeText(form.value.email);
+                            },
+                            (err) => {
+                                console.log(err);
                             }
-                        },
-                        (err) => {
-                            console.log(err);
-                        }
-                    );
-
+                        );
                 },
-                (error => {
+                (error) => {
                     console.log(error);
-                })
+                }
             );
         }
     }

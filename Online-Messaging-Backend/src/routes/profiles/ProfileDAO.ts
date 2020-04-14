@@ -5,39 +5,40 @@ import { awsConfigPath } from "../../config/aws-config";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { sanitizeInput } from "../../index";
 import SendData = ManagedUpload.SendData;
 
 export interface ProfileObject {
     username: string;
     firstName: string;
     lastName: string;
-    phone: string,
-    bio: string,
-    gender: string,
-    dateOfBirth: string,
-    citizenship: string,
-    grade: number,
-    gradYear: number,
-    previousCollegiate: boolean,
-    street: string,
-    unitNumber: string,
-    city: string,
-    province: string,
-    country: string,
-    postalCode: string,
-    club: string,
-    injuryStatus: string,
-    instagram: string,
-    languages: Array<string>,
-    coachFirstName: string,
-    coachLastName: string,
-    coachPhone: string,
-    coachEmail: string,
-    parentFirstName: string,
-    parentLastName: string,
-    parentEmail: string,
-    parentPhone: string,
-    budget: string
+    phone: string;
+    bio: string;
+    gender: string;
+    dateOfBirth: string;
+    citizenship: string;
+    grade: number;
+    gradYear: number;
+    previousCollegiate: boolean;
+    street: string;
+    unitNumber: string;
+    city: string;
+    province: string;
+    country: string;
+    postalCode: string;
+    club: string;
+    injuryStatus: string;
+    instagram: string;
+    languages: Array<string>;
+    coachFirstName: string;
+    coachLastName: string;
+    coachPhone: string;
+    coachEmail: string;
+    parentFirstName: string;
+    parentLastName: string;
+    parentEmail: string;
+    parentPhone: string;
+    budget: string;
 }
 
 aws.config.loadFromPath(awsConfigPath);
@@ -80,11 +81,11 @@ export class ProfileDAO {
     }
 
     public updateProfile(profile: ProfileObject) {
-        if (!profile.languages || profile.languages.length==0) {
-            profile.languages=[" "];
+        if (!profile.languages || profile.languages.length == 0) {
+            profile.languages = [" "];
         }
         if (!profile.phone) {
-            profile.phone=" ";
+            profile.phone = " ";
         }
         if (!profile.bio) {
             profile.bio = " ";
@@ -161,7 +162,33 @@ export class ProfileDAO {
         if (!profile.budget) {
             profile.budget = " ";
         }
-        console.log(profile);
+
+        profile.firstName = sanitizeInput(profile.firstName);
+        profile.lastName = sanitizeInput(profile.lastName);
+        profile.phone = sanitizeInput(profile.phone);
+        profile.bio = sanitizeInput(profile.bio);
+        profile.gender = sanitizeInput(profile.gender);
+        profile.dateOfBirth = sanitizeInput(profile.dateOfBirth);
+        profile.citizenship = sanitizeInput(profile.citizenship);
+        profile.street = sanitizeInput(profile.street);
+        profile.unitNumber = sanitizeInput(profile.unitNumber);
+        profile.city = sanitizeInput(profile.city);
+        profile.province = sanitizeInput(profile.province);
+        profile.country = sanitizeInput(profile.country);
+        profile.postalCode = sanitizeInput(profile.postalCode);
+        profile.club = sanitizeInput(profile.club);
+        profile.injuryStatus = sanitizeInput(profile.injuryStatus);
+        profile.instagram = sanitizeInput(profile.instagram);
+        profile.coachFirstName = sanitizeInput(profile.coachFirstName);
+        profile.coachLastName = sanitizeInput(profile.coachLastName);
+        profile.coachPhone = sanitizeInput(profile.coachPhone);
+        profile.coachEmail = sanitizeInput(profile.coachEmail);
+        profile.parentFirstName = sanitizeInput(profile.parentFirstName);
+        profile.parentLastName = sanitizeInput(profile.parentLastName);
+        profile.parentPhone = sanitizeInput(profile.parentPhone);
+        profile.parentEmail = sanitizeInput(profile.parentEmail);
+        profile.budget = sanitizeInput(profile.budget);
+
         const params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {

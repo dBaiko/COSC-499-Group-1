@@ -144,6 +144,7 @@ export class SidebarComponent implements OnInit {
                 } else {
                     this.selectPublicChannel();
                     this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
+
                 }
             })
             .catch((err) => {
@@ -244,14 +245,18 @@ export class SidebarComponent implements OnInit {
                                                     }
                                                 }
                                             }
-                                            if (i == data.length - 1 || data.length == 0) {
+                                            if (i == data.length - 1) {
                                                 resolve(notificationData);
+                                            }
+                                            else if(data.length == 0) {
+                                                resolve([]);
                                             }
                                         })
                                         .catch((err) => {
                                             console.error(err);
                                         });
                                 }
+                                resolve([]);
                             },
                             (err) => {
                                 console.log(err);
@@ -394,13 +399,13 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    confirmUnsubscribe(channelId: string): void {
+    confirmUnsubscribe(channel: UserChannelObjectWithNotficationCount): void {
         let dialogConfig: MatDialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
         dialogConfig.width = DIALOG_WIDTH;
         dialogConfig.panelClass = DIALOG_CLASS;
-        dialogConfig.data = this.currentUserProfile;
+        dialogConfig.data = channel;
         let dialogRef = this.dialog.open(UnsubscribeConfirmComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result) {
@@ -414,22 +419,22 @@ export class SidebarComponent implements OnInit {
                         };
 
                         for (let i = 0; i < this.userSubscribedChannels.length; i++) {
-                            if (this.userSubscribedChannels[i].channelId == channelId) {
+                            if (this.userSubscribedChannels[i].channelId == channel.channelId) {
                                 this.userSubscribedChannels.splice(i, 1);
                             }
                         }
                         for (let i = 0; i < this.publicChannels.length; i++) {
-                            if (this.publicChannels[i].channelId == channelId) {
+                            if (this.publicChannels[i].channelId == channel.channelId) {
                                 this.publicChannels.splice(i, 1);
                             }
                         }
                         for (let i = 0; i < this.privateChannels.length; i++) {
-                            if (this.privateChannels[i].channelId == channelId) {
+                            if (this.privateChannels[i].channelId == channel.channelId) {
                                 this.privateChannels.splice(i, 1);
                             }
                         }
                         for (let i = 0; i < this.friendsChannels.length; i++) {
-                            if (this.friendsChannels[i].channelId == channelId) {
+                            if (this.friendsChannels[i].channelId == channel.channelId) {
                                 this.friendsChannels.splice(i, 1);
                             }
                         }
@@ -486,7 +491,7 @@ export class SidebarComponent implements OnInit {
                                 this.usersAPI +
                                 this.auth.getAuthenticatedUser().getUsername() +
                                 CHANNELS_URI +
-                                channelId,
+                                channel.channelId,
                                 httpHeaders
                             )
                             .subscribe(
@@ -503,7 +508,7 @@ export class SidebarComponent implements OnInit {
                 );
             }
             this.newUserSubbedChannelEvent.emit({
-                channelId: channelId,
+                channelId: channel.channelId,
                 username: this.currentUserProfile.username,
                 joined: false
             });

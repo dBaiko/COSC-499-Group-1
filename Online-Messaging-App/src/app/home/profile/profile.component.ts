@@ -304,7 +304,8 @@ export class ProfileComponent implements OnInit {
                     this.editForm.get(LANGUAGESFRENCH_FORM_NAME).setValue(true);
                 if (this.userProfile.languages.includes(MANDARIN))
                     this.editForm.get(LANGUAGESMANDARIN_FORM_NAME).setValue(true);
-                if (this.userProfile.languages.includes(OTHER)) this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(true);
+                if (this.userProfile.languages.includes(OTHER))
+                    this.editForm.get(LANGUAGESOTHER_FORM_NAME).setValue(true);
             }
         } else {
             this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(false);
@@ -335,13 +336,13 @@ export class ProfileComponent implements OnInit {
                         this.profilesAPI + username + STATUS_URI,
                         {
                             username: username,
-                            status: form.value.statusText
+                            status: this.common.santizeText(form.value.statusText)
                         },
                         httpHeaders
                     )
                     .subscribe(
                         () => {
-                            this.userProfile.statusText = form.value.statusText;
+                            this.userProfile.statusText = this.common.santizeText(form.value.statusText);
                             this.toggleEditingStatus(false);
                             this.profileUpdateEvent.emit();
                         },
@@ -489,6 +490,32 @@ export class ProfileComponent implements OnInit {
         budget: string
     ) {
         let username = this.userProfile.username;
+
+        firstName = this.common.santizeText(firstName);
+        lastName = this.common.santizeText(lastName);
+        phone = this.common.santizeText(phone);
+        bio = this.common.santizeText(bio);
+        gender = this.common.santizeText(gender);
+        dateOfBirth = this.common.santizeText(dateOfBirth);
+        citizenship = this.common.santizeText(citizenship);
+        street = this.common.santizeText(street);
+        unitNumber = this.common.santizeText(unitNumber);
+        city = this.common.santizeText(city);
+        province = this.common.santizeText(province);
+        country = this.common.santizeText(country);
+        postalCode = this.common.santizeText(postalCode);
+        club = this.common.santizeText(club);
+        injuryStatus = this.common.santizeText(injuryStatus);
+        instagram = this.common.santizeText(instagram);
+        coachFirstName = this.common.santizeText(coachFirstName);
+        coachLastName = this.common.santizeText(coachLastName);
+        coachPhone = this.common.santizeText(coachPhone);
+        coachEmail = this.common.santizeText(coachEmail);
+        parentFirstName = this.common.santizeText(parentFirstName);
+        parentLastName = this.common.santizeText(parentLastName);
+        parentPhone = this.common.santizeText(parentPhone);
+        parentEmail = this.common.santizeText(parentEmail);
+        budget = this.common.santizeText(budget);
 
         let profile: ProfileObject = {
             username: username,

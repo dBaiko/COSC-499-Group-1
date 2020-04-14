@@ -228,12 +228,10 @@ export class HomeComponent implements OnInit {
                                 statusText: profile.statusText
                             };
 
-                            this.http.get(USERS_API + username, httpHeaders).subscribe(
-                                (data: Array<UserObject>) => {
-                                    this.currentUserProfile.email = data[0].email;
-                                    resolve();
-                                }
-                            );
+                            this.http.get(USERS_API + username, httpHeaders).subscribe((data: Array<UserObject>) => {
+                                this.currentUserProfile.email = data[0].email;
+                                resolve();
+                            });
                         },
                         (err) => {
                             console.log(err);
@@ -259,5 +257,6 @@ export class HomeComponent implements OnInit {
         document.documentElement.style.setProperty("--element-color", theme["element-color"]);
         document.documentElement.style.setProperty("--hover-color", theme["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", theme["element-hover-color"]);
+        document.documentElement.style.setProperty("--line-colour", theme["line-colour"]);
     }
 }

@@ -1,16 +1,15 @@
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 export interface ReactionObject {
-    messageId: string,
-    emoji: string,
-    insertTime: number,
-    username: string
+    messageId: string;
+    emoji: string;
+    insertTime: number;
+    username: string;
 }
 
 const REACTIONS_TABLE_NAME = "Reactions";
 
 class ReactionsDAO {
-
     constructor(private docClient: DocumentClient) {
     }
 
@@ -32,7 +31,6 @@ class ReactionsDAO {
                 }
             });
         });
-
     }
 
     public addNewReaction(messageId: string, emoji: string, username: string): Promise<any> {
@@ -47,18 +45,16 @@ class ReactionsDAO {
         };
 
         return new Promise<any>((resolve, reject) => {
-                this.docClient.put(params, (err, data) => {
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    } else {
-                        console.log("added new reaction successfully");
-                        resolve();
-                    }
-                });
-            }
-        );
-
+            this.docClient.put(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("added new reaction successfully");
+                    resolve();
+                }
+            });
+        });
     }
 
     public deleteReactionForMessage(messageId: string, emoji: string, username: string): Promise<any> {
@@ -94,7 +90,6 @@ class ReactionsDAO {
                                 resolve();
                             }
                         });
-
                     }
                     resolve();
                 })
@@ -109,7 +104,6 @@ class ReactionsDAO {
             this.getAllReactionsForMessage(messageId)
                 .then((data: Array<ReactionObject>) => {
                     for (let item of data) {
-
                         let params = {
                             TableName: REACTIONS_TABLE_NAME,
                             Key: {
@@ -129,7 +123,6 @@ class ReactionsDAO {
                                 reject(err);
                             }
                         });
-
                     }
                     resolve();
                 })
@@ -138,7 +131,6 @@ class ReactionsDAO {
                 });
         });
     }
-
 }
 
 export default ReactionsDAO;

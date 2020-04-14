@@ -349,6 +349,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
             this.handleInput();
+            value.content = this.common.santizeText(value.content);
             value.content = this.markUpMentions(value.content);
             if (this.mentionListToSubmit.includes("everyone")) {
                 for (let user of this.mentionList) {
@@ -402,7 +403,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     onKey($event: Event) {
         //set search value as whatever is entered on search bar every keystroke
-        this.inviteSearch = ($event.target as HTMLInputElement).value;
+        this.inviteSearch = this.common.santizeText(($event.target as HTMLInputElement).value);
         this.inviteFormSubmit();
     }
 
@@ -534,6 +535,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     handleInput() {
         let text = this.messageForm.form.value.content as string;
+        text = this.common.santizeText(text);
         let highlightedText = this.applyHighlights(text);
         document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
     }
@@ -693,6 +695,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     editMessage(message: MessageObject, newContent: string) {
+        newContent = this.common.santizeText(newContent);
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {

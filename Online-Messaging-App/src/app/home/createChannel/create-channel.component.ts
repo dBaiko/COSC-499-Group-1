@@ -58,6 +58,8 @@ export class CreateChannelComponent implements OnInit {
     }
 
     newChannelEntry(channelName: string, channelType: string, channelDescription: string): Observable<Object> {
+        channelName = this.common.santizeText(channelName);
+        channelDescription = this.common.santizeText(channelDescription);
         let newChannel: ChannelAndFirstUser = {
             channelName: channelName,
             channelType: channelType,

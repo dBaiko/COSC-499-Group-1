@@ -76,24 +76,24 @@ class ChannelDAO {
                     let count: number = 0;
                     for (let channelItem of channels) {
                         let channel: ChannelAndNumUsers = {
-                            channelId: (channelItem.channelId as string),
-                            channelName: (channelItem.channelName as string),
-                            channelType: (channelItem.channelType as string),
-                            channelDescription: (channelItem.channelDescription as string)
+                            channelId: channelItem.channelId as string,
+                            channelName: channelItem.channelName as string,
+                            channelType: channelItem.channelType as string,
+                            channelDescription: channelItem.channelDescription as string
                         };
-                        userChannelDAO.getAllSubscribedUsers(channel.channelId)
+                        userChannelDAO
+                            .getAllSubscribedUsers(channel.channelId)
                             .then((data: Array<UserChannelObject>) => {
                                 channel.numUsers = data.length;
                                 channelList.push(channel);
                                 count++;
                                 if (count == channels.length) {
-                                    resolve(channelList.sort(((a, b) => a.numUsers > b.numUsers ? -1 : 1)));
+                                    resolve(channelList.sort((a, b) => (a.numUsers > b.numUsers ? -1 : 1)));
                                 }
                             })
                             .catch((err) => {
                                 console.error(err);
                             });
-
                     }
                 }
             });
@@ -111,6 +111,15 @@ class ChannelDAO {
     ): Promise<any> {
         const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
+
+        if (inviteStatus == null || inviteStatus == "") {
+            inviteStatus = " ";
+        }
+
+        if (channelDescription == null || channelDescription == "") {
+            channelDescription = " ";
+        }
+
         const params = {
             Item: {
                 channelId,
@@ -148,7 +157,12 @@ class ChannelDAO {
         });
     }
 
-    public updateChannel(channelId: string, channelName: string, channelType: string, channelDescription: string): Promise<any> {
+    public updateChannel(
+        channelId: string,
+        channelName: string,
+        channelType: string,
+        channelDescription: string
+    ): Promise<any> {
         const params = {
             TableName: CHANNEL_TABLE_NAME,
             Key: {
