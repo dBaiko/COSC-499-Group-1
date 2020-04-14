@@ -61,11 +61,10 @@ export class SidebarComponent implements OnInit {
     friendChannelSelect: boolean;
     list;
     chatBox = "chatBox";
-
+    settings = "settings";
     selectedChannelId: string;
-
     channelBrowser = "channelBrowser";
-    private profile = "profile";
+    profile = "profile";
     private usersAPI: string = APIConfig.usersAPI;
     private channelsURL: string = APIConfig.channelsAPI;
     private notificationsAPI: string = APIConfig.notificationsAPI;
@@ -160,7 +159,6 @@ export class SidebarComponent implements OnInit {
                 } else {
                     this.selectPublicChannel();
                     this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-
                 }
             })
             .catch((err) => {

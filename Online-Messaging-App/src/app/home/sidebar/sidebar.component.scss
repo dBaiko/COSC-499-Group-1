@@ -141,8 +141,6 @@ mat-button-toggle-group {
     margin: 0;
     cursor: pointer;
     position: absolute;
-    left: 0;
-    bottom: 0;
 }
 
 .joinCreate:focus {
@@ -195,6 +193,19 @@ p {
     border-radius: 100px;
     width: 2rem;
     height: 2rem;
+}
+
+.sidebarIconNav {
+    bottom: 0;
+    position: absolute;
+}
+
+.iconHover {
+    display: inline;
+}
+
+.iconHover:hover {
+    background-color: var(--hover-color);
 }
 
 #create {

@@ -19,7 +19,7 @@
                         src="{{ currentUserProfile.profileImage }}"
                     />
                     <span class="username">
-                    {{ user.username }}
+                        {{ user.username }}
                     </span>
                 </button>
                 <mat-menu #userMenu="matMenu" class="menuList" disableOptionCentering disabled xPosition="after">
@@ -92,7 +92,8 @@
         <div *ngFor="let notification of generalNotification">
             <div
                 (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
-                class="notificationOption" id="generalNotification"
+                class="notificationOption"
+                id="generalNotification"
             >
                 <mat-card>
                     <mat-card-title class="message">{{ notification.message }}</mat-card-title>

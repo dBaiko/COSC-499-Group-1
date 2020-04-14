@@ -153,6 +153,8 @@ export class ProfileComponent implements OnInit {
                 Constants.EMPTY,
                 Validators.compose([this.formValidationService.isNanValidator, Validators.maxLength(15)])
             ),
+            coachEmail: new FormControl(),
+            parentEmail: new FormControl(),
             languagesEnglish: new FormControl(),
             languagesFrench: new FormControl(),
             languagesSpanish: new FormControl(),
@@ -173,9 +175,7 @@ export class ProfileComponent implements OnInit {
             club: new FormControl(),
             injuryStatus: new FormControl(),
             instagram: new FormControl(),
-            budget: new FormControl(),
-            coachEmail: new FormControl(),
-            parentEmail: new FormControl()
+            budget: new FormControl()
         });
 
         this.imageForm = new FormGroup({

@@ -214,6 +214,7 @@
                                         *ngIf="chatMessage.deleted != 'true' && chatMessage.deleted != 'adminTrue'; else messageDeleted">
                                         <p class="message" id="{{ chatMessage.messageId }}">
                                             <span
+                                                *ngIf="chatMessage.username == currentUserProfile.username"
                                                 class="icons"
                                             >
                                                 <div

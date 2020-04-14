@@ -48,7 +48,7 @@ button {
 }
 
 input {
-  width: 70%;
+  width: 90%;
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
@@ -59,14 +59,12 @@ input:focus {
 }
 
 mat-select {
-  width: 70%;
+  width: 90%;
+  border: 2px solid;
+  border-color: white;
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
-}
-
-mat-select:focus {
-  border: 2px solid var(--element-hover-color);
 }
 
 ::ng-deep.mat-select-value-text {
@@ -74,7 +72,7 @@ mat-select:focus {
 }
 
 textarea {
-  width: 70%;
+  width: 90%;
   padding: 10px 10px;
   color: var(--primary-text-color);
   background-color: var(--element-hover-color);
@@ -123,4 +121,27 @@ mat-checkbox {
 ::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
   background-color: var(--primary-color);
+}
+
+.columnLayout {
+  width: 90%;
+  overflow: hidden;
+  margin: auto;
+  background-color: var(--element-color);
+}
+
+.columnLeft {
+  float: left;
+  width: 45%;
+  background-color: var(--element-color);
+}
+
+.columnRight {
+  float: right;
+  width: 45%;
+  background-color: var(--element-color);
+}
+
+.columnClear {
+  clear: both;
 }
