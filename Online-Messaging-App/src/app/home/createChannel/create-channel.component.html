@@ -10,17 +10,17 @@
                             <mat-label>Channel Name</mat-label>
                             <label for="channelName"></label
                             ><input
-                                class="form-control"
-                                formControlName="channelName"
-                                id="channelName"
-                                matInput
-                                name="channelName"
-                                required
-                                type="text"
+                            class="form-control"
+                            formControlName="channelName"
+                            id="channelName"
+                            matInput
+                            name="channelName"
+                            required
+                            type="text"
                         />
                             <mat-error *ngFor="let validation of common.validation_methods.channelName">
                                 <mat-error
-                                        *ngIf="
+                                    *ngIf="
                                         formValidationService.checkIfFormElementInvalid(
                                             newChannelForm,
                                             'channelName',
@@ -41,7 +41,7 @@
                         </mat-radio-group>
                         <mat-error *ngFor="let validation of common.validation_methods.channelType">
                             <mat-error
-                                    *ngIf="
+                                *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         newChannelForm,
                                         'channelType',
@@ -56,15 +56,15 @@
                     <p>Channel Description</p>
                     <div class="channelDescription">
                         <textarea
-                                cdkTextareaAutosize
-                                formControlName="channelDescription"
-                                matInput
-                                name="channelDescription"
-                                ngModel
+                            cdkTextareaAutosize
+                            formControlName="channelDescription"
+                            matInput
+                            name="channelDescription"
+                            ngModel
                         ></textarea>
                         <mat-error *ngFor="let validation of common.validation_methods.channelDescription">
                             <mat-error
-                                    *ngIf="
+                                *ngIf="
                                     formValidationService.checkIfFormElementInvalid(
                                         newChannelForm,
                                         'channelDescription',
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <div class="center">
-                <button (click)="onClose()" class="btn btn-primary" mat-raised-button type="submit" id="cancel">
+                <button (click)="onClose()" class="btn btn-primary" id="cancel" mat-raised-button type="submit">
                     Cancel
                 </button>
                 <button class="btn btn-primary" mat-raised-button type="submit">Create</button>

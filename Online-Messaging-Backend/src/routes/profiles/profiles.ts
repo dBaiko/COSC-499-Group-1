@@ -17,7 +17,7 @@ const router = express.Router();
 router.use(bodyParser.json({ limit: "50mb" }));
 router.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
-const PATH_PUT_PROFILE: string = "/:username";
+const PATH_PUT_PROFILE: string = "/:username/";
 const PATH_GET_PROFILE: string = "/:username";
 const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
 const PATH_UPDATE_STATUS: string = "/:username/status/";

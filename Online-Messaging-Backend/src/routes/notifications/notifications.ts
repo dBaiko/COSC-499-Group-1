@@ -121,7 +121,6 @@ router.delete(PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL, (req, 
                         if (item.type == "message") {
                             notificationsDAO.deleteNotification(item.notificationId, item.insertedTime);
                         }
-
                     }
                     res.status(200).send({ status: 200, message: "Message notifications deleted successfully" });
                 })
