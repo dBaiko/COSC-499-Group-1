@@ -131,7 +131,7 @@
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
                                 <div
-                                    *ngIf="chatMessage.username == null || chatMessage.username == ' '; else elseBlock">
+                                    *ngIf="chatMessage.username == null && chatMessage.username == ' '; else elseBlock">
                                     <hr/>
                                     <mat-card-content class="status">
                                         <p id="{{ chatMessage.messageId }}">

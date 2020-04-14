@@ -175,9 +175,7 @@ export class ProfileComponent implements OnInit {
             club: new FormControl(),
             injuryStatus: new FormControl(),
             instagram: new FormControl(),
-            budget: new FormControl(),
-            coachEmail: new FormControl(),
-            parentEmail: new FormControl()
+            budget: new FormControl()
         });
 
         this.imageForm = new FormGroup({
