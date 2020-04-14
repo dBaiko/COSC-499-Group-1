@@ -86,7 +86,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     currentlyEditing: boolean = false;
     viewed: boolean = false;
 
-
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
@@ -883,6 +882,20 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.resetMentionList();
     }
 
+    toggleSideBarOpen(value: boolean) {
+        if (value) {
+            this.sidebarOpened = true;
+            document.getElementById("content").classList.add("contentOpened");
+            document.getElementById("sidebar").classList.remove("sidebarClosed");
+            document.getElementById("info").classList.add("backgroundDarker");
+        } else {
+            this.sidebarOpened = false;
+            document.getElementById("content").classList.remove("contentOpened");
+            document.getElementById("sidebar").classList.add("sidebarClosed");
+            document.getElementById("info").classList.remove("backgroundDarker");
+        }
+    }
+
     private addNewEmojiReaction(messageId: string, emoji: string): void {
         this.notificationService.sendReaction({
             emoji: emoji,
@@ -1276,24 +1289,5 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 console.log(err);
             }
         );
-    }
-
-    toggleSideBarOpen(value: boolean) {
-        console.log(value);
-        if(value){
-            this.sidebarOpened = true;
-            document.getElementById("content").classList.add("contentOpened");
-            document.getElementById("sidebar").classList.remove("sidebarClosed");
-            document.getElementById("info").classList.add("backgroundDarker");
-        }else {
-            this.sidebarOpened = false;
-            document.getElementById("content").classList.remove("contentOpened");
-            document.getElementById("sidebar").classList.add("sidebarClosed");
-            document.getElementById("info").classList.remove("backgroundDarker");
-
-
-
-        }
-
     }
 }
