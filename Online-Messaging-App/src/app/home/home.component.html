@@ -25,6 +25,7 @@
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
                 [currentUserProfile]="currentUserProfile"
+                [newBannedUser]="newBannedUser"
                 [notificationChannel]="notificationChannel"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
@@ -43,6 +44,7 @@
                     </div>
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
                         <app-chatbox
+                            (newBannedUserEvent)="handleNewBannedUserEvent($event)"
                             (profileViewEvent)="updateProfile($event)"
                             [currentChannel]="selectedChannelId"
                             [currentUserProfile]="currentUserProfile"

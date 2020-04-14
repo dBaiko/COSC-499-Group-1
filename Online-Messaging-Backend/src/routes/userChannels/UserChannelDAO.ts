@@ -231,6 +231,59 @@ class UserChannelDAO {
                 });
         });
     }
+
+    public banUser(channelId: string, username: string): Promise<any> {
+        let params = {
+            TableName: USER_CHANNEL_TABLE_NAME,
+            Key: {
+                channelId: channelId,
+                username: username
+            },
+            UpdateExpression: "SET userChannelRole = :r",
+            ExpressionAttributeValues: {
+                ":r": "banned"
+            }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.update(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("user banned");
+                    resolve();
+                }
+            });
+        });
+    }
+
+    public unBanUser(channelId: string, username: string): Promise<any> {
+        let params = {
+            TableName: USER_CHANNEL_TABLE_NAME,
+            Key: {
+                channelId: channelId,
+                username: username
+            },
+            UpdateExpression: "SET userChannelRole = :r",
+            ExpressionAttributeValues: {
+                ":r": "user"
+            }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.update(params, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log("user unbanned");
+                    resolve();
+                }
+            });
+        });
+    }
+
 }
 
 export default UserChannelDAO;
