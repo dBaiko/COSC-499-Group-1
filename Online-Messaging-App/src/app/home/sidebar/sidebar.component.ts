@@ -248,8 +248,7 @@ export class SidebarComponent implements OnInit {
                                             }
                                             if (i == data.length - 1) {
                                                 resolve(notificationData);
-                                            }
-                                            else if(data.length == 0) {
+                                            } else if (data.length == 0) {
                                                 resolve([]);
                                             }
                                         })
@@ -595,7 +594,7 @@ export class SidebarComponent implements OnInit {
                         CHANNEL_ID_URI +
                         channelId +
                         USERNAME_URI +
-                        this.currentUserProfile.username,
+                        this.auth.getAuthenticatedUser().getUsername(),
                         httpHeaders
                     )
                     .subscribe(
