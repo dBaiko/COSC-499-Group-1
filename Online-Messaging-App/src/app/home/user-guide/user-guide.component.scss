@@ -1,0 +1,21 @@
+.container {
+    height: 100%;
+}
+.scrollMe {
+    overflow-y: scroll;
+}
+h1 {
+    margin-left: 1rem;
+    color: var(--primary-color);
+}
+h2 {
+    margin-left: 1rem;
+    color: var(--primary-color);
+}
+p {
+    margin-left: 1rem;
+    color: var(--primary-text-color);
+}
+li {
+    color: var(--primary-text-color);
+}

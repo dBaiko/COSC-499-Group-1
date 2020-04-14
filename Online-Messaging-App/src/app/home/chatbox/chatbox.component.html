@@ -1,23 +1,23 @@
 <div class="page">
     <div class="wrapper">
         <div class="content-wrapper">
-            <div class="content">
+            <div class="content contentOpened" id="content">
                 <div class="container">
-                    <mat-card class="scrollMe">
+                    <mat-card class="scrollMe" id="info">
                         <div class="headerTop">
                             <mat-card-header class="chat-box-header">
                                 <div *ngIf="this.currentChannel.channelType == 'friend'; else notFriend">
                                     <img
-                                            alt="assets/icon-alt.PNG"
-                                            class="messagePicture"
-                                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                            src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
-                                            style="display: inline"
+                                        alt="assets/icon-alt.PNG"
+                                        class="messagePicture"
+                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
+                                        style="display: inline"
                                     /><!-- TODO: replace with friends user profile picture -->
                                     <mat-card-title
-                                            (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
-                                            class="clickable"
-                                            style="display: inline"
+                                        (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
+                                        class="clickable"
+                                        style="display: inline"
                                     >{{ parseFriendChannelName(currentChannel.channelName) }}</mat-card-title
                                     >
                                 </div>
@@ -30,23 +30,23 @@
                                         </mat-expansion-panel-header>
                                         <div *ngIf="userIsAdmin(); else elseDesc">
                                             <p
-                                                    (click)="this.toggleEditingChannelDescription()"
-                                                    *ngIf="!editingChannelDescription"
+                                                (click)="this.toggleEditingChannelDescription()"
+                                                *ngIf="!editingChannelDescription"
                                             >
                                                 <i id="descMessage">Click to edit description</i><br/>
                                                 {{ this.currentChannel.channelDescription }}
                                             </p>
                                             <form
-                                                    (ngSubmit)="editChannelDescriptionSubmit(this.channelDescForm)"
-                                                    *ngIf="editingChannelDescription"
-                                                    [formGroup]="channelDescForm"
+                                                (ngSubmit)="editChannelDescriptionSubmit(this.channelDescForm)"
+                                                *ngIf="editingChannelDescription"
+                                                [formGroup]="channelDescForm"
                                             >
                                                 <textarea
-                                                        cdkTextareaAutosize
-                                                        class="inputArea channelDescriptionTextArea"
-                                                        formControlName="channelDescription"
-                                                        matInput
-                                                        name="channelDescription"
+                                                    cdkTextareaAutosize
+                                                    class="inputArea channelDescriptionTextArea"
+                                                    formControlName="channelDescription"
+                                                    matInput
+                                                    name="channelDescription"
                                                 >
                                                 </textarea>
                                                 <button class="channelDescButton" mat-button type="submit">Save</button>
@@ -62,22 +62,27 @@
                                     <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
                                         Send Invite
                                     </button>
+                                    <span class="menuButton">
+                                        <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sidebarOpened"
+                                        >chevron_left</mat-icon
+                                        >
+                                    </span>
                                     <div
-                                            (clickOutside)="closeInviting()"
-                                            *ngIf="inviting"
-                                            class="search"
-                                            delayClickOutsideInit="true"
-                                            id="inviteWindow"
+                                        (clickOutside)="closeInviting()"
+                                        *ngIf="inviting"
+                                        class="search"
+                                        delayClickOutsideInit="true"
+                                        id="inviteWindow"
                                     >
                                         <form (ngSubmit)="inviteFormSubmit()" autocomplete="off">
                                             <mat-form-field>
                                                 <mat-label>Search for person to invite</mat-label>
                                                 <label>
                                                     <input
-                                                            (input)="onKey($event)"
-                                                            class="inviteSearch"
-                                                            matInput
-                                                            name="users"
+                                                        (input)="onKey($event)"
+                                                        class="inviteSearch"
+                                                        matInput
+                                                        name="users"
                                                     />
                                                 </label>
                                             </mat-form-field>
@@ -89,34 +94,46 @@
                                                     }}</mat-card-title>
                                                 <mat-card-content>
                                                     <div
-                                                            *ngIf="
+                                                        *ngIf="
                                                             subscribedUsersUsernames.includes(user.username);
                                                             else elseBlock1
                                                         "
-                                                            class="subedOrSent"
+                                                        class="subedOrSent"
                                                     >
                                                         Subscribed
                                                     </div>
                                                     <ng-template #elseBlock1>
                                                         <div
-                                                                *ngIf="
+                                                            *ngIf="
                                                                 this.channelNotificationsUsernames.includes(
                                                                     user.username
                                                                 );
                                                                 else elseBlock2
                                                             "
-                                                                class="subedOrSent"
+                                                            class="subedOrSent"
                                                         >
                                                             Invite Sent
                                                         </div>
                                                         <ng-template #elseBlock2>
                                                             <button
-                                                                    (click)="sendInvite(user.username)"
-                                                                    class="sendInviteButton"
-                                                                    mat-button
+                                                                (click)="sendInvite(user.username)"
+                                                                class="sendInviteButton"
+                                                                mat-button
                                                             >
                                                                 Send Invite
                                                             </button>
+                                                            <span class="menuButton">
+                                                                <mat-icon
+                                                                    (click)="toggleSideBarOpen(true)"
+                                                                    *ngIf="!sidebarOpened"
+                                                                >chevron_left</mat-icon
+                                                                >
+                                                                <mat-icon
+                                                                    (click)="toggleSideBarOpen(false)"
+                                                                    *ngIf="sidebarOpened"
+                                                                >chevron_right</mat-icon
+                                                                >
+                                                            </span>
                                                         </ng-template>
                                                     </ng-template>
                                                 </mat-card-content>
@@ -127,12 +144,12 @@
                             </mat-card-header>
                         </div>
                         <hr id="hrHeader"/>
-                        <!--                        <p>{{ error }}</p>-->
-                        <!--                        <hr/>-->
                         <i class="errorMessage">{{ friendMessage }}</i>
                         <div #scrollframe (scroll)="onScroll()" class="defaultHeight" id="scrollable">
                             <div *ngFor="let chatMessage of chatMessages; let i = index">
-                                <div *ngIf="!chatMessage.username; else elseBlock">
+                                <div
+                                    *ngIf="chatMessage.username == null || chatMessage.username == ' '; else elseBlock"
+                                >
                                     <hr/>
                                     <mat-card-content class="status">
                                         <p id="{{ chatMessage.messageId }}">
@@ -145,14 +162,14 @@
                                         <hr/>
                                         <mat-card-header>
                                             <mat-card-title
-                                                    (click)="goToProfile(chatMessage.username)"
-                                                    class="clickable"
+                                                (click)="goToProfile(chatMessage.username)"
+                                                class="clickable"
                                             >
                                                 <img
-                                                        alt="assets/icon-alt.PNG"
-                                                        class="messagePicture"
-                                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                                        src="{{ chatMessage.profileImage }}"
+                                                    alt="assets/icon-alt.PNG"
+                                                    class="messagePicture"
+                                                    onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                                    src="{{ chatMessage.profileImage }}"
                                                 />
                                                 {{ chatMessage.username }}
                                             </mat-card-title>
@@ -160,7 +177,7 @@
                                     </div>
                                     <div *ngIf="i != 0">
                                         <div
-                                                *ngIf="
+                                            *ngIf="
                                                 i != 0 &&
                                                 i != chatMessages.length - 1 &&
                                                 chatMessage.username != chatMessages[i - 1].username
@@ -169,14 +186,14 @@
                                             <hr/>
                                             <mat-card-header>
                                                 <mat-card-title
-                                                        (click)="goToProfile(chatMessage.username)"
-                                                        class="clickable"
+                                                    (click)="goToProfile(chatMessage.username)"
+                                                    class="clickable"
                                                 >
                                                     <img
-                                                            alt="assets/icon-alt.PNG"
-                                                            class="messagePicture"
-                                                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                                            src="{{ chatMessage.profileImage }}"
+                                                        alt="assets/icon-alt.PNG"
+                                                        class="messagePicture"
+                                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                                        src="{{ chatMessage.profileImage }}"
                                                     />
                                                     <span class="userTitle">
                                                         {{ chatMessage.username }}
@@ -187,7 +204,7 @@
                                     </div>
                                     <div *ngIf="i != 0">
                                         <div
-                                                *ngIf="
+                                            *ngIf="
                                                 i == chatMessages.length - 1 &&
                                                 chatMessage.username != chatMessages[i - 1].username
                                             "
@@ -195,14 +212,14 @@
                                             <hr/>
                                             <mat-card-header>
                                                 <mat-card-title
-                                                        (click)="goToProfile(chatMessage.username)"
-                                                        class="clickable"
+                                                    (click)="goToProfile(chatMessage.username)"
+                                                    class="clickable"
                                                 >
                                                     <img
-                                                            alt="assets/icon-alt.PNG"
-                                                            class="messagePicture"
-                                                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                                            src="{{ chatMessage.profileImage }}"
+                                                        alt="assets/icon-alt.PNG"
+                                                        class="messagePicture"
+                                                        onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                                                        src="{{ chatMessage.profileImage }}"
                                                     />
                                                     <span class="userTitle">
                                                         {{ chatMessage.username }}
@@ -211,44 +228,69 @@
                                             </mat-card-header>
                                         </div>
                                     </div>
-                                    <mat-card-content *ngIf="!chatMessage.deleted; else messageDeleted">
+                                    <mat-card-content
+                                        *ngIf="
+                                            chatMessage.deleted != 'true' && chatMessage.deleted != 'adminTrue';
+                                            else messageDeleted
+                                        "
+                                    >
                                         <p class="message" id="{{ chatMessage.messageId }}">
                                             <span
-                                                    *ngIf="chatMessage.username == currentUserProfile.username"
-                                                    class="icons"
+                                                *ngIf="chatMessage.username == currentUserProfile.username"
+                                                class="icons"
                                             >
                                                 <div
-                                                        (clickOutside)="emojiPopup(chatMessage)"
-                                                        *ngIf="chatMessage.addingEmoji"
-                                                        class="emojiPopup"
-                                                        delayClickOutsideInit="true"
+                                                    (clickOutside)="emojiPopup(chatMessage)"
+                                                    *ngIf="chatMessage.addingEmoji"
+                                                    class="emojiPopup"
+                                                    delayClickOutsideInit="true"
                                                 >
                                                     <span *ngFor="let emoji of emojiList">
                                                         <input
-                                                                (click)="handleNewEmojiReaction(chatMessage, emoji)"
-                                                                class="emoticon"
-                                                                type="button"
-                                                                value="{{ emoji }}"
+                                                            (click)="handleNewEmojiReaction(chatMessage, emoji)"
+                                                            class="emoticon"
+                                                            type="button"
+                                                            value="{{ emoji }}"
                                                         />
                                                     </span>
                                                 </div>
-                                                <mat-icon (click)="emojiPopup(chatMessage)" class="emojiClick"
+                                                <mat-icon
+                                                    (click)="emojiPopup(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                    class="emojiClick"
                                                 >sentiment_very_satisfied</mat-icon
                                                 >
-                                                <mat-icon (click)="toggleEditingMessage(chatMessage)">edit</mat-icon>
-                                                <mat-icon (click)="deleteMessage(chatMessage)">delete</mat-icon>
+                                                <mat-icon
+                                                    (click)="toggleEditingMessage(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                >edit</mat-icon
+                                                >
+                                                <mat-icon
+                                                    (click)="deleteMessage(chatMessage)"
+                                                    *ngIf="
+                                                        userIsAdmin() &&
+                                                        chatMessage.username != currentUserProfile.username
+                                                    "
+                                                    class="adminDelete"
+                                                >delete</mat-icon
+                                                >
+                                                <mat-icon
+                                                    (click)="deleteMessage(chatMessage)"
+                                                    *ngIf="chatMessage.username == currentUserProfile.username"
+                                                >delete</mat-icon
+                                                >
                                             </span>
                                             <span
-                                                    *ngIf="chatMessage.username != currentUserProfile.username"
-                                                    class="icons"
+                                                *ngIf="chatMessage.username != currentUserProfile.username"
+                                                class="icons"
                                             >
                                                 <div *ngIf="chatMessage.addingEmoji" class="emojiPopupNot">
                                                     <span *ngFor="let emoji of emojiList">
                                                         <input
-                                                                (click)="handleNewEmojiReaction(chatMessage, emoji)"
-                                                                class="emoticon"
-                                                                type="button"
-                                                                value="{{ emoji }}"
+                                                            (click)="handleNewEmojiReaction(chatMessage, emoji)"
+                                                            class="emoticon"
+                                                            type="button"
+                                                            value="{{ emoji }}"
                                                         />
                                                     </span>
                                                 </div>
@@ -261,51 +303,58 @@
                                                 }}</markdown>
                                         </p>
                                         <div
-                                                *ngIf="chatMessage.reactions && chatMessage.reactions.length > 0"
-                                                class="reactions"
-                                                id="reactions"
+                                            *ngIf="chatMessage.reactions && chatMessage.reactions.length > 0"
+                                            class="reactions"
+                                            id="reactions"
                                         >
                                             <span *ngFor="let reaction of chatMessage.reactions">
                                                 <button
-                                                        (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
-                                                        *ngIf="reaction.count > 1"
-                                                        class="reaction"
+                                                    (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
+                                                    *ngIf="reaction.count > 1"
+                                                    class="reaction"
                                                 >
                                                     {{ reaction.emoji }} {{ reaction.count }}
                                                 </button>
                                                 <button
-                                                        (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
-                                                        *ngIf="reaction.count <= 1"
-                                                        class="reaction"
+                                                    (click)="handleReactionButtonClick(chatMessage.messageId, reaction)"
+                                                    *ngIf="reaction.count <= 1"
+                                                    class="reaction"
                                                 >
                                                     {{ reaction.emoji }}
                                                 </button>
                                             </span>
                                         </div>
                                         <form
-                                                (ngSubmit)="editFormSubmit(editForm, chatMessage)"
-                                                *ngIf="chatMessage.editing"
-                                                [formGroup]="editForm"
-                                                autocomplete="off"
-                                                id="editForm"
+                                            (ngSubmit)="editFormSubmit(editForm, chatMessage)"
+                                            *ngIf="chatMessage.editing"
+                                            [formGroup]="editForm"
+                                            autocomplete="off"
+                                            id="editForm"
                                         >
                                             <textarea
-                                                    (keydown)="editFormTextAreaSubmit($event)"
-                                                    cdkTextareaAutosize
-                                                    class="inputArea"
-                                                    formControlName="content"
-                                                    matInput
-                                                    name="editContent"
+                                                (keydown)="editFormTextAreaSubmit($event)"
+                                                cdkTextareaAutosize
+                                                class="inputArea"
+                                                formControlName="content"
+                                                matInput
+                                                name="editContent"
                                             ></textarea>
                                             <button id="hiddenButton" style="display:none;" type="submit"></button>
                                         </form>
                                     </mat-card-content>
                                     <ng-template #messageDeleted>
-                                        <mat-card-content>
+                                        <mat-card-content *ngIf="chatMessage.deleted == 'adminTrue'; else deleted">
                                             <i class="deletedMessage" id="{{ chatMessage.messageId }}"
-                                            >Message deleted</i
+                                            >Message removed by admin</i
                                             >
                                         </mat-card-content>
+                                        <ng-template #deleted>
+                                            <mat-card-content>
+                                                <i class="deletedMessage" id="{{ chatMessage.messageId }}"
+                                                >Message deleted</i
+                                                >
+                                            </mat-card-content>
+                                        </ng-template>
                                     </ng-template>
                                 </ng-template>
                             </div>
@@ -314,21 +363,22 @@
                         <div class="footerTop">
                             <mat-card-footer>
                                 <span
-                                        (clickOutside)="emojiClickOutside()"
-                                        *ngIf="this.emojiMessage"
-                                        class="emojiList"
-                                        delayClickOutsideInit="true"
-                                        id="emojiDiv"
+                                    (clickOutside)="emojiClickOutside()"
+                                    *ngIf="this.emojiMessage"
+                                    class="emojiList"
+                                    delayClickOutsideInit="true"
+                                    id="emojiDiv"
                                 >
                                     <span *ngFor="let emoji of emojiList">
                                         <input
-                                                (click)="handleMessageEmojiReaction(emoji)"
-                                                class="emoticon"
-                                                type="button"
-                                                value="{{ emoji }}"
+                                            (click)="handleMessageEmojiReaction(emoji)"
+                                            class="emoticon"
+                                            type="button"
+                                            value="{{ emoji }}"
                                         />
                                     </span>
                                 </span>
+                                <mat-icon (click)="toggleMarkupTutorialOpen()" class="helpSelect">help</mat-icon>
                                 <mat-icon (click)="emojiPopupMessage()" class="emojiSelect">emoji_emotions</mat-icon>
                                 <form
                                     #messageForm="ngForm"
@@ -339,23 +389,23 @@
                                     <mat-list *ngIf="mentioning" class="mentionList">
                                         <div *ngFor="let username of this.mentionList">
                                             <div
-                                                    *ngIf="
+                                                *ngIf="
                                                     selectingFromMention &&
                                                         selectedMentionIndex == this.mentionList.indexOf(username);
                                                     else elseNotSelected
                                                 "
                                             >
                                                 <mat-list-item
-                                                        (click)="clickMentionList(username)"
-                                                        class="selected mentionListItem"
+                                                    (click)="clickMentionList(username)"
+                                                    class="selected mentionListItem"
                                                 >
                                                     @{{ username }}
                                                 </mat-list-item>
                                             </div>
                                             <ng-template #elseNotSelected>
                                                 <mat-list-item
-                                                        (click)="clickMentionList(username)"
-                                                        class="mentionListItem"
+                                                    (click)="clickMentionList(username)"
+                                                    class="mentionListItem"
                                                 >
                                                     @{{ username }}
                                                 </mat-list-item>
@@ -391,11 +441,19 @@
                 </div>
             </div>
         </div>
-        <div class="sidebar">
+        <div class="sidebar " id="sidebar">
+            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"
+            >chevron_right
+            </mat-icon
+            >
             <app-channel-user-list
-                    (profileViewEvent)="goToProfile($event)"
-                    [onlineUserList]="onlineUserList"
-                    [subscribedUsers]="subscribedUsers"
+                (newBannedUserEvent)="handleNewBannedUser($event)"
+                (newUnBannedUserEvent)="handleNewUnBannedUser($event)"
+                (profileViewEvent)="goToProfile($event)"
+                [currentUserProfile]="currentUserProfile"
+                [onlineUserList]="onlineUserList"
+                [subscribedUsersUsernames]="subscribedUsersUsernames"
+                [subscribedUsers]="subscribedUsers"
             >
             </app-channel-user-list>
         </div>

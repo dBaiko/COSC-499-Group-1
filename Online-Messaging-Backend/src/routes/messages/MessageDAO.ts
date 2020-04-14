@@ -171,7 +171,42 @@ export class MessageDAO {
                 UpdateExpression: "SET deleted = :m",
                 ConditionExpression: "messageId = :i",
                 ExpressionAttributeValues: {
-                    ":m": true,
+                    ":m": "true",
+                    ":i": messageId
+                }
+            };
+
+            this.docClient.update(updateObject, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                } else {
+                    let reactionsDAO: ReactionsDAO = new ReactionsDAO(this.docClient);
+                    reactionsDAO
+                        .deleteAllReactionsForMessage(messageId)
+                        .then(() => {
+                            resolve();
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                }
+            });
+        });
+    }
+
+    public adminDeleteMessage(messageId: string, channelId: string, insertTime: number): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            let updateObject = {
+                TableName: tableName,
+                Key: {
+                    channelId: channelId,
+                    insertTime: insertTime
+                },
+                UpdateExpression: "SET deleted = :m",
+                ConditionExpression: "messageId = :i",
+                ExpressionAttributeValues: {
+                    ":m": "adminTrue",
                     ":i": messageId
                 }
             };

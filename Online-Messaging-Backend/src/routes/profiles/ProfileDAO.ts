@@ -238,10 +238,10 @@ export class ProfileDAO {
         return new Promise((resolve, reject) => {
             this.docClient.update(params, (err, data) => {
                 if (err) {
-                    console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
+                    console.error("Unable to update item. Error: " + err);
                     reject();
                 } else {
-                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
+                    console.log("Item updated successfully: " + data);
                     resolve();
                 }
             });

@@ -11,8 +11,7 @@ interface SettingsObject {
 class SettingsDAO {
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {
-    }
+    constructor(private docClient: DocumentClient) {}
 
     public createSettingsInfo(username: string, theme: string): Promise<any> {
         const params = {
