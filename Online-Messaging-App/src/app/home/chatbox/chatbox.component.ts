@@ -23,6 +23,8 @@ import { FormControl, FormGroup, NgForm, Validators } from "@angular/forms";
 import * as Filter from "bad-words";
 import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -46,6 +48,10 @@ const EMOJI_POPUP: string = "emojiClick";
 const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
+
+const DIALOG_WIDTH = "50%";
+const DIALOG_CLASS = "dialog-class";
+const DIALOG_HEIGHT = "60%";
 
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
@@ -93,6 +99,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     selectedMentionIndex: number = -1;
     selectingFromMention: boolean = false;
 
+    markupTutorialOpen: boolean = false;
+
     editForm: FormGroup;
     channelDescForm: FormGroup;
 
@@ -128,6 +136,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private messagerService: MessengerService,
         private http: HttpClient,
         private auth: AuthenticationService,
+        private dialog: MatDialog,
         private notificationService: NotificationService,
         public common: CommonService
     ) {
@@ -782,6 +791,26 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.emojiMessage) {
             this.emojiMessage = false;
         }
+    }
+
+    toggleMarkupTutorialOpen() {
+        this.markupTutorialOpen = !this.markupTutorialOpen;
+
+
+        if (this.markupTutorialOpen) {
+            let dialogConfig = new MatDialogConfig();
+            dialogConfig.disableClose = true;
+            dialogConfig.autoFocus = true;
+            dialogConfig.width = DIALOG_WIDTH;
+            dialogConfig.height = DIALOG_HEIGHT;
+            dialogConfig.panelClass = DIALOG_CLASS;
+
+            let dialogRef = this.dialog.open(MarkupTutorialComponent, dialogConfig);
+            dialogRef.afterClosed().subscribe(() => {
+                this.markupTutorialOpen = false;
+            });
+        }
+
     }
 
     private addNewEmojiReaction(messageId: string, emoji: string): void {

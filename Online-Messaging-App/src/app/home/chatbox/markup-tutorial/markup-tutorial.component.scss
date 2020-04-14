@@ -1,0 +1,17 @@
+.container {
+    color: var(--primary-text-color);
+    overflow: auto;
+}
+
+#xButton {
+    float: right;
+}
+
+markdown ::ng-deep p code {
+    background-color: var(--soft-black);
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border-radius: 10%;
+    color: white;
+    font-family: Consolas;
+}
