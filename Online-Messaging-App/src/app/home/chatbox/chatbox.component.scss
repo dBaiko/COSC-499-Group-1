@@ -16,7 +16,7 @@ mat-form-field {
 
 #scrollable {
   overflow-y: auto;
-  margin-top: 1rem;
+  //margin-top: 1rem;
   height: 76% !important;
 }
 
@@ -33,11 +33,15 @@ mat-form-field {
 }
 
 hr {
-  border: 1px solid var(--soft-black);
+  border: 1px solid var(--line-colour);
+    margin-right: 1rem;
 }
 
 hr::ng-deep pre {
-  border: 1px solid var(--element-color);
+  border: 1px solid var(--line-colour);
+}
+#hrHeader{
+    margin-bottom: 0rem;
 }
 
 mat-card-title {
@@ -50,7 +54,7 @@ mat-card-title {
 }
 
 mat-card-footer {
-  width: 93%;
+  width: 98%;
   position: absolute;
   bottom: 3.2rem;
   text-align: center;
@@ -80,6 +84,7 @@ mat-label {
   border-radius: 0;
   background-color: var(--primary-color);
   color: white;
+    margin-top: 0.5rem;
 }
 
 .inviteButton:hover {
@@ -271,8 +276,8 @@ mat-expansion-panel:hover {
   // max-width: 1160px;
   margin: 0 auto;
   position: relative;
-  padding: 0 20px;
-  min-height: 600px;
+  //padding: 0 20px;
+  //min-height: 600px;
 }
 
 .content-wrapper {
@@ -285,7 +290,7 @@ mat-expansion-panel:hover {
   height: 100%;
   margin-right: 250px;
   clear: both;
-  min-height: 600px;
+  //min-height: 600px;
 }
 
 .container {
@@ -420,10 +425,12 @@ mark {
 .reaction {
   background-color: dimgrey;
   margin-right: 0.3rem;
+    margin-top: 0.1rem;
   padding: 0.1rem 0.2rem 0.1rem 0.2rem;
   border: none;
   border-radius: 10%;
   font-size: 1.25rem;
+    text-align: center;
 }
 
 .reaction:hover {

@@ -11,6 +11,7 @@ export interface ColorScheme {
     "hover-color": string;
     "element-hover-color": string;
     "scroll-background": string;
+    "line-colour": string;
 }
 
 export const LightThemeColors: ColorScheme = {
@@ -23,7 +24,8 @@ export const LightThemeColors: ColorScheme = {
     "element-color": "#ffffff",
     "hover-color": "#393939",
     "element-hover-color": "#f5f5f5",
-    "scroll-background": "#d1d1d1"
+    "scroll-background": "#d1d1d1",
+    "line-colour": "#c7c7c7"
 };
 
 export const DarkThemeColors: ColorScheme = {
@@ -36,7 +38,8 @@ export const DarkThemeColors: ColorScheme = {
     "element-color": "#282828",
     "hover-color": "#393939",
     "element-hover-color": "#3f3f3f",
-    "scroll-background": "#424242"
+    "scroll-background": "#424242",
+    "line-colour": "#3f3f3f"
 };
 
 @Component({
@@ -61,5 +64,7 @@ export class AppComponent {
         document.documentElement.style.setProperty("--element-color", LightThemeColors["element-color"]);
         document.documentElement.style.setProperty("--hover-color", LightThemeColors["hover-color"]);
         document.documentElement.style.setProperty("--element-hover-color", LightThemeColors["element-hover-color"]);
+        document.documentElement.style.setProperty("--line-colour", LightThemeColors["line-colour"]);
+
     }
 }
