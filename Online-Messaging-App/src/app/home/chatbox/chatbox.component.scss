@@ -317,6 +317,10 @@ mat-expansion-panel:hover {
 
 .mentionList {
     background-color: var(--soft-black);
+    margin-left: 0.5%;
+    overflow-y: auto;
+    max-height: 49rem;
+    width: 99.5%;
 }
 
 .mentionListItem:hover {
