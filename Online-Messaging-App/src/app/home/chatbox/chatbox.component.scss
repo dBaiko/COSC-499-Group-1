@@ -367,8 +367,12 @@ mark {
     flex-direction: row;
     margin-bottom: -10rem;
     margin-right: 1.2rem;
-    z-index: 100000000;
+    z-index: 100;
     background-color: var(--element-hover-color);
+}
+
+.emojiDefault {
+    left: 2rem;
 }
 
 .emojiPopupNot {
@@ -384,7 +388,7 @@ mark {
     flex-direction: row;
     margin-bottom: -10rem;
     margin-right: 4.2rem;
-    z-index: 100000000;
+    z-index: 100;
     background-color: var(--element-hover-color);
 }
 

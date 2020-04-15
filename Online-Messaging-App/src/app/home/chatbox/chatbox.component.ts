@@ -89,7 +89,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
-    @ViewChild("sidenav") sidebar;
+
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
 
     mentioning: boolean = false;
@@ -156,6 +156,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             this._newUserSubbedChannel = value;
             this.sendStatus(value);
             this.newUserEvent = value.username;
+            this.notificationService.sendNewUserJoinedChannelEvent(value);
         }
     }
 
@@ -312,10 +313,30 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
 
         this.notificationService.addSocketListener("ban_broadcast", () => {
-            this.getSubcribedUsers().catch((err) => {
-                console.log(err);
-            });
+            this.getSubcribedUsers()
+                .catch((err) => {
+                    console.log(err);
+                });
         });
+
+        this.notificationService.addSocketListener("newUserSubbedChannel_broadcast", (user: NewUsersSubbedChannelObject) => {
+            if (user.channelId == this.currentChannel.channelId) {
+                this.getSubcribedUsers()
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        });
+
+        this.notificationService.addSocketListener("newUserLeftChannel_broadcast", (user: NewUsersSubbedChannelObject) => {
+            if (user.channelId == this.currentChannel.channelId) {
+                this.getSubcribedUsers()
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            }
+        });
+
     }
 
     ngAfterViewChecked() {
@@ -663,12 +684,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     channelId: chatMessage.channelId,
                                     channelName: this.currentChannel.channelName,
                                     channelType: this.currentChannel.channelType,
-                                    message:
-                                        "The admin " +
-                                        this.currentUserProfile.username +
-                                        " has removed your message on the channel " +
-                                        this.currentChannel.channelName +
-                                        ".",
+                                    message: "The admin " + this.currentUserProfile.username + " has removed your message on the channel " + this.currentChannel.channelName + ".",
                                     type: "general",
                                     username: chatMessage.username,
                                     fromFriend: this.currentUserProfile.username,
@@ -711,6 +727,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             }
                         );
                 }
+
             },
             (err) => {
                 console.log(err);
@@ -855,6 +872,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     toggleMarkupTutorialOpen() {
         this.markupTutorialOpen = !this.markupTutorialOpen;
 
+
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
@@ -868,6 +886,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.markupTutorialOpen = false;
             });
         }
+
     }
 
     handleNewBannedUser(user: UserChannelObject) {
@@ -1003,26 +1022,24 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private sendStatus(newUsersSubbedChannel: NewUsersSubbedChannelObject): void {
-        if (!this.subscribedUsersUsernames.includes(newUsersSubbedChannel.username)) {
-            if (newUsersSubbedChannel.joined) {
-                let chatMessage = {
-                    channelId: newUsersSubbedChannel.channelId,
-                    username: null,
-                    content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
-                    profileImage: null
-                };
-                this.isNearBottom = false;
-                this.messagerService.sendMessage(chatMessage);
-            } else {
-                let chatMessage = {
-                    channelId: newUsersSubbedChannel.channelId,
-                    username: null,
-                    content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
-                    profileImage: null
-                };
-                this.isNearBottom = false;
-                this.messagerService.sendMessage(chatMessage);
-            }
+        if (newUsersSubbedChannel.joined) {
+            let chatMessage = {
+                channelId: newUsersSubbedChannel.channelId,
+                username: null,
+                content: newUsersSubbedChannel.username + JOINED_CHANNEL_MESSAGE,
+                profileImage: null
+            };
+            this.isNearBottom = false;
+            this.messagerService.sendMessage(chatMessage);
+        } else {
+            let chatMessage = {
+                channelId: newUsersSubbedChannel.channelId,
+                username: null,
+                content: newUsersSubbedChannel.username + LEFT_CHANNEL_MESSAGE,
+                profileImage: null
+            };
+            this.isNearBottom = false;
+            this.messagerService.sendMessage(chatMessage);
         }
     }
 
@@ -1268,7 +1285,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                                 this.chatMessages = data.concat(this.chatMessages);
 
-                                let top = document.getElementById(this.messageToScrollTo.messageId).offsetTop;
+                                let top = (document.getElementsByClassName(this.messageToScrollTo.messageId).item(0) as HTMLElement).offsetTop;
                                 this.scrollContainer.nativeElement.scrollTop = top - 150;
 
                                 for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
