@@ -99,15 +99,15 @@ export class HomeComponent implements OnInit {
             this.getUserInfo().catch((err) => {
                 console.error(err);
             });
+
+            this.notificationService.addSocketListener("kickEvent", (user: UserChannelObject) => {
+                this.handleNewBannedUserEvent(user);
+            });
+
+            this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
+                this.handleNewUnBannedUserEvent(user);
+            });
         }
-
-        this.notificationService.addSocketListener("kickEvent", (user: UserChannelObject) => {
-            this.handleNewBannedUserEvent(user);
-        });
-
-        this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
-            this.handleNewUnBannedUserEvent(user);
-        });
     }
 
     receiveId($event) {
