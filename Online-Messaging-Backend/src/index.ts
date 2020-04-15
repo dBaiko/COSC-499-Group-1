@@ -201,6 +201,18 @@ io.on("connection", (socketIO) => {
         }
     });
 
+    socketIO.on("newUserSubbedChannelEvent", (user) => {
+        for (let socketUser of users) {
+            socketIO.broadcast.to(socketUser.id).emit("newUserSubbedChannel_broadcast", user);
+        }
+    });
+
+    socketIO.on("newUserLeftChannelEvent", (user) => {
+        for (let socketUser of users) {
+            socketIO.broadcast.to(socketUser.id).emit("newUserLeftChannel_broadcast", user);
+        }
+    });
+
     socketIO.on("exit", (username: string) => {
         for (let i = 0; i < users.length; i++) {
             if (users[i].username === username) {
