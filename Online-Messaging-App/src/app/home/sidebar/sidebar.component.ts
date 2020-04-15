@@ -438,6 +438,7 @@ export class SidebarComponent implements OnInit {
 
                         for (let i = 0; i < this.userSubscribedChannels.length; i++) {
                             if (this.userSubscribedChannels[i].channelId == channel.channelId) {
+                                this.notificationService.sendNewUserLeftChannelEvent(this.userSubscribedChannels[i]);
                                 this.userSubscribedChannels.splice(i, 1);
                             }
                         }
