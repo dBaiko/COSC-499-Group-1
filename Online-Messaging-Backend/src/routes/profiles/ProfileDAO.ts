@@ -283,7 +283,7 @@ export class ProfileDAO {
     }
 
     public updateProfileImage(file: Express.Multer.File, username: string): Promise<any> {
-        let path = "./src/routes/profiles/temp/" + file.filename;
+        let path = "routes/profiles/temp/" + file.filename;
 
         let s3 = new aws.S3({ endpoint: "s3.ca-central-1.amazonaws.com" });
 

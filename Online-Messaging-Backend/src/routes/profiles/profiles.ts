@@ -26,7 +26,7 @@ const COGNITO_USERNAME = "cognito:username";
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "temp");
+        callback(null, "routes/profiles/temp/");
     },
     filename: (req, file, callback) => {
         callback(null, file.originalname);
