@@ -25,6 +25,8 @@ import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
+import {LayoutModule} from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -52,7 +54,6 @@ const SCROLLABLE_IDENTIFIER: string = "scrollable";
 const DIALOG_WIDTH = "50%";
 const DIALOG_CLASS = "dialog-class";
 const DIALOG_HEIGHT = "60%";
-
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
 const DENIED_INVITE_MESSAGE: string =
@@ -89,9 +90,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
-
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
-
     mentioning: boolean = false;
     mentionList: Array<string> = [];
     mentioningIndex: number = 0;
@@ -140,7 +139,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private auth: AuthenticationService,
         private dialog: MatDialog,
         private notificationService: NotificationService,
-        public common: CommonService
+        public common: CommonService,
+        public breakpointObserver: BreakpointObserver
     ) {
     }
 
@@ -336,6 +336,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     });
             }
         });
+
+        this.breakpointObserver
+            .observe(['(max-width: 450px)'])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.toggleSideBarOpen(false);
+                } else {
+                    this.toggleSideBarOpen(true);
+                }
+            });
 
     }
 
