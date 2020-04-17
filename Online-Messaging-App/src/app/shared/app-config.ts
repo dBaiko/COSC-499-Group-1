@@ -268,7 +268,7 @@ export interface UserProfileObject {
     citizenship?: string;
     grade?: number;
     gradYear?: string;
-    previousCollegiate?: boolean;
+    previousCollegiate?: string;
     street?: string;
     unitNumber?: string;
     city?: string;
@@ -327,7 +327,7 @@ export interface ProfileObject {
     citizenship?: string;
     grade?: number;
     gradYear?: string;
-    previousCollegiate?: boolean;
+    previousCollegiate?: string;
     street?: string;
     unitNumber?: string;
     city?: string;
