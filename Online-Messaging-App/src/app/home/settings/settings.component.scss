@@ -1,5 +1,6 @@
 mat-card {
     background: var(--element-color);
+    height: 100%;
 }
 
 mat-card-content {
@@ -19,15 +20,12 @@ mat-icon {
 
 .wrapper {
     margin: auto;
+    height: 100%;
 }
 
 #settingsTitle {
     font-size: 43px;
     margin-left: 1vh;
-}
-
-.wrapper {
-    margin-top: 2vh;
 }
 
 ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {

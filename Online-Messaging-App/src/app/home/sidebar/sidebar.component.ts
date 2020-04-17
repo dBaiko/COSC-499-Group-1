@@ -408,7 +408,6 @@ export class SidebarComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = DIALOG_WIDTH;
         dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);

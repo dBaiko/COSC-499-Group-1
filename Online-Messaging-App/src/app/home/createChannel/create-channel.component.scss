@@ -1,5 +1,6 @@
 .container {
     color: var(--soft-black);
+    width: 50rem;
 }
 
 h2 {
@@ -22,7 +23,6 @@ mat-label {
 }
 
 mat-form-field {
-    width: 20em;
     color: var(--primary-text-color);
 }
 
@@ -78,4 +78,10 @@ button:hover {
 
 #cancel {
     background-color: grey;
+}
+
+@media (max-width: 450px) {
+    .container {
+        width: 60vw;
+    }
 }

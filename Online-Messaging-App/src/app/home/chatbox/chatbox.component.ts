@@ -26,8 +26,7 @@ import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
-import {LayoutModule} from '@angular/cdk/layout';
-import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -353,7 +352,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
 
         this.breakpointObserver
-            .observe(['(max-width: 450px)'])
+            .observe(["(max-width: 450px)"])
             .subscribe((state: BreakpointState) => {
                 if (state.matches) {
                     this.toggleSideBarOpen(false);
@@ -912,8 +911,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
-            dialogConfig.autoFocus = true;
-            dialogConfig.width = DIALOG_WIDTH;
+            dialogConfig.autoFocus = false;
+            //dialogConfig.width = DIALOG_WIDTH;
             dialogConfig.height = DIALOG_HEIGHT;
             dialogConfig.panelClass = DIALOG_CLASS;
 
