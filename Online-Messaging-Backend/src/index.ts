@@ -41,6 +41,13 @@ export interface UserChannelObject {
     notificationCount?: number;
 }
 
+export interface FriendTaglineUpdateEventObject {
+    username: string,
+    fromFriend: string,
+    status: string
+}
+
+
 const app = express();
 const port = 8080; // default port to listen
 
@@ -210,6 +217,14 @@ io.on("connection", (socketIO) => {
     socketIO.on("newUserLeftChannelEvent", (user) => {
         for (let socketUser of users) {
             socketIO.broadcast.to(socketUser.id).emit("newUserLeftChannel_broadcast", user);
+        }
+    });
+
+    socketIO.on("friendTaglineUpdateEvent", (friend: FriendTaglineUpdateEventObject) => {
+        for (let socketUser of users) {
+            if (socketUser.username == friend.username) {
+                socketIO.broadcast.to(socketUser.id).emit("friendTaglineUpdateEvent_broadcast", friend);
+            }
         }
     });
 

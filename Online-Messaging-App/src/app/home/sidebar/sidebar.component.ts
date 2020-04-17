@@ -56,6 +56,7 @@ export class SidebarComponent implements OnInit {
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
     @Output() newUserSubbedChannelEvent = new EventEmitter<NewUsersSubbedChannelObject>();
+    @Output() goToChannelFromNotificationEvent = new EventEmitter();
     publicChannelSelect: boolean;
     privateChannelSelect: boolean;
     friendChannelSelect: boolean;
@@ -130,6 +131,28 @@ export class SidebarComponent implements OnInit {
                 username: this.currentUserProfile.username,
                 joined: true
             });
+        }
+    }
+
+    private _channelToGoToFromNotification: ChannelIdAndType;
+
+    get channelToGoToFromNotification(): ChannelIdAndType {
+        return this._channelToGoToFromNotification;
+    };
+
+    @Input()
+    set channelToGoToFromNotification(value: ChannelIdAndType) {
+        if (value) {
+            this._channelToGoToFromNotification = value;
+            this.selectChannel(value.channelId, value.type);
+            this.switchDisplay(this.chatBox);
+            if (value.type == PUBLIC) {
+                this.selectPublicChannel();
+            } else if (value.type == PRIVATE) {
+                this.selectPrivateChannel();
+            } else if (value.type == FRIEND) {
+                this.selectFriend();
+            }
         }
     }
 

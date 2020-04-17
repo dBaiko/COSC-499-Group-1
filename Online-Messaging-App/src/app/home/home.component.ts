@@ -43,7 +43,8 @@ export class HomeComponent implements OnInit {
     selectedChannelId: ChannelObject;
     newAddedChannel: ChannelObject;
     newSubbedChannel: ChannelObject;
-    notificationChannel: ChannelIdAndType;
+    newUserSubscribedChannelFromNotification: ChannelIdAndType;
+    channelToGoToFromNotification: ChannelIdAndType;
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
@@ -126,8 +127,12 @@ export class HomeComponent implements OnInit {
         this.display = value;
     }
 
-    updateFromNotification(channel: ChannelIdAndType): void {
-        this.notificationChannel = channel;
+    handleNewUserSubscriptionFromChannel(channel: ChannelIdAndType): void {
+        this.newUserSubscribedChannelFromNotification = channel;
+    }
+
+    handleGoToChannelFromNotification(channel: ChannelIdAndType): void {
+        this.channelToGoToFromNotification = channel;
     }
 
     updateProfile(value: string): void {
