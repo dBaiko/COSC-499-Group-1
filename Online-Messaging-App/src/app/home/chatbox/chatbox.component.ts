@@ -388,6 +388,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     data[i].content = this.filterClean(data[i].content);
                                 }
                             }
+
                             this.chatMessages = data || [];
                             this.loadCount = data.length;
                             resolve();
@@ -1315,10 +1316,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     }
                                 }
 
+
                                 this.chatMessages = data.concat(this.chatMessages);
 
                                 let top = (document.getElementsByClassName(this.messageToScrollTo.messageId).item(0) as HTMLElement).offsetTop;
-                                this.scrollContainer.nativeElement.scrollTop = top - 150;
+                                this.scrollContainer.nativeElement.scrollTop = top - 130;
 
                                 for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
                                     this.getReactionsForMessage(this.chatMessages[i].messageId).then((reactions) => {
