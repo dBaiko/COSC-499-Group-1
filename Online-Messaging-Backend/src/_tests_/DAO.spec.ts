@@ -289,6 +289,7 @@ describe("UserChannelDAO", () => {
         expect(item).toEqual(expected);
     });
 
+    
     it("should return a list of all users subscribed to a channel", async () => {
         const item = await userChannel.getAllSubscribedUsers("ID01");
         const expected = ddb.get({tableName: "UserChannel", channelId: "ID01"});
