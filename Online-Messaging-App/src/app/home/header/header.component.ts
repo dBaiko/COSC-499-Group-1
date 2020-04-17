@@ -65,7 +65,7 @@ export class HeaderComponent implements OnInit {
 
     constructor(
         private _eref: ElementRef,
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private notificationService: NotificationService,
         private http: HttpClient,
         public common: CommonService

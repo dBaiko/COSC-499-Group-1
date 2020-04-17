@@ -32,6 +32,7 @@ export class MessageDAO {
         const params = {
             TableName: tableName,
             KeyConditionExpression: this.channelIdQueryDeclaration,
+            ScanIndexForward: true,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }

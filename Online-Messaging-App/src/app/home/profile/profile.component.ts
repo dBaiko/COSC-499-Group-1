@@ -274,7 +274,7 @@ export class ProfileComponent implements OnInit {
         this.editForm.get(DATEOFBIRTH_FORM_NAME).setValue((this.userProfile.dateOfBirth != "1111-01-01" && this.userProfile.dateOfBirth != " ") ? this.userProfile.dateOfBirth : "");
         this.editForm.get(CITIZENSHIP_FORM_NAME).setValue((this.userProfile.citizenship) ? this.userProfile.citizenship : "N/A");
         this.editForm.get(GRADE_FORM_NAME).setValue((this.userProfile.grade) ? this.userProfile.grade : "N/A");
-        this.editForm.get(GRADYEAR_FORM_NAME).setValue((this.userProfile.gradYear != "N/A") ? this.userProfile.gradYear : "");
+        this.editForm.get(GRADYEAR_FORM_NAME).setValue((this.userProfile.gradYear != "N/A" && this.userProfile.gradYear != "2000") ? this.userProfile.gradYear : "");
         this.editForm.get(PREVIOUSCOLLEGIATE_FORM_NAME).setValue((this.userProfile.previousCollegiate) ? this.userProfile.previousCollegiate : "N/A");
         this.editForm.get(STREET_FORM_NAME).setValue((this.userProfile.street) ? this.userProfile.street : "N/A");
         this.editForm.get(UNITNUMBER_FORM_NAME).setValue((this.userProfile.unitNumber) ? this.userProfile.unitNumber : "N/A");
@@ -480,7 +480,7 @@ export class ProfileComponent implements OnInit {
         citizenship: string,
         grade: number,
         gradYear: string,
-        previousCollegiate: boolean,
+        previousCollegiate: string,
         street: string,
         unitNumber: string,
         city: string,
