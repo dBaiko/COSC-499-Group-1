@@ -1,7 +1,8 @@
 <div *ngIf="userLoggedIn; else elseBlock" id="home">
     <app-header
+        (goToChannelFromNotificationEvent)="handleGoToChannelFromNotification($event)"
         (newChannelEvent)="receiveNewSubbedChannel($event)"
-        (notificationChannelEvent)="updateFromNotification($event)"
+        (newUserSubscriptionFromNotificationEvent)="handleNewUserSubscriptionFromChannel($event)"
         (profileViewEvent)="updateProfile($event)"
         (sideBarToggleEvent)="toggleSidebarOpen()"
         (switchEvent)="updateDisplay($event)"
@@ -11,12 +12,12 @@
     <mat-sidenav-container class="container">
         <mat-sidenav
             #sidenav
+            [mode]="value ? 'side' : 'over'"
             [(opened)]="sidebarOpened"
             [fixedBottomGap]="options.value.bottom"
             [fixedInViewport]="!!options.value.fixed"
             [fixedTopGap]="options.value.top"
             class="sidenav"
-            mode="side"
         >
             <app-sidebar
                 (channelEvent)="receiveId($event)"
@@ -24,9 +25,10 @@
                 (newUserSubbedChannelEvent)="setNewUserSubbedChannel($event)"
                 (profileViewEvent)="updateProfile($event)"
                 (switchEvent)="updateDisplay($event)"
+                [channelToGoToFromNotification]="channelToGoToFromNotification"
                 [currentUserProfile]="currentUserProfile"
                 [newBannedUser]="newBannedUser"
-                [notificationChannel]="notificationChannel"
+                [notificationChannel]="newUserSubscribedChannelFromNotification"
                 [subbedChannel]="newSubbedChannel"
                 [userList]="userList"
             ></app-sidebar>
@@ -44,7 +46,6 @@
                     </div>
                     <div *ngSwitchCase="'chatBox'" class="scrollMe">
                         <app-chatbox
-                            (newBannedUserEvent)="handleNewBannedUserEvent($event)"
                             (profileViewEvent)="updateProfile($event)"
                             [currentChannel]="selectedChannelId"
                             [currentUserProfile]="currentUserProfile"
@@ -71,8 +72,7 @@
                         </app-settings>
                     </div>
                     <div *ngSwitchCase="'userGuide'" class="scrollMe">
-                        <app-user-guide (explicitEvent)="setExplicit($event)" (themeEvent)="changeTheme($event)">
-                        </app-user-guide>
+                        <app-user-guide></app-user-guide>
                     </div>
                 </div>
             </div>

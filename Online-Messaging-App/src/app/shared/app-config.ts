@@ -267,8 +267,8 @@ export interface UserProfileObject {
     dateOfBirth?: string;
     citizenship?: string;
     grade?: number;
-    gradYear?: number;
-    previousCollegiate?: boolean;
+    gradYear?: string;
+    previousCollegiate?: string;
     street?: string;
     unitNumber?: string;
     city?: string;
@@ -326,8 +326,8 @@ export interface ProfileObject {
     dateOfBirth?: string;
     citizenship?: string;
     grade?: number;
-    gradYear?: number;
-    previousCollegiate?: boolean;
+    gradYear?: string;
+    previousCollegiate?: string;
     street?: string;
     unitNumber?: string;
     city?: string;
@@ -353,6 +353,16 @@ export interface SettingsObject {
     username: string;
     theme: string;
     explicit: boolean;
+}
+
+export interface FriendTaglineUpdateEventObject {
+    username: string,
+    fromFriend: string,
+    status: string
+}
+
+export interface ProfileImageUpdateObject {
+    profileImage: string
 }
 
 export const EmojiList = [

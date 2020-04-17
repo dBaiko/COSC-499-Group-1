@@ -6,6 +6,7 @@ import {
     ChannelObject,
     Constants,
     EmojiList,
+    FriendTaglineUpdateEventObject,
     InviteChannelObject,
     MessageObject,
     NewUsersSubbedChannelObject,
@@ -25,6 +26,7 @@ import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -52,7 +54,6 @@ const SCROLLABLE_IDENTIFIER: string = "scrollable";
 const DIALOG_WIDTH = "50%";
 const DIALOG_CLASS = "dialog-class";
 const DIALOG_HEIGHT = "60%";
-
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
 const DENIED_INVITE_MESSAGE: string =
@@ -89,9 +90,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
-
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
-
     mentioning: boolean = false;
     mentionList: Array<string> = [];
     mentioningIndex: number = 0;
@@ -124,8 +123,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     @Output() profileViewEvent = new EventEmitter<string>();
     @ViewChild(SCROLL_FRAME_IDENTIFIER) scrollContainer: ElementRef;
     toggleEmoji = false;
+    friendsProfileImage: string;
     private channelsURL: string = APIConfig.channelsAPI;
     private messagesAPI: string = APIConfig.messagesAPI;
+    private profilesAPI: string = APIConfig.profilesAPI;
     private isNearBottom = false;
     private atBottom = true;
     private textAreaHeight = 0;
@@ -140,7 +141,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private auth: AuthenticationService,
         private dialog: MatDialog,
         private notificationService: NotificationService,
-        public common: CommonService
+        public common: CommonService,
+        public breakpointObserver: BreakpointObserver
     ) {
     }
 
@@ -157,6 +159,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             this.sendStatus(value);
             this.newUserEvent = value.username;
             this.notificationService.sendNewUserJoinedChannelEvent(value);
+            this.subscribedUsers.push({
+                username: value.username,
+                channelId: value.channelId,
+                channelName: this.currentChannel.channelId,
+                channelType: this.currentChannel.channelType,
+                userChannelRole: "user"
+            });
         }
     }
 
@@ -221,6 +230,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     } else {
                         this.friendMessage = null;
                     }
+
+                    let friendsUsername = this.parseFriendChannelName(this.currentChannel.channelName);
+                    this.getFriendsProfilePicture(friendsUsername);
+
                 } else {
                     this.friendMessage = null;
                 }
@@ -231,6 +244,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.getChannelNotifications().catch((err) => {
             console.error(err);
         });
+
     }
 
     ngOnInit(): void {
@@ -337,6 +351,24 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         });
 
+        this.breakpointObserver
+            .observe(["(max-width: 450px)"])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.toggleSideBarOpen(false);
+                } else {
+                    this.toggleSideBarOpen(true);
+                }
+            });
+
+        this.notificationService.addSocketListener("friendTaglineUpdateEvent_broadcast", (user: FriendTaglineUpdateEventObject) => {
+            if (user.status == "accepted") {
+                this.friendMessage = null;
+            } else if (user.status == "denied") {
+                this.friendMessage = user.fromFriend + DENIED_INVITE_MESSAGE;
+            }
+        });
+
     }
 
     ngAfterViewChecked() {
@@ -365,6 +397,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     data[i].content = this.filterClean(data[i].content);
                                 }
                             }
+
                             this.chatMessages = data || [];
                             this.loadCount = data.length;
                             resolve();
@@ -812,11 +845,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     userIsAdmin(): boolean {
         if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
-            if (
-                this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
-                    .userChannelRole == "admin"
-            ) {
-                return true;
+            if (this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]) {
+                if (
+                    this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
+                        .userChannelRole == "admin"
+                ) {
+                    return true;
+                }
             }
         }
         return false;
@@ -876,8 +911,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
-            dialogConfig.autoFocus = true;
-            dialogConfig.width = DIALOG_WIDTH;
+            dialogConfig.autoFocus = false;
+            //dialogConfig.width = DIALOG_WIDTH;
             dialogConfig.height = DIALOG_HEIGHT;
             dialogConfig.panelClass = DIALOG_CLASS;
 
@@ -932,8 +967,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     }
 
     private sendMentionNotification(username): void {
-        let message: string =
-            this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        let message: string;
+        if (this.currentChannel.channelType == "friend") {
+            message = this.currentUserProfile.username + " has mentioned you in your direct messages";
+        } else {
+            message = this.currentUserProfile.username + " has mentioned you on " + this.currentChannel.channelName;
+        }
         let notifications: NotificationSocketObject = {
             fromUser: {
                 username: this.auth.getAuthenticatedUser().getUsername(),
@@ -1102,7 +1141,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 this.channelNotifications = data;
                                 let usernames: Array<string> = [];
                                 for (let i in data) {
-                                    usernames.push(data[i].username);
+                                    if (data[i].type == "public" || data[i].type == "private" || data[i].type == "friend") {
+                                        usernames.push(data[i].username);
+                                    }
                                 }
                                 this.channelNotificationsUsernames = usernames;
                                 resolve(data);
@@ -1283,10 +1324,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     }
                                 }
 
+
                                 this.chatMessages = data.concat(this.chatMessages);
 
                                 let top = (document.getElementsByClassName(this.messageToScrollTo.messageId).item(0) as HTMLElement).offsetTop;
-                                this.scrollContainer.nativeElement.scrollTop = top - 150;
+                                this.scrollContainer.nativeElement.scrollTop = top - 130;
 
                                 for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
                                     this.getReactionsForMessage(this.chatMessages[i].messageId).then((reactions) => {
@@ -1307,4 +1349,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         );
     }
+
+    private getFriendsProfilePicture(username: string) {
+        this.auth.getCurrentSessionId().subscribe(
+            (data) => {
+                let httpHeaders = {
+                    headers: new HttpHeaders({
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + data.getJwtToken()
+                    })
+                };
+
+                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                    (data: Array<ProfileObject>) => {
+                        this.friendsProfileImage = data[0].profileImage += Constants.QUESTION_MARK + Math.random();
+                        ;
+                    },
+                    (err) => {
+                        console.log(err);
+                    }
+                );
+
+            });
+    }
+
 }

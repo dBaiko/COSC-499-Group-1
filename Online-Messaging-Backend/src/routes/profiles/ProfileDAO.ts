@@ -18,8 +18,8 @@ export interface ProfileObject {
     dateOfBirth: string;
     citizenship: string;
     grade: number;
-    gradYear: number;
-    previousCollegiate: boolean;
+    gradYear: string;
+    previousCollegiate: string;
     street: string;
     unitNumber: string;
     city: string;
@@ -103,10 +103,10 @@ export class ProfileDAO {
             profile.grade = 0;
         }
         if (!profile.gradYear) {
-            profile.gradYear = 2000;
+            profile.gradYear = "2000";
         }
         if (!profile.previousCollegiate) {
-            profile.previousCollegiate = false;
+            profile.previousCollegiate = " ";
         }
         if (!profile.street) {
             profile.street = " ";
@@ -336,7 +336,7 @@ export class ProfileDAO {
                                     console.log(err);
                                     reject(err);
                                 });
-                            resolve(profileImageFilename);
+                            resolve(PROFILE_IMAGE_S3_PREFIX + profileImageFilename);
                         }
                     });
                 }

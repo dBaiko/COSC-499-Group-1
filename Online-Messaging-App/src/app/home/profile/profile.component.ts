@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from "@angular/core";
-import { APIConfig, Constants, ProfileObject, UserProfileObject } from "../../shared/app-config";
+import {
+    APIConfig,
+    Constants,
+    ProfileImageUpdateObject,
+    ProfileObject,
+    UserProfileObject
+} from "../../shared/app-config";
 import { AuthenticationService } from "../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -260,34 +266,34 @@ export class ProfileComponent implements OnInit {
 
     toggleEditing(editing: boolean) {
         this.editing = editing;
-        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName);
-        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName);
-        this.editForm.get(BIO_FORM_NAME).setValue(this.userProfile.bio);
-        this.editForm.get(PHONE_FORM_NAME).setValue(this.userProfile.phone);
-        this.editForm.get(GENDER_FORM_NAME).setValue(this.userProfile.gender);
-        this.editForm.get(DATEOFBIRTH_FORM_NAME).setValue(this.userProfile.dateOfBirth);
-        this.editForm.get(CITIZENSHIP_FORM_NAME).setValue(this.userProfile.citizenship);
-        this.editForm.get(GRADE_FORM_NAME).setValue(this.userProfile.grade);
-        this.editForm.get(GRADYEAR_FORM_NAME).setValue(this.userProfile.gradYear);
-        this.editForm.get(PREVIOUSCOLLEGIATE_FORM_NAME).setValue(this.userProfile.previousCollegiate);
-        this.editForm.get(STREET_FORM_NAME).setValue(this.userProfile.street);
-        this.editForm.get(UNITNUMBER_FORM_NAME).setValue(this.userProfile.unitNumber);
-        this.editForm.get(CITY_FORM_NAME).setValue(this.userProfile.city);
-        this.editForm.get(PROVINCE_FORM_NAME).setValue(this.userProfile.province);
-        this.editForm.get(COUNTRY_FORM_NAME).setValue(this.userProfile.country);
-        this.editForm.get(POSTALCODE_FORM_NAME).setValue(this.userProfile.postalCode);
-        this.editForm.get(CLUB_FORM_NAME).setValue(this.userProfile.club);
-        this.editForm.get(INJURYSTATUS_FORM_NAME).setValue(this.userProfile.injuryStatus);
-        this.editForm.get(INSTAGRAM_FORM_NAME).setValue(this.userProfile.instagram);
-        this.editForm.get(COACHFIRSTNAME_FORM_NAME).setValue(this.userProfile.coachFirstName);
-        this.editForm.get(COACHLASTNAME_FORM_NAME).setValue(this.userProfile.coachLastName);
-        this.editForm.get(COACHPHONE_FORM_NAME).setValue(this.userProfile.coachPhone);
-        this.editForm.get(COACHEMAIL_FORM_NAME).setValue(this.userProfile.coachEmail);
-        this.editForm.get(PARENTFIRSTNAME_FORM_NAME).setValue(this.userProfile.parentFirstName);
-        this.editForm.get(PARENTLASTNAME_FORM_NAME).setValue(this.userProfile.parentLastName);
-        this.editForm.get(PARENTPHONE_FORM_NAME).setValue(this.userProfile.parentPhone);
-        this.editForm.get(PARENTEMAIL_FORM_NAME).setValue(this.userProfile.parentEmail);
-        this.editForm.get(BUDGET_FORM_NAME).setValue(this.userProfile.budget);
+        this.editForm.get(FIRSTNAME_FORM_NAME).setValue((this.userProfile.firstName) ? this.userProfile.firstName : "N/A");
+        this.editForm.get(LASTNAME_FORM_NAME).setValue((this.userProfile.lastName) ? this.userProfile.lastName : "N/A");
+        this.editForm.get(BIO_FORM_NAME).setValue((this.userProfile.bio) ? this.userProfile.bio : "N/A");
+        this.editForm.get(PHONE_FORM_NAME).setValue((this.userProfile.phone) ? this.userProfile.phone : Constants.EMPTY);
+        this.editForm.get(GENDER_FORM_NAME).setValue((this.userProfile.gender) ? this.userProfile.gender : "N/A");
+        this.editForm.get(DATEOFBIRTH_FORM_NAME).setValue((this.userProfile.dateOfBirth != "1111-01-01" && this.userProfile.dateOfBirth != " ") ? this.userProfile.dateOfBirth : "");
+        this.editForm.get(CITIZENSHIP_FORM_NAME).setValue((this.userProfile.citizenship) ? this.userProfile.citizenship : "N/A");
+        this.editForm.get(GRADE_FORM_NAME).setValue((this.userProfile.grade) ? this.userProfile.grade : "N/A");
+        this.editForm.get(GRADYEAR_FORM_NAME).setValue((this.userProfile.gradYear != "N/A" && this.userProfile.gradYear != "2000") ? this.userProfile.gradYear : "");
+        this.editForm.get(PREVIOUSCOLLEGIATE_FORM_NAME).setValue((this.userProfile.previousCollegiate) ? this.userProfile.previousCollegiate : "N/A");
+        this.editForm.get(STREET_FORM_NAME).setValue((this.userProfile.street) ? this.userProfile.street : "N/A");
+        this.editForm.get(UNITNUMBER_FORM_NAME).setValue((this.userProfile.unitNumber) ? this.userProfile.unitNumber : "N/A");
+        this.editForm.get(CITY_FORM_NAME).setValue((this.userProfile.city) ? this.userProfile.city : "N/A");
+        this.editForm.get(PROVINCE_FORM_NAME).setValue((this.userProfile.province) ? this.userProfile.province : "N/A");
+        this.editForm.get(COUNTRY_FORM_NAME).setValue((this.userProfile.country) ? this.userProfile.country : "N/A");
+        this.editForm.get(POSTALCODE_FORM_NAME).setValue((this.userProfile.postalCode) ? this.userProfile.postalCode : "N/A");
+        this.editForm.get(CLUB_FORM_NAME).setValue((this.userProfile.club) ? this.userProfile.club : "N/A");
+        this.editForm.get(INJURYSTATUS_FORM_NAME).setValue((this.userProfile.injuryStatus) ? this.userProfile.injuryStatus : "N/A");
+        this.editForm.get(INSTAGRAM_FORM_NAME).setValue((this.userProfile.instagram) ? this.userProfile.instagram : "N/A");
+        this.editForm.get(COACHFIRSTNAME_FORM_NAME).setValue((this.userProfile.coachFirstName) ? this.userProfile.coachFirstName : "N/A");
+        this.editForm.get(COACHLASTNAME_FORM_NAME).setValue((this.userProfile.coachLastName) ? this.userProfile.coachLastName : "N/A");
+        this.editForm.get(COACHPHONE_FORM_NAME).setValue((this.userProfile.coachPhone) ? this.userProfile.coachPhone : Constants.EMPTY);
+        this.editForm.get(COACHEMAIL_FORM_NAME).setValue((this.userProfile.coachEmail) ? this.userProfile.coachEmail : "N/A");
+        this.editForm.get(PARENTFIRSTNAME_FORM_NAME).setValue((this.userProfile.parentFirstName) ? this.userProfile.parentFirstName : "N/A");
+        this.editForm.get(PARENTLASTNAME_FORM_NAME).setValue((this.userProfile.parentLastName) ? this.userProfile.parentLastName : "N/A");
+        this.editForm.get(PARENTPHONE_FORM_NAME).setValue((this.userProfile.parentPhone) ? this.userProfile.parentPhone : Constants.EMPTY);
+        this.editForm.get(PARENTEMAIL_FORM_NAME).setValue((this.userProfile.parentEmail) ? this.userProfile.parentEmail : "N/A");
+        this.editForm.get(BUDGET_FORM_NAME).setValue((this.userProfile.budget) ? this.userProfile.budget : "N/A");
         if (this.userProfile.languages) {
             if (this.userProfile.languages == [" "] || this.userProfile.languages.length == 0) {
                 this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(false);
@@ -318,7 +324,7 @@ export class ProfileComponent implements OnInit {
 
     toggleEditingStatus(editingStatus: boolean) {
         this.editingStatus = editingStatus;
-        this.statusForm.get(STATUS_TEXT_IDENTIFIER).setValue(this.userProfile.statusText);
+        this.statusForm.get(STATUS_TEXT_IDENTIFIER).setValue((this.userProfile.statusText) ? this.userProfile.statusText : "");
     }
 
     statusFormSubmit(form: FormGroup) {
@@ -402,10 +408,11 @@ export class ProfileComponent implements OnInit {
                 formData.append(Constants.USERNAME, username);
 
                 this.http.put(this.profilesAPI + username + PROFILE_IMAGE_URI, formData, httpHeaders).subscribe(
-                    () => {
+                    (data: ProfileImageUpdateObject) => {
                         this.profileUpdateEvent.emit();
                         let img = document.getElementById(PROFILE_IMAGE);
-                        img[Constants.SRC] = this.userProfile.profileImage + Constants.QUESTION_MARK + Math.random();
+                        this.userProfile.profileImage = data.profileImage + Constants.QUESTION_MARK + Math.random();
+                        img[Constants.SRC] = this.userProfile.profileImage;
                         this.editSaveMessage = IMAGE_MESSAGE;
                     },
                     (err) => {
@@ -472,8 +479,8 @@ export class ProfileComponent implements OnInit {
         dateOfBirth: string,
         citizenship: string,
         grade: number,
-        gradYear: number,
-        previousCollegiate: boolean,
+        gradYear: string,
+        previousCollegiate: string,
         street: string,
         unitNumber: string,
         city: string,

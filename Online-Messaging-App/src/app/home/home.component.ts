@@ -18,7 +18,8 @@ import {
     UserSocket
 } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
-
+import {LayoutModule} from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
 const CHAT_BOX = "chatBox";
@@ -43,12 +44,13 @@ export class HomeComponent implements OnInit {
     selectedChannelId: ChannelObject;
     newAddedChannel: ChannelObject;
     newSubbedChannel: ChannelObject;
-    notificationChannel: ChannelIdAndType;
+    newUserSubscribedChannelFromNotification: ChannelIdAndType;
+    channelToGoToFromNotification: ChannelIdAndType;
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
     settings: SettingsObject;
-
+    value: boolean = false;
     onlineUserList: Array<UserSocket> = [];
 
     newBannedUser: UserChannelObject;
@@ -66,7 +68,9 @@ export class HomeComponent implements OnInit {
         public fb: FormBuilder,
         private cookieService: CookieService,
         private notificationService: NotificationService,
-        private http: HttpClient
+        private http: HttpClient,
+        public breakpointObserver: BreakpointObserver
+
     ) {
     }
 
@@ -108,6 +112,17 @@ export class HomeComponent implements OnInit {
                 this.handleNewUnBannedUserEvent(user);
             });
         }
+        this.breakpointObserver
+            .observe(['(max-width: 450px)'])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.value = false;
+                    this.sidebarOpened = false;
+                } else {
+                    this.value = true;
+                    this.sidebarOpened = true;
+                }
+            });
     }
 
     receiveId($event) {
@@ -126,8 +141,12 @@ export class HomeComponent implements OnInit {
         this.display = value;
     }
 
-    updateFromNotification(channel: ChannelIdAndType): void {
-        this.notificationChannel = channel;
+    handleNewUserSubscriptionFromChannel(channel: ChannelIdAndType): void {
+        this.newUserSubscribedChannelFromNotification = channel;
+    }
+
+    handleGoToChannelFromNotification(channel: ChannelIdAndType): void {
+        this.channelToGoToFromNotification = channel;
     }
 
     updateProfile(value: string): void {
