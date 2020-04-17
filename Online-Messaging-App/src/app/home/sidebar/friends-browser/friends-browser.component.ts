@@ -67,6 +67,10 @@ export class FriendsBrowserComponent implements OnInit {
     sendQuery() {
         if (!this.common.inviteFormSearch(this.search, this.inviteSearchList, this.userList)) {
             this.inviteSearchList = [];
+            this.getFriendNotifications()
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     }
 
@@ -163,7 +167,9 @@ export class FriendsBrowserComponent implements OnInit {
                                 this.friendNotifications = data;
                                 let usernames: Array<string> = [];
                                 for (let i in data) {
-                                    usernames.push(data[i].username);
+                                    if (data[i].type == "friend") {
+                                        usernames.push(data[i].username);
+                                    }
                                 }
                                 this.friendNotificationUsernames = usernames;
                                 resolve();

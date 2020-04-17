@@ -336,7 +336,7 @@ export class ProfileDAO {
                                     console.log(err);
                                     reject(err);
                                 });
-                            resolve(profileImageFilename);
+                            resolve(PROFILE_IMAGE_S3_PREFIX + profileImageFilename);
                         }
                     });
                 }

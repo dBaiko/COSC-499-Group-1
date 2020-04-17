@@ -220,7 +220,7 @@ export class NotificationsDAO {
                     console.error(err);
                     reject(err);
                 } else {
-                    console.log("Successfully deleted item");
+                    console.log("Successfully deleted item notification");
                     resolve();
                 }
             });

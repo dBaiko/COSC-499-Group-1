@@ -56,6 +56,7 @@ export class SidebarComponent implements OnInit {
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
     @Output() newUserSubbedChannelEvent = new EventEmitter<NewUsersSubbedChannelObject>();
+    @Output() goToChannelFromNotificationEvent = new EventEmitter();
     publicChannelSelect: boolean;
     privateChannelSelect: boolean;
     friendChannelSelect: boolean;
@@ -109,10 +110,12 @@ export class SidebarComponent implements OnInit {
 
     @Input()
     set newBannedUser(user: UserChannelObject) {
-        this._newBannedUser = user;
-        this.getSubscribedChannels(true).catch((err) => {
-            console.log(err);
-        });
+        if (user) {
+            this._newBannedUser = user;
+            this.getSubscribedChannels(true).catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
     private _subbedChannel: ChannelObject;
@@ -130,6 +133,28 @@ export class SidebarComponent implements OnInit {
                 username: this.currentUserProfile.username,
                 joined: true
             });
+        }
+    }
+
+    private _channelToGoToFromNotification: ChannelIdAndType;
+
+    get channelToGoToFromNotification(): ChannelIdAndType {
+        return this._channelToGoToFromNotification;
+    };
+
+    @Input()
+    set channelToGoToFromNotification(value: ChannelIdAndType) {
+        if (value) {
+            this._channelToGoToFromNotification = value;
+            this.selectChannel(value.channelId, value.type);
+            this.switchDisplay(this.chatBox);
+            if (value.type == PUBLIC) {
+                this.selectPublicChannel();
+            } else if (value.type == PRIVATE) {
+                this.selectPrivateChannel();
+            } else if (value.type == FRIEND) {
+                this.selectFriend();
+            }
         }
     }
 
@@ -241,26 +266,23 @@ export class SidebarComponent implements OnInit {
                                                     notification.username == this.currentUserProfile.username
                                                 ) {
                                                     if (notification.channelType == PUBLIC) {
-                                                        this.publicChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.publicChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(this.publicChannels,
+                                                            notification.channelId);
+                                                        if (!this.publicChannels[index].selected) {
+                                                            this.publicChannels[index].notificationCount += 1;
+                                                        }
                                                     } else if (notification.channelType == PRIVATE) {
-                                                        this.privateChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.privateChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(this.privateChannels,
+                                                            notification.channelId);
+                                                        if (!this.privateChannels[index].selected) {
+                                                            this.privateChannels[index].notificationCount += 1;
+                                                        }
                                                     } else if (notification.channelType == FRIEND) {
-                                                        this.friendsChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.friendsChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(this.friendsChannels,
+                                                            notification.channelId);
+                                                        if (!this.friendsChannels[index].selected) {
+                                                            this.friendsChannels[index].notificationCount += 1;
+                                                        }
                                                     }
                                                 }
                                             }
