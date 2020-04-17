@@ -96,8 +96,6 @@ export class RegisterFormComponent implements OnInit {
     }
 
     register(username: string, password: string, email: string, firstName: string, lastName: string): void {
-        username = this.common.santizeText(username);
-        password = this.common.santizeText(username);
         email = this.common.santizeText(email);
         firstName = this.common.santizeText(firstName);
         lastName = this.common.santizeText(lastName);

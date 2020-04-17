@@ -277,7 +277,7 @@ router.put(PATH_PUT_SETTINGS_FOR_USER, (req, res) => {
                 req.params.username === data.decodedToken[COGNITO_USERNAME] &&
                 req.body.username === data.decodedToken[COGNITO_USERNAME]
             ) {
-                if(req.body.explicit=="" || req.body.explicit == null){
+                if (req.body.explicit == "" || req.body.explicit == null) {
                     req.body.explicit = false;
                 }
                 const settingsDAO: SettingsDAO = new SettingsDAO(docClient);

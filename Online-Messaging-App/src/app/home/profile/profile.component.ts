@@ -153,6 +153,8 @@ export class ProfileComponent implements OnInit {
                 Constants.EMPTY,
                 Validators.compose([this.formValidationService.isNanValidator, Validators.maxLength(15)])
             ),
+            coachEmail: new FormControl(),
+            parentEmail: new FormControl(),
             languagesEnglish: new FormControl(),
             languagesFrench: new FormControl(),
             languagesSpanish: new FormControl(),
@@ -329,6 +331,11 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
+                let statusText = this.common.santizeText(form.value.statusText);
+                if (statusText == null || statusText == Constants.EMPTY) {
+                    statusText = " ";
+                }
+
                 this.http
                     .put(
                         this.profilesAPI + username + STATUS_URI,
@@ -340,7 +347,7 @@ export class ProfileComponent implements OnInit {
                     )
                     .subscribe(
                         () => {
-                            this.userProfile.statusText = this.common.santizeText(form.value.statusText);
+                            this.userProfile.statusText = statusText;
                             this.toggleEditingStatus(false);
                             this.profileUpdateEvent.emit();
                         },
@@ -559,7 +566,7 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                this.http.put(this.usersAPI + username, profile.username, httpHeaders).subscribe(
+                this.http.put(this.usersAPI + username, profile, httpHeaders).subscribe(
                     () => {
                         this.http.put(this.profilesAPI + username, profile, httpHeaders).subscribe(
                             () => {

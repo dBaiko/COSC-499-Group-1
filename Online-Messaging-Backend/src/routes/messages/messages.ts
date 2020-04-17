@@ -14,6 +14,7 @@ const COGNITO_USERNAME = "cognito:username";
 
 const PATH_GET_ALL_MESSAGES: string = "/";
 const PATH_DELETE_MESSAGE: string = "/:messageId/:channelId/:insertTime/:username/";
+const PATH_ADMIN_DELETE_MESSAGE: string = "/:messageId/:channelId/:insertTime/:username/adminUsername/:adminUsername";
 const PATH_PUT_MESSAGE: string = "/:messageId/";
 const PATH_GET_MESSAGE_REACTIONS = "/:messageId/reactions";
 const PATH_POST_NEW_REACTION = "/:messageId/reaction/";
@@ -100,6 +101,29 @@ router.delete(PATH_DELETE_MESSAGE, (req, res) => {
                     data: { message: "Unauthorized to access user data" }
                 });
             }
+        },
+        (err) => {
+            res.status(err.status).send(err);
+        }
+    );
+});
+
+router.delete(PATH_ADMIN_DELETE_MESSAGE, (req, res) => {
+    let token: string = req.headers[AUTH_KEY];
+
+    jwtVerificationService.verifyJWTToken(token).subscribe(
+        (data) => {
+            let messageDAO = new MessageDAO(docClient);
+            messageDAO
+                .adminDeleteMessage(req.params.messageId, req.params.channelId, +req.params.insertTime)
+                .then(() => {
+                    console.log("success delete message");
+                    res.status(200).send();
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(401).send(err);
+                });
         },
         (err) => {
             res.status(err.status).send(err);

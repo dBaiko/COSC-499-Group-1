@@ -74,7 +74,7 @@ export const VALIDATION_MESSAGES = {
         { type: "required", message: "Please confirm your password" },
         { type: "misMatch", message: "Passwords do not match" }
     ],
-    oldPassword: [{ type: "required", message: "Old password is requuired" }],
+    oldPassword: [{ type: "required", message: "Old password is required" }],
     firstName: [
         { type: "required", message: "First name is required" },
         {
@@ -171,7 +171,7 @@ export interface MessageObject {
     messageId: string;
     profileImage: string;
     username: string;
-    deleted: boolean;
+    deleted: string;
     editing: boolean;
     reactions?: Array<ReactionObject>;
     addingEmoji?: boolean;

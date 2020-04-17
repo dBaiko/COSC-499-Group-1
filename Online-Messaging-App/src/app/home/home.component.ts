@@ -13,6 +13,7 @@ import {
     NewUsersSubbedChannelObject,
     ProfileObject,
     SettingsObject,
+    UserChannelObject,
     UserObject,
     UserSocket
 } from "../shared/app-config";
@@ -20,7 +21,7 @@ import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
-const CHAT_BOX = "chatBox;";
+const CHAT_BOX = "chatBox";
 const DARK = "dark";
 const LIGHT = "light";
 
@@ -49,6 +50,8 @@ export class HomeComponent implements OnInit {
     settings: SettingsObject;
 
     onlineUserList: Array<UserSocket> = [];
+
+    newBannedUser: UserChannelObject;
 
     sidebarOpened: boolean = true;
 
@@ -95,6 +98,14 @@ export class HomeComponent implements OnInit {
             this.getSettings();
             this.getUserInfo().catch((err) => {
                 console.error(err);
+            });
+
+            this.notificationService.addSocketListener("kickEvent", (user: UserChannelObject) => {
+                this.handleNewBannedUserEvent(user);
+            });
+
+            this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
+                this.handleNewUnBannedUserEvent(user);
             });
         }
     }
@@ -149,6 +160,17 @@ export class HomeComponent implements OnInit {
 
     toggleSidebarOpen() {
         this.sidebar.toggle();
+    }
+
+    handleNewBannedUserEvent(user: UserChannelObject): void {
+        if (this.display == CHAT_BOX && this.selectedChannelId.channelId == user.channelId) {
+            this.updateDisplay(CHANNEL_BROWSER);
+        }
+        this.newBannedUser = user;
+    }
+
+    handleNewUnBannedUserEvent(user: UserChannelObject): void {
+        this.newBannedUser = user;
     }
 
     private getUsers(): void {

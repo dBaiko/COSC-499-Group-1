@@ -38,6 +38,7 @@ mat-form-field {
     cursor: pointer;
     color: var(--primary-color);
     align-items: center;
+    display: inline;
 }
 
 hr {
@@ -98,4 +99,7 @@ mat-label {
     font-size: 0.75em;
     float: right;
     margin-right: 2em;
+}
+.mat-menu-item{
+    text-align: center;
 }

@@ -10,21 +10,52 @@
             </mat-card-title>
             <mat-nav-list>
                 <div *ngFor="let user of onlineUsers" class="onlineUsers">
-                    <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                    <mat-list-item *ngIf="userIsAdmin()" [mat-menu-trigger-for]="menu" class="clickable">
                         <img
-                                class="userProfilePicture"
-                                inline="true"
-                                matListAvatar
-                                onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                src="{{ user.profileImage }}"
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
                         />
                         <span matLine>
                             {{ user.username }}
                             <img
-                                    *ngIf="user.userChannelRole == 'admin'"
-                                    class="adminImage"
-                                    inline="true"
-                                    src="assets/crown.png"
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
+                            />
+                        </span>
+                        <span class="statusMessage" matLine
+                        ><i>{{ user.statusText }}</i></span
+                        >
+                        <mat-menu #menu="matMenu">
+                            <button (click)="goToProfile(user.username)" mat-menu-item>View profile</button>
+                            <button
+                                (click)="banUser(user)"
+                                *ngIf="user.username != currentUserProfile.username"
+                                mat-menu-item
+                            >
+                                Ban user
+                            </button>
+                        </mat-menu>
+                    </mat-list-item>
+                    <mat-list-item (click)="goToProfile(user.username)" *ngIf="!userIsAdmin()" class="clickable">
+                        <img
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
+                        />
+                        <span matLine>
+                            {{ user.username }}
+                            <img
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
                             />
                         </span>
                         <br/>
@@ -41,28 +72,94 @@
             </mat-card-title>
             <mat-nav-list>
                 <div *ngFor="let user of offlineUsers" class="offlineUsers">
-                    <mat-list-item (click)="goToProfile(user.username)" class="clickable">
+                    <mat-list-item *ngIf="userIsAdmin()" [mat-menu-trigger-for]="menu" class="clickable">
                         <img
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
+                        />
+                        <span matLine>
+                            {{ user.username }}
+                            <img
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
+                            />
+                        </span>
+                        <span class="statusMessage" matLine
+                        ><i>{{ user.statusText }}</i></span
+                        >
+                        <mat-menu #menu="matMenu">
+                            <button (click)="goToProfile(user.username)" mat-menu-item>View profile</button>
+                            <button
+                                (click)="banUser(user)"
+                                *ngIf="user.username != currentUserProfile.username"
+                                mat-menu-item
+                            >
+                                Ban user
+                            </button>
+                        </mat-menu>
+                    </mat-list-item>
+                    <mat-list-item (click)="goToProfile(user.username)" *ngIf="!userIsAdmin()" class="clickable">
+                        <img
+                            class="userProfilePicture"
+                            inline="true"
+                            matListAvatar
+                            onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
+                            src="{{ user.profileImage }}"
+                        />
+                        <span matLine>
+                            {{ user.username }}
+                            <img
+                                *ngIf="user.userChannelRole == 'admin'"
+                                class="adminImage"
+                                inline="true"
+                                src="assets/crown.png"
+                            />
+                        </span>
+                        <br/>
+                        <span class="statusMessage" matLine
+                        ><i>{{ user.statusText }}</i></span
+                        >
+                    </mat-list-item>
+                </div>
+            </mat-nav-list>
+            <div *ngIf="userIsAdmin() && this.bannedUsers.length > 0">
+                <mat-card-title>Banned Users</mat-card-title>
+                <hr/>
+                <mat-nav-list>
+                    <div *ngFor="let user of bannedUsers">
+                        <mat-list-item [mat-menu-trigger-for]="menu" class="clickable">
+                            <img
                                 class="userProfilePicture"
                                 inline="true"
                                 matListAvatar
                                 onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
                                 src="{{ user.profileImage }}"
-                        />
-                        <span matLine>
-                            {{ user.username }}
-                            <img
+                            />
+                            <span matLine>
+                                {{ user.username }}
+                                <img
                                     *ngIf="user.userChannelRole == 'admin'"
                                     class="adminImage"
                                     inline="true"
                                     src="assets/crown.png"
-                            />
-                        </span>
-                        <br/>
-                        <span class="statusMessage" matLine>{{ user.statusText }}</span>
-                    </mat-list-item>
-                </div>
-            </mat-nav-list>
+                                />
+                            </span>
+                            <span class="statusMessage" matLine
+                            ><i>{{ user.statusText }}</i></span
+                            >
+                            <mat-menu #menu="matMenu">
+                                <button class ="dropButton"(click)="goToProfile(user.username)" mat-menu-item>View profile</button>
+                                <button class ="dropButton" (click)="unBanUser(user)" mat-menu-item>Unban user</button>
+                            </mat-menu>
+                        </mat-list-item>
+                    </div>
+                </mat-nav-list>
+            </div>
         </div>
     </mat-card>
 </mat-sidenav-container>

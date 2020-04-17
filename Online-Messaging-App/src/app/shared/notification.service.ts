@@ -1,6 +1,12 @@
 import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
-import { NotificationSocketObject, ReactionSocketObject, UserSocket } from "./app-config";
+import {
+    NewUsersSubbedChannelObject,
+    NotificationSocketObject,
+    ReactionSocketObject,
+    UserChannelObject,
+    UserSocket
+} from "./app-config";
 
 const USERNAME_EVENT = "username";
 const EXIT_EVENT = "exit";
@@ -8,6 +14,10 @@ const USER_LIST_EVENT = "userList";
 const NOTIFICATION_EVENT = "notification";
 const REACTION_ADD_EVENT = "reaction_add";
 const REACTION_REMOVE_EVENT = "reaction_remove";
+const USER_BANNED_EVENT = "userBanned";
+const USER_UNBANNED_EVENT = "userUnBanned";
+const NEW_USER_SUBBED_CHANNEL_EVENT = "newUserSubbedChannelEvent";
+const NEW_USER_LEFT_CHANNEL_EVENT = "newUserLeftChannelEvent";
 
 @Injectable()
 export class NotificationService {
@@ -58,6 +68,22 @@ export class NotificationService {
 
     removeReaction(reaction: ReactionSocketObject): void {
         NotificationService.socket.emit(REACTION_REMOVE_EVENT, reaction);
+    }
+
+    sendBanUserEvent(user: UserChannelObject): void {
+        NotificationService.socket.emit(USER_BANNED_EVENT, user);
+    }
+
+    sendUnbannedUserEvent(user: UserChannelObject): void {
+        NotificationService.socket.emit(USER_UNBANNED_EVENT, user);
+    }
+
+    sendNewUserJoinedChannelEvent(user: NewUsersSubbedChannelObject): void {
+        NotificationService.socket.emit(NEW_USER_SUBBED_CHANNEL_EVENT, user);
+    }
+
+    sendNewUserLeftChannelEvent(user: UserChannelObject): void {
+        NotificationService.socket.emit(NEW_USER_SUBBED_CHANNEL_EVENT, user);
     }
 
     getSocketId(): string {
