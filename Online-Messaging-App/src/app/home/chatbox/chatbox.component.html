@@ -11,9 +11,9 @@
                                         alt="assets/icon-alt.PNG"
                                         class="messagePicture"
                                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                        src="https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png"
+                                        src="{{this.friendsProfileImage}}"
                                         style="display: inline"
-                                    /><!-- TODO: replace with friends user profile picture -->
+                                    />
                                     <mat-card-title
                                         (click)="goToProfile(parseFriendChannelName(currentChannel.channelName))"
                                         class="clickable"
@@ -62,11 +62,11 @@
                                     <button (click)="openInviting()" *ngIf="!inviting" class="inviteButton" mat-button>
                                         Send Invite
                                     </button>
-<!--                                    <span class="menuButton">-->
-<!--                                        <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sidebarOpened"-->
-<!--                                        >chevron_left</mat-icon-->
-<!--                                        >-->
-<!--                                    </span>-->
+                                    <!--                                    <span class="menuButton">-->
+                                    <!--                                        <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sidebarOpened"-->
+                                    <!--                                        >chevron_left</mat-icon-->
+                                    <!--                                        >-->
+                                    <!--                                    </span>-->
                                     <div
                                         (clickOutside)="closeInviting()"
                                         *ngIf="inviting"
@@ -122,18 +122,18 @@
                                                             >
                                                                 Send Invite
                                                             </button>
-<!--                                                            <span class="menuButton">-->
-<!--                                                                <mat-icon-->
-<!--                                                                    (click)="toggleSideBarOpen(true)"-->
-<!--                                                                    *ngIf="!sidebarOpened"-->
-<!--                                                                >chevron_left</mat-icon-->
-<!--                                                                >-->
-<!--                                                                <mat-icon-->
-<!--                                                                    (click)="toggleSideBarOpen(false)"-->
-<!--                                                                    *ngIf="sidebarOpened"-->
-<!--                                                                >chevron_right</mat-icon-->
-<!--                                                                >-->
-<!--                                                            </span>-->
+                                                            <!--                                                            <span class="menuButton">-->
+                                                            <!--                                                                <mat-icon-->
+                                                            <!--                                                                    (click)="toggleSideBarOpen(true)"-->
+                                                            <!--                                                                    *ngIf="!sidebarOpened"-->
+                                                            <!--                                                                >chevron_left</mat-icon-->
+                                                            <!--                                                                >-->
+                                                            <!--                                                                <mat-icon-->
+                                                            <!--                                                                    (click)="toggleSideBarOpen(false)"-->
+                                                            <!--                                                                    *ngIf="sidebarOpened"-->
+                                                            <!--                                                                >chevron_right</mat-icon-->
+                                                            <!--                                                                >-->
+                                                            <!--                                                            </span>-->
                                                         </ng-template>
                                                     </ng-template>
                                                 </mat-card-content>
@@ -454,10 +454,10 @@
             </div>
         </div>
         <div class="sidebar " id="sidebar">
-<!--            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"-->
-<!--            >chevron_right-->
-<!--            </mat-icon-->
-<!--            >-->
+            <!--            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"-->
+            <!--            >chevron_right-->
+            <!--            </mat-icon-->
+            <!--            >-->
             <app-channel-user-list
                 (newBannedUserEvent)="handleNewBannedUser($event)"
                 (newUnBannedUserEvent)="handleNewUnBannedUser($event)"

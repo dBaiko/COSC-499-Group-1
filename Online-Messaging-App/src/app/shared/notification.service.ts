@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as Socket from "socket.io-client";
 import {
+    FriendTaglineUpdateEventObject,
     NewUsersSubbedChannelObject,
     NotificationSocketObject,
     ReactionSocketObject,
@@ -18,6 +19,7 @@ const USER_BANNED_EVENT = "userBanned";
 const USER_UNBANNED_EVENT = "userUnBanned";
 const NEW_USER_SUBBED_CHANNEL_EVENT = "newUserSubbedChannelEvent";
 const NEW_USER_LEFT_CHANNEL_EVENT = "newUserLeftChannelEvent";
+const FRIEND_TAGLINE_UPDATE_EVENT = "friendTaglineUpdateEvent";
 
 @Injectable()
 export class NotificationService {
@@ -83,7 +85,11 @@ export class NotificationService {
     }
 
     sendNewUserLeftChannelEvent(user: UserChannelObject): void {
-        NotificationService.socket.emit(NEW_USER_SUBBED_CHANNEL_EVENT, user);
+        NotificationService.socket.emit(NEW_USER_LEFT_CHANNEL_EVENT, user);
+    }
+
+    sendFriendTaglineUpdateEvent(friendTaglineUpdateEventObject: FriendTaglineUpdateEventObject): void {
+        NotificationService.socket.emit(FRIEND_TAGLINE_UPDATE_EVENT, friendTaglineUpdateEventObject);
     }
 
     getSocketId(): string {
