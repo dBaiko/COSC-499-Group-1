@@ -30,7 +30,7 @@ const NOTIFICATIONS_URI = "/notifications";
 const CHANNEL_ID_URI = "/channelId/";
 const USERNAME_URI = "/username/";
 
-const DIALOG_WIDTH = "35%";
+const DIALOG_WIDTH = "80%";
 const DIALOG_CLASS = "dialog-class";
 
 const MAX_FRIEND_CHANNEL_LENGTH = 2;
