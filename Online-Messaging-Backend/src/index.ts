@@ -41,6 +41,13 @@ export interface UserChannelObject {
     notificationCount?: number;
 }
 
+export interface FriendTaglineUpdateEventObject {
+    username: string,
+    fromFriend: string,
+    status: string
+}
+
+
 const app = express();
 const port = 8080; // default port to listen
 
@@ -108,8 +115,10 @@ io.on("connection", (socketIO) => {
             };
 
             for (let user of users) {
-                messageNotification.username = user.username;
-                socketIO.broadcast.to(user.id).emit("messageNotificationBroadcast", messageNotification);
+                if (user.username != message.username) {
+                    messageNotification.username = user.username;
+                    socketIO.broadcast.to(user.id).emit("messageNotificationBroadcast", messageNotification);
+                }
             }
 
             let userChannelDAO: UserChannelDAO = new UserChannelDAO(docClient);
@@ -117,17 +126,19 @@ io.on("connection", (socketIO) => {
                 .getAllSubscribedUsers(message.channelId)
                 .then((data: Array<UserChannelObject>) => {
                     for (let i = 0; i < data.length; i++) {
-                        let messageNotification: NotificationObject = {
-                            channelId: message.channelId,
-                            type: "message",
-                            notificationId: uuid(),
-                            insertedTime: Date.now(),
-                            channelType: message.channelType,
-                            username: data[i].username,
-                            fromFriend: message.username
-                        };
-                        let notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
-                        notificationsDAO.createNewNotification(messageNotification);
+                        if (data[i].username != message.username) {
+                            let messageNotification: NotificationObject = {
+                                channelId: message.channelId,
+                                type: "message",
+                                notificationId: uuid(),
+                                insertedTime: Date.now(),
+                                channelType: message.channelType,
+                                username: data[i].username,
+                                fromFriend: message.username
+                            };
+                            let notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
+                            notificationsDAO.createNewNotification(messageNotification);
+                        }
                     }
                 })
                 .catch((err) => {
@@ -210,6 +221,14 @@ io.on("connection", (socketIO) => {
     socketIO.on("newUserLeftChannelEvent", (user) => {
         for (let socketUser of users) {
             socketIO.broadcast.to(socketUser.id).emit("newUserLeftChannel_broadcast", user);
+        }
+    });
+
+    socketIO.on("friendTaglineUpdateEvent", (friend: FriendTaglineUpdateEventObject) => {
+        for (let socketUser of users) {
+            if (socketUser.username == friend.username) {
+                socketIO.broadcast.to(socketUser.id).emit("friendTaglineUpdateEvent_broadcast", friend);
+            }
         }
     });
 

@@ -45,7 +45,8 @@ export class HeaderComponent implements OnInit {
     notificationCount: number = 0;
     open: boolean = false;
     sideBarOpen: boolean = false;
-    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
+    @Output() newUserSubscriptionFromNotificationEvent = new EventEmitter<ChannelIdAndType>();
+    @Output() goToChannelFromNotificationEvent = new EventEmitter<ChannelIdAndType>();
     @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
@@ -82,7 +83,6 @@ export class HeaderComponent implements OnInit {
             this.notificationService.addSocketListener(
                 BROADCAST_NOTIFICATION_EVENT,
                 (notificationSocketObject: NotificationSocketObject) => {
-                    console.log("notification recieved");
                     let notification: NotificationObject = notificationSocketObject.notification;
                     if (notification.type == PUBLIC_NOTIFICATION) {
                         this.publicInvites.push(notification);
@@ -102,7 +102,7 @@ export class HeaderComponent implements OnInit {
     toggleOpen($event): void {
         if ($event) {
             let target = $event.target as HTMLElement;
-            if (!target.classList.contains("mat-button-wrapper")) {
+            if (!target.classList.contains("mat-button-wrapper") && !target.classList.contains("xbutton")) {
                 this.open = !this.open;
             }
         } else {
@@ -110,9 +110,14 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    notificationChannelEmitter(view: string, channelId: string, type: string): void {
+    newUserSubscriptionFromChannelEventEmitter(view: string, channelId: string, type: string): void {
         this.switchEvent.emit(view);
-        this.notificationChannelEvent.emit({ channelId, type });
+        this.newUserSubscriptionFromNotificationEvent.emit({ channelId, type });
+    }
+
+    goToChannelFromNotification(view: string, channelId: string, type: string): void {
+        this.switchEvent.emit(view);
+        this.goToChannelFromNotificationEvent.emit({ channelId, type });
     }
 
     switchDisplay(value: string): void {
@@ -174,7 +179,6 @@ export class HeaderComponent implements OnInit {
                                             )
                                             .subscribe(
                                                 () => {
-                                                    console.log("success");
                                                 },
                                                 (err) => {
                                                     console.log(err);
@@ -197,7 +201,12 @@ export class HeaderComponent implements OnInit {
         );
         this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
-        this.notificationChannelEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);
+        this.newUserSubscriptionFromChannelEventEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);
+        this.notificationService.sendFriendTaglineUpdateEvent({
+            username: notification.fromFriend,
+            fromFriend: this.currentUserProfile.username,
+            status: "accepted"
+        });
     }
 
     sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
@@ -279,6 +288,11 @@ export class HeaderComponent implements OnInit {
         );
         this.sendInviteConfirmation(notification, false);
         this.removeNotification(notification);
+        this.notificationService.sendFriendTaglineUpdateEvent({
+            username: notification.fromFriend,
+            fromFriend: this.currentUserProfile.username,
+            status: "denied"
+        });
     }
 
     removeNotification(notification: NotificationObject): void {

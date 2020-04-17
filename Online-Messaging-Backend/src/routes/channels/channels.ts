@@ -117,7 +117,12 @@ router.get(PATH_GET_ALL_MESSAGES_FOR_CHANNEL, (req, res) => {
                         } else if (data.length < 50) {
                             res.status(200).send(data);
                         } else {
-                            let ret = data.splice(data.length - loadCount - 50 - 1, 50);
+                            let ret;
+                            if ((data.length - loadCount - 50) < 0) {
+                                ret = data.splice(0, data.length - loadCount);
+                            } else {
+                                ret = data.splice(data.length - loadCount - 50, 50);
+                            }
 
                             res.status(200).send(ret);
                         }
