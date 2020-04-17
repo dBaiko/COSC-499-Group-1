@@ -16,7 +16,6 @@ mat-form-field {
 
 #scrollable {
     overflow-y: auto;
-    //margin-top: 1rem;
     height: 76% !important;
 }
 
@@ -107,6 +106,9 @@ mat-label {
     position: absolute;
     right: 1%;
     top: 25%;
+    height: 60vh;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .search button {
@@ -309,6 +311,7 @@ mat-expansion-panel:hover {
     float: right;
     min-height: 600px;
     height: 100%;
+    background: var(--element-color);
 }
 
 .sidebarClosed {
@@ -516,17 +519,37 @@ mat-sidenav {
 
 #chevron-right {
     color: var(--primary-text-color);
-}
-
-@media (max-width: 450px) {
-    .backgroundDarker {
-        filter: blur(2px);
-    }
-    .contentOpened {
-        margin-right: 0px;
-    }
+    display: none;
 }
 
 .adminDelete {
     color: red;
 }
+
+#sidebarClose {
+    display: none;
+}
+
+@media (max-width: 450px) {
+    .backgroundDarker {
+        filter: brightness(35%);
+    }
+    .contentOpened {
+        margin-right: 0px;
+    }
+    #sidebarClose {
+        left: 3rem;
+        bottom: 2rem;
+        position: relative;
+        display: block;
+    }
+    #chevron-right {
+        display: block;
+    }
+    #scrollable {
+        overflow-y: auto;
+        height: 66% !important;
+    }
+}
+
+

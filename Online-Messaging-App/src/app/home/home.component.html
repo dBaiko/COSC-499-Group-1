@@ -12,12 +12,12 @@
     <mat-sidenav-container class="container">
         <mat-sidenav
             #sidenav
+            [mode]="value ? 'side' : 'over'"
             [(opened)]="sidebarOpened"
             [fixedBottomGap]="options.value.bottom"
             [fixedInViewport]="!!options.value.fixed"
             [fixedTopGap]="options.value.top"
             class="sidenav"
-            mode="side"
         >
             <app-sidebar
                 (channelEvent)="receiveId($event)"

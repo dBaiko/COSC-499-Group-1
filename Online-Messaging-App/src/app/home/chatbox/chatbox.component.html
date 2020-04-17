@@ -141,6 +141,13 @@
                                         </div>
                                     </div>
                                 </div>
+                                <span class="menuButton">
+                                                    <mat-icon
+                                                        (click)="toggleSideBarOpen(true)"
+                                                        *ngIf="!sidebarOpened"
+                                                        id="sidebarClose"
+                                                    >chevron_left</mat-icon>
+                                </span>
                             </mat-card-header>
                         </div>
                         <hr id="hrHeader"/>
@@ -454,10 +461,10 @@
             </div>
         </div>
         <div class="sidebar " id="sidebar">
-            <!--            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"-->
-            <!--            >chevron_right-->
-            <!--            </mat-icon-->
-            <!--            >-->
+            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened"id="chevron-right"
+            >chevron_right
+            </mat-icon
+            >
             <app-channel-user-list
                 (newBannedUserEvent)="handleNewBannedUser($event)"
                 (newUnBannedUserEvent)="handleNewUnBannedUser($event)"
@@ -467,6 +474,7 @@
                 [subscribedUsersUsernames]="subscribedUsersUsernames"
                 [subscribedUsers]="subscribedUsers"
             >
+
             </app-channel-user-list>
         </div>
     </div>

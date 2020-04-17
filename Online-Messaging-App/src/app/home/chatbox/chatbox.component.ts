@@ -26,6 +26,7 @@ import { CommonService } from "../../shared/common.service";
 import { NotificationService } from "../../shared/notification.service";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -53,7 +54,6 @@ const SCROLLABLE_IDENTIFIER: string = "scrollable";
 const DIALOG_WIDTH = "50%";
 const DIALOG_CLASS = "dialog-class";
 const DIALOG_HEIGHT = "60%";
-
 const PENDING_INVITE_MESSAGE: string =
     " has not yet accepted your request and will not see these messages until they accept";
 const DENIED_INVITE_MESSAGE: string =
@@ -90,9 +90,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     emojiMessage: boolean = false;
     emojiList = EmojiList;
     filter = new Filter();
-
     @ViewChild(MESSAGE_FORM_IDENTIFIER) messageForm: NgForm;
-
     mentioning: boolean = false;
     mentionList: Array<string> = [];
     mentioningIndex: number = 0;
@@ -143,7 +141,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         private auth: AuthenticationService,
         private dialog: MatDialog,
         private notificationService: NotificationService,
-        public common: CommonService
+        public common: CommonService,
+        public breakpointObserver: BreakpointObserver
     ) {
     }
 
@@ -351,6 +350,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     });
             }
         });
+
+        this.breakpointObserver
+            .observe(["(max-width: 450px)"])
+            .subscribe((state: BreakpointState) => {
+                if (state.matches) {
+                    this.toggleSideBarOpen(false);
+                } else {
+                    this.toggleSideBarOpen(true);
+                }
+            });
 
         this.notificationService.addSocketListener("friendTaglineUpdateEvent_broadcast", (user: FriendTaglineUpdateEventObject) => {
             if (user.status == "accepted") {
@@ -902,11 +911,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
-            dialogConfig.autoFocus = true;
-            dialogConfig.width = DIALOG_WIDTH;
+            dialogConfig.autoFocus = false;
+            //dialogConfig.width = DIALOG_WIDTH;
             dialogConfig.height = DIALOG_HEIGHT;
             dialogConfig.panelClass = DIALOG_CLASS;
-            dialogConfig.autoFocus = false;
 
             let dialogRef = this.dialog.open(MarkupTutorialComponent, dialogConfig);
             dialogRef.afterClosed().subscribe(() => {

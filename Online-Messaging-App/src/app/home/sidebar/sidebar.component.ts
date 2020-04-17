@@ -30,7 +30,7 @@ const NOTIFICATIONS_URI = "/notifications";
 const CHANNEL_ID_URI = "/channelId/";
 const USERNAME_URI = "/username/";
 
-const DIALOG_WIDTH = "35%";
+const DIALOG_WIDTH = "80%";
 const DIALOG_CLASS = "dialog-class";
 
 const MAX_FRIEND_CHANNEL_LENGTH = 2;
@@ -408,7 +408,6 @@ export class SidebarComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = DIALOG_WIDTH;
         dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
