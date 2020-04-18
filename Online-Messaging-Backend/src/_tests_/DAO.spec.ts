@@ -53,21 +53,31 @@ describe("UserDAO", () => {
     const user = new UserDAO(ddb);
 
     beforeEach(() => {
-        ddb.put({
-            TableName: "Users",
-            Item: {
-                username: "testUser",
-                email: "testUser@nothing.com"
-            }
-        });
+        return new Promise(((resolve) => {
+            ddb.put({
+                TableName: "Users",
+                Item: {
+                    username: "testUser",
+                    email: "testUser@nothing.com",
+                    firstName: "Lorem",
+                    lastName: "Ipsum"
+                }
+            }).promise().then(() => {
+                resolve();
+            });
+        }));
     });
     afterEach(() => {
-        ddb.delete({
-            TableName: "Users",
-            Key: {
-                username: "testUser"
-            }
-        });
+        return new Promise((resolve => {
+            ddb.delete({
+                TableName: "Users",
+                Key: {
+                    username: "testUser"
+                }
+            }).promise().then(() => {
+                resolve();
+            });
+        }));
     });
 
     it("should create a new user in the table", async () => {
