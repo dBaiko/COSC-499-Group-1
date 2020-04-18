@@ -1,10 +1,9 @@
 import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
-import {MessageDAO} from "../routes/messages/MessageDAO";
-import {ProfileDAO, ProfileObject} from "../routes/profiles/ProfileDAO";
-import {NotificationsDAO} from "../routes/notifications/NotificationsDAO";
+import { MessageDAO } from "../routes/messages/MessageDAO";
 import SettingsDAO from "../routes/settings/settingsDAO";
+import { ProfileDAO, ProfileObject } from "../routes/profiles/ProfileDAO";
 
 interface ChannelObject {
     channelId: string;
@@ -25,7 +24,7 @@ interface Message {
 
 jest.setTimeout(30000);
 
-const {DocumentClient} = require("aws-sdk/clients/dynamodb");
+const { DocumentClient } = require("aws-sdk/clients/dynamodb");
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -66,24 +65,24 @@ describe("UserDAO", () => {
         ddb.delete({
             TableName: "Users",
             Key: {
-                username: "testUser",
+                username: "testUser"
             }
-        })
+        });
     });
 
     it("should create a new user in the table", async () => {
         await user.createNewUser("testUser2", "testUser2@nothing.com");
-        const item = await ddb.get({TableName: "Users", Key: {username: "testUser2"}}).promise();
+        const item = await ddb.get({ TableName: "Users", Key: { username: "testUser2" } }).promise();
         expect(item.Item).toEqual({
             username: "testUser2",
-            email: "testUser2@nothing.com",
+            email: "testUser2@nothing.com"
         });
         ddb.delete({
             TableName: "Users",
             Key: {
-                username: "testUser2",
+                username: "testUser2"
             }
-        })
+        });
     });
 
     it("should get user information by username", async () => {
@@ -93,7 +92,7 @@ describe("UserDAO", () => {
                 email: "testUser@nothing.com",
                 firstName: "Lorem",
                 lastName: "Ipsum",
-                username: "testUser",
+                username: "testUser"
             }
         ]);
     });
@@ -104,7 +103,7 @@ describe("UserDAO", () => {
         expect(item).toEqual([
             {
                 username: "testUser",
-                email: "testUpdate@nothing.com",
+                email: "testUpdate@nothing.com"
             }
         ]);
     });
@@ -172,7 +171,7 @@ describe("ChannelDAO", () => {
                 channelID: "ID01",
                 channelName: "testUser"
             }
-        })
+        });
     });
 
     it("should create a new channel", async () => {
@@ -183,7 +182,7 @@ describe("ChannelDAO", () => {
             "admin",
             null,
             PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
-        const item = await ddb.scan({TableName: "Channel"}).promise();
+        const item = await ddb.scan({ TableName: "Channel" }).promise();
         delete item.Items[0].channelId;
         expect(item).toEqual({
             Count: 1,
@@ -198,21 +197,19 @@ describe("ChannelDAO", () => {
     });
 
     it("should retrieve certain information about a channel", async () => {
-        const testChannelScan = await ddb.scan({TableName: "Channel"}).promise();
+        const testChannelScan = await ddb.scan({ TableName: "Channel" }).promise();
         let channelId = testChannelScan.Items[0].channelId;
         const call: ChannelObject = await channel.getChannelInfo(channelId);
         const item = await ddb
-            .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
+            .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "testChannel" } })
             .promise();
         let expectedItem = item.Item;
-        console.log(expectedItem);
-        console.log(call);
         expect(expectedItem).toEqual(call);
     });
 
     it("should return a list of all channels", async () => {
         const list = await channel.getAllChannels();
-        const item = await ddb.scan({TableName: "Channel"}).promise();
+        const item = await ddb.scan({ TableName: "Channel" }).promise();
         expect(list).toEqual(
             item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
         );
@@ -296,27 +293,27 @@ describe("UserChannelDAO", () => {
             "channel",
             "public",
             PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
-        const get = ddb.get({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}});
+        const get = ddb.get({ TableName: "UserChannel", Key: { username: "addTest", channelId: "ID01" } });
         expect(item).toEqual(get.Items);
-        ddb.delete({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}})
+        ddb.delete({ TableName: "UserChannel", Key: { username: "addTest", channelId: "ID01" } });
     });
 
     it("should return a list of channels a user is subscribed to", async () => {
         const item = await userChannel.getAllSubscribedChannels("testUser");
-        const expected = ddb.get({tableName: "UserChannel", username: "testUser"}).Items;
+        const expected = ddb.get({ tableName: "UserChannel", username: "testUser" }).Items;
         expect(item).toEqual(expected);
     });
 
-    
+
     it("should return a list of all users subscribed to a channel", async () => {
         const item = await userChannel.getAllSubscribedUsers("ID01");
-        const expected = ddb.get({tableName: "UserChannel", channelId: "ID01"});
+        const expected = ddb.get({ tableName: "UserChannel", channelId: "ID01" });
         expect(item).toEqual(expected.Items);
     });
 
     it("should delete a subscription between a specified user and channel", async () => {
         await userChannel.deleteChannelSubscription("testUser", "ID02");
-        const item = ddb.scan({tableName: "UserChannel"});
+        const item = ddb.scan({ tableName: "UserChannel" });
         expect(item.Count).toEqual(2);
     });
 
@@ -452,13 +449,13 @@ describe("MessageDAO", () => {
 
     it("should retrieve the message history for a given channel", async () => {
         const item = await msg.getMessageHistory("channel");
-        expect(item).toEqual(testMessage1);
-        expect(item).toEqual(testMessage2);
+        expect(item.Items[0]).toEqual(testMessage1);
+        expect(item.Items[1]).toEqual(testMessage2);
     });
 
     it("should get all messages from all channels", async () => {
         const item = await msg.getAllMessageHistory();
-        const expected = ddb.scan({TableName: "Messages"});
+        const expected = ddb.scan({ TableName: "Messages" });
         expect(item).toEqual(expected.Items);
     });
 
@@ -476,14 +473,14 @@ describe("MessageDAO", () => {
 
     it("should delete all messages in a channel", async () => {
         await msg.deleteAllMessagesForChannel("channel");
-        const item = ddb.scan({TableName: "Messages"});
+        const item = ddb.scan({ TableName: "Messages" });
         expect(item.Items[0]).toEqual(testMessageChannel2);
         expect(item.Count).toEqual(1);
     });
 
     it("should delete the specified message", async () => {
         await msg.deleteMessage("ID1", "channel", 1);
-        const item = ddb.scan({TableName: "Messages"});
+        const item = ddb.scan({ TableName: "Messages" });
         expect(item.Count).toEqual(2);
         expect(item.Items[0]).toEqual(testMessage2);
         expect(item.Items[1]).toEqual(testMessageChannel2);
@@ -521,14 +518,14 @@ describe("ProfileDAO", () => {
         ddb.delete({
             TableName: "Profiles",
             Key: {
-                username: "testUser",
+                username: "testUser"
             }
-        })
+        });
     });
 
     it("should create a new profile from basic user information", async () => {
         await profile.createProfile("test2", "new", "test");
-        expect(ddb.get({TableName: "Profiles", Key: {username: "test2"}}).Item == null).toBeFalsy();
+        expect(ddb.get({ TableName: "Profiles", Key: { username: "test2" } }).Item == null).toBeFalsy();
     });
 
     it("should update all data in a user's profile.  If data is missing, it is represented by white space", async () => {
@@ -562,15 +559,15 @@ describe("ProfileDAO", () => {
             parentLastName: null,
             parentEmail: null,
             parentPhone: null,
-            budget: null,
+            budget: null
         };
         await profile.updateProfile(testProfileUpdate);
-        expect(ddb.get({TableName: "Profiles", Key: {username: "testUser"}})).toEqual(testProfileUpdate);
+        expect(ddb.get({ TableName: "Profiles", Key: { username: "testUser" } })).toEqual(testProfileUpdate);
     });
 
     it("should update a user's status message", async () => {
         await profile.updateStatus("testUser", "updated");
-        const item = ddb.get({TableName: "Profiles", Key: {username: "testUser"}}).Items.status;
+        const item = ddb.get({ TableName: "Profiles", Key: { username: "testUser" } }).Items.status;
         expect(item).toEqual("updated");
     });
 
@@ -582,7 +579,7 @@ describe("ProfileDAO", () => {
 
     it("should return all data in a user's profile", async () => {
         const item = await profile.getUserProfile("testUser");
-        const expected = ddb.get({TableName: "Profiles", Key: {username: "Testuser"}});
+        const expected = ddb.get({ TableName: "Profiles", Key: { username: "Testuser" } });
         expect(item == expected.Items).toBeTruthy();
     });
 
@@ -624,7 +621,7 @@ describe("SettingsDAO", () => {
             Item: {
                 username: "testUser",
                 theme: "dark",
-                explicit: true,
+                explicit: true
             }
         });
     });
@@ -632,28 +629,28 @@ describe("SettingsDAO", () => {
         ddb.delete({
             TableName: "Settings",
             Key: {
-                username: "testUser",
+                username: "testUser"
             }
-        })
+        });
     });
 
     it("should create settings information for a user", async () => {
         await settings.createSettingsInfo("test2", "dark");
-        const item = ddb.get({TableName: "Settings", Key: {username: "test2"}}).Items;
+        const item = ddb.get({ TableName: "Settings", Key: { username: "test2" } }).Items;
         expect(item.Theme).toEqual("dark");
         expect(item.explicit).toBeNull();
     });
 
     it("should get settings information for a user", async () => {
         const item = await settings.getSettingsInfoByUsername("testUser");
-        const expected = ddb.get({TableName: "Settings", Key: {username: "testUser"}}).Items;
+        const expected = ddb.get({ TableName: "Settings", Key: { username: "testUser" } }).Items;
         expect(item).toEqual(expected);
     });
 
     it("should update a user's settings", async () => {
         await settings.updateSettings("testUser", "light", false);
-        expect(ddb.scan({TableName: "Settings"}).Count).toEqual(1);
-        const item = ddb.get({TableName: "Settings", Key: {username: "testUser"}}).Items;
+        expect(ddb.scan({ TableName: "Settings" }).Count).toEqual(1);
+        const item = ddb.get({ TableName: "Settings", Key: { username: "testUser" } }).Items;
         expect(item.theme).toEqual("light");
         expect(item.explicit).toBeTruthy();
     });
