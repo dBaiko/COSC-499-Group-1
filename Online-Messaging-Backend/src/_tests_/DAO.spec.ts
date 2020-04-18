@@ -4,7 +4,7 @@ import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
 import {MessageDAO} from "../routes/messages/MessageDAO";
 import SettingsDAO from "../routes/settings/settingsDAO";
 import {ProfileDAO, ProfileObject} from "../routes/profiles/ProfileDAO";
-import {GetItemOutput} from "aws-sdk/clients/dynamodb";
+import {GetItemOutput, QueryOutput, ScanOutput} from "aws-sdk/clients/dynamodb";
 
 interface ChannelObject {
     channelId: string;
@@ -21,6 +21,10 @@ interface Message {
     profileImage: string;
     deleted: string;
     channelType?: string;
+}
+
+function delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 jest.setTimeout(30000);
@@ -138,10 +142,10 @@ describe("UserDAO", () => {
             }
         });
         const item = await user.getAllUsers();
-        expect(item).toEqual([
-            ddb.scan({TableName: "Users"}).Items.sort(
-                (a: UserObject, b: UserObject) => (a.username > b.username ? 1 : -1)).promise()
-        ]);
+        ddb.scan({TableName: "Users"}).promise().then((data: ScanOutput) => {
+            expect(item).toEqual(data.Items)
+        });
+
         ddb.delete({
             TableName: "Users",
             Item: {
@@ -166,7 +170,7 @@ describe("ChannelDAO", () => {
     beforeEach(() => {
         return new Promise(((resolve) => {
             ddb.put({
-                TableName: "Channels",
+                TableName: "Channel",
                 Item: {
                     channelName: "testUser",
                     channelID: "ID01",
@@ -185,7 +189,7 @@ describe("ChannelDAO", () => {
     afterEach(() => {
         return new Promise(((resolve) => {
             ddb.delete({
-                TableName: "Channels",
+                TableName: "Channel",
                 Key: {
                     channelID: "ID01",
                     channelName: "testUser"
@@ -254,30 +258,32 @@ describe("UserChannelDAO", () => {
                     channelType: "public",
                     profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
                 }
-            });
-            ddb.put({
-                TableName: "UserChannel",
-                Item: {
-                    username: "testUser",
-                    channelId: "ID02",
-                    userChannelRole: "user",
-                    channelName: "channel2",
-                    channelType: "public",
-                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
-                }
-            });
-            ddb.put({
-                TableName: "UserChannel",
-                Item: {
-                    username: "testUser2",
-                    channelId: "ID01",
-                    userChannelRole: "user",
-                    channelName: "channel2",
-                    channelType: "public",
-                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
-                }
             }).promise().then(() => {
-                resolve();
+                ddb.put({
+                    TableName: "UserChannel",
+                    Item: {
+                        username: "testUser",
+                        channelId: "ID02",
+                        userChannelRole: "user",
+                        channelName: "channel2",
+                        channelType: "public",
+                        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+                    }
+                }).promise().then(() => {
+                    ddb.put({
+                        TableName: "UserChannel",
+                        Item: {
+                            username: "testUser2",
+                            channelId: "ID01",
+                            userChannelRole: "user",
+                            channelName: "channel",
+                            channelType: "public",
+                            profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                });
             });
         }));
     });
@@ -289,31 +295,47 @@ describe("UserChannelDAO", () => {
                 Key: {
                     username: "testUser",
                     channelId: "ID01"
-                }
-            });
-            ddb.delete({
-                TableName: "UserChannel",
-                Key: {
-                    username: "testUser",
-                    channelId: "ID02"
-                }
-            });
-            ddb.delete({
-                TableName: "UserChannel",
-                Key: {
-                    username: "testUser2",
-                    channelId: "ID01"
+                },
+                ConditionExpression: "username = :u and channelId = :c",
+                ExpressionAttributeValues: {
+                    ":u": "testUser",
+                    ":c": "ID01"
                 }
             }).promise().then(() => {
-                resolve();
+                ddb.delete({
+                    TableName: "UserChannel",
+                    Key: {
+                        username: "testUser",
+                        channelId: "ID02"
+                    },
+                    ConditionExpression: "username = :u and channelId = :c",
+                    ExpressionAttributeValues: {
+                        ":u": "testUser",
+                        ":c": "ID02"
+                    }
+                }).promise().then(() => {
+                    ddb.delete({
+                        TableName: "UserChannel",
+                        Key: {
+                            username: "testUser2",
+                            channelId: "ID01"
+                        },
+                        ConditionExpression: "username = :u and channelId = :c",
+                        ExpressionAttributeValues: {
+                            ":u": "testUser2",
+                            ":c": "ID01"
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                });
             });
         }));
-    })
-    ;
+    });
 
     it("should return all users and all channels they are subscribed to", async () => {
         const item = await ddb.scan({TableName: "UserChannel"}).promise();
-        const actual = userChannel.getAll();
+        const actual = await userChannel.getAll();
         expect(actual).toEqual(item.Items);
     });
 
@@ -326,69 +348,118 @@ describe("UserChannelDAO", () => {
             "public",
             PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
         const get = ddb.get({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}});
+        await userChannel.deleteChannelSubscription("addTest", "ID01");
         expect(item).toEqual(get.Items);
-        ddb.delete({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}});
     });
 
     it("should return a list of channels a user is subscribed to", async () => {
         const item = await userChannel.getAllSubscribedChannels("testUser");
-        const expected = await ddb.get({TableName: "UserChannel", Key: {username: "testUser"}}).promise();
-        expect(item).toEqual(expected.Item);
+        const expected = await ddb.query({
+            TableName: "UserChannel",
+            KeyConditionExpression: "username = :username",
+            ExpressionAttributeValues: {":username": "testUser"}
+        }).promise();
+        expect(item).toEqual(expected.Items);
     });
 
 
     it("should return a list of all users subscribed to a channel", async () => {
         const item = await userChannel.getAllSubscribedUsers("ID01");
-        const expected = await ddb.get({TableName: "UserChannel", Key: {channelId: "ID01"}}).promise();
-        expect(item).toEqual(expected.Item);
+        const expected = await ddb.query({
+            TableName: "UserChannel",
+            IndexName: "channelId-username-index",
+            KeyConditionExpression: "channelId = :channelId",
+            ExpressionAttributeValues: {":channelId": "ID01"}
+        }).promise();
+        expect(item).toEqual(expected.Items);
     });
 
     it("should delete a subscription between a specified user and channel", async () => {
-        await userChannel.deleteChannelSubscription("testUser", "ID02");
-        const item = ddb.scan({tableName: "UserChannel"});
-        expect(item.scannedCount).toEqual(2);
+        await userChannel.deleteChannelSubscription("testUser2", "ID01");
+        ddb.scan({TableName: "UserChannel"}).promise().then((item: ScanOutput) => {
+            console.log(item.Count);
+            expect(item.Count).toBe(2);
+            ddb.put({
+                TableName: "UserChannel",
+                Item: {
+                    username: "testUser2",
+                    channelId: "ID01",
+                    userChannelRole: "user",
+                    channelName: "channel",
+                    channelType: "public",
+                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+                }
+            }).promise().then(() => {
+                return;
+            });
+        });
+
     });
 
     it("should update the user's displayed profile picture across all subscribed channels", async () => {
         await userChannel.updateProfilePicture("testUser");
-        const sub1 = (await ddb.get({
+        await delay(1000);
+        ddb.query({
             TableName: "UserChannel",
-            Key: {username: "testUser", channelId: "ID01"}
-        }).promise()).Item;
-        const sub2 = (await ddb.get({
+            Key: {username: "testUser", channelId: "ID01"},
+            KeyConditionExpression: "username = :username and channelId = :channelId",
+            ExpressionAttributeValues: {":username": "testUser", ":channelId": "ID01"}
+        }).promise().then((sub1: QueryOutput) => {
+            expect(sub1.Items[0]).toEqual({
+                username: "testUser",
+                channelId: "ID01",
+                userChannelRole: "admin",
+                channelName: "channel",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + "testUser.png"
+            });
+        });
+        ddb.get({
             TableName: "UserChannel",
             Key: {username: "testUser", channelId: "ID02"}
-        }).promise()).Item;
-        expect(sub1).toEqual({
-            username: "testUser",
-            channelId: "ID01",
-            userChannelRole: "admin",
-            channelName: "channel",
-            channelType: "public",
-            profileImage: PROFILE_IMAGE_S3_PREFIX + "testUser.png"
-        });
-        expect(sub2).toEqual({
-            username: "testUser",
-            channelId: "ID02",
-            userChannelRole: "user",
-            channelName: "channel2",
-            channelType: "public",
-            profileImage: PROFILE_IMAGE_S3_PREFIX + "testUser.png"
+        }).promise().then((sub2: GetItemOutput) => {
+            expect(sub2.Item).toEqual({
+                username: "testUser",
+                channelId: "ID02",
+                userChannelRole: "user",
+                channelName: "channel2",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + "testUser.png"
+            });
         });
     });
 
     it("should update a user's displayed status across all subscribed channels", async () => {
         await userChannel.updateStatus("testUser", "Lorem Ipsum");
-        const sub1 = (await ddb.get({
+        await delay(1000);
+        ddb.get({
             TableName: "UserChannel",
             Key: {username: "testUser", channelId: "ID01"}
-        }).promise()).Item[0];
-        const sub2 = (await ddb.get({
+        }).promise().then((sub1: GetItemOutput) => {
+            expect(sub1.Item).toEqual({
+                username: "testUser",
+                channelId: "ID01",
+                userChannelRole: "admin",
+                channelName: "channel",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                statusText: "Lorem Ipsum"
+            });
+        });
+        ddb.get({
             TableName: "UserChannel",
             Key: {username: "testUser", channelId: "ID02"}
-        }).promise()).Item[0];
-        expect(sub1).toEqual("Lorem Ipsum");
-        expect(sub2).toEqual("Lorem Ipsum");
+        }).promise().then((sub2: GetItemOutput) => {
+            expect(sub2.Item).toEqual({
+                username: "testUser",
+                channelId: "ID02",
+                userChannelRole: "user",
+                channelName: "channel2",
+                channelType: "public",
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                statusText: "Lorem Ipsum"
+            });
+        });
     });
 })
 ;
@@ -534,7 +605,7 @@ describe("MessageDAO", () => {
                 channelID: "channel",
                 insertTime: 5
             }
-        }).promise().then((item:GetItemOutput) => {
+        }).promise().then((item: GetItemOutput) => {
             expect(item.Item).toEqual(testMessage3);
         });
 
