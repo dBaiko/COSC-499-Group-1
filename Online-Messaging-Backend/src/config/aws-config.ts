@@ -22,6 +22,12 @@ export const UserPoolConfig = {
     ExpectedTokenUse: "id"
 };
 
+export const AWSS3Config = {
+    endpoint: "s3.ca-central-1.amazonaws.com",
+    bucket: "streamline-athletes-messaging-app",
+    imagesFolder: "user-profile-images/"
+};
+
 export const TestUserData = {
     testUsername: "TestUser",
     testPassword: "password",
