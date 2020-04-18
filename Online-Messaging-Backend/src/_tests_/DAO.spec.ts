@@ -128,7 +128,21 @@ describe("UserDAO", () => {
         expect(item).toEqual([
             ddb.scan("Users").Items.sort(
                 (a: UserObject, b: UserObject) => (a.username > b.username ? 1 : -1)).promise()
-        ])
+        ]);
+        ddb.delete({
+            TableName: "Users",
+            Item: {
+                username: "testUser2",
+                email: "test2@nothing.com"
+            }
+        });
+        ddb.delete({
+            TableName: "Users",
+            Item: {
+                username: "testUser3",
+                email: "test3@nothing.com"
+            }
+        });
     });
 });
 
@@ -269,8 +283,9 @@ describe("UserChannelDAO", () => {
     });
 
     it("should return all users and all channels they are subscribed to", async () => {
-        const item = ddb.scan("UserChannel").promise();
-        expect(userChannel.getAll()).toEqual(item.Items);
+        const item = await ddb.scan({TableName: "UserChannel"}).promise();
+        const actual = userChannel.getAll();
+        expect(actual).toEqual(item.Items);
     });
 
     it("should subscribe a user to a channel", async () => {
@@ -307,18 +322,18 @@ describe("UserChannelDAO", () => {
 
     it("should update the user's displayed profile picture across all subscribed channels", async () => {
         await userChannel.updateProfilePicture("testUser");
-        const sub1 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID01"});
+        const sub1 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID01"}).promise();
         const sub2 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID02"});
-        expect(sub1.profileImage).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
+        expect(sub1.Item.profileImage).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
         expect(sub2.profileImage).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
     });
 
     it("should update a user's displayed status across all subscribed channels", async () => {
         await userChannel.updateStatus("testUser", "Lorem Ipsum");
-        const sub1 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID01"});
-        const sub2 = ddb.get({tableName: "UserChannel", username: "testUser", channelId: "ID02"});
-        expect(sub1.statusText).toEqual("Lorem Ipsum");
-        expect(sub2.statusText).toEqual("Lorem Ipsum");
+        const sub1 = ddb.get({TableName: "UserChannel", Key: {username: "testUser", channelId: "ID01"}}).promise();
+        const sub2 = ddb.get({TableName: "UserChannel", Key: {username: "testUser", channelId: "ID02"}}).promise();
+        expect(sub1.Item[6]).toEqual("Lorem Ipsum");
+        expect(sub2.Item[6]).toEqual("Lorem Ipsum");
     });
 });
 
@@ -437,8 +452,8 @@ describe("MessageDAO", () => {
 
     it("should retrieve the message history for a given channel", async () => {
         const item = await msg.getMessageHistory("channel");
-        expect(item.Items[0]).toEqual(testMessage1);
-        expect(item.Items[1]).toEqual(testMessage2);
+        expect(item).toEqual(testMessage1);
+        expect(item).toEqual(testMessage2);
     });
 
     it("should get all messages from all channels", async () => {
