@@ -52,6 +52,10 @@ const FRENCH = "French";
 const MANDARIN = "Mandarin";
 const OTHER = "Other";
 
+const NA = "N/A";
+const TWO_THOUSAND = "2000";
+const DEFAULT_DATE = "1111-01-01";
+
 const STATUS_URI: string = "/status/";
 const PROFILE_IMAGE_URI = "/profile-image/";
 const STATUS_TEXT_IDENTIFIER: string = "statusText";
@@ -98,18 +102,18 @@ export class ProfileComponent implements OnInit {
 
     private _profileView: string;
 
-    get profileView(): string {
+    public get profileView(): string {
         return this._profileView;
     }
 
     @Input()
-    set profileView(value: string) {
+    public set profileView(value: string) {
         this.userProfile = null;
         this._profileView = value;
         this.getUserInfo(this._profileView);
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.editForm = new FormGroup({
             firstName: new FormControl(
                 Constants.EMPTY,
@@ -199,12 +203,7 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    /**
-     * Gets the user profile of the user being viewed on the profile page
-     *
-     * @param username The username of the user to look up
-     */
-    getUserInfo(username: string): void {
+    public getUserInfo(username: string): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -254,48 +253,86 @@ export class ProfileComponent implements OnInit {
                         };
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    toggleEditing(editing: boolean) {
+    public toggleEditing(editing: boolean): void {
         this.editing = editing;
-        this.editForm.get(FIRSTNAME_FORM_NAME).setValue((this.userProfile.firstName) ? this.userProfile.firstName : "N/A");
-        this.editForm.get(LASTNAME_FORM_NAME).setValue((this.userProfile.lastName) ? this.userProfile.lastName : "N/A");
-        this.editForm.get(BIO_FORM_NAME).setValue((this.userProfile.bio) ? this.userProfile.bio : "N/A");
-        this.editForm.get(PHONE_FORM_NAME).setValue((this.userProfile.phone) ? this.userProfile.phone : Constants.EMPTY);
-        this.editForm.get(GENDER_FORM_NAME).setValue((this.userProfile.gender) ? this.userProfile.gender : "N/A");
-        this.editForm.get(DATEOFBIRTH_FORM_NAME).setValue((this.userProfile.dateOfBirth != "1111-01-01" && this.userProfile.dateOfBirth != " ") ? this.userProfile.dateOfBirth : "");
-        this.editForm.get(CITIZENSHIP_FORM_NAME).setValue((this.userProfile.citizenship) ? this.userProfile.citizenship : "N/A");
-        this.editForm.get(GRADE_FORM_NAME).setValue((this.userProfile.grade) ? this.userProfile.grade : "N/A");
-        this.editForm.get(GRADYEAR_FORM_NAME).setValue((this.userProfile.gradYear != "N/A" && this.userProfile.gradYear != "2000") ? this.userProfile.gradYear : "");
-        this.editForm.get(PREVIOUSCOLLEGIATE_FORM_NAME).setValue((this.userProfile.previousCollegiate) ? this.userProfile.previousCollegiate : "N/A");
-        this.editForm.get(STREET_FORM_NAME).setValue((this.userProfile.street) ? this.userProfile.street : "N/A");
-        this.editForm.get(UNITNUMBER_FORM_NAME).setValue((this.userProfile.unitNumber) ? this.userProfile.unitNumber : "N/A");
-        this.editForm.get(CITY_FORM_NAME).setValue((this.userProfile.city) ? this.userProfile.city : "N/A");
-        this.editForm.get(PROVINCE_FORM_NAME).setValue((this.userProfile.province) ? this.userProfile.province : "N/A");
-        this.editForm.get(COUNTRY_FORM_NAME).setValue((this.userProfile.country) ? this.userProfile.country : "N/A");
-        this.editForm.get(POSTALCODE_FORM_NAME).setValue((this.userProfile.postalCode) ? this.userProfile.postalCode : "N/A");
-        this.editForm.get(CLUB_FORM_NAME).setValue((this.userProfile.club) ? this.userProfile.club : "N/A");
-        this.editForm.get(INJURYSTATUS_FORM_NAME).setValue((this.userProfile.injuryStatus) ? this.userProfile.injuryStatus : "N/A");
-        this.editForm.get(INSTAGRAM_FORM_NAME).setValue((this.userProfile.instagram) ? this.userProfile.instagram : "N/A");
-        this.editForm.get(COACHFIRSTNAME_FORM_NAME).setValue((this.userProfile.coachFirstName) ? this.userProfile.coachFirstName : "N/A");
-        this.editForm.get(COACHLASTNAME_FORM_NAME).setValue((this.userProfile.coachLastName) ? this.userProfile.coachLastName : "N/A");
-        this.editForm.get(COACHPHONE_FORM_NAME).setValue((this.userProfile.coachPhone) ? this.userProfile.coachPhone : Constants.EMPTY);
-        this.editForm.get(COACHEMAIL_FORM_NAME).setValue((this.userProfile.coachEmail) ? this.userProfile.coachEmail : "N/A");
-        this.editForm.get(PARENTFIRSTNAME_FORM_NAME).setValue((this.userProfile.parentFirstName) ? this.userProfile.parentFirstName : "N/A");
-        this.editForm.get(PARENTLASTNAME_FORM_NAME).setValue((this.userProfile.parentLastName) ? this.userProfile.parentLastName : "N/A");
-        this.editForm.get(PARENTPHONE_FORM_NAME).setValue((this.userProfile.parentPhone) ? this.userProfile.parentPhone : Constants.EMPTY);
-        this.editForm.get(PARENTEMAIL_FORM_NAME).setValue((this.userProfile.parentEmail) ? this.userProfile.parentEmail : "N/A");
-        this.editForm.get(BUDGET_FORM_NAME).setValue((this.userProfile.budget) ? this.userProfile.budget : "N/A");
+        this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName ? this.userProfile.firstName : NA);
+        this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName ? this.userProfile.lastName : NA);
+        this.editForm.get(BIO_FORM_NAME).setValue(this.userProfile.bio ? this.userProfile.bio : NA);
+        this.editForm.get(PHONE_FORM_NAME).setValue(this.userProfile.phone ? this.userProfile.phone : Constants.EMPTY);
+        this.editForm.get(GENDER_FORM_NAME).setValue(this.userProfile.gender ? this.userProfile.gender : NA);
+        this.editForm
+            .get(DATEOFBIRTH_FORM_NAME)
+            .setValue(
+                this.userProfile.dateOfBirth != DEFAULT_DATE && this.userProfile.dateOfBirth != Constants.SPACE
+                    ? this.userProfile.dateOfBirth
+                    : Constants.EMPTY
+            );
+        this.editForm
+            .get(CITIZENSHIP_FORM_NAME)
+            .setValue(this.userProfile.citizenship ? this.userProfile.citizenship : NA);
+        this.editForm.get(GRADE_FORM_NAME).setValue(this.userProfile.grade ? this.userProfile.grade : NA);
+        this.editForm
+            .get(GRADYEAR_FORM_NAME)
+            .setValue(
+                this.userProfile.gradYear != NA && this.userProfile.gradYear != TWO_THOUSAND
+                    ? this.userProfile.gradYear
+                    : Constants.EMPTY
+            );
+        this.editForm
+            .get(PREVIOUSCOLLEGIATE_FORM_NAME)
+            .setValue(this.userProfile.previousCollegiate ? this.userProfile.previousCollegiate : NA);
+        this.editForm.get(STREET_FORM_NAME).setValue(this.userProfile.street ? this.userProfile.street : NA);
+        this.editForm
+            .get(UNITNUMBER_FORM_NAME)
+            .setValue(this.userProfile.unitNumber ? this.userProfile.unitNumber : NA);
+        this.editForm.get(CITY_FORM_NAME).setValue(this.userProfile.city ? this.userProfile.city : NA);
+        this.editForm.get(PROVINCE_FORM_NAME).setValue(this.userProfile.province ? this.userProfile.province : NA);
+        this.editForm.get(COUNTRY_FORM_NAME).setValue(this.userProfile.country ? this.userProfile.country : NA);
+        this.editForm
+            .get(POSTALCODE_FORM_NAME)
+            .setValue(this.userProfile.postalCode ? this.userProfile.postalCode : NA);
+        this.editForm.get(CLUB_FORM_NAME).setValue(this.userProfile.club ? this.userProfile.club : NA);
+        this.editForm
+            .get(INJURYSTATUS_FORM_NAME)
+            .setValue(this.userProfile.injuryStatus ? this.userProfile.injuryStatus : NA);
+        this.editForm.get(INSTAGRAM_FORM_NAME).setValue(this.userProfile.instagram ? this.userProfile.instagram : NA);
+        this.editForm
+            .get(COACHFIRSTNAME_FORM_NAME)
+            .setValue(this.userProfile.coachFirstName ? this.userProfile.coachFirstName : NA);
+        this.editForm
+            .get(COACHLASTNAME_FORM_NAME)
+            .setValue(this.userProfile.coachLastName ? this.userProfile.coachLastName : NA);
+        this.editForm
+            .get(COACHPHONE_FORM_NAME)
+            .setValue(this.userProfile.coachPhone ? this.userProfile.coachPhone : Constants.EMPTY);
+        this.editForm
+            .get(COACHEMAIL_FORM_NAME)
+            .setValue(this.userProfile.coachEmail ? this.userProfile.coachEmail : NA);
+        this.editForm
+            .get(PARENTFIRSTNAME_FORM_NAME)
+            .setValue(this.userProfile.parentFirstName ? this.userProfile.parentFirstName : NA);
+        this.editForm
+            .get(PARENTLASTNAME_FORM_NAME)
+            .setValue(this.userProfile.parentLastName ? this.userProfile.parentLastName : NA);
+        this.editForm
+            .get(PARENTPHONE_FORM_NAME)
+            .setValue(this.userProfile.parentPhone ? this.userProfile.parentPhone : Constants.EMPTY);
+        this.editForm
+            .get(PARENTEMAIL_FORM_NAME)
+            .setValue(this.userProfile.parentEmail ? this.userProfile.parentEmail : NA);
+        this.editForm.get(BUDGET_FORM_NAME).setValue(this.userProfile.budget ? this.userProfile.budget : NA);
         if (this.userProfile.languages) {
-            if (this.userProfile.languages == [" "] || this.userProfile.languages.length == 0) {
+            if (this.userProfile.languages == [Constants.EMPTY] || this.userProfile.languages.length == 0) {
                 this.editForm.get(LANGUAGESENGLISH_FORM_NAME).setValue(false);
                 this.editForm.get(LANGUAGESFRENCH_FORM_NAME).setValue(false);
                 this.editForm.get(LANGUAGESSPANISH_FORM_NAME).setValue(false);
@@ -322,12 +359,14 @@ export class ProfileComponent implements OnInit {
         }
     }
 
-    toggleEditingStatus(editingStatus: boolean) {
+    public toggleEditingStatus(editingStatus: boolean): void {
         this.editingStatus = editingStatus;
-        this.statusForm.get(STATUS_TEXT_IDENTIFIER).setValue((this.userProfile.statusText) ? this.userProfile.statusText : "");
+        this.statusForm
+            .get(STATUS_TEXT_IDENTIFIER)
+            .setValue(this.userProfile.statusText ? this.userProfile.statusText : "");
     }
 
-    statusFormSubmit(form: FormGroup) {
+    public statusFormSubmit(form: FormGroup): void {
         let username = this.auth.getAuthenticatedUser().getUsername();
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
@@ -337,9 +376,9 @@ export class ProfileComponent implements OnInit {
                     })
                 };
 
-                let statusText = this.common.santizeText(form.value.statusText);
+                let statusText = this.common.sanitizeText(form.value.statusText);
                 if (statusText == null || statusText == Constants.EMPTY) {
-                    statusText = " ";
+                    statusText = Constants.SPACE;
                 }
 
                 this.http
@@ -347,7 +386,7 @@ export class ProfileComponent implements OnInit {
                         this.profilesAPI + username + STATUS_URI,
                         {
                             username: username,
-                            status: this.common.santizeText(form.value.statusText)
+                            status: this.common.sanitizeText(form.value.statusText)
                         },
                         httpHeaders
                     )
@@ -358,18 +397,18 @@ export class ProfileComponent implements OnInit {
                             this.profileUpdateEvent.emit();
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             this.editSaveMessage = ERROR_MESSAGE;
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    imageFormButtonClick(event) {
+    public imageFormButtonClick(event): void {
         let file = (event.target as HTMLInputElement).files[0];
         this.imageForm.controls[PROFILE_IMAGE_NAME].setValue(file ? file.name : Constants.EMPTY);
         this.imageForm.controls[PROFILE_IMAGE_SIZE].setValue(file ? file.size : Constants.EMPTY);
@@ -379,17 +418,17 @@ export class ProfileComponent implements OnInit {
                 document.getElementById(HIDDEN_BUTTON_IDENTIFIER).click();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     }
 
-    imageFormSubmit() {
+    public imageFormSubmit(): void {
         if (this.imageForm.valid) {
             this.updateProfilePicture();
         }
     }
 
-    updateProfilePicture(): void {
+    public updateProfilePicture(): void {
         let username = this.auth.getAuthenticatedUser().getUsername();
 
         this.auth.getCurrentSessionId().subscribe(
@@ -416,18 +455,18 @@ export class ProfileComponent implements OnInit {
                         this.editSaveMessage = IMAGE_MESSAGE;
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                         this.editSaveMessage = ERROR_MESSAGE;
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    editFormSubmit(form: FormGroup): void {
+    public editFormSubmit(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.editForm.valid) {
             let languages = [];
@@ -470,7 +509,7 @@ export class ProfileComponent implements OnInit {
         }
     }
 
-    editUser(
+    public editUser(
         firstName: string,
         lastName: string,
         phone: string,
@@ -500,34 +539,34 @@ export class ProfileComponent implements OnInit {
         parentPhone: string,
         parentEmail: string,
         budget: string
-    ) {
+    ): void {
         let username = this.userProfile.username;
 
-        firstName = this.common.santizeText(firstName);
-        lastName = this.common.santizeText(lastName);
-        phone = this.common.santizeText(phone);
-        bio = this.common.santizeText(bio);
-        gender = this.common.santizeText(gender);
-        dateOfBirth = this.common.santizeText(dateOfBirth);
-        citizenship = this.common.santizeText(citizenship);
-        street = this.common.santizeText(street);
-        unitNumber = this.common.santizeText(unitNumber);
-        city = this.common.santizeText(city);
-        province = this.common.santizeText(province);
-        country = this.common.santizeText(country);
-        postalCode = this.common.santizeText(postalCode);
-        club = this.common.santizeText(club);
-        injuryStatus = this.common.santizeText(injuryStatus);
-        instagram = this.common.santizeText(instagram);
-        coachFirstName = this.common.santizeText(coachFirstName);
-        coachLastName = this.common.santizeText(coachLastName);
-        coachPhone = this.common.santizeText(coachPhone);
-        coachEmail = this.common.santizeText(coachEmail);
-        parentFirstName = this.common.santizeText(parentFirstName);
-        parentLastName = this.common.santizeText(parentLastName);
-        parentPhone = this.common.santizeText(parentPhone);
-        parentEmail = this.common.santizeText(parentEmail);
-        budget = this.common.santizeText(budget);
+        firstName = this.common.sanitizeText(firstName);
+        lastName = this.common.sanitizeText(lastName);
+        phone = this.common.sanitizeText(phone);
+        bio = this.common.sanitizeText(bio);
+        gender = this.common.sanitizeText(gender);
+        dateOfBirth = this.common.sanitizeText(dateOfBirth);
+        citizenship = this.common.sanitizeText(citizenship);
+        street = this.common.sanitizeText(street);
+        unitNumber = this.common.sanitizeText(unitNumber);
+        city = this.common.sanitizeText(city);
+        province = this.common.sanitizeText(province);
+        country = this.common.sanitizeText(country);
+        postalCode = this.common.sanitizeText(postalCode);
+        club = this.common.sanitizeText(club);
+        injuryStatus = this.common.sanitizeText(injuryStatus);
+        instagram = this.common.sanitizeText(instagram);
+        coachFirstName = this.common.sanitizeText(coachFirstName);
+        coachLastName = this.common.sanitizeText(coachLastName);
+        coachPhone = this.common.sanitizeText(coachPhone);
+        coachEmail = this.common.sanitizeText(coachEmail);
+        parentFirstName = this.common.sanitizeText(parentFirstName);
+        parentLastName = this.common.sanitizeText(parentLastName);
+        parentPhone = this.common.sanitizeText(parentPhone);
+        parentEmail = this.common.sanitizeText(parentEmail);
+        budget = this.common.sanitizeText(budget);
 
         let profile: ProfileObject = {
             username: username,
@@ -583,18 +622,18 @@ export class ProfileComponent implements OnInit {
                             },
                             (err) => {
                                 this.editSaveMessage = ERROR_MESSAGE;
-                                console.log(err);
+                                console.error(err);
                             }
                         );
                     },
                     (err) => {
                         this.editSaveMessage = ERROR_MESSAGE;
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }

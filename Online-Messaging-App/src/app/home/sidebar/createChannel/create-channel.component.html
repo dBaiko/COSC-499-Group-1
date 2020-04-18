@@ -10,14 +10,14 @@
                             <mat-label>Channel Name</mat-label>
                             <label for="channelName"></label
                             ><input
-                            class="form-control"
-                            formControlName="channelName"
-                            id="channelName"
-                            matInput
-                            name="channelName"
-                            required
-                            type="text"
-                        />
+                                class="form-control"
+                                formControlName="channelName"
+                                id="channelName"
+                                matInput
+                                name="channelName"
+                                required
+                                type="text"
+                            />
                             <mat-error *ngFor="let validation of common.validation_methods.channelName">
                                 <mat-error
                                     *ngIf="
@@ -28,7 +28,7 @@
                                             submitAttempt
                                         )
                                     "
-                                >{{ validation.message }}
+                                    >{{ validation.message }}
                                 </mat-error>
                             </mat-error>
                         </mat-form-field>
@@ -49,7 +49,7 @@
                                         submitAttempt
                                     )
                                 "
-                            >{{ validation.message }}
+                                >{{ validation.message }}
                             </mat-error>
                         </mat-error>
                     </div>
@@ -72,7 +72,7 @@
                                         submitAttempt
                                     )
                                 "
-                            >{{ validation.message }}
+                                >{{ validation.message }}
                             </mat-error>
                         </mat-error>
                     </div>

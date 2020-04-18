@@ -1,29 +1,31 @@
 import bodyParser from "body-parser";
 import express from "express";
-import UserDAO from "./UserDAO";
-import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { UserDAO } from "./UserDAO";
+import { UserChannelDAO } from "../userChannels/UserChannelDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
+import { JwtVerificationService } from "../../shared/jwt-verification-service";
 import { ProfileDAO } from "../profiles/ProfileDAO";
-import SettingsDAO from "../settings/settingsDAO";
+import { SettingsDAO } from "../settings/settingsDAO";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
 import { sanitizeInput } from "../../index";
+import { Constants, HTTPResponseAndToken, UserObject } from "../../config/app-config";
+import {
+    AUTH_KEY,
+    COGNITO_USERNAME,
+    DEFAULT_THEME,
+    PATH_DELETE_USER_SUBSCRIPTION,
+    PATH_GET_ALL_NOTIFICATIONS_FOR_USER,
+    PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME,
+    PATH_GET_ALL_USERS,
+    PATH_GET_SETTINGS_INFO_FOR_USER,
+    PATH_GET_USER_BY_USERNAME,
+    PATH_POST_NEW_USER,
+    PATH_PUT_SETTINGS_FOR_USER,
+    PATH_PUT_USER
+} from "./Users_Constants";
 
 const router = express.Router();
-
-const PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME = "/:username/channels";
-const PATH_DELETE_USER_SUBSCRIPTION = "/:username/channels/:channelId";
-const PATH_POST_NEW_USER = "/";
-const PATH_GET_ALL_USERS = "/";
-const PATH_PUT_USER = "/:username";
-const PATH_GET_USER_BY_USERNAME = "/:username";
-const PATH_GET_ALL_NOTIFICATIONS_FOR_USER = "/:username/notifications";
-const PATH_GET_ALL_FRIEND_INVITES_FOR_USER = "/:username/notifications/fromFriend/:fromFriend";
-const PATH_GET_SETTINGS_INFO_FOR_USER = "/:username/settings/";
-const PATH_PUT_SETTINGS_FOR_USER = "/:username/settings/";
-const AUTH_KEY = "authorization";
-const COGNITO_USERNAME = "cognito:username";
 
 const jwtVerificationService: JwtVerificationService = JwtVerificationService.getInstance();
 
@@ -31,13 +33,6 @@ aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
 
 router.use(bodyParser.json());
-
-interface UserObject {
-    username: string;
-    email: string;
-}
-
-const DEFAULT_THEME: string = "light";
 
 router.post(PATH_POST_NEW_USER, (req, res) => {
     const userRegistration = new UserDAO(docClient);
@@ -56,18 +51,21 @@ router.post(PATH_POST_NEW_USER, (req, res) => {
                     settingsDAO
                         .createSettingsInfo(sanitizeInput(req.body.username), DEFAULT_THEME)
                         .then(() => {
-                            res.status(200).send({ status: 200, data: { message: "New user added successfully" } });
+                            res.status(Constants.HTTP_OK).send({
+                                status: Constants.HTTP_OK,
+                                data: { message: "New user added successfully" }
+                            });
                         })
                         .catch((err) => {
-                            res.status(400).send(err);
+                            res.status(Constants.HTTP_SERVER_ERROR).send(err);
                         });
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_SERVER_ERROR).send(err);
                 });
         })
         .catch((err) => {
-            res.status(400).send(err);
+            res.status(Constants.HTTP_SERVER_ERROR).send(err);
         });
 });
 
@@ -75,16 +73,16 @@ router.get(PATH_GET_ALL_SUBSCRIBED_CHANNELS_BY_USERNAME, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
+        () => {
             const userChannelDAO = new UserChannelDAO(docClient);
             let username = req.params.username;
             userChannelDAO
                 .getAllSubscribedChannels(username)
                 .then((data) => {
-                    res.status(200).send(data);
+                    res.status(Constants.HTTP_OK).send(data);
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_SERVER_ERROR).send(err);
                 });
         },
         (err) => {
@@ -106,14 +104,14 @@ router.get(PATH_GET_USER_BY_USERNAME, (req, res) => {
                 userDAO
                     .getUserInfoByUsername(username)
                     .then((data: Array<UserObject>) => {
-                        res.status(200).send(data);
+                        res.status(Constants.HTTP_OK).send(data);
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_SERVER_ERROR).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user info" }
                 });
             }
@@ -139,17 +137,17 @@ router.put(PATH_PUT_USER, (req, res) => {
                 userDAO
                     .updateUser(sanitizeInput(req.body.username), sanitizeInput(req.body.email))
                     .then(() => {
-                        res.status(200).send({
-                            status: 200,
+                        res.status(Constants.HTTP_OK).send({
+                            status: Constants.HTTP_OK,
                             data: { message: "User " + req.body.username + " updated successfully" }
                         });
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_SERVER_ERROR).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user info" }
                 });
             }
@@ -172,14 +170,14 @@ router.get(PATH_GET_ALL_NOTIFICATIONS_FOR_USER, (req, res) => {
                 notificationsDAO
                     .getAllNotificationsForUser(req.params.username)
                     .then((data) => {
-                        res.status(200).send(data);
+                        res.status(Constants.HTTP_OK).send(data);
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_SERVER_ERROR).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user info" }
                 });
             }
@@ -194,15 +192,15 @@ router.get(PATH_GET_ALL_USERS, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data: HTTPResponseAndToken) => {
+        () => {
             const usersDAO = new UserDAO(docClient);
             usersDAO
                 .getAllUsers()
                 .then((data) => {
-                    res.status(200).send(data);
+                    res.status(Constants.HTTP_OK).send(data);
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_SERVER_ERROR).send(err);
                 });
         },
         (err) => {
@@ -215,20 +213,20 @@ router.delete(PATH_DELETE_USER_SUBSCRIPTION, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data: HTTPResponseAndToken) => {
+        () => {
             let userChannelDAO = new UserChannelDAO(docClient);
             userChannelDAO
                 .deleteChannelSubscription(req.params.username, req.params.channelId)
                 .then(() => {
-                    res.status(200).send({
-                        status: 200,
+                    res.status(Constants.HTTP_OK).send({
+                        status: Constants.HTTP_OK,
                         data: {
                             message: "User subscription deleted successfully"
                         }
                     });
                 })
                 .catch((err) => {
-                    res.status(500).send(err);
+                    res.status(Constants.HTTP_SERVER_ERROR).send(err);
                 });
         },
         (err) => {
@@ -250,14 +248,14 @@ router.get(PATH_GET_SETTINGS_INFO_FOR_USER, (req, res) => {
                 settingsDAO
                     .getSettingsInfoByUsername(username)
                     .then((data: Array<UserObject>) => {
-                        res.status(200).send(data);
+                        res.status(Constants.HTTP_OK).send(data);
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_BAD_REQUEST).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user info" }
                 });
             }
@@ -277,24 +275,24 @@ router.put(PATH_PUT_SETTINGS_FOR_USER, (req, res) => {
                 req.params.username === data.decodedToken[COGNITO_USERNAME] &&
                 req.body.username === data.decodedToken[COGNITO_USERNAME]
             ) {
-                if (req.body.explicit == "" || req.body.explicit == null) {
+                if (req.body.explicit == Constants.EMPTY || req.body.explicit == null) {
                     req.body.explicit = false;
                 }
                 const settingsDAO: SettingsDAO = new SettingsDAO(docClient);
                 settingsDAO
                     .updateSettings(sanitizeInput(req.body.username), sanitizeInput(req.body.theme), req.body.explicit)
                     .then(() => {
-                        res.status(200).send({
-                            status: 200,
+                        res.status(Constants.HTTP_OK).send({
+                            status: Constants.HTTP_OK,
                             data: { message: "Settings for user" + req.body.username + "updated successfully" }
                         });
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_BAD_REQUEST).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user settings info" }
                 });
             }

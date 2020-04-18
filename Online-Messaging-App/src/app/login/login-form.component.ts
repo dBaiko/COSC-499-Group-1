@@ -37,8 +37,8 @@ export class LoginFormComponent implements OnInit {
     }
 
     login(username: string, password: string): void {
-        username = this.common.santizeText(username);
-        password = this.common.santizeText(password);
+        username = this.common.sanitizeText(username);
+        password = this.common.sanitizeText(password);
         this.auth.login(username, password).subscribe(
             () => {
                 this.common.moveToHome();

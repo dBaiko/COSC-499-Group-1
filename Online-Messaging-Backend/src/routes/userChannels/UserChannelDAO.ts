@@ -1,42 +1,39 @@
-/* tslint:disable:no-console */
-
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import ChannelDAO from "../channels/ChannelDAO";
+import { DocumentClient, QueryOutput, ScanOutput } from "aws-sdk/clients/dynamodb";
+import { ChannelDAO } from "../channels/ChannelDAO";
 import { MessageDAO } from "../messages/MessageDAO";
+import { Constants, UserChannelObject } from "../../config/app-config";
+import { AWSError } from "aws-sdk";
 
 const USER_CHANNEL_TABLE_NAME = "UserChannel";
-const CHANNELID_USERNAME_INDEX = "channelId-username-index";
+const CHANNEL_ID_USERNAME_INDEX = "channelId-username-index";
 const PROFILE_IMAGE_S3_PREFIX: string =
     "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 
-interface UserChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelName: string;
-    channelType: string;
-    profileImage: string;
-}
+const CHANNEL_ID_QUERY = "channelId = :channelId";
+const USERNAME_QUERY = "username = :username";
+const USERNAME_AND_CHANNEL_ID_QUERY = "username = :u and channelId = :c";
+const PROFILE_IMAGE_UPDATE_EXPRESSION = "SET profileImage = :p";
+const STATUS_TEXT_UPDATE_EXPRESSION = "SET statusText = :s";
+const USER_CHANNEL_ROLE_UPDATE_EXPRESSION = "SET userChannelRole = :r";
 
-class UserChannelDAO {
-    private channelIdQueryDeclaration = "channelId = :channelId";
-    private usernameQueryDeclaration = "username = :username";
+const USER_CHANNEL_ROLE_TYPE = "user";
+const BANNED_CHANNEL_ROLE_TYPE = "banned";
 
+export class UserChannelDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public getAll(): Promise<any> {
-        const params = {
+    public getAll(): Promise<Array<UserChannelObject>> {
+        let params = {
             TableName: USER_CHANNEL_TABLE_NAME
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.scan(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.scan(params, (err: AWSError, data: ScanOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query Succeeded");
                     resolve(data.Items);
                 }
             });
@@ -50,8 +47,8 @@ class UserChannelDAO {
         channelName: string,
         channelType: string,
         profileImage: string
-    ): Promise<any> {
-        const params = {
+    ): Promise<void> {
+        let params = {
             Item: {
                 username,
                 channelId,
@@ -63,89 +60,84 @@ class UserChannelDAO {
             TableName: USER_CHANNEL_TABLE_NAME
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Added new user subsription: ", JSON.stringify(data, null, 2));
                     resolve();
                 }
             });
         });
     }
 
-    public getAllSubscribedChannels(username: string): Promise<any> {
-        const params = {
+    public getAllSubscribedChannels(username: string): Promise<Array<UserChannelObject>> {
+        let params = {
             TableName: USER_CHANNEL_TABLE_NAME,
-            KeyConditionExpression: this.usernameQueryDeclaration,
+            KeyConditionExpression: USERNAME_QUERY,
             ExpressionAttributeValues: {
                 ":username": username
             }
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + username + " Succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public getAllSubscribedUsers(channelId: string): Promise<any> {
-        const params = {
+    public getAllSubscribedUsers(channelId: string): Promise<Array<UserChannelObject>> {
+        let params = {
             TableName: USER_CHANNEL_TABLE_NAME,
-            IndexName: CHANNELID_USERNAME_INDEX,
-            KeyConditionExpression: this.channelIdQueryDeclaration,
+            IndexName: CHANNEL_ID_USERNAME_INDEX,
+            KeyConditionExpression: CHANNEL_ID_QUERY,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + " Succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public deleteChannelSubscription(username: string, channelId: string): Promise<any> {
+    public deleteChannelSubscription(username: string, channelId: string): Promise<void> {
         const deleteObject = {
             TableName: USER_CHANNEL_TABLE_NAME,
             Key: {
                 username: username,
                 channelId: channelId
             },
-            ConditionExpression: "username = :u and channelId = :c",
+            ConditionExpression: USERNAME_AND_CHANNEL_ID_QUERY,
             ExpressionAttributeValues: {
                 ":u": username,
                 ":c": channelId
             }
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.delete(deleteObject, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.delete(deleteObject, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Deleted user subscription successfully");
                     this.getAllSubscribedUsers(channelId)
                         .then((data: Array<UserChannelObject>) => {
                             if (data.length == 0) {
-                                console.log("No more users in: " + channelId + " deleting channel");
                                 let channelDAO = new ChannelDAO(this.docClient);
                                 channelDAO
                                     .deleteChannel(channelId)
@@ -162,7 +154,7 @@ class UserChannelDAO {
                             }
                         })
                         .catch((err) => {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         });
                 }
@@ -170,8 +162,8 @@ class UserChannelDAO {
         });
     }
 
-    public updateProfilePicture(username: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public updateProfilePicture(username: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.getAllSubscribedChannels(username)
                 .then((data: Array<UserChannelObject>) => {
                     data.forEach((userChannel) => {
@@ -181,13 +173,13 @@ class UserChannelDAO {
                                 username: username,
                                 channelId: userChannel.channelId
                             },
-                            UpdateExpression: "SET profileImage = :p",
+                            UpdateExpression: PROFILE_IMAGE_UPDATE_EXPRESSION,
                             ExpressionAttributeValues: {
-                                ":p": PROFILE_IMAGE_S3_PREFIX + username + ".png"
+                                ":p": PROFILE_IMAGE_S3_PREFIX + username + Constants.PNG_FILE_FORMAT
                             }
                         };
 
-                        this.docClient.update(params, (err, data1) => {
+                        this.docClient.update(params, (err: AWSError) => {
                             if (err) {
                                 reject(err);
                             }
@@ -201,24 +193,24 @@ class UserChannelDAO {
         });
     }
 
-    public updateStatus(username: string, status: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public updateStatus(username: string, status: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.getAllSubscribedChannels(username)
                 .then((data: Array<UserChannelObject>) => {
-                    data.forEach((userChannel) => {
+                    data.forEach((userChannel: UserChannelObject) => {
                         let params = {
                             TableName: USER_CHANNEL_TABLE_NAME,
                             Key: {
                                 username: username,
                                 channelId: userChannel.channelId
                             },
-                            UpdateExpression: "SET statusText = :s",
+                            UpdateExpression: STATUS_TEXT_UPDATE_EXPRESSION,
                             ExpressionAttributeValues: {
                                 ":s": status
                             }
                         };
 
-                        this.docClient.update(params, (err, data1) => {
+                        this.docClient.update(params, (err: AWSError) => {
                             if (err) {
                                 reject(err);
                             }
@@ -232,57 +224,53 @@ class UserChannelDAO {
         });
     }
 
-    public banUser(channelId: string, username: string): Promise<any> {
+    public banUser(channelId: string, username: string): Promise<void> {
         let params = {
             TableName: USER_CHANNEL_TABLE_NAME,
             Key: {
                 channelId: channelId,
                 username: username
             },
-            UpdateExpression: "SET userChannelRole = :r",
+            UpdateExpression: USER_CHANNEL_ROLE_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
-                ":r": "banned"
+                ":r": BANNED_CHANNEL_ROLE_TYPE
             }
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.update(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("user banned");
                     resolve();
                 }
             });
         });
     }
 
-    public unBanUser(channelId: string, username: string): Promise<any> {
+    public unBanUser(channelId: string, username: string): Promise<void> {
         let params = {
             TableName: USER_CHANNEL_TABLE_NAME,
             Key: {
                 channelId: channelId,
                 username: username
             },
-            UpdateExpression: "SET userChannelRole = :r",
+            UpdateExpression: USER_CHANNEL_ROLE_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
-                ":r": "user"
+                ":r": USER_CHANNEL_ROLE_TYPE
             }
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.update(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("user unbanned");
                     resolve();
                 }
             });
         });
     }
 }
-
-export default UserChannelDAO;

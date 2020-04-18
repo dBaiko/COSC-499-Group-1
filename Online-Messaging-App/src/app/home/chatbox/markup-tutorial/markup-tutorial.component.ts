@@ -10,10 +10,10 @@ export class MarkupTutorialComponent implements OnInit {
     constructor(public dialogRef: MatDialogRef<MarkupTutorialComponent>) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
     }
 
-    handleClose() {
+    public handleClose() {
         this.dialogRef.close(null);
     }
 }

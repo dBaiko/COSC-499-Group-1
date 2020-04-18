@@ -5,9 +5,10 @@ import {
     CognitoUser,
     CognitoUserAttribute,
     CognitoUserPool,
-    CognitoUserSession
+    CognitoUserSession,
+    ISignUpResult
 } from "amazon-cognito-identity-js";
-import { Observable } from "rxjs";
+import { Observable, Subscriber } from "rxjs";
 import { CognitoConfig } from "./app-config";
 
 const userPool: CognitoUserPool = new CognitoUserPool(CognitoConfig);
@@ -54,14 +55,13 @@ export class AuthenticationService {
         attributeList.push(attrFirstName);
         attributeList.push(attrLastName);
 
-        return new Observable<Object>((observer) => {
-            userPool.signUp(username, password, attributeList, null, (err, result) => {
+        return new Observable<Object>((observer: Subscriber<Object>) => {
+            userPool.signUp(username, password, attributeList, null, (err: Error, result: ISignUpResult) => {
                 if (err) {
-                    console.log("Registration Error");
+                    console.error("Registration Error");
                     observer.error(err);
                 } else {
                     this.cognitoUser = result.user;
-                    console.log("Registration Success");
                     observer.next(result);
                     observer.complete();
                 }
@@ -82,7 +82,7 @@ export class AuthenticationService {
         };
         const cognitoUser = new CognitoUser(userData);
 
-        return new Observable<Object>((observer) => {
+        return new Observable<Object>((observer: Subscriber<Object>) => {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess(result) {
                     this.user = result;
@@ -101,7 +101,6 @@ export class AuthenticationService {
     }
 
     getAuthenticatedUser(): CognitoUser {
-        // gets the current user from the local storage
         return userPool.getCurrentUser();
     }
 
@@ -114,10 +113,10 @@ export class AuthenticationService {
 
     getCurrentSessionId(): Observable<CognitoIdToken> {
         if (this.isLoggedIn()) {
-            return new Observable<CognitoIdToken>((observer) => {
+            return new Observable<CognitoIdToken>((observer: Subscriber<CognitoIdToken>) => {
                 userPool.getCurrentUser().getSession((error: Error, session: CognitoUserSession) => {
                     if (error) {
-                        console.log(error);
+                        console.error(error);
                         observer.error(error);
                     }
 
@@ -132,7 +131,7 @@ export class AuthenticationService {
         return new Promise<string>((resolve, reject) => {
             let user = this.getAuthenticatedUser();
             user.getSession(() => {
-                user.changePassword(oldPassword, newPassword, (err, result) => {
+                user.changePassword(oldPassword, newPassword, (err: Error, result: "SUCCESS" | undefined) => {
                     if (err) {
                         reject(err);
                     } else {
