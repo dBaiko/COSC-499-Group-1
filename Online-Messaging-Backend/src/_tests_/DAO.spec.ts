@@ -73,8 +73,8 @@ describe("UserDAO", () => {
 
     it("should create a new user in the table", async () => {
         await user.createNewUser("testUser2", "testUser2@nothing.com");
-        const item = await ddb.get({TableName: "Users", Key: {username: "testUser2"}}).Items;
-        expect(item).toEqual({
+        const item = await ddb.get({TableName: "Users", Key: {username: "testUser2"}}).promise();
+        expect(item.Item).toEqual({
             username: "testUser2",
             email: "testUser2@nothing.com",
         });
@@ -176,7 +176,8 @@ describe("ChannelDAO", () => {
             Items:
                 {
                     channelName: "testChannel",
-                    channelType: "public"
+                    channelType: "public",
+                    inviteStatus: null
                 },
             ScannedCount: 1
         });
@@ -185,12 +186,14 @@ describe("ChannelDAO", () => {
     it("should retrieve certain information about a channel", async () => {
         const testChannelScan = await ddb.scan({TableName: "Channel"}).promise();
         let channelId = testChannelScan.Items[0].channelId;
-        const call = "[" + await channel.getChannelInfo(channelId) + "]";
+        const call: ChannelObject = await channel.getChannelInfo(channelId);
         const item = await ddb
             .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
             .promise();
         let expectedItem = item.Item;
-        expect(call).toEqual(expectedItem);
+        console.log(expectedItem);
+        console.log(call);
+        expect(expectedItem).toEqual(call);
     });
 
     it("should return a list of all channels", async () => {

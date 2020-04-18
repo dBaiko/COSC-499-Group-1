@@ -36,7 +36,7 @@ class ChannelDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public getChannelInfo(channelId: string): Promise<any> {
+    public getChannelInfo(channelId: string): Promise<ChannelObject> {
         const params = {
             TableName: CHANNEL_TABLE_NAME,
             KeyConditionExpression: this.channelIdQueryDeclaration,
@@ -45,7 +45,7 @@ class ChannelDAO {
             }
         };
 
-        return new Promise((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);
