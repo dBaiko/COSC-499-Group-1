@@ -11,7 +11,7 @@
                                         alt="assets/icon-alt.PNG"
                                         class="messagePicture"
                                         onerror="this.onerror=null; this.src='assets/icon-alt.PNG'"
-                                        src="{{this.friendsProfileImage}}"
+                                        src="{{ this.friendsProfileImage }}"
                                         style="display: inline"
                                     />
                                     <mat-card-title
@@ -122,18 +122,6 @@
                                                             >
                                                                 Send Invite
                                                             </button>
-                                                            <!--                                                            <span class="menuButton">-->
-                                                            <!--                                                                <mat-icon-->
-                                                            <!--                                                                    (click)="toggleSideBarOpen(true)"-->
-                                                            <!--                                                                    *ngIf="!sidebarOpened"-->
-                                                            <!--                                                                >chevron_left</mat-icon-->
-                                                            <!--                                                                >-->
-                                                            <!--                                                                <mat-icon-->
-                                                            <!--                                                                    (click)="toggleSideBarOpen(false)"-->
-                                                            <!--                                                                    *ngIf="sidebarOpened"-->
-                                                            <!--                                                                >chevron_right</mat-icon-->
-                                                            <!--                                                                >-->
-                                                            <!--                                                            </span>-->
                                                         </ng-template>
                                                     </ng-template>
                                                 </mat-card-content>
@@ -142,11 +130,9 @@
                                     </div>
                                 </div>
                                 <span class="menuButton">
-                                                    <mat-icon
-                                                        (click)="toggleSideBarOpen(true)"
-                                                        *ngIf="!sidebarOpened"
-                                                        id="sidebarClose"
-                                                    >chevron_left</mat-icon>
+                                    <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sidebarOpened" id="sidebarClose"
+                                    >chevron_left</mat-icon
+                                    >
                                 </span>
                             </mat-card-header>
                         </div>
@@ -241,10 +227,14 @@
                                             else messageDeleted
                                         "
                                     >
-                                        <p class="message" class="{{ chatMessage.messageId }}">
+                                        <p class="{{ chatMessage.messageId }} message">
                                             <span
-                                                *ngIf="chatMessage.username != currentUserProfile.username && !userIsAdmin()"
-                                                class="icons">
+                                                *ngIf="
+                                                    chatMessage.username != currentUserProfile.username &&
+                                                    !userIsAdmin()
+                                                "
+                                                class="icons"
+                                            >
                                                 <div
                                                     (clickOutside)="emojiPopup(chatMessage)"
                                                     *ngIf="chatMessage.addingEmoji"
@@ -260,13 +250,14 @@
                                                         />
                                                     </span>
                                                 </div>
-                                                <mat-icon
-                                                    (click)="emojiPopup(chatMessage)"
-                                                    class="emojiClick"
-                                                >sentiment_very_satisfied</mat-icon>
+                                                <mat-icon (click)="emojiPopup(chatMessage)" class="emojiClick"
+                                                >sentiment_very_satisfied</mat-icon
+                                                >
                                             </span>
-                                            <span *ngIf="chatMessage.username == currentUserProfile.username"
-                                                  class="icons">
+                                            <span
+                                                *ngIf="chatMessage.username == currentUserProfile.username"
+                                                class="icons"
+                                            >
                                                 <div
                                                     (clickOutside)="emojiPopup(chatMessage)"
                                                     *ngIf="chatMessage.addingEmoji"
@@ -293,8 +284,11 @@
                                                 </mat-icon>
                                             </span>
                                             <span
-                                                *ngIf="chatMessage.username != currentUserProfile.username && userIsAdmin()"
-                                                class="icons">
+                                                *ngIf="
+                                                    chatMessage.username != currentUserProfile.username && userIsAdmin()
+                                                "
+                                                class="icons"
+                                            >
                                                 <div
                                                     (clickOutside)="emojiPopup(chatMessage)"
                                                     *ngIf="chatMessage.addingEmoji"
@@ -363,13 +357,13 @@
                                     </mat-card-content>
                                     <ng-template #messageDeleted>
                                         <mat-card-content *ngIf="chatMessage.deleted == 'adminTrue'; else deleted">
-                                            <i class="deletedMessage" class="{{ chatMessage.messageId }}"
+                                            <i class="{{ chatMessage.messageId }} deletedMessage"
                                             >Message removed by admin</i
                                             >
                                         </mat-card-content>
                                         <ng-template #deleted>
                                             <mat-card-content>
-                                                <i class="deletedMessage" class="{{ chatMessage.messageId }}"
+                                                <i class="{{ chatMessage.messageId }} deletedMessage"
                                                 >Message deleted</i
                                                 >
                                             </mat-card-content>
@@ -461,10 +455,9 @@
             </div>
         </div>
         <div class="sidebar " id="sidebar">
-            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened"id="chevron-right"
+            <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sidebarOpened" id="chevron-right"
             >chevron_right
-            </mat-icon
-            >
+            </mat-icon>
             <app-channel-user-list
                 (newBannedUserEvent)="handleNewBannedUser($event)"
                 (newUnBannedUserEvent)="handleNewUnBannedUser($event)"
@@ -474,7 +467,6 @@
                 [subscribedUsersUsernames]="subscribedUsersUsernames"
                 [subscribedUsers]="subscribedUsers"
             >
-
             </app-channel-user-list>
         </div>
     </div>

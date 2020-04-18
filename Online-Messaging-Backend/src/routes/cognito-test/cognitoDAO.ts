@@ -1,6 +1,6 @@
 import { AuthenticationDetails, CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Observable } from "rxjs";
-import { UserPoolConfig } from "./../../config/aws-config";
+import { UserPoolConfig } from "../../config/aws-config";
 import Global = NodeJS.Global;
 
 export interface GlobalWithCognitoFix extends Global {
@@ -13,7 +13,8 @@ global.fetch = require("node-fetch");
 const userPool: CognitoUserPool = new CognitoUserPool(UserPoolConfig);
 
 export class CognitoDAO {
-    constructor() {}
+    constructor() {
+    }
 
     login(username: string, password: string): Observable<Object> {
         const authenticationData = {

@@ -2,17 +2,19 @@ import bodyParser from "body-parser";
 import express from "express";
 import { awsConfigPath } from "../../config/aws-config";
 import aws from "aws-sdk";
-import { HTTPResponseAndToken, JwtVerificationService } from "../../shared/jwt-verification-service";
-import { NotificationObject, NotificationsDAO } from "./NotificationsDAO";
+import { JwtVerificationService } from "../../shared/jwt-verification-service";
+import { NotificationsDAO } from "./NotificationsDAO";
 import { uuid } from "uuidv4";
 import { sanitizeInput } from "../../index";
-
-const PATH_POST_NEW_NOTIFICATION: string = "/";
-const PATH_DELETE_NOTIFICATION: string = "/:notificationId/insertedTime/:insertedTime";
-const PATH_GET_ALL_FRIEND_INVITES_FROM_USER: string = "/fromFriend/:fromFriend";
-const PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL: string = "/channelId/:channelId/username/:username";
-
-const AUTH_KEY = "authorization";
+import { Constants, NotificationObject } from "../../config/app-config";
+import {
+    AUTH_KEY,
+    NOTIFICATION_TYPE_MESSAGE,
+    PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL,
+    PATH_DELETE_NOTIFICATION,
+    PATH_GET_ALL_FRIEND_INVITES_FROM_USER,
+    PATH_POST_NEW_NOTIFICATION
+} from "./Notifications_Constants";
 
 const router = express.Router();
 
@@ -27,7 +29,7 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
+        () => {
             const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
 
             let newNotification: NotificationObject = {
@@ -45,14 +47,14 @@ router.post(PATH_POST_NEW_NOTIFICATION, (req, res) => {
             notificationsDAO
                 .createNewNotification(newNotification)
                 .then(() => {
-                    res.status(200).send({
-                        status: 200,
+                    res.status(Constants.HTTP_OK).send({
+                        status: Constants.HTTP_OK,
                         data: { message: "New notification added successfully" }
                     });
                 })
                 .catch((err) => {
-                    console.log(err);
-                    res.status(400).send(err);
+                    console.error(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         },
         (err) => {
@@ -65,18 +67,18 @@ router.delete(PATH_DELETE_NOTIFICATION, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
+        () => {
             const notificationsDAO: NotificationsDAO = new NotificationsDAO(docClient);
             notificationsDAO
                 .deleteNotification(req.params.notificationId, Number(req.params.insertedTime))
                 .then(() => {
-                    res.status(200).send({
-                        status: 200,
+                    res.status(Constants.HTTP_OK).send({
+                        status: Constants.HTTP_OK,
                         data: { message: "Notification deleted successfully" }
                     });
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         },
         (err) => {
@@ -89,17 +91,17 @@ router.get(PATH_GET_ALL_FRIEND_INVITES_FROM_USER, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data: HTTPResponseAndToken) => {
+        () => {
             let fromFriendParam = req.params.fromFriend;
 
             const notificationsDAO = new NotificationsDAO(docClient);
             notificationsDAO
                 .getAllFriendRequestsFromUser(fromFriendParam)
                 .then((data) => {
-                    res.status(200).send(data);
+                    res.status(Constants.HTTP_OK).send(data);
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         },
         (err) => {
@@ -112,21 +114,26 @@ router.delete(PATH_DELETE_ALL_MESSAGE_NOTIFICATIONS_FOR_USER_FOR_CHANNEL, (req, 
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data: HTTPResponseAndToken) => {
-            const notificationsDAO = new NotificationsDAO(docClient);
+        () => {
+            let notificationsDAO = new NotificationsDAO(docClient);
             notificationsDAO
                 .getAllNotificationsForChannelAtUsername(req.params.channelId, req.params.username)
                 .then((data: Array<NotificationObject>) => {
                     for (let item of data) {
-                        if (item.type == "message") {
-                            notificationsDAO.deleteNotification(item.notificationId, item.insertedTime);
+                        if (item.type == NOTIFICATION_TYPE_MESSAGE) {
+                            notificationsDAO.deleteNotification(item.notificationId, item.insertedTime).catch((err) => {
+                                console.error(err);
+                            });
                         }
                     }
-                    res.status(200).send({ status: 200, message: "Message notifications deleted successfully" });
+                    res.status(Constants.HTTP_OK).send({
+                        status: Constants.HTTP_OK,
+                        message: "Message notifications deleted successfully"
+                    });
                 })
                 .catch((err) => {
-                    console.log(err);
-                    res.status(400).send(err);
+                    console.error(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         },
         (err) => {

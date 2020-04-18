@@ -1,75 +1,55 @@
-/* tslint:disable:no-console */
-import aws from "aws-sdk";
+import aws, { AWSError } from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
-import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { UserChannelDAO } from "../userChannels/UserChannelDAO";
 import { uuid } from "uuidv4";
-import { DocumentClient, ItemList } from "aws-sdk/clients/dynamodb";
+import { DocumentClient, ItemList, QueryOutput, ScanOutput } from "aws-sdk/clients/dynamodb";
+import { ChannelAndNumUsers, ChannelObject, Constants, UserChannelObject } from "../../config/app-config";
+import {
+    CHANNEL_DESC_AND_TYPE_UPDATE_EXPRESSION,
+    CHANNEL_ID_AND_NAME_CONDITION_EXPRESSION,
+    CHANNEL_ID_QUERY,
+    CHANNEL_TABLE_NAME,
+    INVITE_STATUS_UPDATE_EXPRESSION
+} from "./Channels_Constants";
 
 aws.config.loadFromPath(awsConfigPath);
 
-const CHANNEL_TABLE_NAME: string = "Channel";
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    channelDescription: string;
-}
-
-export interface ChannelAndNumUsers extends ChannelObject {
-    numUsers?: number;
-}
-
-export interface UserChannelObject {
-    username: string;
-    channelId: string;
-    userChannelRole: string;
-    channelName: string;
-    channelType: string;
-    profileImage: string;
-    statusText: string;
-}
-
-class ChannelDAO {
-    private channelIdQueryDeclaration = "channelId = :channelId";
-
+export class ChannelDAO {
     constructor(private docClient: DocumentClient) {
     }
 
-    public getChannelInfo(channelId: string): Promise<any> {
-        const params = {
+    public getChannelInfo(channelId: string): Promise<ChannelObject> {
+        let params = {
             TableName: CHANNEL_TABLE_NAME,
-            KeyConditionExpression: this.channelIdQueryDeclaration,
+            KeyConditionExpression: CHANNEL_ID_QUERY,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + " Succeeded");
                     resolve(data.Items[0]);
                 }
             });
         });
     }
 
-    public getAllChannels(): Promise<any> {
-        const params = {
+    public getAllChannels(): Promise<Array<ChannelObject>> {
+        let params = {
             TableName: CHANNEL_TABLE_NAME
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.scan(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.scan(params, (err: AWSError, data: ScanOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query Succeeded");
                     let channels: ItemList = data.Items;
                     let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
                     let channelList: Array<ChannelAndNumUsers> = [];
@@ -88,7 +68,11 @@ class ChannelDAO {
                                 channelList.push(channel);
                                 count++;
                                 if (count == channels.length) {
-                                    resolve(channelList.sort((a, b) => (a.numUsers > b.numUsers ? -1 : 1)));
+                                    resolve(
+                                        channelList.sort((a: ChannelAndNumUsers, b: ChannelAndNumUsers) =>
+                                            a.numUsers > b.numUsers ? -1 : 1
+                                        )
+                                    );
                                 }
                             })
                             .catch((err) => {
@@ -108,19 +92,19 @@ class ChannelDAO {
         firstUserChannelRole: string,
         inviteStatus: string,
         profileImage: string
-    ): Promise<any> {
+    ): Promise<ChannelObject> {
         const userChannelDAO = new UserChannelDAO(this.docClient);
         const channelId = uuid();
 
-        if (inviteStatus == null || inviteStatus == "") {
-            inviteStatus = " ";
+        if (inviteStatus == null || inviteStatus == Constants.EMPTY) {
+            inviteStatus = Constants.SPACE;
         }
 
-        if (channelDescription == null || channelDescription == "") {
-            channelDescription = " ";
+        if (channelDescription == null || channelDescription == Constants.EMPTY) {
+            channelDescription = Constants.SPACE;
         }
 
-        const params = {
+        let params = {
             Item: {
                 channelId,
                 channelName,
@@ -130,13 +114,12 @@ class ChannelDAO {
             },
             TableName: CHANNEL_TABLE_NAME
         };
-        return new Promise((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
                     console.error("Unable to add new channel. Error JSON: ", JSON.stringify(err, null, 2));
                     reject(err);
                 } else {
-                    console.log("Added new:", JSON.stringify(data, null, 2));
                     userChannelDAO
                         .addNewUserToChannel(
                             firstUsername,
@@ -162,63 +145,59 @@ class ChannelDAO {
         channelName: string,
         channelType: string,
         channelDescription: string
-    ): Promise<any> {
-        const params = {
+    ): Promise<void> {
+        let params = {
             TableName: CHANNEL_TABLE_NAME,
             Key: {
                 channelId: channelId,
                 channelName: channelName
             },
-            UpdateExpression: "SET channelDescription = :d, channelType = :t",
+            UpdateExpression: CHANNEL_DESC_AND_TYPE_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
                 ":t": channelType,
                 ":d": channelDescription
             }
         };
 
-        console.log("Updating channel " + channelId + "...");
-        return new Promise((resolve, reject) => {
-            this.docClient.update(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
                     console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
                     reject();
                 } else {
-                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
                     resolve();
                 }
             });
         });
     }
 
-    public updateChannelInviteStatus(channelId: string, channelName: string, inviteStatus: string): Promise<any> {
-        const params = {
+    public updateChannelInviteStatus(channelId: string, channelName: string, inviteStatus: string): Promise<void> {
+        let params = {
             TableName: CHANNEL_TABLE_NAME,
             Key: {
                 channelId: channelId,
                 channelName: channelName
             },
-            UpdateExpression: "SET inviteStatus = :i",
+            UpdateExpression: INVITE_STATUS_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
                 ":i": inviteStatus
             }
         };
 
-        console.log("Updating settings for user " + channelId + "...");
-        return new Promise((resolve, reject) => {
-            this.docClient.update(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
                     console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
                     reject();
                 } else {
-                    console.log("Item updated successfully:", JSON.stringify(data, null, 4));
                     resolve();
                 }
             });
         });
     }
 
-    public deleteChannel(channelId: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public deleteChannel(channelId: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.getChannelInfo(channelId)
                 .then((data: ChannelObject) => {
                     let deleteObject = {
@@ -227,16 +206,16 @@ class ChannelDAO {
                             channelId: channelId,
                             channelName: data.channelName
                         },
-                        ConditionExpression: "channelId = :id and channelName = :n",
+                        ConditionExpression: CHANNEL_ID_AND_NAME_CONDITION_EXPRESSION,
                         ExpressionAttributeValues: {
                             ":id": channelId,
                             ":n": data.channelName
                         }
                     };
 
-                    this.docClient.delete(deleteObject, (err, data) => {
+                    this.docClient.delete(deleteObject, (err: AWSError) => {
                         if (err) {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         } else {
                             resolve();
@@ -244,11 +223,9 @@ class ChannelDAO {
                     });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 });
         });
     }
 }
-
-export default ChannelDAO;

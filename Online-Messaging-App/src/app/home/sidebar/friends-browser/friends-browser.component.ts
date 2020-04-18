@@ -50,31 +50,29 @@ export class FriendsBrowserComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.getFriendNotifications().catch((err) => {
             console.error(err);
         });
     }
 
-    onKey($event: Event) {
-        //set search value as whatever is entered on search bar every keystroke
-        this.search = this.common.santizeText(($event.target as HTMLInputElement).value);
+    public onKey($event: Event): void {
+        this.search = this.common.sanitizeText(($event.target as HTMLInputElement).value);
         this.searching = true;
         this.sendQuery();
         this.getUserInfo(this.auth.getAuthenticatedUser().getUsername());
     }
 
-    sendQuery() {
+    public sendQuery(): void {
         if (!this.common.inviteFormSearch(this.search, this.inviteSearchList, this.userList)) {
             this.inviteSearchList = [];
-            this.getFriendNotifications()
-                .catch((err) => {
-                    console.log(err);
-                });
+            this.getFriendNotifications().catch((err) => {
+                console.error(err);
+            });
         }
     }
 
-    findFriendChannel(username: string): boolean {
+    public findFriendChannel(username: string): boolean {
         for (let i in this.friendList) {
             let users = this.friendList[i].channelName.split(Constants.DASH, 2);
             if (users.includes(username)) return true;
@@ -82,7 +80,7 @@ export class FriendsBrowserComponent implements OnInit {
         return false;
     }
 
-    sendInvite(username: string): void {
+    public sendInvite(username: string): void {
         this.searching = false;
         this.search = Constants.EMPTY;
         this.inputForm.nativeElement.value = Constants.EMPTY;
@@ -136,18 +134,18 @@ export class FriendsBrowserComponent implements OnInit {
                         this.friendNotificationUsernames.push(username);
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
-                ); // TODO: check for errors in response
+                );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    private getFriendNotifications(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    private getFriendNotifications(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
                     let httpHeaders = {
@@ -167,7 +165,7 @@ export class FriendsBrowserComponent implements OnInit {
                                 this.friendNotifications = data;
                                 let usernames: Array<string> = [];
                                 for (let i in data) {
-                                    if (data[i].type == "friend") {
+                                    if (data[i].type == FRIEND) {
                                         usernames.push(data[i].username);
                                     }
                                 }
@@ -209,12 +207,12 @@ export class FriendsBrowserComponent implements OnInit {
                         };
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }

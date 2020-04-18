@@ -28,7 +28,7 @@ export class FormValidationService {
     }
 
     public isNanValidator(control: AbstractControl): { [key: string]: boolean } | null {
-        if (control.value == "" || control.value == " " || control.value == null) {
+        if (control.value == Constants.EMPTY || control.value == Constants.SPACE || control.value == null) {
             return null;
         }
         if (isNaN(control.value)) {
@@ -44,21 +44,14 @@ export class FormValidationService {
         return null;
     }
 
-    public dateValidator(control: AbstractControl): { [key: string]: boolean } | null {
-        if (false) {
-            return { pattern: true };
-        }
-        return null;
-    }
-
     public correctFileType(control: AbstractControl): { [key: string]: boolean } | null {
         let filename = control.value;
         if (filename) {
-            let extension = filename.split(".")[1].toLowerCase();
+            let extension = filename.split(Constants.DOT)[1].toLowerCase();
             if (
-                "png" !== extension.toLowerCase() &&
-                "jpg" !== extension.toLowerCase() &&
-                "jpeg" !== extension.toLowerCase()
+                Constants.PNG !== extension.toLowerCase() &&
+                Constants.JPG !== extension.toLowerCase() &&
+                Constants.JPEG !== extension.toLowerCase()
             ) {
                 return { badFileType: true };
             }

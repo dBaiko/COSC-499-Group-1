@@ -10,6 +10,18 @@ import {
 } from "../../../shared/app-config";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { AuthenticationService } from "../../../shared/authentication.service";
+import {
+    ADMIN_IDENTIFIER,
+    BAN_NOTIFICATION_MESSAGE_A,
+    BAN_NOTIFICATION_MESSAGE_B,
+    BAN_URI,
+    BANNED_IDENTIFIER,
+    GENERAL_NOTIFICATION,
+    UNBAN_NOTIFICATION_MESSAGE_A,
+    UNBAN_URI,
+    USER_URI
+} from "../Chatbox_Constants";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 @Component({
     selector: "app-channel-user-list",
@@ -37,36 +49,36 @@ export class ChannelUserListComponent implements OnInit {
 
     private _newUserEvent: string;
 
-    get newUserEvent(): string {
+    public get newUserEvent(): string {
         return this._newUserEvent;
     }
 
     @Input()
-    set newUserEvent(value: string) {
+    public set newUserEvent(value: string) {
         this._newUserEvent = value;
         this.getUserList();
     }
 
     private _subscribedUsers: Array<UserChannelObject>;
 
-    get subscribedUsers(): Array<UserChannelObject> {
+    public get subscribedUsers(): Array<UserChannelObject> {
         return this._subscribedUsers;
     }
 
     @Input()
-    set subscribedUsers(value: Array<UserChannelObject>) {
+    public set subscribedUsers(value: Array<UserChannelObject>) {
         this._subscribedUsers = value;
         this.getUserList();
     }
 
     private _onlineUserList: Array<UserSocket>;
 
-    get onlineUserList(): Array<UserSocket> {
-        return this.onlineUserList;
+    public get onlineUserList(): Array<UserSocket> {
+        return this._onlineUserList;
     }
 
     @Input()
-    set onlineUserList(value: Array<UserSocket>) {
+    public set onlineUserList(value: Array<UserSocket>) {
         this._onlineUserList = value;
         this.getUserList();
     }
@@ -74,15 +86,15 @@ export class ChannelUserListComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    goToProfile(username: string) {
+    public goToProfile(username: string): void {
         this.profileViewEvent.emit(username);
     }
 
-    userIsAdmin(): boolean {
+    public userIsAdmin(): boolean {
         if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
             if (
                 this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
-                    .userChannelRole == "admin"
+                    .userChannelRole == ADMIN_IDENTIFIER
             ) {
                 return true;
             }
@@ -90,9 +102,9 @@ export class ChannelUserListComponent implements OnInit {
         return false;
     }
 
-    banUser(user: UserChannelObject) {
+    public banUser(user: UserChannelObject): void {
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -100,10 +112,10 @@ export class ChannelUserListComponent implements OnInit {
                     })
                 };
 
-                user.userChannelRole = "banned";
+                user.userChannelRole = BANNED_IDENTIFIER;
 
                 this.http
-                    .put(this.channelsUrl + user.channelId + "/users/" + user.username + "/ban", {}, httpHeaders)
+                    .put(this.channelsUrl + user.channelId + USER_URI + user.username + BAN_URI, {}, httpHeaders)
                     .subscribe(
                         () => {
                             if (this.onlineUsers.includes(user)) {
@@ -117,19 +129,19 @@ export class ChannelUserListComponent implements OnInit {
                             this.newBannedUserEvent.emit(user);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    unBanUser(user: UserChannelObject) {
+    public unBanUser(user: UserChannelObject): void {
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -138,7 +150,7 @@ export class ChannelUserListComponent implements OnInit {
                 };
 
                 this.http
-                    .put(this.channelsUrl + user.channelId + "/users/" + user.username + "/unban", {}, httpHeaders)
+                    .put(this.channelsUrl + user.channelId + USER_URI + user.username + UNBAN_URI, {}, httpHeaders)
                     .subscribe(
                         () => {
                             this.bannedUsers.splice(this.bannedUsers.indexOf(user), 1);
@@ -161,12 +173,12 @@ export class ChannelUserListComponent implements OnInit {
                             this.newUnBannedUserEvent.emit(user);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -177,7 +189,7 @@ export class ChannelUserListComponent implements OnInit {
 
             let onlineUsersNames: Array<string> = [];
 
-            this.socketOnlineUsers.forEach((user) => {
+            this.socketOnlineUsers.forEach((user: UserSocket) => {
                 onlineUsersNames.push(user.username);
             });
 
@@ -188,7 +200,7 @@ export class ChannelUserListComponent implements OnInit {
             for (let i = 0; i < this.subscribedUsers.length; i++) {
                 let user = this.subscribedUsers[i];
                 user.profileImage += Constants.QUESTION_MARK + Math.random();
-                if (user.userChannelRole == "banned") {
+                if (user.userChannelRole == BANNED_IDENTIFIER) {
                     if (this.userIsAdmin()) {
                         this.bannedUsers.push(user);
                     }
@@ -209,8 +221,8 @@ export class ChannelUserListComponent implements OnInit {
         }
     }
 
-    private sendBanNotificationToUser(user: UserChannelObject) {
-        let message: string = "You have been banned from the channel " + user.channelName + " by the admin.";
+    private sendBanNotificationToUser(user: UserChannelObject): void {
+        let message: string = BAN_NOTIFICATION_MESSAGE_A + user.channelName + BAN_NOTIFICATION_MESSAGE_B;
         let notification: NotificationSocketObject = {
             fromUser: {
                 username: this.auth.getAuthenticatedUser().getUsername(),
@@ -223,7 +235,7 @@ export class ChannelUserListComponent implements OnInit {
                 channelType: user.channelType,
                 fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                 message: message,
-                type: "general",
+                type: GENERAL_NOTIFICATION,
                 username: user.username,
                 notificationId: null,
                 insertedTime: null
@@ -233,8 +245,8 @@ export class ChannelUserListComponent implements OnInit {
         this.notificationService.sendNotification(notification);
     }
 
-    private sendUnBanNotificationToUser(user: UserChannelObject) {
-        let message: string = "You have been unbanned from the channel " + user.channelName + " by the admin.";
+    private sendUnBanNotificationToUser(user: UserChannelObject): void {
+        let message: string = UNBAN_NOTIFICATION_MESSAGE_A + user.channelName + BAN_NOTIFICATION_MESSAGE_B;
         let notification: NotificationSocketObject = {
             fromUser: {
                 username: this.auth.getAuthenticatedUser().getUsername(),
@@ -247,7 +259,7 @@ export class ChannelUserListComponent implements OnInit {
                 channelType: user.channelType,
                 fromFriend: this.auth.getAuthenticatedUser().getUsername(),
                 message: message,
-                type: "general",
+                type: GENERAL_NOTIFICATION,
                 username: user.username,
                 notificationId: null,
                 insertedTime: null

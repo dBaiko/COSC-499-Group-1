@@ -153,8 +153,10 @@
                             ><i>{{ user.statusText }}</i></span
                             >
                             <mat-menu #menu="matMenu">
-                                <button class ="dropButton"(click)="goToProfile(user.username)" mat-menu-item>View profile</button>
-                                <button class ="dropButton" (click)="unBanUser(user)" mat-menu-item>Unban user</button>
+                                <button (click)="goToProfile(user.username)" class="dropButton" mat-menu-item>
+                                    View profile
+                                </button>
+                                <button (click)="unBanUser(user)" class="dropButton" mat-menu-item>Unban user</button>
                             </mat-menu>
                         </mat-list-item>
                     </div>
