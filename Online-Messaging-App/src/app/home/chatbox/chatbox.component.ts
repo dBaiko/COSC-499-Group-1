@@ -27,6 +27,7 @@ import { NotificationService } from "../../shared/notification.service";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { MarkupTutorialComponent } from "./markup-tutorial/markup-tutorial.component";
 import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const whitespaceRegEx: RegExp = /^\s+$/i;
 const STAR_REPLACE_REGEX: RegExp = /^\*+$/;
@@ -46,12 +47,9 @@ const PENDING_INVITE_IDENTIFIER: string = "pending";
 const DENIED_INVITE_IDENTIFIER: string = "denied";
 const ACCEPTED_INVITE_IDENTIFIER: string = "accepted";
 const GENERAL_NOTIFICATION: string = "general";
-const EMOJI_POPUP: string = "emojiClick";
-const EMOJI_DIV: string = "emojiDiv";
 const MESSAGE_INPUT_FIELD_IDENTIFIER: string = "messageInputField";
 const SCROLLABLE_IDENTIFIER: string = "scrollable";
 
-const DIALOG_WIDTH = "50%";
 const DIALOG_CLASS = "dialog-class";
 const DIALOG_HEIGHT = "60%";
 const PENDING_INVITE_MESSAGE: string =
@@ -69,12 +67,28 @@ const LANG_TYPES_PREFIX: string = "<span class=\"lang-type\">";
 const LANG_TYPES_SUFFIX: string = "</span><br>";
 const PRE_TAG: string = "pre";
 
+const DEFAULT_USER_CHANNEL_ROLE = "user";
 const LANG_TYPES_PREFIX_LENGTH: number = 24;
 const LANG_CLASS_PREFIX_LENGTH: number = 10;
 const ENTER_KEY_CODE: number = 13;
 const FRIEND_CHANNEL_MAX_LENGTH = 2;
 const FRIEND_CHANNEL_FIRST_USER = 0;
 const FRIEND_CHANNEL_SECOND_USER = 1;
+
+const BROADCAST_REACTION_ADD_EVENT = "broadcast_reaction_add";
+const BROADCAST_REACTION_REMOVE_EVENT = "broadcast_reaction_remove";
+const BAN_BROADCAST_EVENT = "ban_broadcast";
+const USER_SUBBED_CHANNEL_EVENT = "newUserSubbedChannel_broadcast";
+const USER_LEFT_CHANNEL_EVENT = "newUserLeftChannel_broadcast";
+const FRIEND_TAGLINE_UPDATE_EVENT = "friendTaglineUpdateEvent_broadcast";
+const FRIEND_TAGLINE_UPDATE_ACCEPTED = "accepted";
+const FRIEND_TAGLINE_UPDATE_DENIED = "denied";
+
+const BREAKPOINT_OBSERVER_KEY = "(max-width: 450px)";
+
+const MENTION_EVERYONE_IDENTIFIER = "everyone";
+
+const NEWLINE = "\n";
 
 @Component({
     selector: "app-chatbox",
@@ -164,7 +178,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 channelId: value.channelId,
                 channelName: this.currentChannel.channelId,
                 channelType: this.currentChannel.channelType,
-                userChannelRole: "user"
+                userChannelRole: DEFAULT_USER_CHANNEL_ROLE
             });
         }
     }
@@ -233,18 +247,16 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
                     let friendsUsername = this.parseFriendChannelName(this.currentChannel.channelName);
                     this.getFriendsProfilePicture(friendsUsername);
-
                 } else {
                     this.friendMessage = null;
                 }
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
         this.getChannelNotifications().catch((err) => {
             console.error(err);
         });
-
     }
 
     ngOnInit(): void {
@@ -268,7 +280,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
         this.textAreaHeight = document.getElementById(MESSAGE_INPUT_FIELD_IDENTIFIER).getBoundingClientRect().height;
 
-        this.notificationService.addSocketListener("broadcast_reaction_add", (reaction: ReactionSocketObject) => {
+        this.notificationService.addSocketListener(BROADCAST_REACTION_ADD_EVENT, (reaction: ReactionSocketObject) => {
             let messageIndex: number = -1;
             for (let i = 0; i < this.chatMessages.length; i++) {
                 if (this.chatMessages[i].messageId == reaction.messageId) {
@@ -302,7 +314,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         });
 
-        this.notificationService.addSocketListener("broadcast_reaction_remove", (reaction: ReactionSocketObject) => {
+        this.notificationService.addSocketListener(BROADCAST_REACTION_REMOVE_EVENT, (reaction: ReactionSocketObject) => {
             for (let i = 0; i < this.chatMessages.length; i++) {
                 if (this.chatMessages[i].messageId == reaction.messageId) {
                     for (let j = 0; j < this.chatMessages[i].reactions.length; j++) {
@@ -326,46 +338,50 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             }
         });
 
-        this.notificationService.addSocketListener("ban_broadcast", () => {
-            this.getSubcribedUsers()
-                .catch((err) => {
-                    console.log(err);
-                });
-        });
-
-        this.notificationService.addSocketListener("newUserSubbedChannel_broadcast", (user: NewUsersSubbedChannelObject) => {
-            if (user.channelId == this.currentChannel.channelId) {
-                this.getSubcribedUsers()
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
-        });
-
-        this.notificationService.addSocketListener("newUserLeftChannel_broadcast", (user: NewUsersSubbedChannelObject) => {
-            if (user.channelId == this.currentChannel.channelId) {
-                this.getSubcribedUsers()
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            }
-        });
-
-        this.breakpointObserver
-            .observe(["(max-width: 450px)"])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.toggleSideBarOpen(false);
-                } else {
-                    this.toggleSideBarOpen(true);
-                }
+        this.notificationService.addSocketListener(BAN_BROADCAST_EVENT, () => {
+            this.getSubcribedUsers().catch((err) => {
+                console.error(err);
             });
+        });
 
-        this.notificationService.addSocketListener("friendTaglineUpdateEvent_broadcast", (user: FriendTaglineUpdateEventObject) => {
-            if (user.status == "accepted") {
-                this.friendMessage = null;
-            } else if (user.status == "denied") {
-                this.friendMessage = user.fromFriend + DENIED_INVITE_MESSAGE;
+        this.notificationService.addSocketListener(
+            USER_SUBBED_CHANNEL_EVENT,
+            (user: NewUsersSubbedChannelObject) => {
+                if (user.channelId == this.currentChannel.channelId) {
+                    this.getSubcribedUsers().catch((err) => {
+                        console.error(err);
+                    });
+                }
+            }
+        );
+
+        this.notificationService.addSocketListener(
+            USER_LEFT_CHANNEL_EVENT,
+            (user: NewUsersSubbedChannelObject) => {
+                if (user.channelId == this.currentChannel.channelId) {
+                    this.getSubcribedUsers().catch((err) => {
+                        console.error(err);
+                    });
+                }
+            }
+        );
+
+        this.notificationService.addSocketListener(
+            FRIEND_TAGLINE_UPDATE_EVENT,
+            (user: FriendTaglineUpdateEventObject) => {
+                if (user.status == FRIEND_TAGLINE_UPDATE_ACCEPTED) {
+                    this.friendMessage = null;
+                } else if (user.status == FRIEND_TAGLINE_UPDATE_DENIED) {
+                    this.friendMessage = user.fromFriend + DENIED_INVITE_MESSAGE;
+                }
+            }
+        );
+
+        this.breakpointObserver.observe([BREAKPOINT_OBSERVER_KEY]).subscribe((state: BreakpointState) => {
+            if (state.matches) {
+                this.toggleSideBarOpen(false);
+            } else {
+                this.toggleSideBarOpen(true);
             }
         });
 
@@ -378,8 +394,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    getMessages(channelId: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    getMessages(channelId: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
                     let httpHeaders = {
@@ -409,7 +425,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                     reject();
                 }
             );
@@ -421,11 +437,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         if (value.content && !whitespaceRegEx.test(value.content)) {
             form.reset();
             this.handleInput();
-            value.content = this.common.santizeText(value.content);
+            value.content = this.common.sanitizeText(value.content);
             value.content = this.markUpMentions(value.content);
-            if (this.mentionListToSubmit.includes("everyone")) {
+            if (this.mentionListToSubmit.includes(MENTION_EVERYONE_IDENTIFIER)) {
                 for (let user of this.mentionList) {
-                    if (user != "everyone") {
+                    if (user != MENTION_EVERYONE_IDENTIFIER) {
                         this.sendMentionNotification(user);
                     }
                 }
@@ -440,15 +456,15 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 channelId: this.currentChannel.channelId,
                 channelType: this.currentChannel.channelType,
                 username: this.auth.getAuthenticatedUser().getUsername(),
-                content: value.content.replace(NEW_LINE_REGEX, "\n"),
+                content: value.content.replace(NEW_LINE_REGEX, NEWLINE),
                 profileImage: this.currentUserProfile.profileImage
             };
             this.isNearBottom = false;
             this.messagerService.sendMessage(chatMessage);
-        } // TODO: add user error message if this is false
+        }
     }
 
-    goToProfile(username: string) {
+    goToProfile(username: string): void {
         this.profileViewEvent.emit(username);
     }
 
@@ -467,15 +483,14 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
     }
 
-    inviteFormSubmit() {
+    inviteFormSubmit(): void {
         if (!this.common.inviteFormSearch(this.inviteSearch, this.inviteSearchList, this.userList)) {
             this.inviteSearchList = [];
         }
     }
 
-    onKey($event: Event) {
-        //set search value as whatever is entered on search bar every keystroke
-        this.inviteSearch = this.common.santizeText(($event.target as HTMLInputElement).value);
+    onKey($event: Event): void {
+        this.inviteSearch = this.common.sanitizeText(($event.target as HTMLInputElement).value);
         this.inviteFormSubmit();
     }
 
@@ -524,7 +539,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    textAreaSubmit(event) {
+    textAreaSubmit(event): void {
         if (event.keyCode == 13 && event.shiftKey) {
         } else if (event.keyCode == 13 && !this.selectingFromMention) {
             event.preventDefault();
@@ -538,7 +553,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.checkForTextAreaHeight();
     }
 
-    handleMentioning(event) {
+    handleMentioning(event): void {
         let text = this.messageForm.form.value.content as string;
         if (text) {
             if (this.selectingFromMention) {
@@ -598,18 +613,17 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.handleInput();
     }
 
-    clickMentionList(username: string) {
+    clickMentionList(username: string): void {
         let text = this.messageForm.form.value.content as string;
         this.messageForm.setValue({ content: text.substring(0, text.lastIndexOf("@") + 1) + username + " " });
         this.addMentionIfMentionable(username);
         this.resetMentionList();
     }
 
-    handleInput() {
+    handleInput(): void {
         let text = this.messageForm.form.value.content as string;
-        text = this.common.santizeText(text);
-        let highlightedText = this.applyHighlights(text);
-        document.getElementsByClassName("highlights")[0].innerHTML = highlightedText;
+        text = this.common.sanitizeText(text);
+        document.getElementsByClassName("highlights")[0].innerHTML = this.applyHighlights(text);
     }
 
     applyHighlights(text: string): string {
@@ -658,12 +672,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         } else return null;
     }
 
-    handleScroll() {
-        let scrollTop = document.getElementById("messageInputField").scrollTop;
-        document.getElementById("backdrop").scrollTop = scrollTop;
+    handleScroll(): void {
+        document.getElementById("backdrop").scrollTop = document.getElementById("messageInputField").scrollTop;
     }
 
-    editFormTextAreaSubmit(event) {
+    editFormTextAreaSubmit(event): void {
         if (event.keyCode == ENTER_KEY_CODE && event.shiftKey) {
         } else if (event.keyCode == ENTER_KEY_CODE) {
             event.preventDefault();
@@ -671,13 +684,13 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    editFormSubmit(form: FormGroup, message: MessageObject) {
+    editFormSubmit(form: FormGroup, message: MessageObject): void {
         if (form.value.content && !whitespaceRegEx.test(form.value.content)) {
             this.editMessage(message, form.value.content);
         }
     }
 
-    filterClean(value: string) {
+    filterClean(value: string): string {
         let s: string = this.filter.clean(value);
         if (STAR_REPLACE_REGEX.test(s.trim())) {
             return s.replace(STAR_REGEX, STAR_REPLACE_VALUE);
@@ -685,9 +698,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         return s;
     }
 
-    deleteMessage(chatMessage: MessageObject) {
+    deleteMessage(chatMessage: MessageObject): void {
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -717,7 +730,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     channelId: chatMessage.channelId,
                                     channelName: this.currentChannel.channelName,
                                     channelType: this.currentChannel.channelType,
-                                    message: "The admin " + this.currentUserProfile.username + " has removed your message on the channel " + this.currentChannel.channelName + ".",
+                                    message:
+                                        "The admin " +
+                                        this.currentUserProfile.username +
+                                        " has removed your message on the channel " +
+                                        this.currentChannel.channelName +
+                                        ".",
                                     type: "general",
                                     username: chatMessage.username,
                                     fromFriend: this.currentUserProfile.username,
@@ -760,22 +778,21 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             }
                         );
                 }
-
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    toggleEditingChannelDescription() {
+    toggleEditingChannelDescription(): void {
         if (!this.editingChannelDescription) {
             this.editingChannelDescription = true;
             this.channelDescForm.get("channelDescription").setValue(this.currentChannel.channelDescription);
         }
     }
 
-    toggleEditingMessage(chatMessage: MessageObject) {
+    toggleEditingMessage(chatMessage: MessageObject): void {
         if (!this.currentlyEditing) {
             this.currentlyEditing = true;
             this.chatMessages[this.chatMessages.indexOf(chatMessage)].editing = true;
@@ -783,7 +800,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    editChannelDescriptionSubmit(form: FormGroup) {
+    editChannelDescriptionSubmit(form: FormGroup): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -802,18 +819,18 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             this.editingChannelDescription = false;
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    editMessage(message: MessageObject, newContent: string) {
-        newContent = this.common.santizeText(newContent);
+    editMessage(message: MessageObject, newContent: string): void {
+        newContent = this.common.sanitizeText(newContent);
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -833,12 +850,12 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                         this.chatMessages[this.chatMessages.indexOf(message)].content = newContent;
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -870,7 +887,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    emojiPopup(chatMessage: MessageObject) {
+    emojiPopup(chatMessage: MessageObject): void {
         if (this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji) {
             this.chatMessages[this.chatMessages.indexOf(chatMessage)].addingEmoji = false;
             this.toggleEmoji = false;
@@ -882,12 +899,8 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    emojiPopupMessage() {
-        if (!this.emojiMessage) {
-            this.emojiMessage = true;
-        } else {
-            this.emojiMessage = false;
-        }
+    emojiPopupMessage(): void {
+        this.emojiMessage = !this.emojiMessage;
     }
 
     handleMessageEmojiReaction(emoji: string): void {
@@ -898,21 +911,19 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.messageForm.setValue({ content: text + emoji });
     }
 
-    emojiClickOutside() {
+    emojiClickOutside(): void {
         if (this.emojiMessage) {
             this.emojiMessage = false;
         }
     }
 
-    toggleMarkupTutorialOpen() {
+    toggleMarkupTutorialOpen(): void {
         this.markupTutorialOpen = !this.markupTutorialOpen;
-
 
         if (this.markupTutorialOpen) {
             let dialogConfig = new MatDialogConfig();
             dialogConfig.disableClose = true;
             dialogConfig.autoFocus = false;
-            //dialogConfig.width = DIALOG_WIDTH;
             dialogConfig.height = DIALOG_HEIGHT;
             dialogConfig.panelClass = DIALOG_CLASS;
 
@@ -921,10 +932,9 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                 this.markupTutorialOpen = false;
             });
         }
-
     }
 
-    handleNewBannedUser(user: UserChannelObject) {
+    handleNewBannedUser(user: UserChannelObject): void {
         this.sendUserBannedStatus(user);
         this.usersWithoutBanned.splice(this.mentionList.indexOf(user.username), 1);
         this.resetMentionList();
@@ -936,7 +946,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.resetMentionList();
     }
 
-    toggleSideBarOpen(value: boolean) {
+    toggleSideBarOpen(value: boolean): void {
         if (value) {
             this.sidebarOpened = true;
             document.getElementById("content").classList.add("contentOpened");
@@ -995,7 +1005,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         this.notificationService.sendNotification(notifications);
     }
 
-    private markUpMentions(text: string) {
+    private markUpMentions(text: string): string {
         if (text) {
             text = text.replace(/\n$/g, "\n\n");
             let atUsernameRegExp = /(@[a-zA-Z]+)/g;
@@ -1082,10 +1092,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         }
     }
 
-    private getSubcribedUsers(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    private getSubcribedUsers(): Promise<Array<UserChannelObject>> {
+        return new Promise<Array<UserChannelObject>>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
+                (data: CognitoIdToken) => {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
@@ -1110,23 +1120,23 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             resolve(data);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         }
                     );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 }
             );
         });
     }
 
-    private getChannelNotifications(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    private getChannelNotifications(): Promise<Array<NotificationObject>> {
+        return new Promise<Array<NotificationObject>>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
+                (data: CognitoIdToken) => {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
@@ -1141,7 +1151,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                 this.channelNotifications = data;
                                 let usernames: Array<string> = [];
                                 for (let i in data) {
-                                    if (data[i].type == "public" || data[i].type == "private" || data[i].type == "friend") {
+                                    if (
+                                        data[i].type == "public" ||
+                                        data[i].type == "private" ||
+                                        data[i].type == "friend"
+                                    ) {
                                         usernames.push(data[i].username);
                                     }
                                 }
@@ -1160,10 +1174,10 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
         });
     }
 
-    private getChannelInfo(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    private getChannelInfo(): Promise<InviteChannelObject> {
+        return new Promise<InviteChannelObject>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
-                (cogData) => {
+                (cogData: CognitoIdToken) => {
                     if (this.currentChannel) {
                         let httpHeaders = {
                             headers: new HttpHeaders({
@@ -1200,7 +1214,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
             this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
             this.isNearBottom = false;
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -1291,7 +1305,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                             resolve(data);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         }
                     );
@@ -1324,10 +1338,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                                     }
                                 }
 
-
                                 this.chatMessages = data.concat(this.chatMessages);
 
-                                let top = (document.getElementsByClassName(this.messageToScrollTo.messageId).item(0) as HTMLElement).offsetTop;
+                                let top = (document
+                                    .getElementsByClassName(this.messageToScrollTo.messageId)
+                                    .item(0) as HTMLElement).offsetTop;
                                 this.scrollContainer.nativeElement.scrollTop = top - 130;
 
                                 for (let i = this.loadCount + 1; i < this.chatMessages.length; i++) {
@@ -1345,32 +1360,28 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    private getFriendsProfilePicture(username: string) {
-        this.auth.getCurrentSessionId().subscribe(
-            (data) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+    private getFriendsProfilePicture(username: string): void {
+        this.auth.getCurrentSessionId().subscribe((data) => {
+            let httpHeaders = {
+                headers: new HttpHeaders({
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + data.getJwtToken()
+                })
+            };
 
-                this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
-                    (data: Array<ProfileObject>) => {
-                        this.friendsProfileImage = data[0].profileImage += Constants.QUESTION_MARK + Math.random();
-                        ;
-                    },
-                    (err) => {
-                        console.log(err);
-                    }
-                );
-
-            });
+            this.http.get(this.profilesAPI + username, httpHeaders).subscribe(
+                (data: Array<ProfileObject>) => {
+                    this.friendsProfileImage = data[0].profileImage += Constants.QUESTION_MARK + Math.random();
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        });
     }
-
 }

@@ -12,7 +12,7 @@ import { MessengerService } from "../shared/messenger.service";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
 import { AuthenticationService } from "../shared/authentication.service";
 import { CommonService } from "../shared/common.service";
-import { CreateChannelComponent } from "./createChannel/create-channel.component";
+import { CreateChannelComponent } from "./sidebar/createChannel/create-channel.component";
 import { MatSelectModule } from "@angular/material/select";
 import { MatRadioModule } from "@angular/material/radio";
 import { ProfileComponent } from "./profile/profile.component";

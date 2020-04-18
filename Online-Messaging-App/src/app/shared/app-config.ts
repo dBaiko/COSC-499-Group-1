@@ -21,6 +21,11 @@ export const Constants = {
     USERNAME: "username",
     PASSWORD: "password",
     EMPTY: "",
+    SPACE: " ",
+    PNG: "png",
+    JPG: "jpg",
+    JPEG: "jpeg",
+    DOT: ".",
     USERS_PATH: "/users",
     CHANNELS_PATH: "/channels",
     HTTP_OPTIONS: {
@@ -356,13 +361,13 @@ export interface SettingsObject {
 }
 
 export interface FriendTaglineUpdateEventObject {
-    username: string,
-    fromFriend: string,
-    status: string
+    username: string;
+    fromFriend: string;
+    status: string;
 }
 
 export interface ProfileImageUpdateObject {
-    profileImage: string
+    profileImage: string;
 }
 
 export const EmojiList = [

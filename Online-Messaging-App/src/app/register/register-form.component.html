@@ -22,13 +22,13 @@
                                 <mat-error *ngFor="let validation of common.validation_methods.username">
                                     <mat-error
                                         *ngIf="
-                                        formValidationService.checkIfFormElementInvalid(
-                                            registerForm,
-                                            'username',
-                                            validation,
-                                            submitAttempt
-                                        )
-                                    "
+                                            formValidationService.checkIfFormElementInvalid(
+                                                registerForm,
+                                                'username',
+                                                validation,
+                                                submitAttempt
+                                            )
+                                        "
                                     >{{ validation.message }}</mat-error
                                     >
                                 </mat-error>
@@ -51,13 +51,13 @@
                                         <mat-error *ngFor="let validation of common.validation_methods.password">
                                             <mat-error
                                                 *ngIf="
-                                                formValidationService.checkIfFormElementInvalid(
-                                                    matchingPasswordForm,
-                                                    'password',
-                                                    validation,
-                                                    submitAttempt
-                                                )
-                                            "
+                                                    formValidationService.checkIfFormElementInvalid(
+                                                        matchingPasswordForm,
+                                                        'password',
+                                                        validation,
+                                                        submitAttempt
+                                                    )
+                                                "
                                             >{{ validation.message }}</mat-error
                                             >
                                         </mat-error>
@@ -80,11 +80,13 @@
                                         <mat-error *ngFor="let validation of common.validation_methods.confirmPassword">
                                             <mat-error
                                                 *ngIf="
-                                                matchingPasswordForm.get('confirmPassword').hasError(validation.type) ||
-                                                (matchingPasswordForm.hasError(validation.type) &&
-                                                    (matchingPasswordForm.get('confirmPassword').dirty ||
-                                                        matchingPasswordForm.get('confirmPassword').touched))
-                                            "
+                                                    matchingPasswordForm
+                                                        .get('confirmPassword')
+                                                        .hasError(validation.type) ||
+                                                    (matchingPasswordForm.hasError(validation.type) &&
+                                                        (matchingPasswordForm.get('confirmPassword').dirty ||
+                                                            matchingPasswordForm.get('confirmPassword').touched))
+                                                "
                                             >{{ validation.message }}</mat-error
                                             >
                                         </mat-error>
@@ -109,13 +111,13 @@
                                     <mat-error *ngFor="let validation of common.validation_methods.firstName">
                                         <mat-error
                                             *ngIf="
-                                            formValidationService.checkIfFormElementInvalid(
-                                                registerForm,
-                                                'firstName',
-                                                validation,
-                                                submitAttempt
-                                            )
-                                        "
+                                                formValidationService.checkIfFormElementInvalid(
+                                                    registerForm,
+                                                    'firstName',
+                                                    validation,
+                                                    submitAttempt
+                                                )
+                                            "
                                         >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
@@ -137,13 +139,13 @@
                                     <mat-error *ngFor="let validation of common.validation_methods.lastName">
                                         <mat-error
                                             *ngIf="
-                                            formValidationService.checkIfFormElementInvalid(
-                                                registerForm,
-                                                'lastName',
-                                                validation,
-                                                submitAttempt
-                                            )
-                                        "
+                                                formValidationService.checkIfFormElementInvalid(
+                                                    registerForm,
+                                                    'lastName',
+                                                    validation,
+                                                    submitAttempt
+                                                )
+                                            "
                                         >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>
@@ -165,13 +167,13 @@
                                     <mat-error *ngFor="let validation of common.validation_methods.email">
                                         <mat-error
                                             *ngIf="
-                                            formValidationService.checkIfFormElementInvalid(
-                                                registerForm,
-                                                'email',
-                                                validation,
-                                                submitAttempt
-                                            )
-                                        "
+                                                formValidationService.checkIfFormElementInvalid(
+                                                    registerForm,
+                                                    'email',
+                                                    validation,
+                                                    submitAttempt
+                                                )
+                                            "
                                         >{{ validation.message }}</mat-error
                                         >
                                     </mat-error>

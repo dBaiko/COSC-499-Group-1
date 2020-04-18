@@ -18,8 +18,8 @@ import {
     UserSocket
 } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
-import {LayoutModule} from '@angular/cdk/layout';
-import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
+
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
 const CHAT_BOX = "chatBox";
@@ -30,6 +30,10 @@ const USER_LIST_EVENT = "userList";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
 const USERS_API = APIConfig.usersAPI;
+const SIDENAV_IDENTIFIER = "sidenav";
+const KICK_EVENT = "kickEvent";
+const UNBAN_EVENT = "unBanEvent";
+const BREAK_POINT_OBSERVER_KEY = "(max-width: 450px)";
 
 @Component({
     selector: "app-home",
@@ -57,7 +61,7 @@ export class HomeComponent implements OnInit {
 
     sidebarOpened: boolean = true;
 
-    @ViewChild("sidenav") sidebar;
+    @ViewChild(SIDENAV_IDENTIFIER) sidebar;
 
     public currentUserProfile: ProfileObject;
     public newUserSubbedChannel: NewUsersSubbedChannelObject;
@@ -70,7 +74,6 @@ export class HomeComponent implements OnInit {
         private notificationService: NotificationService,
         private http: HttpClient,
         public breakpointObserver: BreakpointObserver
-
     ) {
     }
 
@@ -104,36 +107,34 @@ export class HomeComponent implements OnInit {
                 console.error(err);
             });
 
-            this.notificationService.addSocketListener("kickEvent", (user: UserChannelObject) => {
+            this.notificationService.addSocketListener(KICK_EVENT, (user: UserChannelObject) => {
                 this.handleNewBannedUserEvent(user);
             });
 
-            this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
+            this.notificationService.addSocketListener(UNBAN_EVENT, (user: UserChannelObject) => {
                 this.handleNewUnBannedUserEvent(user);
             });
         }
-        this.breakpointObserver
-            .observe(['(max-width: 450px)'])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.value = false;
-                    this.sidebarOpened = false;
-                } else {
-                    this.value = true;
-                    this.sidebarOpened = true;
-                }
-            });
+        this.breakpointObserver.observe([BREAK_POINT_OBSERVER_KEY]).subscribe((state: BreakpointState) => {
+            if (state.matches) {
+                this.value = false;
+                this.sidebarOpened = false;
+            } else {
+                this.value = true;
+                this.sidebarOpened = true;
+            }
+        });
     }
 
-    receiveId($event) {
+    receiveId($event: ChannelObject): void {
         this.selectedChannelId = $event;
     }
 
-    receiveNewSubbedChannel(event: ChannelObject) {
+    receiveNewSubbedChannel(event): void {
         this.newSubbedChannel = event;
     }
 
-    addNewChannel($event) {
+    addNewChannel($event: ChannelObject): void {
         this.newAddedChannel = $event;
     }
 
@@ -177,7 +178,7 @@ export class HomeComponent implements OnInit {
         this.newUserSubbedChannel = $event;
     }
 
-    toggleSidebarOpen() {
+    toggleSidebarOpen(): void {
         this.sidebar.toggle();
     }
 
@@ -207,12 +208,12 @@ export class HomeComponent implements OnInit {
                         this.userList = data;
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -235,12 +236,12 @@ export class HomeComponent implements OnInit {
                             this.changeTheme(data[0].theme);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -275,13 +276,13 @@ export class HomeComponent implements OnInit {
                             });
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         }
                     );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 }
             );

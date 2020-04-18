@@ -4,15 +4,17 @@ import {
     APIConfig,
     ChannelAndFirstUser,
     ChannelObject,
+    Constants,
     newChannelResponse,
     ProfileObject
-} from "../../shared/app-config";
-import { FormValidationService } from "../../shared/form-validation.service";
-import { CommonService } from "../../shared/common.service";
-import { AuthenticationService } from "../../shared/authentication.service";
+} from "../../../shared/app-config";
+import { FormValidationService } from "../../../shared/form-validation.service";
+import { CommonService } from "../../../shared/common.service";
+import { AuthenticationService } from "../../../shared/authentication.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Observable } from "rxjs";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const defaultFirstChannelRole = "admin";
 
@@ -52,14 +54,14 @@ export class CreateChannelComponent implements OnInit {
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
-            channelType: new FormControl("", Validators.compose([Validators.required])),
-            channelDescription: new FormControl("", Validators.compose([Validators.required]))
+            channelType: new FormControl(Constants.EMPTY, Validators.compose([Validators.required])),
+            channelDescription: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
         });
     }
 
     newChannelEntry(channelName: string, channelType: string, channelDescription: string): Observable<Object> {
-        channelName = this.common.santizeText(channelName);
-        channelDescription = this.common.santizeText(channelDescription);
+        channelName = this.common.sanitizeText(channelName);
+        channelDescription = this.common.sanitizeText(channelDescription);
         let newChannel: ChannelAndFirstUser = {
             channelName: channelName,
             channelType: channelType,
@@ -72,7 +74,7 @@ export class CreateChannelComponent implements OnInit {
 
         return new Observable<Object>((observer) => {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
+                (data: CognitoIdToken) => {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
@@ -88,10 +90,10 @@ export class CreateChannelComponent implements OnInit {
                         (err) => {
                             observer.error(err);
                         }
-                    ); // TODO: check for errors in response
+                    );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                 }
             );
         });
@@ -111,7 +113,7 @@ export class CreateChannelComponent implements OnInit {
                     this.newChannelEvent.emit(result.data.newChannel);
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                 }
             );
         }
