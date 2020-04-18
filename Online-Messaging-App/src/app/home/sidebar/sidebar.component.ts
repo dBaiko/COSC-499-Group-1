@@ -86,7 +86,7 @@ export class SidebarComponent implements OnInit {
     private _notificationChannel: ChannelIdAndType;
 
     @Input()
-    set notificationChannel(value: ChannelIdAndType) {
+    public set notificationChannel(value: ChannelIdAndType) {
         if (value) {
             this._notificationChannel = value;
             this.selectChannel(value.channelId, value.type);
@@ -108,12 +108,12 @@ export class SidebarComponent implements OnInit {
 
     private _newBannedUser: UserChannelObject;
 
-    get newBannedUser(): UserChannelObject {
+    public get newBannedUser(): UserChannelObject {
         return this._newBannedUser;
     }
 
     @Input()
-    set newBannedUser(user: UserChannelObject) {
+    public set newBannedUser(user: UserChannelObject) {
         if (user) {
             this._newBannedUser = user;
             this.getSubscribedChannels(true).catch((err) => {
@@ -124,12 +124,12 @@ export class SidebarComponent implements OnInit {
 
     private _subbedChannel: ChannelObject;
 
-    get subbedChannel(): ChannelObject {
+    public get subbedChannel(): ChannelObject {
         return this._subbedChannel;
     }
 
     @Input()
-    set subbedChannel(value: ChannelObject) {
+    public set subbedChannel(value: ChannelObject) {
         if (value) {
             this.setNewChannel(value);
             this.newUserSubbedChannelEvent.emit({
@@ -142,12 +142,12 @@ export class SidebarComponent implements OnInit {
 
     private _channelToGoToFromNotification: ChannelIdAndType;
 
-    get channelToGoToFromNotification(): ChannelIdAndType {
+    public get channelToGoToFromNotification(): ChannelIdAndType {
         return this._channelToGoToFromNotification;
     }
 
     @Input()
-    set channelToGoToFromNotification(value: ChannelIdAndType) {
+    public set channelToGoToFromNotification(value: ChannelIdAndType) {
         if (value) {
             this._channelToGoToFromNotification = value;
             this.selectChannel(value.channelId, value.type);
@@ -162,7 +162,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         let user: string = this.auth.getAuthenticatedUser().getUsername();
         this.getSubscribedChannels(false)
             .then(() => {
@@ -219,7 +219,7 @@ export class SidebarComponent implements OnInit {
         );
     }
 
-    getSubscribedChannels(banFlag: boolean): Promise<void> {
+    public getSubscribedChannels(banFlag: boolean): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data: CognitoIdToken) => {
@@ -322,13 +322,13 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    parseFriendChannelName(channelName: string): string {
+    public parseFriendChannelName(channelName: string): string {
         let users = channelName.split(Constants.DASH, MAX_FRIEND_CHANNEL_LENGTH);
         if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
         else return users[0];
     }
 
-    selectPublicChannel(): void {
+    public selectPublicChannel(): void {
         this.publicChannelSelect = true;
         this.privateChannelSelect = false;
         this.friendChannelSelect = false;
@@ -343,7 +343,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectPrivateChannel(): void {
+    public selectPrivateChannel(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = true;
         this.friendChannelSelect = false;
@@ -358,7 +358,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectFriend(): void {
+    public selectFriend(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
@@ -373,7 +373,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectChannel(id: string, type: string) {
+    public selectChannel(id: string, type: string) {
         this.selectedChannelId = id;
         this.userSubscribedChannels.forEach((item: UserChannelObject) => {
             if (item.channelId == id) {
@@ -414,7 +414,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    createChannel(): void {
+    public createChannel(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
@@ -448,7 +448,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    confirmUnsubscribe(channel: UserChannelObjectWithNotficationCount): void {
+    public confirmUnsubscribe(channel: UserChannelObjectWithNotficationCount): void {
         let dialogConfig: MatDialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
@@ -564,7 +564,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    switchDisplay(value: string): void {
+    public switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
         if (value === this.profile) {
@@ -572,7 +572,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    setNewChannel(value: ChannelObject) {
+    public setNewChannel(value: ChannelObject) {
         if (value) {
             this._subbedChannel = value;
             this.userSubscribedChannels.push(value);
@@ -591,7 +591,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    handleUserClickBannedChannel(): void {
+    public handleUserClickBannedChannel(): void {
         alert(BANNED_ACCESS_MESSAGE);
     }
 

@@ -11,7 +11,11 @@ export class ImageCompressor {
         return new Promise<File>((resolve, reject) => {
             let extension = image.name.split(Constants.DOT)[1].toLowerCase();
 
-            if (Constants.PNG == extension.toLowerCase() || Constants.JPG == extension.toLowerCase() || Constants.JPEG == extension.toLowerCase()) {
+            if (
+                Constants.PNG == extension.toLowerCase() ||
+                Constants.JPG == extension.toLowerCase() ||
+                Constants.JPEG == extension.toLowerCase()
+            ) {
                 const canvas: HTMLCanvasElement = render.createElement(CANVAS);
                 const ctx: CanvasRenderingContext2D = canvas.getContext(TWO_D);
 

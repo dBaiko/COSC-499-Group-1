@@ -10,13 +10,13 @@ import {
     UserChannelObject
 } from "../../shared/app-config";
 import { CommonService } from "../../shared/common.service";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const CHANNEL_NAME: string = "channelName";
 const FILTERED: string = "filtered";
 const DEFAULT_CHANNEL_ROLE: string = "user";
 const PRIVATE_CHANNEL_TYPE: string = "private";
 const FRIEND_CHANNEL_TYPE: string = "friend";
-const USERS_URI: string = "/users";
 
 @Component({
     selector: "app-channel-browser",
@@ -40,12 +40,12 @@ export class ChannelBrowserComponent implements OnInit {
 
     private _newChannel: ChannelAndNumUsers;
 
-    get newChannel(): ChannelObject {
+    public get newChannel(): ChannelObject {
         return this._newChannel;
     }
 
     @Input()
-    set newChannel(value: ChannelObject) {
+    public set newChannel(value: ChannelObject) {
         if (value) {
             this._newChannel = value;
             this._newChannel.numUsers = 1;
@@ -54,19 +54,19 @@ export class ChannelBrowserComponent implements OnInit {
         }
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.getChannels()
             .then(() => {
             })
-            .catch(() => {
-                console.log("error");
+            .catch((err) => {
+                console.error(err);
             });
         this.getSubscribedChannels();
     }
 
-    getSubscribedChannels() {
+    public getSubscribedChannels(): void {
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -86,27 +86,23 @@ export class ChannelBrowserComponent implements OnInit {
                             });
                         },
                         (err) => {
-                            console.log(err.toString());
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
 
-    sendQuery() {
+    public sendQuery(): void {
         for (let i in this.channels) {
-            if (this.channels[i][CHANNEL_NAME].includes(this.search.toString())) {
-                this.channels[i][FILTERED] = false;
-            } else {
-                this.channels[i][FILTERED] = true;
-            }
+            this.channels[i][FILTERED] = !this.channels[i][CHANNEL_NAME].includes(this.search.toString());
         }
     }
 
-    onKey($event: Event) {
+    public onKey($event: Event): void {
         //set search value as whatever is entered on search bar every keystroke
         this.search = ($event.target as HTMLInputElement).value;
         this.search = this.common.sanitizeText(this.search);
@@ -114,8 +110,8 @@ export class ChannelBrowserComponent implements OnInit {
         this.sendQuery();
     }
 
-    getChannels(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public getChannels(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
                     let httpHeaders = {
@@ -140,23 +136,23 @@ export class ChannelBrowserComponent implements OnInit {
                             resolve();
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             reject();
                         }
                     );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                 }
             );
         });
     }
 
-    joinChannel(channel: ChannelObject) {
+    public joinChannel(channel: ChannelObject): void {
         this.subscribedChannels.push(channel.channelId);
 
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -180,53 +176,19 @@ export class ChannelBrowserComponent implements OnInit {
                     channelType: channel.channelType
                 });
 
-                // TODO: check for errors in response
                 this.http
                     .post(this.channelsAPI + channel.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
                         () => {
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
-    }
-
-    private getSubcribedUsers(channelId: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            this.auth.getCurrentSessionId().subscribe(
-                (data) => {
-                    let httpHeaders = {
-                        headers: new HttpHeaders({
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer " + data.getJwtToken()
-                        })
-                    };
-
-                    this.http.get(this.channelsAPI + channelId + USERS_URI, httpHeaders).subscribe(
-                        (data: Array<UserChannelObject>) => {
-                            resolve(data);
-                        },
-                        (err) => {
-                            console.log(err);
-                            reject(err);
-                        }
-                    );
-                },
-                (err) => {
-                    console.log(err);
-                    reject(err);
-                }
-            );
-        });
-    }
-
-    private sortChannel(): void {
-        this.channels = this.channels.sort((a, b) => (a.numUsers > b.numUsers ? 1 : -1));
     }
 }

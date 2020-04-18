@@ -102,18 +102,18 @@ export class ProfileComponent implements OnInit {
 
     private _profileView: string;
 
-    get profileView(): string {
+    public get profileView(): string {
         return this._profileView;
     }
 
     @Input()
-    set profileView(value: string) {
+    public set profileView(value: string) {
         this.userProfile = null;
         this._profileView = value;
         this.getUserInfo(this._profileView);
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.editForm = new FormGroup({
             firstName: new FormControl(
                 Constants.EMPTY,
@@ -203,7 +203,7 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    getUserInfo(username: string): void {
+    public getUserInfo(username: string): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -263,7 +263,7 @@ export class ProfileComponent implements OnInit {
         );
     }
 
-    toggleEditing(editing: boolean): void {
+    public toggleEditing(editing: boolean): void {
         this.editing = editing;
         this.editForm.get(FIRSTNAME_FORM_NAME).setValue(this.userProfile.firstName ? this.userProfile.firstName : NA);
         this.editForm.get(LASTNAME_FORM_NAME).setValue(this.userProfile.lastName ? this.userProfile.lastName : NA);
@@ -359,14 +359,14 @@ export class ProfileComponent implements OnInit {
         }
     }
 
-    toggleEditingStatus(editingStatus: boolean): void {
+    public toggleEditingStatus(editingStatus: boolean): void {
         this.editingStatus = editingStatus;
         this.statusForm
             .get(STATUS_TEXT_IDENTIFIER)
             .setValue(this.userProfile.statusText ? this.userProfile.statusText : "");
     }
 
-    statusFormSubmit(form: FormGroup): void {
+    public statusFormSubmit(form: FormGroup): void {
         let username = this.auth.getAuthenticatedUser().getUsername();
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
@@ -408,7 +408,7 @@ export class ProfileComponent implements OnInit {
         );
     }
 
-    imageFormButtonClick(event): void {
+    public imageFormButtonClick(event): void {
         let file = (event.target as HTMLInputElement).files[0];
         this.imageForm.controls[PROFILE_IMAGE_NAME].setValue(file ? file.name : Constants.EMPTY);
         this.imageForm.controls[PROFILE_IMAGE_SIZE].setValue(file ? file.size : Constants.EMPTY);
@@ -422,13 +422,13 @@ export class ProfileComponent implements OnInit {
             });
     }
 
-    imageFormSubmit(): void {
+    public imageFormSubmit(): void {
         if (this.imageForm.valid) {
             this.updateProfilePicture();
         }
     }
 
-    updateProfilePicture(): void {
+    public updateProfilePicture(): void {
         let username = this.auth.getAuthenticatedUser().getUsername();
 
         this.auth.getCurrentSessionId().subscribe(
@@ -466,7 +466,7 @@ export class ProfileComponent implements OnInit {
         );
     }
 
-    editFormSubmit(form: FormGroup): void {
+    public editFormSubmit(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.editForm.valid) {
             let languages = [];
@@ -509,7 +509,7 @@ export class ProfileComponent implements OnInit {
         }
     }
 
-    editUser(
+    public editUser(
         firstName: string,
         lastName: string,
         phone: string,

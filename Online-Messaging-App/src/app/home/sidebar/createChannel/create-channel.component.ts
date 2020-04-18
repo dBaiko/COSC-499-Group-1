@@ -44,10 +44,10 @@ export class CreateChannelComponent implements OnInit {
         this.currentUserProfile = data;
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.newChannelForm = new FormGroup({
             channelName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     Validators.maxLength(30),
@@ -59,7 +59,7 @@ export class CreateChannelComponent implements OnInit {
         });
     }
 
-    newChannelEntry(channelName: string, channelType: string, channelDescription: string): Observable<Object> {
+    public newChannelEntry(channelName: string, channelType: string, channelDescription: string): Observable<Object> {
         channelName = this.common.sanitizeText(channelName);
         channelDescription = this.common.sanitizeText(channelDescription);
         let newChannel: ChannelAndFirstUser = {
@@ -99,7 +99,7 @@ export class CreateChannelComponent implements OnInit {
         });
     }
 
-    newChannel(form: FormGroup): void {
+    public newChannel(form: FormGroup): void {
         this.submitAttempt = true;
         if (this.newChannelForm.valid) {
             this.newChannelEntry(
@@ -119,11 +119,11 @@ export class CreateChannelComponent implements OnInit {
         }
     }
 
-    onClose(): void {
+    public onClose(): void {
         this.dialogRef.close(this.newChannelObject);
     }
 
-    clickOutsideClose(): void {
+    public clickOutsideClose(): void {
         this.dialogRef.close(null);
     }
 }

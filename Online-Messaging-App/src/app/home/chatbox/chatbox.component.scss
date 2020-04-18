@@ -9,7 +9,6 @@ mat-form-field {
     border-radius: 0.5rem;
     background-color: var(--element-color);
     width: 100%;
-    //float: left;
     color: var(--primary-text-color);
     border: 1px solid var(--primary-color);
 }
@@ -41,7 +40,7 @@ hr::ng-deep pre {
 }
 
 #hrHeader {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
 }
 
 mat-card-title {
@@ -276,11 +275,8 @@ mat-expansion-panel:hover {
 
 .wrapper {
     height: 100%;
-    // max-width: 1160px;
     margin: 0 auto;
     position: relative;
-    //padding: 0 20px;
-    //min-height: 600px;
 }
 
 .content-wrapper {
@@ -291,9 +287,7 @@ mat-expansion-panel:hover {
 
 .content {
     height: 100%;
-    //margin-right: 250px;
     clear: both;
-    //min-height: 600px;
 }
 
 .contentOpened {
@@ -362,7 +356,6 @@ mark {
 }
 
 .emojiPopup {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: relative;
@@ -383,7 +376,6 @@ mark {
 }
 
 .emojiPopupNot {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: relative;
@@ -421,7 +413,7 @@ mark {
 .emoticon {
     background-color: var(--element-hover-color);
     font-size: 1.5rem;
-    padding: 0px;
+    padding: 0;
     outline: none;
 }
 
@@ -480,7 +472,6 @@ mark {
 }
 
 .emojiList {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: absolute;
@@ -514,7 +505,6 @@ mat-sidenav {
 }
 
 .backgroundDarker {
-    //filter:blur(2px);
 }
 
 #chevron-right {
@@ -535,7 +525,7 @@ mat-sidenav {
         filter: brightness(35%);
     }
     .contentOpened {
-        margin-right: 0px;
+        margin-right: 0;
     }
     #sidebarClose {
         left: 3rem;
@@ -551,5 +541,3 @@ mat-sidenav {
         height: 66% !important;
     }
 }
-
-

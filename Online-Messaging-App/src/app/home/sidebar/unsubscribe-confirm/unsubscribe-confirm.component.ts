@@ -17,10 +17,10 @@ export class UnsubscribeConfirmComponent implements OnInit {
         this.channel = data;
     }
 
-    ngOnInit() {
+    public ngOnInit() {
     }
 
-    onClose(value: boolean) {
+    public onClose(value: boolean) {
         this.dialogRef.close(value);
     }
 }

@@ -40,7 +40,7 @@ export class SettingsComponent implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.passwordForm = new FormGroup(
             {
                 password: new FormControl(
@@ -58,7 +58,7 @@ export class SettingsComponent implements OnInit {
         });
     }
 
-    themeToggle($event): void {
+    public themeToggle($event): void {
         if ($event.checked) {
             this.themeEvent.emit(DARK);
             this.saveTheme(DARK);
@@ -68,7 +68,7 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    explicitToggle(event): void {
+    public explicitToggle(event): void {
         if (event.checked) {
             this.explicitEvent.emit(true);
             this.saveExplicit(true);
@@ -78,7 +78,7 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    changePasswordFormSubmit(form: FormGroup): void {
+    public changePasswordFormSubmit(form: FormGroup): void {
         this.changePasswordSubmitAttempt = true;
         this.successMessage = Constants.EMPTY;
         this.errorMessage = Constants.EMPTY;
@@ -94,7 +94,7 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    emailFormSubmit(form: FormGroup): void {
+    public emailFormSubmit(form: FormGroup): void {
         this.emailFormSubmitAttempt = true;
         if (form.valid) {
             this.auth.getCurrentSessionId().subscribe(

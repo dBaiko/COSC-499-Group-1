@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.userLoggedIn = this.auth.isLoggedIn();
         if (this.userLoggedIn) {
             this.options = this.fb.group({
@@ -126,42 +126,42 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    receiveId($event: ChannelObject): void {
+    public receiveId($event: ChannelObject): void {
         this.selectedChannelId = $event;
     }
 
-    receiveNewSubbedChannel(event): void {
+    public receiveNewSubbedChannel(event): void {
         this.newSubbedChannel = event;
     }
 
-    addNewChannel($event: ChannelObject): void {
+    public addNewChannel($event: ChannelObject): void {
         this.newAddedChannel = $event;
     }
 
-    updateDisplay(value: string): void {
+    public updateDisplay(value: string): void {
         this.display = value;
     }
 
-    handleNewUserSubscriptionFromChannel(channel: ChannelIdAndType): void {
+    public handleNewUserSubscriptionFromChannel(channel: ChannelIdAndType): void {
         this.newUserSubscribedChannelFromNotification = channel;
     }
 
-    handleGoToChannelFromNotification(channel: ChannelIdAndType): void {
+    public handleGoToChannelFromNotification(channel: ChannelIdAndType): void {
         this.channelToGoToFromNotification = channel;
     }
 
-    updateProfile(value: string): void {
+    public updateProfile(value: string): void {
         this.profileView = value;
         this.updateDisplay(PROFILE_PAGE);
     }
 
-    getUpdatedProfile(): void {
+    public getUpdatedProfile(): void {
         this.getUserInfo().then(() => {
             this.currentUserProfile.profileImage += Constants.QUESTION_MARK + Math.random();
         });
     }
 
-    changeTheme(themeString: string): void {
+    public changeTheme(themeString: string): void {
         this.settings.theme = themeString;
         if (themeString == LIGHT) {
             this.setTheme(LightThemeColors);
@@ -170,26 +170,26 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    setExplicit(explicit: boolean): void {
+    public setExplicit(explicit: boolean): void {
         this.settings.explicit = explicit;
     }
 
-    setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
+    public setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
         this.newUserSubbedChannel = $event;
     }
 
-    toggleSidebarOpen(): void {
+    public toggleSidebarOpen(): void {
         this.sidebar.toggle();
     }
 
-    handleNewBannedUserEvent(user: UserChannelObject): void {
+    public handleNewBannedUserEvent(user: UserChannelObject): void {
         if (this.display == CHAT_BOX && this.selectedChannelId.channelId == user.channelId) {
             this.updateDisplay(CHANNEL_BROWSER);
         }
         this.newBannedUser = user;
     }
 
-    handleNewUnBannedUserEvent(user: UserChannelObject): void {
+    public handleNewUnBannedUserEvent(user: UserChannelObject): void {
         this.newBannedUser = user;
     }
 

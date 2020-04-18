@@ -9,6 +9,6 @@ export class UserGuideComponent implements OnInit {
     constructor() {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
     }
 }

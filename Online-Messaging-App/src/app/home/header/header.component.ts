@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         if (this.userLoggedIn == true) {
             this.user = this.auth.getAuthenticatedUser();
 
@@ -102,7 +102,7 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    toggleOpen($event): void {
+    public toggleOpen($event): void {
         if ($event) {
             let target = $event.target as HTMLElement;
             if (!target.classList.contains(BUTTON_WRAPPER_CLASS) && !target.classList.contains(BUTTON_CLASS)) {
@@ -113,17 +113,17 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    newUserSubscriptionFromChannelEventEmitter(view: string, channelId: string, type: string): void {
+    public newUserSubscriptionFromChannelEventEmitter(view: string, channelId: string, type: string): void {
         this.switchEvent.emit(view);
         this.newUserSubscriptionFromNotificationEvent.emit({ channelId, type });
     }
 
-    goToChannelFromNotification(view: string, channelId: string, type: string): void {
+    public goToChannelFromNotification(view: string, channelId: string, type: string): void {
         this.switchEvent.emit(view);
         this.goToChannelFromNotificationEvent.emit({ channelId, type });
     }
 
-    switchDisplay(value: string): void {
+    public switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
         if (value === this.profile) {
@@ -131,7 +131,7 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    acceptInvite(notification: NotificationObject): void {
+    public acceptInvite(notification: NotificationObject): void {
         let user: UserChannelObject = {
             username: this.auth.getAuthenticatedUser().getUsername(),
             channelId: notification.channelId,
@@ -211,7 +211,7 @@ export class HeaderComponent implements OnInit {
         });
     }
 
-    sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
+    public sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
         let message = this.auth.getAuthenticatedUser().getUsername();
         if (response) {
             message += ACCEPT_INVITE;
@@ -240,7 +240,7 @@ export class HeaderComponent implements OnInit {
         this.notificationService.sendNotification(notifications);
     }
 
-    denyInvite(notification: NotificationObject): void {
+    public denyInvite(notification: NotificationObject): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -296,7 +296,7 @@ export class HeaderComponent implements OnInit {
         });
     }
 
-    removeNotification(notification: NotificationObject): void {
+    public removeNotification(notification: NotificationObject): void {
         if (notification.type == PUBLIC_NOTIFICATION) {
             this.publicInvites.splice(this.publicInvites.indexOf(notification), 1);
         } else if (notification.type == PRIVATE_NOTIFICATION) {
@@ -309,7 +309,7 @@ export class HeaderComponent implements OnInit {
         this.notificationCount--;
     }
 
-    deleteNotification(notification: NotificationObject): Promise<void> {
+    public deleteNotification(notification: NotificationObject): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
@@ -344,7 +344,7 @@ export class HeaderComponent implements OnInit {
         });
     }
 
-    toggleSideBarOpen(value: boolean): void {
+    public toggleSideBarOpen(value: boolean): void {
         if (value) {
             this.sideBarOpen = true;
             this.sideBarToggleEvent.emit(true);
