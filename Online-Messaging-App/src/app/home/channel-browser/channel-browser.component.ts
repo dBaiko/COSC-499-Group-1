@@ -55,45 +55,49 @@ export class ChannelBrowserComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.getChannels()
-            .then(() => {
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        this.getSubscribedChannels();
+        if (this.auth.isLoggedIn()) {
+            this.getChannels()
+                .then(() => {
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            this.getSubscribedChannels();
+        }
     }
 
     public getSubscribedChannels(): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data: CognitoIdToken) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+        if (this.auth.isLoggedIn()) {
+            this.auth.getCurrentSessionId().subscribe(
+                (data: CognitoIdToken) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                this.http
-                    .get(
-                        this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
-                        httpHeaders
-                    )
-                    .subscribe(
-                        (data: Object[]) => {
-                            data.forEach((item: UserChannelObject) => {
-                                this.subscribedChannels.push(item.channelId);
-                            });
-                        },
-                        (err) => {
-                            console.error(err);
-                        }
-                    );
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+                    this.http
+                        .get(
+                            this.usersAPI + this.auth.getAuthenticatedUser().getUsername() + Constants.CHANNELS_PATH,
+                            httpHeaders
+                        )
+                        .subscribe(
+                            (data: Object[]) => {
+                                data.forEach((item: UserChannelObject) => {
+                                    this.subscribedChannels.push(item.channelId);
+                                });
+                            },
+                            (err) => {
+                                console.error(err);
+                            }
+                        );
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        }
     }
 
     public sendQuery(): void {

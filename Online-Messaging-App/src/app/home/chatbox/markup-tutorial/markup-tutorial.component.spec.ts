@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { MarkupTutorialComponent } from "./markup-tutorial.component";
+import { MaterialModule } from "../../../material/material.module";
+import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MarkdownModule } from "ngx-markdown";
+import { SecurityContext } from "@angular/core";
 
 describe("MarkupTutorialComponent", () => {
     let component: MarkupTutorialComponent;
@@ -8,7 +12,11 @@ describe("MarkupTutorialComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [MarkupTutorialComponent]
+            declarations: [MarkupTutorialComponent],
+            imports: [MaterialModule, MatDialogModule, MarkdownModule.forRoot({
+                sanitize: SecurityContext.NONE
+            })],
+            providers: [{ provide: MatDialogRef, useValue: {} }]
         }).compileComponents();
     }));
 

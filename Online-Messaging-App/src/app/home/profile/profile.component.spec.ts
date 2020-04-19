@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ProfileComponent } from "./profile.component";
+import { HttpClient, HttpHandler } from "@angular/common/http";
+import { AuthenticationService } from "../../shared/authentication.service";
+import { NotificationService } from "../../shared/notification.service";
+import { CommonService } from "../../shared/common.service";
+import { RouterTestingModule } from "@angular/router/testing";
+import { FormValidationService } from "../../shared/form-validation.service";
 
 describe("ProfileComponent", () => {
     let component: ProfileComponent;
@@ -8,7 +14,9 @@ describe("ProfileComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ProfileComponent]
+            imports: [RouterTestingModule],
+            declarations: [ProfileComponent],
+            providers: [HttpClient, HttpHandler, AuthenticationService, NotificationService, CommonService, FormValidationService]
         }).compileComponents();
     }));
 

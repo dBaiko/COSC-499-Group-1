@@ -163,60 +163,62 @@ export class SidebarComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        let user: string = this.auth.getAuthenticatedUser().getUsername();
-        this.getSubscribedChannels(false)
-            .then(() => {
-                if (this.cookieService.get(user)) {
-                    this.switchDisplay(this.chatBox);
-                    this.selectChannel(
-                        JSON.parse(this.cookieService.get(user)).lastChannelID,
-                        JSON.parse(this.cookieService.get(user)).lastChannelType
-                    );
-                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == FRIEND) {
-                        this.selectFriend();
-                    }
-                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == PRIVATE) {
-                        this.selectPrivateChannel();
-                    }
-                    if (JSON.parse(this.cookieService.get(user)).lastChannelType == PUBLIC) {
+        if (this.auth.isLoggedIn()) {
+            let user: string = this.auth.getAuthenticatedUser().getUsername();
+            this.getSubscribedChannels(false)
+                .then(() => {
+                    if (this.cookieService.get(user)) {
+                        this.switchDisplay(this.chatBox);
+                        this.selectChannel(
+                            JSON.parse(this.cookieService.get(user)).lastChannelID,
+                            JSON.parse(this.cookieService.get(user)).lastChannelType
+                        );
+                        if (JSON.parse(this.cookieService.get(user)).lastChannelType == FRIEND) {
+                            this.selectFriend();
+                        }
+                        if (JSON.parse(this.cookieService.get(user)).lastChannelType == PRIVATE) {
+                            this.selectPrivateChannel();
+                        }
+                        if (JSON.parse(this.cookieService.get(user)).lastChannelType == PUBLIC) {
+                            this.selectPublicChannel();
+                        }
+                    } else if (this.publicChannels.length == 0) {
+                        this.switchDisplay(this.channelBrowser);
                         this.selectPublicChannel();
+                    } else {
+                        this.selectPublicChannel();
+                        this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
                     }
-                } else if (this.publicChannels.length == 0) {
-                    this.switchDisplay(this.channelBrowser);
-                    this.selectPublicChannel();
-                } else {
-                    this.selectPublicChannel();
-                    this.selectChannel(this.publicChannels[0].channelId, PUBLIC);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
 
-        this.notificationService.addSocketListener(
-            MESSAGE_NOTIFICATION_BROADCAST,
-            (messageNotification: NotificationObject) => {
-                if (
-                    messageNotification.type == NOTIFICATION_TYPE_MESSAGE &&
-                    messageNotification.username == this.currentUserProfile.username &&
-                    messageNotification.channelId != this.selectedChannelId
-                ) {
-                    if (messageNotification.channelType == PUBLIC) {
-                        this.publicChannels[
-                            this.findIndexOfChannel(this.publicChannels, messageNotification.channelId)
-                            ].notificationCount += 1;
-                    } else if (messageNotification.channelType == PRIVATE) {
-                        this.privateChannels[
-                            this.findIndexOfChannel(this.privateChannels, messageNotification.channelId)
-                            ].notificationCount += 1;
-                    } else if (messageNotification.channelType == FRIEND) {
-                        this.friendsChannels[
-                            this.findIndexOfChannel(this.friendsChannels, messageNotification.channelId)
-                            ].notificationCount += 1;
+            this.notificationService.addSocketListener(
+                MESSAGE_NOTIFICATION_BROADCAST,
+                (messageNotification: NotificationObject) => {
+                    if (
+                        messageNotification.type == NOTIFICATION_TYPE_MESSAGE &&
+                        messageNotification.username == this.currentUserProfile.username &&
+                        messageNotification.channelId != this.selectedChannelId
+                    ) {
+                        if (messageNotification.channelType == PUBLIC) {
+                            this.publicChannels[
+                                this.findIndexOfChannel(this.publicChannels, messageNotification.channelId)
+                                ].notificationCount += 1;
+                        } else if (messageNotification.channelType == PRIVATE) {
+                            this.privateChannels[
+                                this.findIndexOfChannel(this.privateChannels, messageNotification.channelId)
+                                ].notificationCount += 1;
+                        } else if (messageNotification.channelType == FRIEND) {
+                            this.friendsChannels[
+                                this.findIndexOfChannel(this.friendsChannels, messageNotification.channelId)
+                                ].notificationCount += 1;
+                        }
                     }
                 }
-            }
-        );
+            );
+        }
     }
 
     public getSubscribedChannels(banFlag: boolean): Promise<void> {
