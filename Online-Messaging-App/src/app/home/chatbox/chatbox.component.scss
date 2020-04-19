@@ -68,8 +68,16 @@ mat-label {
     padding-left: 0.5rem;
 }
 
+::ng-deep .mat-expansion-panel {
+    width: 80% !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+    width: 100% !important;
+}
+
 .chat-box-header {
-    width: 100%;
+    width: 100% !important;
 }
 
 .invite {
@@ -255,10 +263,8 @@ textarea {
 }
 
 mat-expansion-panel {
-    width: 85%;
     background-color: var(--element-color);
     color: var(--primary-text-color);
-    margin-left: -1.5em;
 }
 
 mat-expansion-panel:hover {
@@ -528,10 +534,11 @@ mat-sidenav {
         margin-right: 0;
     }
     #sidebarClose {
-        left: 3rem;
-        bottom: 2rem;
-        position: relative;
+        position: absolute;
+        right: 0;
+        top: 0.5em;
         display: block;
+        z-index: 100;
     }
     #chevron-right {
         display: block;
