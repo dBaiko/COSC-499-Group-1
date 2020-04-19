@@ -6,15 +6,31 @@
 The github repository can be found [here](https://github.com/dBaiko/COSC-499-Group-1)
 
 ## Table of Contents
-1. [Intro](#intro)
-1. [Repository Overview](#repository-overview)
-   1. [Folders](#folders)
-      1. [Online-Messaging-App](#online-messaging-app)
-      1. [Online-Messageing-Backend](#online-messageing-backend)
-   1. [Branches](#branches)
-   1. [License](#license)
-1. [Installation Guide](#installation-guide)
-   1. [AWS Setup](#aws-setup)
+
+<details>
+    <summary>Click to expand</summary>
+
+- [Intro](#intro)
+- [Repository Overview](#repository-overview)
+  * [Folders](#folders)
+    + [Online-Messaging-App](#online-messaging-app)
+    + [Online-Messageing-Backend](#online-messageing-backend)
+  * [Branches](#branches)
+  * [License](#license)
+- [Installation Guide](#installation-guide)
+  * [Setting Up On a Local Machine](#setting-up-on-a-local-machine)
+  * [AWS Setup](#aws-setup)
+    + [Cognito Setup](#cognito-setup)
+    + [DynamoDB Setup](#dynamodb-setup)
+      - [Pre-setup: Security](#pre-setup--security)
+      - [DynamoDB](#dynamodb)
+    + [_Aside_](#-aside-)
+    + [S3 Setup](#s3-setup)
+      - [_Aside_](#-aside--1)
+  * [Running the application locally](#running-the-application-locally)
+  * [Running The Application On A Server](#running-the-application-on-a-server)
+  
+</details>
 
 ## Intro
 
@@ -563,6 +579,65 @@ In order to run the application on a server, we assume you have a server with a 
 1. Do `git checkout release` and then `git pull origin develop` if you are using a remote repository, or `git pull develop` if you are not.
 1. Now there are several configurations that will have to be changed on this branch to move the application to a server
 runnable version: 
-    1. 
+    1. Under Online-Messaging-Backend
+        1. In `src/config/app-config.ts` in the declaration of "IO_ACCEPTED_ORIGINS"
+            * Change: "`http://localhost:4200 http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:*`"
+            * To: "`http://localhost:4200 http://<your-servers-public-IP-or-url>:*`"
+    1. Under Online-Messaging-App
+        1. In `src/app/shared/app-config.ts`, in the declaration of `APIConfig`, update all of the values. For all of them:
+            * Change: "`http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080/<api>/`"
+            * To: "`http://<your-servers-public-IP-or-url>:8080/<api>/`"
+        1. In `src/app/shared/messenger.service.ts`, on line 16
+            * Change: "`private url = "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080";`"
+            * To: "`private url = "http://<your-servers-public-IP-or-url>:8080";`"
+        1. In `src/app/shared/notification.service.ts`, on line 28
+              * Change: "`private url = "http://ec2-35-183-101-255.ca-central-1.compute.amazonaws.com:8080";`"
+              * To: "`private url = "http://<your-servers-public-IP-or-url>:8080";`"
+1. At this point the application is ready to be deployed. There are two ways of doing so shown below. Follow only one set:
+    * If your server has any decent amount of memory (i.e. NOT a EC2-micro instance), and it has Git installed:
+        1. Commit and push up your newly configured version of the release branch.
+        1. Go to Github and get the clone URL
+        1. On your server, in any preffered location, clone the repository.
+        1. In the repository, navigate to the Online-Messaging-Backend folder and run `npm install`
+        1. Then run: `npm run-script build`
+        1. The new dist folder will now contain the built backend. If you prefer, move it's contents to a better location, but they can be anywhere on the server.
+        1. Navigate into the dist folder, or where ever you put it's contents.
+        1. Navigate to Online-Messaging-App and repeat steps d-g again with this folder
+        1. Move to steps below
+    * If your server does not have good memory (i.e. a EC2-micro instance), and does not have Git installed:
+        1. On your local machine, open a terminal, and navigate to Online-Messaging-Backend
+        1. Run `npm run-script build`
+        1. Using MobaXterm's SFTP service, or equivelent program, move all the contents under `dist` to the home directory of the server (or where ever you have FTP access)
+        1. Also FTP the package.json file over to a nearby location
+        1. On your local machine, open a terminal, and navigate to Online-Messaging-App
+        1 Run `npm run-script build`
+        1. Using MobaXterm's SFTP service, or equivelent program, move all the contents under `dist/Online-Messaging-App` to the home directory of the server (or where ever you have FTP access)
+        1. Move to steps below
+1. At this point you should have two folders on your server, in your home directory, or somewhere equivelent, one containing the built Online-Messaging-Backend, and one for the Online-Message-App
+1. We start by installing and running the Online-Messaging-Backend:
+    1. cd into the directory containing package.json and run `npm install`
+    1. Then cd into the directory containing the built backend files.
+    1. As a test, run `node index.js`, and ensure that after is launches, you get "server started at :8080". This will make sure that the code had been configured correctly to run on this server
+    1. Press ctrl+c
+    1. At this point you can run whichevery program you want to "persist" the running of index.js, but pm2 was used in development
+    1. Follow [these steps](https://pm2.keymetrics.io/docs/usage/quick-start/) to install pm2 on your machine
+    1. Run the following:
+        *
+        ```bash
+       pm2 start index.js
+       pm2 save
+       pm2 startup 
+       ```
+       At which point pm2 will output a long command, starting with sudo. Paste and run this command.
+    The backend will now run regardless of whether you are in a ssh session on the server, and if the server shuts down, it will be started again on startup.
+    1. Go to: `http://<your-server>.com:8080` on your web browser, and ensure you get "Backend is up and running"
+1. Now the Online-Messaging-Backend:
+    1. The frontend can be run in any way a static website can be run. It can even be run as an S3 static hosting, however Apache was used in development.
+    1. Navigate to the directory containing the frontend files and run: `sudo cp -r * /var/www/html/`
+    1. At this point, Apache handles serving for you, so you are done.
+    1. Go to `http://<your-server>.com` and you should be greeted with the Login screen
 
+This concludes the installation instructions. If you have done everything correctly, you should now have functioning development and production copies of the full application.
+
+Thank you
 
