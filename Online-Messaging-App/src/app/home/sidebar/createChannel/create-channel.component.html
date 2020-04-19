@@ -1,5 +1,5 @@
 <div (clickOutside)="clickOutsideClose()" class="container" delayClickOutsideInit="true">
-    <div class="background">
+    <div *ngIf="this.auth.isLoggedIn()" class="background">
         <form (ngSubmit)="newChannel(newChannelForm)" [formGroup]="newChannelForm" autocomplete="off">
             <div class="center">
                 <h2>Create A Channel</h2>
@@ -10,14 +10,14 @@
                             <mat-label>Channel Name</mat-label>
                             <label for="channelName"></label
                             ><input
-                                class="form-control"
-                                formControlName="channelName"
-                                id="channelName"
-                                matInput
-                                name="channelName"
-                                required
-                                type="text"
-                            />
+                            class="form-control"
+                            formControlName="channelName"
+                            id="channelName"
+                            matInput
+                            name="channelName"
+                            required
+                            type="text"
+                        />
                             <mat-error *ngFor="let validation of common.validation_methods.channelName">
                                 <mat-error
                                     *ngIf="
@@ -28,7 +28,7 @@
                                             submitAttempt
                                         )
                                     "
-                                    >{{ validation.message }}
+                                >{{ validation.message }}
                                 </mat-error>
                             </mat-error>
                         </mat-form-field>
@@ -49,7 +49,7 @@
                                         submitAttempt
                                     )
                                 "
-                                >{{ validation.message }}
+                            >{{ validation.message }}
                             </mat-error>
                         </mat-error>
                     </div>
@@ -72,7 +72,7 @@
                                         submitAttempt
                                     )
                                 "
-                                >{{ validation.message }}
+                            >{{ validation.message }}
                             </mat-error>
                         </mat-error>
                     </div>

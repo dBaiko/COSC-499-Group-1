@@ -233,61 +233,63 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
     @Input()
     public set currentChannel(value: ChannelObject) {
-        this._currentChannel = value;
-        this.getChannelInfo().catch((err) => {
-            console.error(err);
-        });
-        this.getMessages(this._currentChannel.channelId)
-            .then(() => {
-                for (let message of this.chatMessages) {
-                    this.getReactionsForMessage(message.messageId).then((data: Array<ReactionObject>) => {
-                        message.reactions = data;
-                    });
-                }
-            })
-            .catch((err) => {
+        if (value) {
+            this._currentChannel = value;
+            this.getChannelInfo().catch((err) => {
                 console.error(err);
             });
-        this.isNearBottom = false;
-        this.getSubcribedUsers()
-            .then((data: Array<UserChannelObject>) => {
-                if (this.currentChannel.channelType == FRIEND_IDENTIFIER) {
-                    let notFound = true;
-                    for (let i in data) {
-                        if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
-                            notFound = false;
-                        }
-                    }
-                    if (notFound) {
-                        this.getChannelInfo().then((data: InviteChannelObject) => {
-                            let inviteStatus: string = data.inviteStatus;
-                            let friendName: string = (this.friendMessage = this.parseFriendChannelName(
-                                this.currentChannel.channelName
-                            ));
-                            if (inviteStatus == PENDING_INVITE_IDENTIFIER) {
-                                this.friendMessage = friendName + PENDING_INVITE_MESSAGE;
-                            } else if (inviteStatus == DENIED_INVITE_IDENTIFIER) {
-                                this.friendMessage = friendName + DENIED_INVITE_MESSAGE;
-                            } else if (inviteStatus == ACCEPTED_INVITE_IDENTIFIER) {
-                                this.friendMessage = friendName + ACCEPTED_INVITE_MESSAGE;
-                            }
+            this.getMessages(this._currentChannel.channelId)
+                .then(() => {
+                    for (let message of this.chatMessages) {
+                        this.getReactionsForMessage(message.messageId).then((data: Array<ReactionObject>) => {
+                            message.reactions = data;
                         });
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            this.isNearBottom = false;
+            this.getSubcribedUsers()
+                .then((data: Array<UserChannelObject>) => {
+                    if (this.currentChannel.channelType == FRIEND_IDENTIFIER) {
+                        let notFound = true;
+                        for (let i in data) {
+                            if (data[i].username == this.parseFriendChannelName(this.currentChannel.channelName)) {
+                                notFound = false;
+                            }
+                        }
+                        if (notFound) {
+                            this.getChannelInfo().then((data: InviteChannelObject) => {
+                                let inviteStatus: string = data.inviteStatus;
+                                let friendName: string = (this.friendMessage = this.parseFriendChannelName(
+                                    this.currentChannel.channelName
+                                ));
+                                if (inviteStatus == PENDING_INVITE_IDENTIFIER) {
+                                    this.friendMessage = friendName + PENDING_INVITE_MESSAGE;
+                                } else if (inviteStatus == DENIED_INVITE_IDENTIFIER) {
+                                    this.friendMessage = friendName + DENIED_INVITE_MESSAGE;
+                                } else if (inviteStatus == ACCEPTED_INVITE_IDENTIFIER) {
+                                    this.friendMessage = friendName + ACCEPTED_INVITE_MESSAGE;
+                                }
+                            });
+                        } else {
+                            this.friendMessage = null;
+                        }
+
+                        let friendsUsername = this.parseFriendChannelName(this.currentChannel.channelName);
+                        this.getFriendsProfilePicture(friendsUsername);
                     } else {
                         this.friendMessage = null;
                     }
-
-                    let friendsUsername = this.parseFriendChannelName(this.currentChannel.channelName);
-                    this.getFriendsProfilePicture(friendsUsername);
-                } else {
-                    this.friendMessage = null;
-                }
-            })
-            .catch((err) => {
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+            this.getChannelNotifications().catch((err) => {
                 console.error(err);
             });
-        this.getChannelNotifications().catch((err) => {
-            console.error(err);
-        });
+        }
     }
 
     public ngOnInit(): void {
