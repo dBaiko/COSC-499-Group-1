@@ -434,7 +434,6 @@ describe("ALL_TESTS", () => {
         it("should delete a subscription between a specified user and channel", async () => {
             userChannel.deleteChannelSubscription("testUser2", "ID01").then(() => {
                 ddb.scan({ TableName: "UserChannel" }).promise().then((item: ScanOutput) => {
-                    console.log(item.Items.length);
                     expect(item.Count).toBe(3);
                 });
             });
@@ -1113,7 +1112,6 @@ describe("ALL_TESTS", () => {
                     message: "Lorem Ipsum",
                     fromFriend: "testUser2"
                 });
-                console.log("here");
                 ddb.delete({
                     TableName: "Notifications",
                     Key: {
