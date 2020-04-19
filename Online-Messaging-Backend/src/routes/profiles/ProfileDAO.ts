@@ -55,7 +55,7 @@ export class ProfileDAO {
             profile.languages = [Constants.EMPTY];
         }
         if (!profile.phone) {
-            profile.phone = Constants.EMPTY;
+            profile.phone = Constants.SPACE;
         }
         if (!profile.bio) {
             profile.bio = Constants.EMPTY;
@@ -112,7 +112,7 @@ export class ProfileDAO {
             profile.coachLastName = Constants.EMPTY;
         }
         if (!profile.coachPhone) {
-            profile.coachPhone = Constants.EMPTY;
+            profile.coachPhone = Constants.SPACE;
         }
         if (!profile.coachEmail) {
             profile.coachEmail = Constants.EMPTY;
@@ -124,7 +124,7 @@ export class ProfileDAO {
             profile.parentLastName = Constants.EMPTY;
         }
         if (!profile.parentPhone) {
-            profile.parentPhone = Constants.EMPTY;
+            profile.parentPhone = Constants.SPACE;
         }
         if (!profile.parentEmail) {
             profile.parentEmail = Constants.EMPTY;
@@ -158,6 +158,10 @@ export class ProfileDAO {
         profile.parentPhone = sanitizeInput(profile.parentPhone);
         profile.parentEmail = sanitizeInput(profile.parentEmail);
         profile.budget = sanitizeInput(profile.budget);
+
+        if (profile.languages = []) {
+            profile.languages = [" "];
+        }
 
         let params = {
             TableName: PROFILES_TABLE_NAME,
