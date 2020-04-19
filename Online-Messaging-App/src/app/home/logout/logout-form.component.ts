@@ -18,9 +18,10 @@ export class LogoutFormComponent implements OnInit {
         this.notificationService = NotificationService.getInstance();
     }
 
-    ngOnInit(): void {}
+    public ngOnInit(): void {
+    }
 
-    logout(): void {
+    public logout(): void {
         this.notificationService.exitSocket(this.auth.getAuthenticatedUser().getUsername());
         this.auth.logOut();
         this.common.routeTo(Constants.LOGIN_ROUTE);

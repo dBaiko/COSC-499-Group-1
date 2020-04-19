@@ -14,10 +14,11 @@ import {
     UserObject
 } from "../../shared/app-config";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
-import { CreateChannelComponent } from "../createChannel/create-channel.component";
+import { CreateChannelComponent } from "./createChannel/create-channel.component";
 import { CookieService } from "ngx-cookie-service";
 import { UnsubscribeConfirmComponent } from "./unsubscribe-confirm/unsubscribe-confirm.component";
 import { NotificationService } from "../../shared/notification.service";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const PRIVATE: string = "private";
 const PUBLIC: string = "public";
@@ -30,7 +31,7 @@ const NOTIFICATIONS_URI = "/notifications";
 const CHANNEL_ID_URI = "/channelId/";
 const USERNAME_URI = "/username/";
 
-const DIALOG_WIDTH = "35%";
+const DIALOG_WIDTH = "80%";
 const DIALOG_CLASS = "dialog-class";
 
 const MAX_FRIEND_CHANNEL_LENGTH = 2;
@@ -38,6 +39,9 @@ const MAX_FRIEND_CHANNEL_LENGTH = 2;
 const CHANNELS_URI = "/channels/";
 
 const MESSAGE_NOTIFICATION_BROADCAST = "messageNotificationBroadcast";
+const NOTIFICATION_TYPE_MESSAGE = "message";
+
+const BANNED_ACCESS_MESSAGE = "You cannot access a channel in which you are banned.";
 
 @Component({
     selector: "app-sidebar",
@@ -56,6 +60,7 @@ export class SidebarComponent implements OnInit {
     @Output() switchEvent = new EventEmitter<string>();
     @Output() profileViewEvent = new EventEmitter<string>();
     @Output() newUserSubbedChannelEvent = new EventEmitter<NewUsersSubbedChannelObject>();
+    @Output() goToChannelFromNotificationEvent = new EventEmitter();
     publicChannelSelect: boolean;
     privateChannelSelect: boolean;
     friendChannelSelect: boolean;
@@ -81,7 +86,7 @@ export class SidebarComponent implements OnInit {
     private _notificationChannel: ChannelIdAndType;
 
     @Input()
-    set notificationChannel(value: ChannelIdAndType) {
+    public set notificationChannel(value: ChannelIdAndType) {
         if (value) {
             this._notificationChannel = value;
             this.selectChannel(value.channelId, value.type);
@@ -103,26 +108,28 @@ export class SidebarComponent implements OnInit {
 
     private _newBannedUser: UserChannelObject;
 
-    get newBannedUser(): UserChannelObject {
+    public get newBannedUser(): UserChannelObject {
         return this._newBannedUser;
     }
 
     @Input()
-    set newBannedUser(user: UserChannelObject) {
-        this._newBannedUser = user;
-        this.getSubscribedChannels(true).catch((err) => {
-            console.log(err);
-        });
+    public set newBannedUser(user: UserChannelObject) {
+        if (user) {
+            this._newBannedUser = user;
+            this.getSubscribedChannels(true).catch((err) => {
+                console.error(err);
+            });
+        }
     }
 
     private _subbedChannel: ChannelObject;
 
-    get subbedChannel(): ChannelObject {
+    public get subbedChannel(): ChannelObject {
         return this._subbedChannel;
     }
 
     @Input()
-    set subbedChannel(value: ChannelObject) {
+    public set subbedChannel(value: ChannelObject) {
         if (value) {
             this.setNewChannel(value);
             this.newUserSubbedChannelEvent.emit({
@@ -133,10 +140,32 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    ngOnInit(): void {
+    private _channelToGoToFromNotification: ChannelIdAndType;
+
+    public get channelToGoToFromNotification(): ChannelIdAndType {
+        return this._channelToGoToFromNotification;
+    }
+
+    @Input()
+    public set channelToGoToFromNotification(value: ChannelIdAndType) {
+        if (value) {
+            this._channelToGoToFromNotification = value;
+            this.selectChannel(value.channelId, value.type);
+            this.switchDisplay(this.chatBox);
+            if (value.type == PUBLIC) {
+                this.selectPublicChannel();
+            } else if (value.type == PRIVATE) {
+                this.selectPrivateChannel();
+            } else if (value.type == FRIEND) {
+                this.selectFriend();
+            }
+        }
+    }
+
+    public ngOnInit(): void {
         let user: string = this.auth.getAuthenticatedUser().getUsername();
         this.getSubscribedChannels(false)
-            .then((data: Array<UserChannelObject>) => {
+            .then(() => {
                 if (this.cookieService.get(user)) {
                     this.switchDisplay(this.chatBox);
                     this.selectChannel(
@@ -152,7 +181,7 @@ export class SidebarComponent implements OnInit {
                     if (JSON.parse(this.cookieService.get(user)).lastChannelType == PUBLIC) {
                         this.selectPublicChannel();
                     }
-                } else if (data.length == 0) {
+                } else if (this.publicChannels.length == 0) {
                     this.switchDisplay(this.channelBrowser);
                     this.selectPublicChannel();
                 } else {
@@ -161,14 +190,14 @@ export class SidebarComponent implements OnInit {
                 }
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
 
         this.notificationService.addSocketListener(
             MESSAGE_NOTIFICATION_BROADCAST,
             (messageNotification: NotificationObject) => {
                 if (
-                    messageNotification.type == "message" &&
+                    messageNotification.type == NOTIFICATION_TYPE_MESSAGE &&
                     messageNotification.username == this.currentUserProfile.username &&
                     messageNotification.channelId != this.selectedChannelId
                 ) {
@@ -190,10 +219,10 @@ export class SidebarComponent implements OnInit {
         );
     }
 
-    getSubscribedChannels(banFlag: boolean): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public getSubscribedChannels(banFlag: boolean): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
+                (data: CognitoIdToken) => {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
@@ -237,66 +266,69 @@ export class SidebarComponent implements OnInit {
                                         .then((notificationData: Array<NotificationObject>) => {
                                             for (let notification of notificationData) {
                                                 if (
-                                                    notification.type == "message" &&
+                                                    notification.type == NOTIFICATION_TYPE_MESSAGE &&
                                                     notification.username == this.currentUserProfile.username
                                                 ) {
                                                     if (notification.channelType == PUBLIC) {
-                                                        this.publicChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.publicChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(
+                                                            this.publicChannels,
+                                                            notification.channelId
+                                                        );
+                                                        if (!this.publicChannels[index].selected) {
+                                                            this.publicChannels[index].notificationCount += 1;
+                                                        }
                                                     } else if (notification.channelType == PRIVATE) {
-                                                        this.privateChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.privateChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(
+                                                            this.privateChannels,
+                                                            notification.channelId
+                                                        );
+                                                        if (!this.privateChannels[index].selected) {
+                                                            this.privateChannels[index].notificationCount += 1;
+                                                        }
                                                     } else if (notification.channelType == FRIEND) {
-                                                        this.friendsChannels[
-                                                            this.findIndexOfChannel(
-                                                                this.friendsChannels,
-                                                                notification.channelId
-                                                            )
-                                                            ].notificationCount += 1;
+                                                        let index = this.findIndexOfChannel(
+                                                            this.friendsChannels,
+                                                            notification.channelId
+                                                        );
+                                                        if (!this.friendsChannels[index].selected) {
+                                                            this.friendsChannels[index].notificationCount += 1;
+                                                        }
                                                     }
                                                 }
                                             }
                                             if (i == data.length - 1) {
-                                                resolve(notificationData);
+                                                resolve();
                                             } else if (data.length == 0) {
-                                                resolve([]);
+                                                resolve();
                                             }
                                         })
                                         .catch((err) => {
                                             console.error(err);
                                         });
                                 }
-                                resolve([]);
+                                resolve();
                             },
                             (err) => {
-                                console.log(err);
+                                console.error(err);
                                 reject(err);
                             }
                         );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 }
             );
         });
     }
 
-    parseFriendChannelName(channelName: string): string {
+    public parseFriendChannelName(channelName: string): string {
         let users = channelName.split(Constants.DASH, MAX_FRIEND_CHANNEL_LENGTH);
         if (users[0] == this.auth.getAuthenticatedUser().getUsername()) return users[1];
         else return users[0];
     }
 
-    selectPublicChannel(): void {
+    public selectPublicChannel(): void {
         this.publicChannelSelect = true;
         this.privateChannelSelect = false;
         this.friendChannelSelect = false;
@@ -311,7 +343,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectPrivateChannel(): void {
+    public selectPrivateChannel(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = true;
         this.friendChannelSelect = false;
@@ -326,7 +358,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectFriend(): void {
+    public selectFriend(): void {
         this.publicChannelSelect = false;
         this.privateChannelSelect = false;
         this.friendChannelSelect = true;
@@ -341,7 +373,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectChannel(id: string, type: string) {
+    public selectChannel(id: string, type: string) {
         this.selectedChannelId = id;
         this.userSubscribedChannels.forEach((item: UserChannelObject) => {
             if (item.channelId == id) {
@@ -382,11 +414,10 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    createChannel(): void {
+    public createChannel(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = DIALOG_WIDTH;
         dialogConfig.panelClass = DIALOG_CLASS;
         dialogConfig.data = this.currentUserProfile;
         let dialogRef = this.dialog.open(CreateChannelComponent, dialogConfig);
@@ -417,7 +448,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    confirmUnsubscribe(channel: UserChannelObjectWithNotficationCount): void {
+    public confirmUnsubscribe(channel: UserChannelObjectWithNotficationCount): void {
         let dialogConfig: MatDialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
@@ -457,7 +488,6 @@ export class SidebarComponent implements OnInit {
                                 this.friendsChannels.splice(i, 1);
                             }
                         }
-                        //TODO: reduce this, or at least move to a method
                         if (this.publicChannelSelect) {
                             if (this.publicChannels.length > 0) {
                                 this.selectPublicChannel();
@@ -517,12 +547,12 @@ export class SidebarComponent implements OnInit {
                                 () => {
                                 },
                                 (err) => {
-                                    console.log(err);
+                                    console.error(err);
                                 }
                             );
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             }
@@ -534,7 +564,7 @@ export class SidebarComponent implements OnInit {
         });
     }
 
-    switchDisplay(value: string): void {
+    public switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
         if (value === this.profile) {
@@ -542,7 +572,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    setNewChannel(value: ChannelObject) {
+    public setNewChannel(value: ChannelObject) {
         if (value) {
             this._subbedChannel = value;
             this.userSubscribedChannels.push(value);
@@ -561,8 +591,8 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    handleUserClickBannedChannel(): void {
-        alert("You cannot access a channel in which you are banned.");
+    public handleUserClickBannedChannel(): void {
+        alert(BANNED_ACCESS_MESSAGE);
     }
 
     private getChannelNotifications(channelId: string): Promise<any> {
@@ -629,6 +659,7 @@ export class SidebarComponent implements OnInit {
                     );
             },
             (err) => {
+                console.error(err);
             }
         );
     }

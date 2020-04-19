@@ -9,14 +9,12 @@ mat-form-field {
     border-radius: 0.5rem;
     background-color: var(--element-color);
     width: 100%;
-    //float: left;
     color: var(--primary-text-color);
     border: 1px solid var(--primary-color);
 }
 
 #scrollable {
     overflow-y: auto;
-    //margin-top: 1rem;
     height: 76% !important;
 }
 
@@ -42,7 +40,7 @@ hr::ng-deep pre {
 }
 
 #hrHeader {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
 }
 
 mat-card-title {
@@ -107,6 +105,9 @@ mat-label {
     position: absolute;
     right: 1%;
     top: 25%;
+    height: 60vh;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .search button {
@@ -274,11 +275,8 @@ mat-expansion-panel:hover {
 
 .wrapper {
     height: 100%;
-    // max-width: 1160px;
     margin: 0 auto;
     position: relative;
-    //padding: 0 20px;
-    //min-height: 600px;
 }
 
 .content-wrapper {
@@ -289,9 +287,7 @@ mat-expansion-panel:hover {
 
 .content {
     height: 100%;
-    //margin-right: 250px;
     clear: both;
-    //min-height: 600px;
 }
 
 .contentOpened {
@@ -309,6 +305,7 @@ mat-expansion-panel:hover {
     float: right;
     min-height: 600px;
     height: 100%;
+    background: var(--element-color);
 }
 
 .sidebarClosed {
@@ -359,7 +356,6 @@ mark {
 }
 
 .emojiPopup {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: relative;
@@ -380,7 +376,6 @@ mark {
 }
 
 .emojiPopupNot {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: relative;
@@ -418,7 +413,7 @@ mark {
 .emoticon {
     background-color: var(--element-hover-color);
     font-size: 1.5rem;
-    padding: 0px;
+    padding: 0;
     outline: none;
 }
 
@@ -477,7 +472,6 @@ mark {
 }
 
 .emojiList {
-    //display: inline;
     display: inline-flex;
     flex-wrap: wrap;
     position: absolute;
@@ -511,22 +505,39 @@ mat-sidenav {
 }
 
 .backgroundDarker {
-    //filter:blur(2px);
 }
 
 #chevron-right {
     color: var(--primary-text-color);
-}
-
-@media (max-width: 450px) {
-    .backgroundDarker {
-        filter: blur(2px);
-    }
-    .contentOpened {
-        margin-right: 0px;
-    }
+    display: none;
 }
 
 .adminDelete {
     color: red;
+}
+
+#sidebarClose {
+    display: none;
+}
+
+@media (max-width: 450px) {
+    .backgroundDarker {
+        filter: brightness(35%);
+    }
+    .contentOpened {
+        margin-right: 0;
+    }
+    #sidebarClose {
+        left: 3rem;
+        bottom: 2rem;
+        position: relative;
+        display: block;
+    }
+    #chevron-right {
+        display: block;
+    }
+    #scrollable {
+        overflow-y: auto;
+        height: 66% !important;
+    }
 }

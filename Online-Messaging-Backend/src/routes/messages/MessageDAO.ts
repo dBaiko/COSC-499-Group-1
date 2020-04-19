@@ -1,67 +1,56 @@
-/* tslint:disable:no-console */
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import ReactionsDAO from "../reactions/ReactionsDAO";
+import { DocumentClient, QueryOutput, ScanOutput } from "aws-sdk/clients/dynamodb";
+import { ReactionsDAO } from "../reactions/ReactionsDAO";
 import { sanitizeInput } from "../../index";
-
-export interface Message {
-    channelId: string;
-    username: string;
-    content: string;
-    messageId?: string;
-    insertTime?: number;
-    profileImage: string;
-    deleted: string;
-    channelType?: string;
-}
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
-
-const tableName: string = "Messages";
+import { Message } from "../../config/app-config";
+import { AWSError } from "aws-sdk";
+import {
+    ADMIN_TRUE_VALUE,
+    CHANNEL_ID_AND_INSERT_TIME_CONDITION_EXPRESSION,
+    CHANNEL_ID_QUERY,
+    CONTENT_UPDATE_EXPRESSION,
+    DELETED_UPDATE_EXPRESSION,
+    MESSAGE_ID_CONDITION_EXPRESSION,
+    tableName,
+    TRUE_VALUE
+} from "./Messages_Constants";
 
 export class MessageDAO {
-    private channelIdQueryDeclaration = "channelId = :channelId";
-
     constructor(private docClient: DocumentClient) {
     }
 
     public getMessageHistory(channelId: string): Promise<any> {
-        const params = {
+        let params = {
             TableName: tableName,
-            KeyConditionExpression: this.channelIdQueryDeclaration,
+            KeyConditionExpression: CHANNEL_ID_QUERY,
+            ScanIndexForward: true,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
         return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + "'s messages Succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public getAllMessageHistory(): Promise<any> {
-        const params = {
+    public getAllMessageHistory(): Promise<Array<Message>> {
+        let params = {
             TableName: tableName
         };
 
-        return new Promise((resolve, reject) => {
-            this.docClient.scan(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.scan(params, (err: AWSError, data: ScanOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query Succeeded");
                     resolve(data.Items);
                 }
             });
@@ -75,7 +64,7 @@ export class MessageDAO {
         const username = message.username;
         const content = message.content;
         const profileImage = message.profileImage;
-        const params = {
+        let params = {
             Item: {
                 channelId,
                 content,
@@ -87,11 +76,9 @@ export class MessageDAO {
             TableName: tableName
         };
 
-        this.docClient.put(params, (err, data) => {
+        this.docClient.put(params, (err: AWSError) => {
             if (err) {
-                console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-            } else {
-                console.log("Added new message:", JSON.stringify(data, null, 2));
+                console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 4));
             }
         });
     }
@@ -106,8 +93,8 @@ export class MessageDAO {
                             channelId: data[i].channelId,
                             insertTime: data[i].insertTime
                         },
-                        ConditionExpression: "channelId = :c and insertTime = :i",
-                        UpdateExpression: "SET deleted = :m",
+                        ConditionExpression: CHANNEL_ID_AND_INSERT_TIME_CONDITION_EXPRESSION,
+                        UpdateExpression: DELETED_UPDATE_EXPRESSION,
                         ExpressionAttributeValues: {
                             ":c": channelId,
                             ":i": data[i].insertTime,
@@ -115,70 +102,68 @@ export class MessageDAO {
                         }
                     };
 
-                    this.docClient.update(updateObject, (err, data1) => {
+                    this.docClient.update(updateObject, (err: AWSError) => {
                         if (err) {
-                            console.log(err);
+                            console.error(err);
                         }
                     });
                 }
-                console.log("All messages for " + channelId + " deleted successfully");
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             });
     }
 
-    public updateMessage(message: Message): Promise<any> {
+    public updateMessage(message: Message): Promise<void> {
         message.channelId = sanitizeInput(message.channelId);
         message.channelType = sanitizeInput(message.channelType);
         message.username = sanitizeInput(message.username);
         message.content = sanitizeInput(message.content);
         message.profileImage = sanitizeInput(message.content);
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             let updateObject = {
                 TableName: tableName,
                 Key: {
                     channelId: message.channelId,
                     insertTime: message.insertTime
                 },
-                UpdateExpression: "SET content = :c",
-                ConditionExpression: "messageId = :i",
+                UpdateExpression: CONTENT_UPDATE_EXPRESSION,
+                ConditionExpression: MESSAGE_ID_CONDITION_EXPRESSION,
                 ExpressionAttributeValues: {
                     ":i": message.messageId,
                     ":c": message.content
                 }
             };
 
-            this.docClient.update(updateObject, (err, data) => {
+            this.docClient.update(updateObject, (err: AWSError) => {
                 if (err) {
                     reject(err);
                 } else {
-                    console.log("message updated successfully");
                     resolve();
                 }
             });
         });
     }
 
-    public deleteMessage(messageId: string, channelId: string, insertTime: number): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public deleteMessage(messageId: string, channelId: string, insertTime: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             let updateObject = {
                 TableName: tableName,
                 Key: {
                     channelId: channelId,
                     insertTime: insertTime
                 },
-                UpdateExpression: "SET deleted = :m",
-                ConditionExpression: "messageId = :i",
+                UpdateExpression: DELETED_UPDATE_EXPRESSION,
+                ConditionExpression: MESSAGE_ID_CONDITION_EXPRESSION,
                 ExpressionAttributeValues: {
-                    ":m": "true",
+                    ":m": TRUE_VALUE,
                     ":i": messageId
                 }
             };
 
-            this.docClient.update(updateObject, (err, data) => {
+            this.docClient.update(updateObject, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
                     let reactionsDAO: ReactionsDAO = new ReactionsDAO(this.docClient);
@@ -195,25 +180,25 @@ export class MessageDAO {
         });
     }
 
-    public adminDeleteMessage(messageId: string, channelId: string, insertTime: number): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public adminDeleteMessage(messageId: string, channelId: string, insertTime: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             let updateObject = {
                 TableName: tableName,
                 Key: {
                     channelId: channelId,
                     insertTime: insertTime
                 },
-                UpdateExpression: "SET deleted = :m",
-                ConditionExpression: "messageId = :i",
+                UpdateExpression: DELETED_UPDATE_EXPRESSION,
+                ConditionExpression: MESSAGE_ID_CONDITION_EXPRESSION,
                 ExpressionAttributeValues: {
-                    ":m": "adminTrue",
+                    ":m": ADMIN_TRUE_VALUE,
                     ":i": messageId
                 }
             };
 
-            this.docClient.update(updateObject, (err, data) => {
+            this.docClient.update(updateObject, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
                     let reactionsDAO: ReactionsDAO = new ReactionsDAO(this.docClient);

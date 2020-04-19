@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../shared/authentication.service";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -44,14 +43,17 @@ export class RegisterFormComponent implements OnInit {
     ngOnInit(): void {
         this.matchingPasswordForm = new FormGroup(
             {
-                password: new FormControl("", Validators.compose([Validators.required, Validators.minLength(8)])),
-                confirmPassword: new FormControl("", Validators.compose([Validators.required]))
+                password: new FormControl(
+                    Constants.EMPTY,
+                    Validators.compose([Validators.required, Validators.minLength(8)])
+                ),
+                confirmPassword: new FormControl(Constants.EMPTY, Validators.compose([Validators.required]))
             },
             { validators: this.formValidationService.checkIfPasswordsMatch }
         );
         this.registerForm = new FormGroup({
             username: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     Validators.maxLength(30),
@@ -61,7 +63,7 @@ export class RegisterFormComponent implements OnInit {
             ),
             matchingPasswords: this.matchingPasswordForm,
             firstName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     Validators.maxLength(30),
@@ -70,7 +72,7 @@ export class RegisterFormComponent implements OnInit {
                 ])
             ),
             lastName: new FormControl(
-                "",
+                Constants.EMPTY,
                 Validators.compose([
                     Validators.required,
                     Validators.maxLength(30),
@@ -78,7 +80,7 @@ export class RegisterFormComponent implements OnInit {
                     this.formValidationService.noBadWordsValidator
                 ])
             ),
-            email: new FormControl("", Validators.compose([Validators.required, Validators.email]))
+            email: new FormControl(Constants.EMPTY, Validators.compose([Validators.required, Validators.email]))
         });
     }
 
@@ -96,18 +98,17 @@ export class RegisterFormComponent implements OnInit {
     }
 
     register(username: string, password: string, email: string, firstName: string, lastName: string): void {
-        email = this.common.santizeText(email);
-        firstName = this.common.santizeText(firstName);
-        lastName = this.common.santizeText(lastName);
+        email = this.common.sanitizeText(email);
+        firstName = this.common.sanitizeText(firstName);
+        lastName = this.common.sanitizeText(lastName);
         this.auth.register(username, password, email, firstName, lastName).subscribe(
             () => {
                 this.addUser(username, email, firstName, lastName)
-                    .then((data) => {
-                        console.log(data);
+                    .then(() => {
                         this.common.routeTo(Constants.LOGIN_ROUTE);
                     })
                     .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                     });
             },
             (err) => {
@@ -126,6 +127,6 @@ export class RegisterFormComponent implements OnInit {
             lastName: lastName
         };
 
-        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise(); // TODO: check for errors in response
+        return this.http.post(this.url, user, Constants.HTTP_OPTIONS).toPromise();
     }
 }

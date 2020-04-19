@@ -1,11 +1,22 @@
 import bodyParser from "body-parser";
 import express from "express";
-import { ProfileDAO, ProfileObject } from "./ProfileDAO";
+import { ProfileDAO } from "./ProfileDAO";
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import { JwtVerificationService } from "../../shared/jwt-verification-service";
 import multer from "multer";
 import { sanitizeInput } from "../../index";
+import { Constants, ProfileObject } from "../../config/app-config";
+import {
+    AUTH_KEY,
+    COGNITO_USERNAME,
+    FILE,
+    PATH_GET_PROFILE,
+    PATH_PUT_PROFILE,
+    PATH_UPDATE_PROFILE_IMAGE,
+    PATH_UPDATE_STATUS,
+    TEMP_DIRECTORY
+} from "./Profile_Constansts";
 
 aws.config.loadFromPath(awsConfigPath);
 const docClient = new aws.DynamoDB.DocumentClient();
@@ -17,16 +28,9 @@ const router = express.Router();
 router.use(bodyParser.json({ limit: "50mb" }));
 router.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
-const PATH_PUT_PROFILE: string = "/:username/";
-const PATH_GET_PROFILE: string = "/:username";
-const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
-const PATH_UPDATE_STATUS: string = "/:username/status/";
-const AUTH_KEY = "authorization";
-const COGNITO_USERNAME = "cognito:username";
-
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "src/routes/profiles/temp");
+        callback(null, TEMP_DIRECTORY);
     },
     filename: (req, file, callback) => {
         callback(null, file.originalname);
@@ -48,17 +52,17 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
                 updateProfile
                     .updateProfile(req.body)
                     .then(() => {
-                        res.status(200).send({
-                            status: 200,
+                        res.status(Constants.HTTP_OK).send({
+                            status: Constants.HTTP_OK,
                             data: { message: "Profile for user" + req.body.username + "updated successfully" }
                         });
                     })
                     .catch((err) => {
-                        res.status(400).send(err);
+                        res.status(Constants.HTTP_BAD_REQUEST).send(err);
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user profile info" }
                 });
             }
@@ -69,7 +73,7 @@ router.put(PATH_PUT_PROFILE, (req, res) => {
     );
 });
 
-router.put(PATH_UPDATE_PROFILE_IMAGE, upload.single("file"), (req, res) => {
+router.put(PATH_UPDATE_PROFILE_IMAGE, upload.single(FILE), (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
@@ -82,19 +86,19 @@ router.put(PATH_UPDATE_PROFILE_IMAGE, upload.single("file"), (req, res) => {
                 updateProfile
                     .updateProfileImage(req.file, req.body.username)
                     .then((data) => {
-                        res.status(200).send({
+                        res.status(Constants.HTTP_OK).send({
                             profileImage: data
                         });
                     })
                     .catch((err) => {
-                        res.status(401).send({
-                            status: 401,
+                        res.status(Constants.HTTP_UNAUTHORIZED).send({
+                            status: Constants.HTTP_UNAUTHORIZED,
                             data: { message: err }
                         });
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user profile info" }
                 });
             }
@@ -110,8 +114,6 @@ router.put(PATH_UPDATE_STATUS, (req, res) => {
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
         (data) => {
-            console.log(req.params);
-            console.log(req.body);
             if (
                 req.params.username === data.decodedToken[COGNITO_USERNAME] &&
                 req.body.username === data.decodedToken[COGNITO_USERNAME]
@@ -120,17 +122,17 @@ router.put(PATH_UPDATE_STATUS, (req, res) => {
                 updateProfile
                     .updateStatus(sanitizeInput(req.body.username), sanitizeInput(req.body.status))
                     .then(() => {
-                        res.status(200).send({});
+                        res.status(Constants.HTTP_OK).send({});
                     })
                     .catch((err) => {
-                        res.status(401).send({
-                            status: 401,
+                        res.status(Constants.HTTP_UNAUTHORIZED).send({
+                            status: Constants.HTTP_UNAUTHORIZED,
                             data: { message: err }
                         });
                     });
             } else {
-                res.status(401).send({
-                    status: 401,
+                res.status(Constants.HTTP_UNAUTHORIZED).send({
+                    status: Constants.HTTP_UNAUTHORIZED,
                     data: { message: "Unauthorized to access user profile info" }
                 });
             }
@@ -145,17 +147,17 @@ router.get(PATH_GET_PROFILE, (req, res) => {
     let token: string = req.headers[AUTH_KEY];
 
     jwtVerificationService.verifyJWTToken(token).subscribe(
-        (data) => {
+        () => {
             const getProfile = new ProfileDAO(docClient);
             let username = req.params.username;
 
             getProfile
                 .getUserProfile(username)
                 .then((data: Array<ProfileObject>) => {
-                    res.status(200).send(data);
+                    res.status(Constants.HTTP_OK).send(data);
                 })
                 .catch((err) => {
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         },
         (err) => {

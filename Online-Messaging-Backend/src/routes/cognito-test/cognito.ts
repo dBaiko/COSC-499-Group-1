@@ -3,8 +3,9 @@ import bodyParser from "body-parser";
 import express from "express";
 import { TestUserData } from "../../config/aws-config";
 import { CognitoDAO } from "./cognitoDAO";
+import { Constants } from "../../config/app-config";
 
-const PATH_GET_JWT: string = "/";
+const PATH_GET_JWT: string = Constants.SLASH;
 
 const router = express.Router();
 
@@ -27,21 +28,21 @@ router.get(PATH_GET_JWT, (req, res) => {
                     let sendData = {
                         jwt: data
                     };
-                    res.status(200).send(sendData);
+                    res.status(Constants.HTTP_OK).send(sendData);
                 })
                 .catch((err) => {
                     console.log(err);
-                    res.status(400).send(err);
+                    res.status(Constants.HTTP_BAD_REQUEST).send(err);
                 });
         } else {
-            res.status(401).send({
-                status: 401,
+            res.status(Constants.HTTP_UNAUTHORIZED).send({
+                status: Constants.HTTP_UNAUTHORIZED,
                 data: { message: "Admin password is invalid" }
             });
         }
     } else {
-        res.status(401).send({
-            status: 401,
+        res.status(Constants.HTTP_UNAUTHORIZED).send({
+            status: Constants.HTTP_UNAUTHORIZED,
             data: { message: "Admin password is missing" }
         });
     }

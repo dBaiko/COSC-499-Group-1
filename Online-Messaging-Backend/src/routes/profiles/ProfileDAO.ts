@@ -1,52 +1,23 @@
-/* tslint:disable:no-console */
-import aws from "aws-sdk";
+import aws, { AWSError } from "aws-sdk";
 import fs from "fs";
-import { awsConfigPath } from "../../config/aws-config";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { ManagedUpload } from "aws-sdk/lib/s3/managed_upload";
-import UserChannelDAO from "../userChannels/UserChannelDAO";
+import { awsConfigPath, AWSS3Config } from "../../config/aws-config";
+import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
+import { UserChannelDAO } from "../userChannels/UserChannelDAO";
 import { sanitizeInput } from "../../index";
-import SendData = ManagedUpload.SendData;
-
-export interface ProfileObject {
-    username: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    bio: string;
-    gender: string;
-    dateOfBirth: string;
-    citizenship: string;
-    grade: number;
-    gradYear: number;
-    previousCollegiate: boolean;
-    street: string;
-    unitNumber: string;
-    city: string;
-    province: string;
-    country: string;
-    postalCode: string;
-    club: string;
-    injuryStatus: string;
-    instagram: string;
-    languages: Array<string>;
-    coachFirstName: string;
-    coachLastName: string;
-    coachPhone: string;
-    coachEmail: string;
-    parentFirstName: string;
-    parentLastName: string;
-    parentEmail: string;
-    parentPhone: string;
-    budget: string;
-}
+import { Constants, ProfileObject } from "../../config/app-config";
+import {
+    DEFAULT_PROFILE_IMAGE,
+    PROFILE_IMAGE_S3_PREFIX,
+    PROFILE_IMAGE_UPDATE_EXPRESSION,
+    PROFILE_UPDATE_EXPRESSION,
+    PROFILES_TABLE_NAME,
+    STATUS_UPDATE_EXPRESSION,
+    TEMP_RETRIEVAL_DIRECTORY,
+    TWO_THOUSAND,
+    USERNAME_UPDATE_EXPRESSION
+} from "./Profile_Constansts";
 
 aws.config.loadFromPath(awsConfigPath);
-const PROFILES_TABLE_NAME = "Profiles";
-
-const PROFILE_IMAGE_S3_PREFIX: string =
-    "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
-const DEFAULT_PROFILE_IMAGE: string = "default.png";
 
 export class ProfileDAO {
     constructor(private docClient: DocumentClient) {
@@ -54,9 +25,9 @@ export class ProfileDAO {
 
     public createProfile(username: string, firstName: string, lastName: string): Promise<any> {
         let profileImage = PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE;
-        let status: string = " ";
+        let status: string = Constants.SPACE;
 
-        const params = {
+        let params = {
             Item: {
                 firstName,
                 lastName,
@@ -66,101 +37,100 @@ export class ProfileDAO {
             },
             TableName: PROFILES_TABLE_NAME
         };
-        console.log("Creating Profile for" + username + "...");
         return new Promise((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
                     console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
                     reject(err);
                 } else {
-                    console.log("Added item:", JSON.stringify(data, null, 2));
                     resolve();
                 }
             });
         });
     }
 
+    // noinspection DuplicatedCode
     public updateProfile(profile: ProfileObject) {
         if (!profile.languages || profile.languages.length == 0) {
-            profile.languages = [" "];
+            profile.languages = [Constants.EMPTY];
         }
         if (!profile.phone) {
-            profile.phone = " ";
+            profile.phone = Constants.EMPTY;
         }
         if (!profile.bio) {
-            profile.bio = " ";
+            profile.bio = Constants.EMPTY;
         }
         if (!profile.gender) {
-            profile.gender = " ";
+            profile.gender = Constants.EMPTY;
         }
         if (!profile.dateOfBirth) {
-            profile.dateOfBirth = " ";
+            profile.dateOfBirth = Constants.EMPTY;
         }
         if (!profile.citizenship) {
-            profile.citizenship = " ";
+            profile.citizenship = Constants.EMPTY;
         }
         if (!profile.grade) {
             profile.grade = 0;
         }
         if (!profile.gradYear) {
-            profile.gradYear = 2000;
+            profile.gradYear = TWO_THOUSAND;
         }
         if (!profile.previousCollegiate) {
-            profile.previousCollegiate = false;
+            profile.previousCollegiate = Constants.EMPTY;
         }
         if (!profile.street) {
-            profile.street = " ";
+            profile.street = Constants.EMPTY;
         }
         if (!profile.unitNumber) {
-            profile.unitNumber = " ";
+            profile.unitNumber = Constants.EMPTY;
         }
         if (!profile.city) {
-            profile.city = " ";
+            profile.city = Constants.EMPTY;
         }
         if (!profile.province) {
-            profile.province = " ";
+            profile.province = Constants.EMPTY;
         }
         if (!profile.country) {
-            profile.country = " ";
+            profile.country = Constants.EMPTY;
         }
         if (!profile.postalCode) {
-            profile.postalCode = " ";
+            profile.postalCode = Constants.EMPTY;
         }
         if (!profile.club) {
-            profile.club = " ";
+            profile.club = Constants.EMPTY;
         }
         if (!profile.injuryStatus) {
-            profile.injuryStatus = " ";
+            profile.injuryStatus = Constants.EMPTY;
         }
         if (!profile.instagram) {
-            profile.instagram = " ";
+            profile.instagram = Constants.EMPTY;
         }
         if (!profile.coachFirstName) {
-            profile.coachFirstName = " ";
+            profile.coachFirstName = Constants.EMPTY;
         }
         if (!profile.coachLastName) {
-            profile.coachLastName = " ";
+            profile.coachLastName = Constants.EMPTY;
         }
         if (!profile.coachPhone) {
-            profile.coachPhone = " ";
+            profile.coachPhone = Constants.EMPTY;
         }
         if (!profile.coachEmail) {
-            profile.coachEmail = " ";
+            profile.coachEmail = Constants.EMPTY;
         }
         if (!profile.parentFirstName) {
-            profile.parentFirstName = " ";
+            profile.parentFirstName = Constants.EMPTY;
         }
         if (!profile.parentLastName) {
-            profile.parentLastName = " ";
+            profile.parentLastName = Constants.EMPTY;
         }
         if (!profile.parentPhone) {
-            profile.parentPhone = " ";
+            profile.parentPhone = Constants.EMPTY;
         }
         if (!profile.parentEmail) {
-            profile.parentEmail = " ";
+            profile.parentEmail = Constants.EMPTY;
         }
         if (!profile.budget) {
-            profile.budget = " ";
+            profile.budget = Constants.EMPTY;
         }
 
         profile.firstName = sanitizeInput(profile.firstName);
@@ -189,18 +159,12 @@ export class ProfileDAO {
         profile.parentEmail = sanitizeInput(profile.parentEmail);
         profile.budget = sanitizeInput(profile.budget);
 
-        const params = {
+        let params = {
             TableName: PROFILES_TABLE_NAME,
             Key: {
                 username: profile.username
             },
-            UpdateExpression:
-                "SET firstName = :f, lastName=:l, phone = :p, bio = :b, gender = :g, dateOfBirth = :d, citizenship = :c," +
-                " grade = :grade, gradYear = :gradYear, previousCollegiate = :prev, street = :s, unitNumber = :u," +
-                " city = :city, province = :prov, country = :country, postalCode = :post, club = :club," +
-                " injuryStatus = :inj, instagram = :insta, languages = :lang, coachFirstName = :cf, coachLastName = :cl," +
-                " coachPhone = :cp, coachEmail = :ce, parentFirstName = :pf, parentLastName = :pl, parentPhone = :pp," +
-                " parentEmail = :pe, budget = :bud",
+            UpdateExpression: PROFILE_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
                 ":f": profile.firstName,
                 ":l": profile.lastName,
@@ -234,37 +198,35 @@ export class ProfileDAO {
             }
         };
 
-        console.log("Updating profile for user " + profile.username + "...");
         return new Promise((resolve, reject) => {
-            this.docClient.update(params, (err, data) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
                     console.error("Unable to update item. Error: " + err);
                     reject();
                 } else {
-                    console.log("Item updated successfully: " + data);
                     resolve();
                 }
             });
         });
     }
 
-    public updateStatus(username: string, status: string): Promise<any> {
-        if (status == "") {
-            status = " ";
+    public updateStatus(username: string, status: string): Promise<void> {
+        if (status == Constants.EMPTY) {
+            status = Constants.SPACE;
         }
-        return new Promise<any>((resolve, reject) => {
-            const params = {
+        return new Promise<void>((resolve, reject) => {
+            let params = {
                 TableName: PROFILES_TABLE_NAME,
                 Key: {
                     username: username
                 },
-                UpdateExpression: "SET statusText = :s",
+                UpdateExpression: STATUS_UPDATE_EXPRESSION,
                 ExpressionAttributeValues: {
                     ":s": status
                 }
             };
 
-            this.docClient.update(params, (err, data) => {
+            this.docClient.update(params, (err: AWSError) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -275,6 +237,7 @@ export class ProfileDAO {
                             resolve();
                         })
                         .catch((err) => {
+                            console.error(err);
                             reject();
                         });
                 }
@@ -282,50 +245,48 @@ export class ProfileDAO {
         });
     }
 
-    public updateProfileImage(file: Express.Multer.File, username: string): Promise<any> {
-        let path = "./src/routes/profiles/temp/" + file.filename;
+    public updateProfileImage(file: Express.Multer.File, username: string): Promise<string> {
+        let path = TEMP_RETRIEVAL_DIRECTORY + file.filename;
 
-        let s3 = new aws.S3({ endpoint: "s3.ca-central-1.amazonaws.com" });
+        let s3 = new aws.S3({ endpoint: AWSS3Config.endpoint });
 
-        let profileImageFilename = username + ".png";
+        let profileImageFilename = username + Constants.PNG_FILE_FORMAT;
 
         let param = {
-            Bucket: "streamline-athletes-messaging-app",
+            Bucket: AWSS3Config.endpoint,
             Body: fs.createReadStream(path),
-            Key: "user-profile-images/" + profileImageFilename
+            Key: AWSS3Config.imagesFolder + profileImageFilename
         };
 
-        return new Promise<any>((resolve, reject) => {
-            s3.upload(param, (err: Error, data: SendData) => {
+        return new Promise<string>((resolve, reject) => {
+            s3.upload(param, (err: Error) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     fs.unlink(path, () => {
-                        console.log(err);
+                        console.error(err);
                     });
                     reject(err);
                 } else {
                     fs.unlink(path, () => {
-                        console.log(err);
+                        console.error(err);
                     });
 
-                    const params = {
+                    let params = {
                         TableName: PROFILES_TABLE_NAME,
                         Key: {
                             username: username
                         },
-                        UpdateExpression: "SET profileImage = :p",
+                        UpdateExpression: PROFILE_IMAGE_UPDATE_EXPRESSION,
                         ExpressionAttributeValues: {
                             ":p": PROFILE_IMAGE_S3_PREFIX + profileImageFilename
                         }
                     };
 
-                    this.docClient.update(params, (err, data) => {
+                    this.docClient.update(params, (err: AWSError) => {
                         if (err) {
                             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 4));
                             reject();
                         } else {
-                            console.log("Item updated successfully:", JSON.stringify(data, null, 4));
-
                             let userChannelDAO: UserChannelDAO = new UserChannelDAO(this.docClient);
 
                             userChannelDAO
@@ -333,10 +294,10 @@ export class ProfileDAO {
                                 .then(() => {
                                 })
                                 .catch((err) => {
-                                    console.log(err);
+                                    console.error(err);
                                     reject(err);
                                 });
-                            resolve(profileImageFilename);
+                            resolve(PROFILE_IMAGE_S3_PREFIX + profileImageFilename);
                         }
                     });
                 }
@@ -344,21 +305,20 @@ export class ProfileDAO {
         });
     }
 
-    public getUserProfile(username: string) {
-        const params = {
+    public getUserProfile(username: string): Promise<Array<ProfileObject>> {
+        let params = {
             TableName: PROFILES_TABLE_NAME,
-            KeyConditionExpression: "username = :username",
+            KeyConditionExpression: USERNAME_UPDATE_EXPRESSION,
             ExpressionAttributeValues: {
                 ":username": username
             }
         };
-        return new Promise((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+        return new Promise<any>((resolve, reject) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Successfully retrieved profile for user " + username);
                     resolve(data.Items);
                 }
             });
