@@ -1,28 +1,12 @@
-import UserDAO from "../routes/users/UserDAO";
-import ChannelDAO from "../routes/channels/ChannelDAO";
-import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
+import { UserDAO } from "../routes/users/UserDAO";
+import { ChannelDAO } from "../routes/channels/ChannelDAO";
+import { UserChannelDAO } from "../routes/userChannels/UserChannelDAO";
 import { MessageDAO } from "../routes/messages/MessageDAO";
-import SettingsDAO, { SettingsObject } from "../routes/settings/settingsDAO";
-import { ProfileDAO, ProfileObject } from "../routes/profiles/ProfileDAO";
+import { SettingsDAO } from "../routes/settings/settingsDAO";
+import { ProfileDAO } from "../routes/profiles/ProfileDAO";
 import { GetItemOutput, QueryOutput, ScanOutput } from "aws-sdk/clients/dynamodb";
-import { NotificationObject, NotificationsDAO } from "../routes/notifications/NotificationsDAO";
-
-interface ChannelObject {
-    channelId: string;
-    channelName: string;
-    channelType: string;
-}
-
-interface Message {
-    channelId: string;
-    username: string;
-    content: string;
-    messageId?: string;
-    insertTime?: number;
-    profileImage: string;
-    deleted: string;
-    channelType?: string;
-}
+import { NotificationsDAO } from "../routes/notifications/NotificationsDAO";
+import { ChannelObject, Message, NotificationObject, ProfileObject, SettingsObject } from "../config/app-config";
 
 function delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -284,7 +268,6 @@ describe("ALL_TESTS", () => {
             await ddb
                 .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "channel" } })
                 .promise().then((item: GetItemOutput) => {
-                    console.log(item.Item);
                     expect(item.Item).toEqual(call);
                 });
         });
@@ -878,7 +861,7 @@ describe("ALL_TESTS", () => {
                 dateOfBirth: null,
                 citizenship: null,
                 grade: 12,
-                gradYear: 2000,
+                gradYear: "2000",
                 previousCollegiate: null,
                 street: null,
                 unitNumber: null,
@@ -914,31 +897,31 @@ describe("ALL_TESTS", () => {
                             phone: "5555555555",
                             bio: "Lorem Ipsum",
                             gender: "Male",
-                            dateOfBirth: " ",
-                            citizenship: " ",
+                            dateOfBirth: null,
+                            citizenship: null,
                             grade: 12,
-                            gradYear: 2000,
-                            previousCollegiate: false,
+                            gradYear: "2000",
+                            previousCollegiate: null,
                             "profileImage": "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
-                            street: " ",
-                            unitNumber: " ",
-                            city: " ",
-                            province: " ",
-                            country: " ",
-                            postalCode: " ",
-                            club: " ",
-                            injuryStatus: " ",
-                            instagram: " ",
-                            languages: " ",
-                            coachFirstName: " ",
-                            coachLastName: " ",
-                            coachPhone: " ",
-                            coachEmail: " ",
-                            parentFirstName: " ",
-                            parentLastName: " ",
-                            parentEmail: " ",
-                            parentPhone: " ",
-                            budget: " ",
+                            street: null,
+                            unitNumber: null,
+                            city: null,
+                            province: null,
+                            country: null,
+                            postalCode: null,
+                            club: null,
+                            injuryStatus: null,
+                            instagram: null,
+                            languages: null,
+                            coachFirstName: null,
+                            coachLastName: null,
+                            coachPhone: null,
+                            coachEmail: null,
+                            parentFirstName: null,
+                            parentLastName: null,
+                            parentEmail: null,
+                            parentPhone: null,
+                            budget: null,
                             status: "Lorem Ipsum"
                         }
                     }

@@ -172,7 +172,7 @@ export class MessageDAO {
                         .then(() => {
                             resolve();
                         })
-                        .catch((err) => {
+                        .catch((err: AWSError) => {
                             reject(err);
                         });
                 }
@@ -207,7 +207,7 @@ export class MessageDAO {
                         .then(() => {
                             resolve();
                         })
-                        .catch((err) => {
+                        .catch((err: AWSError) => {
                             reject(err);
                         });
                 }

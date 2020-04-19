@@ -9,7 +9,7 @@ import { ProfileDAO } from "../profiles/ProfileDAO";
 import { SettingsDAO } from "../settings/settingsDAO";
 import { NotificationsDAO } from "../notifications/NotificationsDAO";
 import { sanitizeInput } from "../../index";
-import { Constants, HTTPResponseAndToken, UserObject } from "../../config/app-config";
+import { Constants, HTTPResponseAndToken, SettingsObject, UserObject } from "../../config/app-config";
 import {
     AUTH_KEY,
     COGNITO_USERNAME,
@@ -247,7 +247,7 @@ router.get(PATH_GET_SETTINGS_INFO_FOR_USER, (req, res) => {
             if (username === data.decodedToken[COGNITO_USERNAME]) {
                 settingsDAO
                     .getSettingsInfoByUsername(username)
-                    .then((data: Array<UserObject>) => {
+                    .then((data: Array<SettingsObject>) => {
                         res.status(Constants.HTTP_OK).send(data);
                     })
                     .catch((err) => {

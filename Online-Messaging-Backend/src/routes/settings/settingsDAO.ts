@@ -1,6 +1,6 @@
 import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
 import { AWSError } from "aws-sdk";
-import { UserObject } from "../../config/app-config";
+import { SettingsObject } from "../../config/app-config";
 
 const SETTINGS_TABLE_NAME = "Settings";
 const USERNAME_QUERY = "username = :username";
@@ -30,7 +30,7 @@ export class SettingsDAO {
         });
     }
 
-    public getSettingsInfoByUsername(username: string): Promise<Array<UserObject>> {
+    public getSettingsInfoByUsername(username: string): Promise<Array<SettingsObject>> {
         let params = {
             TableName: SETTINGS_TABLE_NAME,
             KeyConditionExpression: USERNAME_QUERY,
