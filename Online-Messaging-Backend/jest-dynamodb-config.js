@@ -125,6 +125,18 @@ module.exports = {
                 }
             ],
             ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
+        },
+        {
+            TableName: `Reactions`,
+            KeySchema: [
+                { AttributeName: "messageId", KeyType: "HASH" },
+                { AttributeName: "insertTime", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "messageId", AttributeType: "S" },
+                { AttributeName: "insertTime", AttributeType: "N" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
         }
     ]
 };

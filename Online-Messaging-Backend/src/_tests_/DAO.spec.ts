@@ -171,14 +171,11 @@ describe("ALL_TESTS", () => {
                 ddb.put({
                     TableName: "Channel",
                     Item: {
-                        channelName: "testUser",
-                        channelID: "ID01",
-                        channelType: "testUser@nothing.com",
+                        channelName: "channel",
+                        channelId: "ID01",
+                        channelType: "public",
                         channelDescription: "Lorem Ipsum",
-                        firstUsername: "testUser",
-                        firstUserChannelRole: "admin",
-                        inviteStatus: "true",
-                        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+                        inviteStatus: "true"
                     }
                 }).promise().then(() => {
                     resolve();
@@ -188,10 +185,10 @@ describe("ALL_TESTS", () => {
         afterEach(() => {
             return new Promise(((resolve) => {
                 ddb.delete({
-                    TableName: "Channels",
+                    TableName: "Channel",
                     Key: {
-                        channelID: "ID01",
-                        channelName: "testUser"
+                        channelId: "ID01",
+                        channelName: "channel"
                     }
                 }).promise().then(() => {
                     resolve();
@@ -208,16 +205,35 @@ describe("ALL_TESTS", () => {
                 null,
                 PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
             const item = await ddb.scan({ TableName: "Channel" }).promise();
-            delete item.Items[0].channelId;
-            expect(item).toEqual({
-                Count: 1,
-                Items:
-                    {
-                        channelName: "testChannel",
-                        channelType: "public",
-                        inviteStatus: null
-                    },
-                ScannedCount: 1
+            let id;
+            let channelId;
+            for (let i = 0; i < item.Items.length; i++) {
+                if (item.Items[i].channelName = "testChannel") {
+                    id = i;
+                    channelId = item.Items[i].channelId;
+                    delete item.Items[i].channelId;
+                    break;
+                }
+            }
+            expect(item.Items[id]).toEqual({
+                channelDescription: "testDescript",
+                channelName: "testChannel",
+                channelType: "public",
+                inviteStatus: " "
+            });
+            ddb.delete({
+                TableName: "Channel",
+                Key: {
+                    channelId: channelId,
+                    channelName: "testChannel"
+                },
+                ConditionExpression: "channelId = :id and channelName = :n",
+                ExpressionAttributeValues: {
+                    ":id": channelId,
+                    ":n": "testChannel"
+                }
+            }).promise().then(() => {
+                return;
             });
         });
 
@@ -225,19 +241,23 @@ describe("ALL_TESTS", () => {
             const testChannelScan = await ddb.scan({ TableName: "Channel" }).promise();
             let channelId = testChannelScan.Items[0].channelId;
             const call: ChannelObject = await channel.getChannelInfo(channelId);
-            const item = await ddb
-                .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "testChannel" } })
-                .promise();
-            let expectedItem = item.Item;
-            expect(expectedItem).toEqual(call);
+            await ddb
+                .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "channel" } })
+                .promise().then((item: GetItemOutput) => {
+                    console.log(item.Item);
+                    expect(item.Item).toEqual(call);
+                });
         });
 
         it("should return a list of all channels", async () => {
             const list = await channel.getAllChannels();
-            const item = await ddb.scan({ TableName: "Channel" }).promise();
-            expect(list).toEqual(
-                item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
-            );
+            delete list[0].numUsers;
+            await ddb.scan({ TableName: "Channel" }).promise().then((item: ScanOutput) => {
+                delete item.Items[0].inviteStatus;
+                expect(list).toEqual(
+                    item.Items
+                );
+            });
         });
     });
 
