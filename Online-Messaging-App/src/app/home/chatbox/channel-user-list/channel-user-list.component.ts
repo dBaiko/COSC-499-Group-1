@@ -91,96 +91,102 @@ export class ChannelUserListComponent implements OnInit {
     }
 
     public userIsAdmin(): boolean {
-        if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
-            if (
-                this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
-                    .userChannelRole == ADMIN_IDENTIFIER
-            ) {
-                return true;
+        if (this.subscribedUsers) {
+            if (this.subscribedUsers.length != 0 && this.subscribedUsersUsernames.length != 0 && this.currentUserProfile) {
+                if (
+                    this.subscribedUsers[this.subscribedUsersUsernames.indexOf(this.currentUserProfile.username)]
+                        .userChannelRole == ADMIN_IDENTIFIER
+                ) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     }
 
     public banUser(user: UserChannelObject): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data: CognitoIdToken) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+        if (this.auth.isLoggedIn()) {
+            this.auth.getCurrentSessionId().subscribe(
+                (data: CognitoIdToken) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                user.userChannelRole = BANNED_IDENTIFIER;
+                    user.userChannelRole = BANNED_IDENTIFIER;
 
-                this.http
-                    .put(this.channelsUrl + user.channelId + USER_URI + user.username + BAN_URI, {}, httpHeaders)
-                    .subscribe(
-                        () => {
-                            if (this.onlineUsers.includes(user)) {
-                                this.onlineUsers.splice(this.onlineUsers.indexOf(user), 1);
-                            } else if (this.offlineUsers.includes(user)) {
-                                this.offlineUsers.splice(this.offlineUsers.indexOf(user), 1);
+                    this.http
+                        .put(this.channelsUrl + user.channelId + USER_URI + user.username + BAN_URI, {}, httpHeaders)
+                        .subscribe(
+                            () => {
+                                if (this.onlineUsers.includes(user)) {
+                                    this.onlineUsers.splice(this.onlineUsers.indexOf(user), 1);
+                                } else if (this.offlineUsers.includes(user)) {
+                                    this.offlineUsers.splice(this.offlineUsers.indexOf(user), 1);
+                                }
+                                this.bannedUsers.push(user);
+                                this.sendBanNotificationToUser(user);
+                                this.notificationService.sendBanUserEvent(user);
+                                this.newBannedUserEvent.emit(user);
+                            },
+                            (err) => {
+                                console.error(err);
                             }
-                            this.bannedUsers.push(user);
-                            this.sendBanNotificationToUser(user);
-                            this.notificationService.sendBanUserEvent(user);
-                            this.newBannedUserEvent.emit(user);
-                        },
-                        (err) => {
-                            console.error(err);
-                        }
-                    );
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+                        );
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        }
     }
 
     public unBanUser(user: UserChannelObject): void {
-        this.auth.getCurrentSessionId().subscribe(
-            (data: CognitoIdToken) => {
-                let httpHeaders = {
-                    headers: new HttpHeaders({
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + data.getJwtToken()
-                    })
-                };
+        if (this.auth.isLoggedIn()) {
+            this.auth.getCurrentSessionId().subscribe(
+                (data: CognitoIdToken) => {
+                    let httpHeaders = {
+                        headers: new HttpHeaders({
+                            "Content-Type": "application/json",
+                            Authorization: "Bearer " + data.getJwtToken()
+                        })
+                    };
 
-                this.http
-                    .put(this.channelsUrl + user.channelId + USER_URI + user.username + UNBAN_URI, {}, httpHeaders)
-                    .subscribe(
-                        () => {
-                            this.bannedUsers.splice(this.bannedUsers.indexOf(user), 1);
+                    this.http
+                        .put(this.channelsUrl + user.channelId + USER_URI + user.username + UNBAN_URI, {}, httpHeaders)
+                        .subscribe(
+                            () => {
+                                this.bannedUsers.splice(this.bannedUsers.indexOf(user), 1);
 
-                            this.socketOnlineUsers = this.notificationService.getOnlineUsers();
+                                this.socketOnlineUsers = this.notificationService.getOnlineUsers();
 
-                            let onlineUsersNames: Array<string> = [];
+                                let onlineUsersNames: Array<string> = [];
 
-                            this.socketOnlineUsers.forEach((user) => {
-                                onlineUsersNames.push(user.username);
-                            });
+                                this.socketOnlineUsers.forEach((user) => {
+                                    onlineUsersNames.push(user.username);
+                                });
 
-                            if (!onlineUsersNames.includes(user.username)) {
-                                this.offlineUsers.push(user);
-                            } else {
-                                this.onlineUsers.push(user);
+                                if (!onlineUsersNames.includes(user.username)) {
+                                    this.offlineUsers.push(user);
+                                } else {
+                                    this.onlineUsers.push(user);
+                                }
+                                this.sendUnBanNotificationToUser(user);
+                                this.notificationService.sendUnbannedUserEvent(user);
+                                this.newUnBannedUserEvent.emit(user);
+                            },
+                            (err) => {
+                                console.error(err);
                             }
-                            this.sendUnBanNotificationToUser(user);
-                            this.notificationService.sendUnbannedUserEvent(user);
-                            this.newUnBannedUserEvent.emit(user);
-                        },
-                        (err) => {
-                            console.error(err);
-                        }
-                    );
-            },
-            (err) => {
-                console.error(err);
-            }
-        );
+                        );
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        }
     }
 
     private getUserList(): void {
