@@ -27,7 +27,7 @@ mat-form-field {
 #scrollable {
     overflow-y: auto;
     box-sizing: border-box;
-    height: 85%;
+    height: 38rem;
 }
 
 .userPicture {
@@ -103,4 +103,12 @@ mat-label {
 
 .mat-menu-item {
     text-align: center;
+}
+
+@media (max-width: 450px) {
+    #scrollable {
+        overflow-y: auto;
+        box-sizing: border-box;
+        height: 30rem;
+    }
 }
