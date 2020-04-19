@@ -12,7 +12,7 @@ export const STATUS_UPDATE_EXPRESSION = "SET statusText = :s";
 export const PROFILE_IMAGE_UPDATE_EXPRESSION = "SET profileImage = :p";
 export const USERNAME_UPDATE_EXPRESSION = "username = :username";
 export const TWO_THOUSAND = "2000";
-export const TEMP_RETRIEVAL_DIRECTORY = "./src/routes/profiles/temp/";
+export const TEMP_RETRIEVAL_DIRECTORY = "./routes/profiles/temp/";
 export const PROFILES_TABLE_NAME = "Profiles";
 
 export const PATH_PUT_PROFILE: string = "/:username/";
@@ -21,5 +21,5 @@ export const PATH_UPDATE_PROFILE_IMAGE: string = "/:username/profile-image/";
 export const PATH_UPDATE_STATUS: string = "/:username/status/";
 export const AUTH_KEY = "authorization";
 export const COGNITO_USERNAME = "cognito:username";
-export const TEMP_DIRECTORY = "src/routes/profiles/temp";
+export const TEMP_DIRECTORY = "routes/profiles/temp";
 export const FILE = "file";
