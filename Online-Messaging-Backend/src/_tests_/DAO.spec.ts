@@ -83,9 +83,29 @@ describe("ALL_TESTS", () => {
             }));
         });
 
+        afterAll(() => {
+            return new Promise((resolve => {
+                ddb.scan({ TableName: "Users" }).promise().then((item: ScanOutput) => {
+                    for (let data of item.Items) {
+                        ddb.delete({
+                            TableName: "Users",
+                            Key: {
+                                username: data.username
+                            },
+                            ConditionExpression: "username = :u",
+                            ExpressionAttributeValues: {
+                                ":u": data.username
+                            }
+                        });
+                    }
+                    resolve();
+                });
+            }));
+        });
+
         it("should create a new user in the table", async () => {
             await user.createNewUser("testUser2", "testUser2@nothing.com");
-            const item = await ddb.get({TableName: "Users", Key: {username: "testUser2"}}).promise();
+            const item = await ddb.get({ TableName: "Users", Key: { username: "testUser2" } }).promise();
             expect(item.Item).toEqual({
                 username: "testUser2",
                 email: "testUser2@nothing.com"
@@ -113,7 +133,7 @@ describe("ALL_TESTS", () => {
         it("should update a user's email address by username", async () => {
             await user.updateUser("testUser", "testUpdate@nothing.com");
             //const item = await user.getUserInfoByUsername("testUser");
-            const item = await ddb.get({TableName: "Users", Key: {username: "testUser"}}).promise();
+            const item = await ddb.get({ TableName: "Users", Key: { username: "testUser" } }).promise();
             expect(item.Item).toEqual(
                 {
                     username: "testUser",
@@ -140,8 +160,8 @@ describe("ALL_TESTS", () => {
                 }
             });
             const item = await user.getAllUsers();
-            ddb.scan({TableName: "Users"}).promise().then((data: ScanOutput) => {
-                expect(item).toEqual(data.Items)
+            ddb.scan({ TableName: "Users" }).promise().then((data: ScanOutput) => {
+                expect(item).toEqual(data.Items);
             });
 
             ddb.delete({
@@ -193,6 +213,27 @@ describe("ALL_TESTS", () => {
                     resolve();
                 });
             }));
+        });
+
+        afterAll(async () => {
+            ddb.scan({ TableName: "Channel" }).promise().then((item: ScanOutput) => {
+                for (let data of item.Items) {
+                    ddb.delete({
+                        TableName: "Channel",
+                        Key: {
+                            channelId: data.channelId,
+                            channelName: data.channelName
+                        },
+                        ConditionExpression: "channelId = :c and channelName = :n",
+                        ExpressionAttributeValues: {
+                            ":c": data.channelId,
+                            ":n": data.channelName
+                        }
+                    });
+                }
+
+            });
+            await delay(1000);
         });
 
         it("should create a new channel", async () => {
@@ -264,6 +305,26 @@ describe("ALL_TESTS", () => {
 
         const userChannel = new UserChannelDAO(ddb);
 
+        beforeAll(async () => {
+            ddb.scan({ TableName: "UserChannel" }).promise().then((item: ScanOutput) => {
+                for (let data of item.Items) {
+                    ddb.delete({
+                        TableName: "UserChannel",
+                        Key: {
+                            username: data.username,
+                            channelId: data.channelId
+                        },
+                        ConditionExpression: "username = :u and channelId = :c",
+                        ExpressionAttributeValues: {
+                            ":u": data.username,
+                            ":c": data.channelId
+                        }
+                    });
+                }
+            });
+            await delay(1000);
+        });
+
         beforeEach(() => {
             return new Promise(((resolve) => {
                 ddb.put({
@@ -306,53 +367,48 @@ describe("ALL_TESTS", () => {
             }));
         });
 
-        afterEach(() => {
-            return new Promise(((resolve) => {
-                ddb.delete({
-                    TableName: "UserChannel",
-                    Key: {
-                        username: "testUser",
-                        channelId: "ID01"
-                    },
-                    ConditionExpression: "username = :u and channelId = :c",
-                    ExpressionAttributeValues: {
-                        ":u": "testUser",
-                        ":c": "ID01"
-                    }
-                }).promise().then(() => {
+        afterEach(async () => {
+            ddb.scan({ TableName: "UserChannel" }).promise().then((item: ScanOutput) => {
+                for (let data of item.Items) {
                     ddb.delete({
                         TableName: "UserChannel",
                         Key: {
-                            username: "testUser",
-                            channelId: "ID02"
+                            username: data.username,
+                            channelId: data.channelId
                         },
                         ConditionExpression: "username = :u and channelId = :c",
                         ExpressionAttributeValues: {
-                            ":u": "testUser",
-                            ":c": "ID02"
+                            ":u": data.username,
+                            ":c": data.channelId
                         }
-                    }).promise().then(() => {
-                        ddb.delete({
-                            TableName: "UserChannel",
-                            Key: {
-                                username: "testUser2",
-                                channelId: "ID01"
-                            },
-                            ConditionExpression: "username = :u and channelId = :c",
-                            ExpressionAttributeValues: {
-                                ":u": "testUser2",
-                                ":c": "ID01"
-                            }
-                        }).promise().then(() => {
-                            resolve();
-                        });
                     });
-                });
-            }));
+                }
+            });
+            await delay(1000);
+        });
+
+        afterAll(async () => {
+            ddb.scan({ TableName: "UserChannel" }).promise().then((item: ScanOutput) => {
+                for (let data of item.Items) {
+                    ddb.delete({
+                        TableName: "UserChannel",
+                        Key: {
+                            username: data.username,
+                            channelId: data.channelId
+                        },
+                        ConditionExpression: "username = :u and channelId = :c",
+                        ExpressionAttributeValues: {
+                            ":u": data.username,
+                            ":c": data.channelId
+                        }
+                    });
+                }
+            });
+            await delay(1000);
         });
 
         it("should return all users and all channels they are subscribed to", async () => {
-            const item = await ddb.scan({TableName: "UserChannel"}).promise();
+            const item = await ddb.scan({ TableName: "UserChannel" }).promise();
             const actual = await userChannel.getAll();
             expect(actual).toEqual(item.Items);
         });
@@ -365,7 +421,7 @@ describe("ALL_TESTS", () => {
                 "channel",
                 "public",
                 PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
-            const get = ddb.get({TableName: "UserChannel", Key: {username: "addTest", channelId: "ID01"}});
+            const get = ddb.get({ TableName: "UserChannel", Key: { username: "addTest", channelId: "ID01" } });
             await userChannel.deleteChannelSubscription("addTest", "ID01");
             expect(item).toEqual(get.Items);
         });
@@ -375,7 +431,7 @@ describe("ALL_TESTS", () => {
             const expected = await ddb.query({
                 TableName: "UserChannel",
                 KeyConditionExpression: "username = :username",
-                ExpressionAttributeValues: {":username": "testUser"}
+                ExpressionAttributeValues: { ":username": "testUser" }
             }).promise();
             expect(item).toEqual(expected.Items);
         });
@@ -387,28 +443,16 @@ describe("ALL_TESTS", () => {
                 TableName: "UserChannel",
                 IndexName: "channelId-username-index",
                 KeyConditionExpression: "channelId = :channelId",
-                ExpressionAttributeValues: {":channelId": "ID01"}
+                ExpressionAttributeValues: { ":channelId": "ID01" }
             }).promise();
             expect(item).toEqual(expected.Items);
         });
 
         it("should delete a subscription between a specified user and channel", async () => {
-            await userChannel.deleteChannelSubscription("testUser2", "ID01");
-            ddb.scan({TableName: "UserChannel"}).promise().then((item: ScanOutput) => {
-                console.log(item.Count);
-                expect(item.Count).toBe(2);
-                ddb.put({
-                    TableName: "UserChannel",
-                    Item: {
-                        username: "testUser2",
-                        channelId: "ID01",
-                        userChannelRole: "user",
-                        channelName: "channel",
-                        channelType: "public",
-                        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
-                    }
-                }).promise().then(() => {
-                    return;
+            userChannel.deleteChannelSubscription("testUser2", "ID01").then(() => {
+                ddb.scan({ TableName: "UserChannel" }).promise().then((item: ScanOutput) => {
+                    console.log(item.Items.length);
+                    expect(item.Count).toBe(3);
                 });
             });
 
@@ -419,9 +463,9 @@ describe("ALL_TESTS", () => {
             await delay(1000);
             ddb.query({
                 TableName: "UserChannel",
-                Key: {username: "testUser", channelId: "ID01"},
+                Key: { username: "testUser", channelId: "ID01" },
                 KeyConditionExpression: "username = :username and channelId = :channelId",
-                ExpressionAttributeValues: {":username": "testUser", ":channelId": "ID01"}
+                ExpressionAttributeValues: { ":username": "testUser", ":channelId": "ID01" }
             }).promise().then((sub1: QueryOutput) => {
                 expect(sub1.Items[0]).toEqual({
                     username: "testUser",
@@ -434,7 +478,7 @@ describe("ALL_TESTS", () => {
             });
             ddb.get({
                 TableName: "UserChannel",
-                Key: {username: "testUser", channelId: "ID02"}
+                Key: { username: "testUser", channelId: "ID02" }
             }).promise().then((sub2: GetItemOutput) => {
                 expect(sub2.Item).toEqual({
                     username: "testUser",
@@ -452,7 +496,7 @@ describe("ALL_TESTS", () => {
             await delay(1000);
             ddb.get({
                 TableName: "UserChannel",
-                Key: {username: "testUser", channelId: "ID01"}
+                Key: { username: "testUser", channelId: "ID01" }
             }).promise().then((sub1: GetItemOutput) => {
                 expect(sub1.Item).toEqual({
                     username: "testUser",
@@ -466,7 +510,7 @@ describe("ALL_TESTS", () => {
             });
             ddb.get({
                 TableName: "UserChannel",
-                Key: {username: "testUser", channelId: "ID02"}
+                Key: { username: "testUser", channelId: "ID02" }
             }).promise().then((sub2: GetItemOutput) => {
                 expect(sub2.Item).toEqual({
                     username: "testUser",
@@ -592,7 +636,29 @@ describe("ALL_TESTS", () => {
                         }).promise().then(() => {
                             resolve();
                         });
-                    })
+                    });
+                });
+            }));
+        });
+
+        afterAll(() => {
+            return new Promise((resolve => {
+                ddb.scan({ TableName: "Messages" }).promise().then((item: ScanOutput) => {
+                    for (let data of item.Items) {
+                        ddb.delete({
+                            TableName: "Messages",
+                            Key: {
+                                channelId: data.channelId,
+                                channelName: data.insertTime
+                            },
+                            ConditionExpression: "channelId = :c and insertTime = :i",
+                            ExpressionAttributeValues: {
+                                ":c": data.channelId,
+                                ":i": data.insertTime
+                            }
+                        });
+                    }
+                    resolve();
                 });
             }));
         });
@@ -605,7 +671,7 @@ describe("ALL_TESTS", () => {
 
         it("should get all messages from all channels", async () => {
             const item = await msg.getAllMessageHistory();
-            const expected = await ddb.scan({TableName: "Messages"}).promise();
+            const expected = await ddb.scan({ TableName: "Messages" }).promise();
             expect(item).toEqual(expected.Items);
         });
 
@@ -616,7 +682,7 @@ describe("ALL_TESTS", () => {
                 TableName: "Messages",
                 Key: {
                     channelId: "channel",
-                    insertTime: 5,
+                    insertTime: 5
                 }
             }).promise().then((item: GetItemOutput) => {
                 expect(item.Item).toEqual({
@@ -625,7 +691,7 @@ describe("ALL_TESTS", () => {
                     content: "content5",
                     messageId: "ID5",
                     insertTime: 5,
-                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
                 });
                 ddb.delete({
                     TableName: "Messages", Key: {
@@ -638,7 +704,7 @@ describe("ALL_TESTS", () => {
                         ":t": 5
                     }
                 }).promise().then(() => {
-                    return
+                    return;
                 });
             });
 
@@ -647,7 +713,7 @@ describe("ALL_TESTS", () => {
         it("should delete all messages in a channel", async () => {
             await msg.deleteAllMessagesForChannel("channel");
             await delay(1000);
-            ddb.scan({TableName: "Messages"}).promise().then((item: ScanOutput) => {
+            ddb.scan({ TableName: "Messages" }).promise().then((item: ScanOutput) => {
                 expect(item.Items).toEqual([{
                     channelId: "channel2",
                     channelType: "Public",
@@ -734,7 +800,7 @@ describe("ALL_TESTS", () => {
                     Item: {
                         firstName: "Test",
                         lastName: "User",
-                        username: "TestUser",
+                        username: "testUser",
                         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
                         status: "Lorem Ipsum"
                     }
@@ -758,10 +824,47 @@ describe("ALL_TESTS", () => {
 
         it("should create a new profile from basic user information", async () => {
             await profile.createProfile("test2", "new", "test");
-            expect(ddb.get({
+            ddb.get({
                 TableName: "Profiles",
-                Key: {username: "test2"}
-            }).Item == null).toBeFalsy();
+                Key: {
+                    username: "test2"
+                }
+            }).promise().then((item: GetItemOutput) => {
+                expect(item.Item == null).toBeFalsy();
+                ddb.delete({
+                    TableName: "Profiles",
+                    Key: {
+                        username: "test2"
+                    }
+                }).promise().then(() => {
+                    return;
+                });
+            });
+        });
+
+        it("should return all data in a user's profile", async () => {
+            const call = await profile.getUserProfile("testUser");
+            expect(call).toEqual(
+                [
+                    {
+                        firstName: "Test",
+                        lastName: "User",
+                        profileImage: "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
+                        status: "Lorem Ipsum",
+                        username: "testUser"
+                    }
+                ]
+            );
+        });
+
+        it("should update a user's status message", async () => {
+            await profile.updateStatus("testUser", "updated");
+            ddb.get({
+                TableName: "Profiles",
+                Key: { username: "testUser" }
+            }).promise().then((item: GetItemOutput) => {
+                expect(item.Item.statusText).toEqual("updated");
+            });
         });
 
         it("should update all data in a user's profile.  If data is missing, it is represented by white space", async () => {
@@ -798,40 +901,74 @@ describe("ALL_TESTS", () => {
                 budget: null
             };
             await profile.updateProfile(testProfileUpdate);
-            expect(ddb.get({
+            await delay(1000);
+            ddb.get({
                 TableName: "Profiles",
-                Key: {username: "testUser"}
-            })).toEqual(testProfileUpdate);
-        });
-
-        it("should update a user's status message", async () => {
-            await profile.updateStatus("testUser", "updated");
-            const item = ddb.get({
-                TableName: "Profiles",
-                Key: {username: "testUser"}
-            }).Items.status;
-            expect(item).toEqual("updated");
-        });
-
-        /*it("should update a user's profile picture", async () => {
-            await profile.updateProfileImage(1, "testUser");
-            const item = ddb.get({TableName: "Profiles", Key: {username: "testUser"}}).Items.profileImage;
-            expect(item).toEqual(PROFILE_IMAGE_S3_PREFIX + "testUser.png");
-        });*/
-
-        it("should return all data in a user's profile", async () => {
-            const item = await profile.getUserProfile("testUser");
-            const expected = ddb.get({
-                TableName: "Profiles",
-                Key: {username: "Testuser"}
+                Key: { username: "testUser" }
+            }).promise().then((item: GetItemOutput) => {
+                expect(item).toEqual({
+                        Item: {
+                            username: "testUser",
+                            firstName: "test",
+                            lastName: "user",
+                            phone: "5555555555",
+                            bio: "Lorem Ipsum",
+                            gender: "Male",
+                            dateOfBirth: " ",
+                            citizenship: " ",
+                            grade: 12,
+                            gradYear: 2000,
+                            previousCollegiate: false,
+                            "profileImage": "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
+                            street: " ",
+                            unitNumber: " ",
+                            city: " ",
+                            province: " ",
+                            country: " ",
+                            postalCode: " ",
+                            club: " ",
+                            injuryStatus: " ",
+                            instagram: " ",
+                            languages: " ",
+                            coachFirstName: " ",
+                            coachLastName: " ",
+                            coachPhone: " ",
+                            coachEmail: " ",
+                            parentFirstName: " ",
+                            parentLastName: " ",
+                            parentEmail: " ",
+                            parentPhone: " ",
+                            budget: " ",
+                            status: "Lorem Ipsum"
+                        }
+                    }
+                );
             });
-            expect(item == expected.Items).toBeTruthy();
         });
-
     });
 
     describe("NotificationsDAO", () => {
         let notificationDAO = new NotificationsDAO(ddb);
+
+        beforeAll(async () => {
+            ddb.scan({ TableName: "Notifications" }).promise().then((item: ScanOutput) => {
+                for (let data of item.Items) {
+                    ddb.delete({
+                        TableName: "NotificationsNotifications",
+                        Key: {
+                            notificationId: data.notificationId,
+                            insertedTime: data.insertedTime
+                        },
+                        ConditionExpression: "notificationId = :n and insertedTime = :i",
+                        ExpressionAttributeValues: {
+                            ":n": data.notificationId,
+                            ":i": data.insertedTime
+                        }
+                    });
+                }
+            });
+            await delay(1000);
+        });
 
         beforeEach(() => {
             return new Promise((resolve => {
