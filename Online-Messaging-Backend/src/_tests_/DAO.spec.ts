@@ -50,11 +50,6 @@ const DEFAULT_PROFILE_IMAGE: string = "default.png";
 
 describe("UserDAO", () => {
 
-    interface UserObject {
-        username: string;
-        email: string;
-    }
-
     const user = new UserDAO(ddb);
 
     beforeEach(() => {
@@ -223,19 +218,20 @@ describe("ChannelDAO", () => {
     });
 
     it("should retrieve certain information about a channel", async () => {
-        const testChannelScan = await ddb.scan({TableName: "Channel"}).promise();
-        let channelId = testChannelScan.Items[0].channelId;
-        const call: ChannelObject = await channel.getChannelInfo(channelId);
-        const item = await ddb
-            .get({TableName: "Channel", Key: {channelId: channelId, channelName: "testChannel"}})
-            .promise();
-        let expectedItem = item.Item;
-        expect(expectedItem).toEqual(call);
+        const call: ChannelObject = await channel.getChannelInfo("ID1");
+        const item = await ddb.get({
+            TableName: "Channel",
+            Key: {
+                channelId: "ID1",
+                channelName: "testChannel"
+            }
+        });
+        expect(item.Item).toEqual(call);
     });
 
     it("should return a list of all channels", async () => {
         const list = await channel.getAllChannels();
-        const item = await ddb.scan({TableName: "Channel"}).promise();
+        const item = await ddb.scan({TableName: "Channel"});
         expect(list).toEqual(
             item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
         );
@@ -474,7 +470,7 @@ describe("MessageDAO", () => {
         messageId: "ID1",
         insertTime: 1,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-        deleted: "no",
+        deleted: "false",
         channelType: "Public"
     };
     const testMessage2: Message = {
@@ -484,7 +480,7 @@ describe("MessageDAO", () => {
         messageId: "ID2",
         insertTime: 2,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-        deleted: "no",
+        deleted: "false",
         channelType: "Public"
     };
     const testMessageUpdate: Message = {
@@ -494,17 +490,7 @@ describe("MessageDAO", () => {
         messageId: "ID1",
         insertTime: 1,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-        deleted: "no",
-        channelType: "Public"
-    };
-    const testMessageChannel2: Message = {
-        channelId: "channel2",
-        username: "testUser",
-        content: "content4",
-        messageId: "ID3",
-        insertTime: 3,
-        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-        deleted: "no",
+        deleted: "false",
         channelType: "Public"
     };
     const testMessage3: Message = {
@@ -514,7 +500,7 @@ describe("MessageDAO", () => {
         messageId: "ID5",
         insertTime: 5,
         profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-        deleted: "no",
+        deleted: "false",
         channelType: "Public"
     };
 
@@ -528,35 +514,37 @@ describe("MessageDAO", () => {
                     messageId: "ID1",
                     insertTime: 1,
                     profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-                    deleted: "no",
-                    channelType: "Public"
-                }
-            });
-            ddb.put({
-                TableName: "Messages", Item: {
-                    channelId: "channel",
-                    username: "testUser",
-                    content: "content2",
-                    messageId: "ID2",
-                    insertTime: 2,
-                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-                    deleted: "no",
-                    channelType: "Public"
-                }
-            });
-            ddb.put({
-                TableName: "Messages", Item: {
-                    channelId: "channel2",
-                    username: "testUser",
-                    content: "content4",
-                    messageId: "ID3",
-                    insertTime: 3,
-                    profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
-                    deleted: "no",
+                    deleted: "false",
                     channelType: "Public"
                 }
             }).promise().then(() => {
-                resolve();
+                ddb.put({
+                    TableName: "Messages", Item: {
+                        channelId: "channel",
+                        username: "testUser",
+                        content: "content2",
+                        messageId: "ID2",
+                        insertTime: 2,
+                        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                        deleted: "false",
+                        channelType: "Public"
+                    }
+                }).promise().then(() => {
+                    ddb.put({
+                        TableName: "Messages", Item: {
+                            channelId: "channel2",
+                            username: "testUser",
+                            content: "content4",
+                            messageId: "ID3",
+                            insertTime: 3,
+                            profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                            deleted: "false",
+                            channelType: "Public"
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                });
             });
         }));
     });
@@ -564,31 +552,33 @@ describe("MessageDAO", () => {
         return new Promise(((resolve) => {
             ddb.delete({
                 TableName: "Messages", Key: {
-                    channelId: "channel1",
+                    channelId: "channel",
                     insertTime: 1
                 }
-            });
-            ddb.delete({
-                TableName: "Messages", Key: {
-                    channelId: "channel1",
-                    insertTime: 2
-                }
-            });
-            ddb.delete({
-                TableName: "Messages", Key: {
-                    channelId: "channel2",
-                    insertTime: 3
-                }
             }).promise().then(() => {
-                resolve();
+                ddb.delete({
+                    TableName: "Messages", Key: {
+                        channelId: "channel",
+                        insertTime: 2
+                    }
+                }).promise().then(() => {
+                    ddb.delete({
+                        TableName: "Messages", Key: {
+                            channelId: "channel2",
+                            insertTime: 3
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                })
             });
         }));
     });
 
     it("should retrieve the message history for a given channel", async () => {
         const item = await msg.getMessageHistory("channel");
-        expect(item.Items[0]).toEqual(testMessage1);
-        expect(item.Items[1]).toEqual(testMessage2);
+        expect(item[0]).toEqual(testMessage1);
+        expect(item[1]).toEqual(testMessage2);
     });
 
     it("should get all messages from all channels", async () => {
@@ -599,43 +589,117 @@ describe("MessageDAO", () => {
 
     it("should add a new message to a channel", async () => {
         await msg.addNewMessage(testMessage3);
+        await delay(1000);
         ddb.get({
             TableName: "Messages",
             Key: {
-                channelID: "channel",
-                insertTime: 5
+                channelId: "channel",
+                insertTime: 5,
             }
         }).promise().then((item: GetItemOutput) => {
-            expect(item.Item).toEqual(testMessage3);
+            expect(item.Item).toEqual({
+                channelId: "channel",
+                username: "testUser",
+                content: "content5",
+                messageId: "ID5",
+                insertTime: 5,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+            });
+            ddb.delete({
+                TableName: "Messages", Key: {
+                    channelId: "channel",
+                    insertTime: 5
+                },
+                ConditionExpression: "channelId = :c and insertTime = :t",
+                ExpressionAttributeValues: {
+                    ":c": "channel",
+                    ":t": 5
+                }
+            }).promise().then(() => {
+                return
+            });
         });
 
     });
 
     it("should delete all messages in a channel", async () => {
         await msg.deleteAllMessagesForChannel("channel");
-        const item = ddb.scan({TableName: "Messages"});
-        expect(item.Count).toEqual(1);
+        await delay(1000);
+        ddb.scan({TableName: "Messages"}).promise().then((item: ScanOutput) => {
+            expect(item.Items).toEqual([{
+                channelId: "channel2",
+                channelType: "Public",
+                content: "content4",
+                deleted: "false",
+                insertTime: 3,
+                messageId: "ID3",
+                profileImage: "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
+                username: "testUser"
+            },
+                {
+                    channelId: "channel",
+                    channelType: "Public",
+                    content: "content1",
+                    deleted: true,
+                    insertTime: 1,
+                    messageId: "ID1",
+                    profileImage: "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
+                    username: "testUser"
+                },
+                {
+                    channelId: "channel",
+                    channelType: "Public",
+                    content: "content2",
+                    deleted: true,
+                    insertTime: 2,
+                    messageId: "ID2",
+                    profileImage: "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/default.png",
+                    username: "testUser"
+                }
+            ]);
+        });
     });
 
     it("should delete the specified message", async () => {
         await msg.deleteMessage("ID1", "channel", 1);
-        const item = ddb.scan({TableName: "Messages"});
-        expect(item.Count).toEqual(2);
-        expect(item.Items[0]).toEqual(testMessage2);
-        expect(item.Items[1]).toEqual(testMessageChannel2);
+        ddb.get({
+            TableName: "Messages", Key: {
+                channelId: "channel", insertTime: 1
+            }
+        }).promise().then((item: GetItemOutput) => {
+            expect(item.Item).toEqual({
+                channelId: "channel",
+                username: "testUser",
+                content: "content1",
+                messageId: "ID1",
+                insertTime: 1,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                deleted: "true",
+                channelType: "Public"
+            });
+        });
     });
 
     it("should update the specified message", async () => {
         await msg.updateMessage(testMessageUpdate);
-        const item = ddb.get({
+        ddb.get({
             TableName: "Messages", Key: {
-                channelID: "channel",
+                channelId: "channel",
                 insertTime: 1
             }
+        }).promise().then((item: GetItemOutput) => {
+            expect(item.Item).toEqual({
+                channelId: "channel",
+                username: "testUser",
+                content: "content3",
+                messageId: "ID1",
+                insertTime: 1,
+                profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE,
+                deleted: "false",
+                channelType: "Public"
+            });
         });
-        expect(item).toEqual(testMessageUpdate);
     });
-
 });
 
 describe("ProfileDAO", () => {
