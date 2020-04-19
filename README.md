@@ -294,4 +294,275 @@ exact same way and with the same spelling as shown, or the application will not 
         * For the table name enter: "UserChannel"
         * For partition key enter: "username", leave it to be of the type String
         * Click "Add sort key", key enter: "channelId", leave it to be of the type string
+        * Click create table
+        * Wait for the table to be created. Once it is, click on the "Indexes" tab
+        * Click "Create index"
+        * For partition key enter: "channelId", leave it to be of the type String
+        * Click "Add sort key", key enter: "usernmae", leave it to be of the type string
+        * Ensure the auto generate index name is: "channelId-username-index", and leave it as that
+        * Click "Create index"
+   1. Users table:
+        * For the table name enter: "Users"
+        * For partition key enter: "username", leave it to be of the type String
+        * No sort key
+        * Click create table
+At this point, all of the neccisary tables have been create. Given the NoSQL nature of DynamoDB, the other remaining
+fields on each table will be created Dynamically as the application creates data.
+
+#### _Aside_
+
+The instructions above should be used to generate the database tables at least for the first run, however, if you do
+intend on running the application with a installed version of DynamoDB, here is the schema JSON for doing so (note, no
+insructions on DynamoDB installation as this was not used during development):
+
+
+<details>
+    <summary>Click to expand</summary>
+    
+```
+{
+    tables: [
+        {
+            TableName: `Users`,
+            KeySchema: [{ AttributeName: "username", KeyType: "HASH" }],
+            AttributeDefinitions: [
+                { AttributeName: "username", AttributeType: "S" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+        },
+        {
+            TableName: `Messages`,
+            KeySchema: [
+                { AttributeName: "channelId", KeyType: "HASH" },
+                { AttributeName: "insertTime", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "channelId", AttributeType: "S" },
+                { AttributeName: "insertTime", AttributeType: "N" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+        },
+        {
+            TableName: `Channel`,
+            KeySchema: [
+                { AttributeName: "channelId", KeyType: "HASH" },
+                { AttributeName: "channelName", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "channelId", AttributeType: "S" },
+                { AttributeName: "channelName", AttributeType: "S" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+        },
+        {
+            TableName: `UserChannel`,
+            KeySchema: [
+                { AttributeName: "username", KeyType: "HASH" },
+                { AttributeName: "channelId", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "username", AttributeType: "S" },
+                { AttributeName: "channelId", AttributeType: "S" }
+            ],
+            GlobalSecondaryIndexes: [
+                {
+                    IndexName: "channelId-username-index",
+                    KeySchema: [
+                        { AttributeName: "channelId", KeyType: "HASH" },
+                        { AttributeName: "username", KeyType: "RANGE" }
+                    ],
+                    Projection: {
+                        ProjectionType: "ALL"
+                    },
+                    ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+                }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
+        },
+        {
+            TableName: `Profiles`,
+            KeySchema: [
+                { AttributeName: "username", KeyType: "HASH" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "username", AttributeType: "S" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
+        },
+        {
+            TableName: `Settings`,
+            KeySchema: [
+                { AttributeName: "username", KeyType: "HASH" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "username", AttributeType: "S" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
+        },
+        {
+            TableName: `Notifications`,
+            KeySchema: [
+                { AttributeName: "notificationId", KeyType: "HASH" },
+                { AttributeName: "insertedTime", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "notificationId", AttributeType: "S" },
+                { AttributeName: "insertedTime", AttributeType: "N" },
+                { AttributeName: "channelId", AttributeType: "S" },
+                { AttributeName: "username", AttributeType: "S" },
+                { AttributeName: "fromFriend", AttributeType: "S" }
+            ],
+            GlobalSecondaryIndexes: [
+                {
+                    IndexName: "channelId-insertedTime-index",
+                    KeySchema: [
+                        { AttributeName: "channelId", KeyType: "HASH" },
+                        { AttributeName: "insertedTime", KeyType: "RANGE" }
+                    ],
+                    Projection: {
+                        ProjectionType: "ALL"
+                    },
+                    ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+                },
+                {
+                    IndexName: "username-insertedTime-index",
+                    KeySchema: [
+                        { AttributeName: "username", KeyType: "HASH" },
+                        { AttributeName: "insertedTime", KeyType: "RANGE" }
+                    ],
+                    Projection: {
+                        ProjectionType: "ALL"
+                    },
+                    ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+                },
+                {
+                    IndexName: "fromFriend-index",
+                    KeySchema: [
+                        { AttributeName: "fromFriend", KeyType: "HASH" }
+                    ],
+                    Projection: {
+                        ProjectionType: "ALL"
+                    },
+                    ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+                }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 10, WriteCapacityUnits: 10 }
+        },
+        {
+            TableName: `Reactions`,
+            KeySchema: [
+                { AttributeName: "messageId", KeyType: "HASH" },
+                { AttributeName: "insertTime", KeyType: "RANGE" }
+            ],
+            AttributeDefinitions: [
+                { AttributeName: "messageId", AttributeType: "S" },
+                { AttributeName: "insertTime", AttributeType: "N" }
+            ],
+            ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+        }
+    ]
+}
+```
+    
+</details>
+
+#### S3 Setup
+
+S3 is used to store user profile image pictures. The set up is as follows:
+
+1. On the AWS site, navigate to the S3 console
+1. Click "Create bucket"
+1. For the bucket name enter: "streamline-athletes-messaging-app"
+1. Leave the region on your region
+1. Uncheck "Block all public access", then check "I acknowledge that the current settings might result in this bucket and the objects within becoming public."
+1. Click "Create bucket"
+1. Click on the bucket you just created, then click on the "Permissions" tab, then below that click the "Bucket Policy" tab
+1. Replace any text there with:
+    *
+    ```json
+    {
+        "Version": "2008-04-01",
+        "Statement": [
+            {
+                "Sid": "AllowPublicRead",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "*"
+                },
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::streamline-athletes-messaging-app/*"
+            }
+        ]
+    }
+    ```
+1. Click "Save"
+1. Click on the "Overview tab", and click "Create folder"
+1. Name the folder: "user-profile-images" and click save
+1. Enter into the folder, and click "Upload"
+1. Click add files, and navigate to where you have the project stored on your machine.
+1. Find the file Online-Messaging-App/src/assests/default.png and upload it.
+1. Click next, then under "Manage public permissions" click the drop down and select "Grant public read access to this objects". Click "Upload"
+1. This will allow all users who have just signed up to have their profile image be a default user icon.
+
+##### _Aside_
+
+**Note** If you chose to name the S3 bucket something else other than streamline-athletes-messaging-app" you will have a few places to change in the code to look for this.
+
+<details>
+    <summary>Click to expand</summary>
+
+If you named it <your-new-name-here>, you will need to update:
+
+1. Under Online-Messaging-App
+   1.  In `src/routes/profiles/Profile_Constants.ts` change: `export const PROFILE_IMAGE_S3_PREFIX =
+                                                                  "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";` to: `export const PROFILE_IMAGE_S3_PREFIX =
+                                                                                                                                                                              "https://<your-new-name-here>.s3.ca-central-1.amazonaws.com/user-profile-images/";`
+   2. In `src/routes/userChannels/UserChannelDAO` change `const PROFILE_IMAGE_S3_PREFIX: string =
+                                                              "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";` to: `const PROFILE_IMAGE_S3_PREFIX: string =
+                                                                                                                                                                        "https://<your-new-name-here>.s3.ca-central-1.amazonaws.com/user-profile-images/";`
+   2. In `src/config/aws-config.ts` in the definition of `AWSS3Config` replace the value of `bucket` with `<your-new-name-here>`
+
+</details>
+
+At this point you have finished the setup for the S3 bucket, as well as the setup for all AWS services.
+
+### Running the application locally
+
+At this point you should have everything in place to run the application locally. Here are the steps to do so.
+
+1. Open the application in your IDE, and switch to the develop branch.
+    * Ensure any configuration information that you may have made in a seperate branch in previous steps during AWS set up is updated to the develop branch.
+1. As said in the AWS setup, ensure that in `Online-Messaging-Backend/src/config/aws.config.ts` the path to the AWS secret key file is correct, and the file is in place
+1. At this point you can create run configurations for both Online-Messaging-App, and Online-Messaging-Backend, pointing your IDE to the respective `package.json` files.
+1. Do a breif scan of both folder, and ensure there is no problems with dependencies. If there is simply run `npm install`
+1. At this point, you can run your run configurations, running the backend first OR
+    * If you prefer to run in the terminal, open two terminal windows that have access to npm and
+    * In the first do, navigate to the root folder of the repository and do:
+    ```json
+    cd Online-Messaging-Backend
+    npm run start
+    ```
+   Then wait for node to start up the server. You should see in the console: "server started on :8080", and if you navigate to http://localhost:8080 on your web browser, you should get "Backend is up and running"
+   * In the second terminal, navigate to the root folder of the repository and do:
+   ```json
+    cd Online-Messaging-Backend
+    npm run start
+    ```
+   This step may take a while the first time, as npm will have to compile the entire application from scratch, but after this it should run faster.
+1. Once the application is finished and running, you can navigate to http://localhost:4200 and you should be greeted with the Login screen.
+
+You now have successfully installed the application on your local machine. At this point it is recommended to test the
+application locally a little just to ensure that everything you did with configuration and AWS is working correctly.
+
+### Running The Application On A Server
+
+In order to run the application on a server, we assume you have a server with a public IP address or endpoint, and Node.js and Apache installed on the machine.
+
+1. From all of the previous steps ensure everything is working correctly and all of your configuration is in place on the develop branch.
+1. Commit the develop branch with this information, and push it up if you are using a remote Git repository
+1. Do `git checkout release` and then `git pull origin develop` if you are using a remote repository, or `git pull develop` if you are not.
+1. Now there are several configurations that will have to be changed on this branch to move the application to a server
+runnable version: 
+    1. 
+
 
