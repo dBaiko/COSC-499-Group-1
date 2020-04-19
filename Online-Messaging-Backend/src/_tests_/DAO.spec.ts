@@ -1,10 +1,11 @@
 import UserDAO from "../routes/users/UserDAO";
 import ChannelDAO from "../routes/channels/ChannelDAO";
 import UserChannelDAO from "../routes/userChannels/UserChannelDAO";
-import {MessageDAO} from "../routes/messages/MessageDAO";
-import SettingsDAO from "../routes/settings/settingsDAO";
-import {ProfileDAO, ProfileObject} from "../routes/profiles/ProfileDAO";
-import {GetItemOutput, QueryOutput, ScanOutput} from "aws-sdk/clients/dynamodb";
+import { MessageDAO } from "../routes/messages/MessageDAO";
+import SettingsDAO, { SettingsObject } from "../routes/settings/settingsDAO";
+import { ProfileDAO, ProfileObject } from "../routes/profiles/ProfileDAO";
+import { GetItemOutput, QueryOutput, ScanOutput } from "aws-sdk/clients/dynamodb";
+import { NotificationObject, NotificationsDAO } from "../routes/notifications/NotificationsDAO";
 
 interface ChannelObject {
     channelId: string;
@@ -29,7 +30,7 @@ function delay(ms: number) {
 
 jest.setTimeout(30000);
 
-const {DocumentClient} = require("aws-sdk/clients/dynamodb");
+const { DocumentClient } = require("aws-sdk/clients/dynamodb");
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -47,7 +48,9 @@ const ddb = new DocumentClient(config);
 const PROFILE_IMAGE_S3_PREFIX: string =
     "https://streamline-athletes-messaging-app.s3.ca-central-1.amazonaws.com/user-profile-images/";
 const DEFAULT_PROFILE_IMAGE: string = "default.png";
-describe("Full suite", () => {
+
+describe("ALL_TESTS", () => {
+
     describe("UserDAO", () => {
 
         const user = new UserDAO(ddb);
@@ -167,14 +170,11 @@ describe("Full suite", () => {
                 ddb.put({
                     TableName: "Channel",
                     Item: {
-                        channelName: "testUser",
-                        channelID: "ID01",
-                        channelType: "testUser@nothing.com",
+                        channelName: "channel",
+                        channelId: "ID01",
+                        channelType: "public",
                         channelDescription: "Lorem Ipsum",
-                        firstUsername: "testUser",
-                        firstUserChannelRole: "admin",
-                        inviteStatus: "true",
-                        profileImage: PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE
+                        inviteStatus: "true"
                     }
                 }).promise().then(() => {
                     resolve();
@@ -186,8 +186,8 @@ describe("Full suite", () => {
                 ddb.delete({
                     TableName: "Channel",
                     Key: {
-                        channelID: "ID01",
-                        channelName: "testUser"
+                        channelId: "ID01",
+                        channelName: "channel"
                     }
                 }).promise().then(() => {
                     resolve();
@@ -203,38 +203,60 @@ describe("Full suite", () => {
                 "admin",
                 null,
                 PROFILE_IMAGE_S3_PREFIX + DEFAULT_PROFILE_IMAGE);
-            const item = await ddb.scan({TableName: "Channel"}).promise();
-            delete item.Items[0].channelId;
-            expect(item).toEqual({
-                Count: 1,
-                Items:
-                    {
-                        channelName: "testChannel",
-                        channelType: "public",
-                        inviteStatus: null
-                    },
-                ScannedCount: 1
+            const item = await ddb.scan({ TableName: "Channel" }).promise();
+            let id;
+            let channelId;
+            for (let i = 0; i < item.Items.length; i++) {
+                if (item.Items[i].channelName = "testChannel") {
+                    id = i;
+                    channelId = item.Items[i].channelId;
+                    delete item.Items[i].channelId;
+                    break;
+                }
+            }
+            expect(item.Items[id]).toEqual({
+                channelDescription: "testDescript",
+                channelName: "testChannel",
+                channelType: "public",
+                inviteStatus: " "
+            });
+            ddb.delete({
+                TableName: "Channel",
+                Key: {
+                    channelId: channelId,
+                    channelName: "testChannel"
+                },
+                ConditionExpression: "channelId = :id and channelName = :n",
+                ExpressionAttributeValues: {
+                    ":id": channelId,
+                    ":n": "testChannel"
+                }
+            }).promise().then(() => {
+                return;
             });
         });
 
         it("should retrieve certain information about a channel", async () => {
-            const call: ChannelObject = await channel.getChannelInfo("ID1");
-            const item = await ddb.get({
-                TableName: "Channel",
-                Key: {
-                    channelId: "ID1",
-                    channelName: "testChannel"
-                }
-            });
-            expect(item.Item).toEqual(call);
+            const testChannelScan = await ddb.scan({ TableName: "Channel" }).promise();
+            let channelId = testChannelScan.Items[0].channelId;
+            const call: ChannelObject = await channel.getChannelInfo(channelId);
+            await ddb
+                .get({ TableName: "Channel", Key: { channelId: channelId, channelName: "channel" } })
+                .promise().then((item: GetItemOutput) => {
+                    console.log(item.Item);
+                    expect(item.Item).toEqual(call);
+                });
         });
 
         it("should return a list of all channels", async () => {
             const list = await channel.getAllChannels();
-            const item = await ddb.scan({TableName: "Channel"});
-            expect(list).toEqual(
-                item.Items.sort((a: ChannelObject, b: ChannelObject) => (a.channelName > b.channelName ? 1 : -1))
-            );
+            delete list[0].numUsers;
+            await ddb.scan({ TableName: "Channel" }).promise().then((item: ScanOutput) => {
+                delete item.Items[0].inviteStatus;
+                expect(list).toEqual(
+                    item.Items
+                );
+            });
         });
     });
 
@@ -808,35 +830,195 @@ describe("Full suite", () => {
 
     });
 
-    /*describe("NotificationsDAO", () => {
+    describe("NotificationsDAO", () => {
+        let notificationDAO = new NotificationsDAO(ddb);
 
-        const notification = new NotificationsDAO(ddb);
+        beforeEach(() => {
+            return new Promise((resolve => {
+
+                ddb.put({
+                    TableName: "Notifications",
+                    Item: {
+                        notificationId: "NID01",
+                        insertedTime: 123456,
+                        username: "testUser1",
+                        channelId: "CID1",
+                        channelName: "testChannel",
+                        type: "public",
+                        message: "Lorem Ipsum",
+                        fromFriend: "testUser2"
+                    }
+                }).promise().then(() => {
+                    ddb.put({
+                        TableName: "Notifications",
+                        Item: {
+                            notificationId: "NID02",
+                            insertedTime: 1234567,
+                            username: "testUser1",
+                            channelId: "CID1",
+                            channelName: "testChannel",
+                            type: "public",
+                            message: "Lorem Ipsum",
+                            fromFriend: "testUser2"
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                });
+
+            }));
+        });
+
+        afterEach(() => {
+            return new Promise(resolve => {
+
+                ddb.delete({
+                    TableName: "Notifications",
+                    Key: {
+                        notificationId: "NID01",
+                        insertedTime: 123456
+                    },
+                    ConditionExpression: "notificationId = :notificationId and insertedTime = :i",
+                    ExpressionAttributeValues: {
+                        ":notificationId": "NID01",
+                        ":i": 123456
+                    }
+                }).promise().then(() => {
+                    ddb.delete({
+                        TableName: "Notifications",
+                        Key: {
+                            notificationId: "NID02",
+                            insertedTime: 1234567
+                        },
+                        ConditionExpression: "notificationId = :notificationId and insertedTime = :i",
+                        ExpressionAttributeValues: {
+                            ":notificationId": "NID02",
+                            ":i": 1234567
+                        }
+                    }).promise().then(() => {
+                        resolve();
+                    });
+                });
+
+            });
+        });
+
         it("should return all notifications for a user", async () => {
-
+            let call = await notificationDAO.getAllNotificationsForUser("testUser1");
+            ddb.query({
+                TableName: "Notifications",
+                IndexName: "username-insertedTime-index",
+                KeyConditionExpression: "username = :username",
+                ExpressionAttributeValues: {
+                    ":username": "testUser1"
+                }
+            }).promise().then((item: QueryOutput) => {
+                expect(call).toEqual(item.Items);
+            });
         });
 
         it("should return all friend requests from a user", async () => {
+            let call = await notificationDAO.getAllFriendRequestsFromUser("testUser2");
+            ddb.query({
+                TableName: "Notifications",
+                IndexName: "fromFriend-index",
+                KeyConditionExpression: "fromFriend = :fromFriend",
+                ExpressionAttributeValues: {
+                    ":fromFriend": "testUser2"
+                }
+            }).promise().then((item: QueryOutput) => {
+                expect(call).toEqual(item.Items);
+            });
         });
 
         it("should return all notifications from a channel", async () => {
+            let call = await notificationDAO.getAllNotificationsForChannel("CID1");
+            ddb.query({
+                TableName: "Notifications",
+                IndexName: "channelId-insertedTime-index",
+                KeyConditionExpression: "channelId = :channelId",
+                ExpressionAttributeValues: {
+                    ":channelId": "CID1"
+                }
+            }).promise().then((item: QueryOutput) => {
+                expect(call).toEqual(item.Items);
+            });
         });
 
         it("should return all notifications from a channel for a user", async () => {
-        });
-
-        it("should create a new notification from a socket", async () => {
+            let call = await notificationDAO.getAllNotificationsForChannelAtUsername("CID1", "testUser1");
+            ddb.query({
+                TableName: "Notifications",
+                IndexName: "channelId-insertedTime-index",
+                KeyConditionExpression: "channelId = :c",
+                FilterExpression: "username = :u",
+                ExpressionAttributeValues: {
+                    ":c": "CID1",
+                    ":u": "testUser1"
+                }
+            }).promise().then((item: QueryOutput) => {
+                expect(call).toEqual(item.Items);
+            });
         });
 
         it("should create a new notification from an object", async () => {
+            let testNotification: NotificationObject = {
+                notificationId: "NID03",
+                insertedTime: 12345678,
+                username: "testUser1",
+                channelId: "C1D1",
+                channelName: "channel",
+                channelType: "public",
+                type: "public",
+                message: "Lorem Ipsum",
+                fromFriend: "testUser2"
+            };
+
+            await notificationDAO.createNewNotification(testNotification);
+            ddb.get({
+                TableName: "Notifications",
+                Key: {
+                    notificationId: "NID03",
+                    insertedTime: 12345678
+                }
+            }).promise().then((item: GetItemOutput) => {
+                expect(item.Item).toEqual({
+                    notificationId: "NID03",
+                    insertedTime: 12345678,
+                    username: "testUser1",
+                    channelId: "C1D1",
+                    channelName: "channel",
+                    channelType: "public",
+                    type: "public",
+                    message: "Lorem Ipsum",
+                    fromFriend: "testUser2"
+                });
+                console.log("here");
+                ddb.delete({
+                    TableName: "Notifications",
+                    Key: {
+                        notificationId: "NID03",
+                        insertedTime: 12345678
+                    },
+                    ConditionExpression: "notificationId = :notificationId and insertedTime = :i",
+                    ExpressionAttributeValues: {
+                        ":notificationId": "NID03",
+                        ":i": 12345678
+                    }
+                }).promise().then(() => {
+                    return;
+                });
+            });
+
         });
 
         it("should delete a notification from the database", async () => {
         });
-    });*/
+    });
 
     describe("SettingsDAO", () => {
 
-        const settings = new SettingsDAO(ddb);
+        let settings = new SettingsDAO(ddb);
 
         beforeEach(() => {
             return new Promise(((resolve) => {
@@ -866,33 +1048,41 @@ describe("Full suite", () => {
         });
 
         it("should create settings information for a user", async () => {
-            await settings.createSettingsInfo("test2", "dark");
-            const item = ddb.get({
+            await settings.createSettingsInfo("testUser", "dark");
+            ddb.get({
                 TableName: "Settings",
-                Key: {username: "test2"}
-            }).Items;
-            expect(item.Theme).toEqual("dark");
-            expect(item.explicit).toBeNull();
+                Key: { username: "testUser" }
+            }).promise().then((item: GetItemOutput) => {
+                expect(item.Item).toEqual({
+                    theme: "dark",
+                    username: "testUser"
+                });
+            });
         });
 
         it("should get settings information for a user", async () => {
-            const item = await settings.getSettingsInfoByUsername("testUser");
-            const expected = ddb.get({
+            const call: Array<SettingsObject> = await settings.getSettingsInfoByUsername("testUser");
+            ddb.get({
                 TableName: "Settings",
-                Key: {username: "testUser"}
-            }).Items;
-            expect(item).toEqual(expected);
+                Key: { username: "testUser" }
+            }).promise().then((item: GetItemOutput) => {
+                expect(call[0]).toEqual(item.Item);
+            });
         });
 
         it("should update a user's settings", async () => {
             await settings.updateSettings("testUser", "light", false);
-            expect(ddb.scan({TableName: "Settings"}).Count).toEqual(1);
-            const item = ddb.get({
-                TableName: "Settings",
-                Key: {username: "testUser"}
-            }).Items;
-            expect(item.theme).toEqual("light");
-            expect(item.explicit).toBeTruthy();
+            ddb.scan({ TableName: "Settings" }).promise().then((data: ScanOutput) => {
+                expect(data.Count).toEqual(1);
+                ddb.get({
+                    TableName: "Settings",
+                    Key: { username: "testUser" }
+                }).promise().then((item: GetItemOutput) => {
+                    expect(item.Item.theme).toEqual("light");
+                    expect(item.Item.explicit).toBeTruthy();
+                });
+            });
         });
+
     });
 });
