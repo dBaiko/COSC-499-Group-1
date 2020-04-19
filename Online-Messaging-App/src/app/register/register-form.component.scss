@@ -1,6 +1,17 @@
 $float: left;
 $margin: auto;
 $display-style: table;
+
+.container {
+    height: 100%;
+}
+
+.wrapper {
+    height: 100%;
+    overflow: auto;
+    display: block;
+}
+
 .mat-display-2 {
     margin-top: 3rem;
     text-align: center;
@@ -35,4 +46,46 @@ mat-form-field {
 
 mat-hint {
     text-align: end;
+}
+
+@media (max-width: 450px) {
+    .random {
+        display: block;
+        clear: both;
+        margin: 0;
+        text-align: center;
+        height: 100%;
+        overflow-y: auto;
+    }
+    .form-group {
+        display: inline;
+        float: left;
+        margin: 0 0.5em 0 0;
+    }
+    .btn-primary {
+        clear: both;
+    }
+}
+
+@media (max-height: 650px) {
+    .wrapper {
+        height: 24em;
+        overflow-y: auto;
+    }
+    .random {
+        display: block;
+        clear: both;
+        margin: 0;
+        text-align: center;
+        height: 100%;
+        overflow-y: auto;
+    }
+    .form-group {
+        display: inline;
+        float: left;
+        margin: 0 0.5em 0 0;
+    }
+    .btn-primary {
+        clear: both;
+    }
 }

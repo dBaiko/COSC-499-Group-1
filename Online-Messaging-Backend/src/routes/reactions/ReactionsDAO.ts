@@ -1,29 +1,26 @@
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-
-export interface ReactionObject {
-    messageId: string;
-    emoji: string;
-    insertTime: number;
-    username: string;
-}
+import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
+import { ReactionObject } from "../../config/app-config";
+import { AWSError } from "aws-sdk";
 
 const REACTIONS_TABLE_NAME = "Reactions";
+const MESSAGE_QUERY = "messageId = :m";
+const MESSAGE_CONDITION_EXPRESSION = "messageId = :m and insertTime = :i";
 
-class ReactionsDAO {
+export class ReactionsDAO {
     constructor(private docClient: DocumentClient) {
     }
 
     public getAllReactionsForMessage(messageId: string): Promise<Array<ReactionObject>> {
         let params = {
             TableName: REACTIONS_TABLE_NAME,
-            KeyConditionExpression: "messageId = :m",
+            KeyConditionExpression: MESSAGE_QUERY,
             ExpressionAttributeValues: {
                 ":m": messageId
             }
         };
 
         return new Promise<any>((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -33,7 +30,7 @@ class ReactionsDAO {
         });
     }
 
-    public addNewReaction(messageId: string, emoji: string, username: string): Promise<any> {
+    public addNewReaction(messageId: string, emoji: string, username: string): Promise<void> {
         let params = {
             Item: {
                 messageId: messageId,
@@ -44,21 +41,20 @@ class ReactionsDAO {
             TableName: REACTIONS_TABLE_NAME
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("added new reaction successfully");
                     resolve();
                 }
             });
         });
     }
 
-    public deleteReactionForMessage(messageId: string, emoji: string, username: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public deleteReactionForMessage(messageId: string, emoji: string, username: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.getAllReactionsForMessage(messageId)
                 .then((data: Array<ReactionObject>) => {
                     let toDelete: ReactionObject;
@@ -75,16 +71,16 @@ class ReactionsDAO {
                                 messageId: toDelete.messageId,
                                 insertTime: toDelete.insertTime
                             },
-                            ConditionExpression: "messageId = :m and insertTime = :i",
+                            ConditionExpression: MESSAGE_CONDITION_EXPRESSION,
                             ExpressionAttributeValues: {
                                 ":m": toDelete.messageId,
                                 ":i": toDelete.insertTime
                             }
                         };
 
-                        this.docClient.delete(params, (err, data1) => {
+                        this.docClient.delete(params, (err: AWSError) => {
                             if (err) {
-                                console.log(err);
+                                console.error(err);
                                 reject(err);
                             } else {
                                 resolve();
@@ -99,8 +95,8 @@ class ReactionsDAO {
         });
     }
 
-    public deleteAllReactionsForMessage(messageId: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public deleteAllReactionsForMessage(messageId: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.getAllReactionsForMessage(messageId)
                 .then((data: Array<ReactionObject>) => {
                     for (let item of data) {
@@ -110,16 +106,16 @@ class ReactionsDAO {
                                 messageId: item.messageId,
                                 insertTime: item.insertTime
                             },
-                            ConditionExpression: "messageId = :m, and insertTime = :i",
+                            ConditionExpression: MESSAGE_CONDITION_EXPRESSION,
                             ExpressionAttributeValues: {
                                 ":m": messageId,
                                 ":i": item.insertTime
                             }
                         };
 
-                        this.docClient.delete(params, (err, data1) => {
+                        this.docClient.delete(params, (err: AWSError) => {
                             if (err) {
-                                console.log(err);
+                                console.error(err);
                                 reject(err);
                             }
                         });
@@ -132,5 +128,3 @@ class ReactionsDAO {
         });
     }
 }
-
-export default ReactionsDAO;

@@ -1,144 +1,115 @@
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
-import { UserSocket } from "../../index";
-
-const NOTIFICATIONS_TABLE_NAME = "Notifications";
-const NOTIFICATIONS_USER_INDEX = "username-insertedTime-index";
-const NOTIFICATIONS_FRIENDS_INDEX = "fromFriend-index";
-const NOTIFICATIONS_CHANNEL_INDEX = "channelId-insertedTime-index";
-
-export interface NotificationDBObject {
-    notificationId: string;
-    insertedTime: number;
-    username: string;
-    channelId: string;
-    channelName: string;
-    channelType: string;
-    type: string;
-    message: string;
-    fromFriend: string;
-}
-
-export interface NotificationObject {
-    channelId: string;
-    channelName?: string;
-    channelType?: string;
-    message?: string;
-    type: string;
-    username?: string;
-    notificationId: string;
-    insertedTime: number;
-    fromFriend?: string;
-}
-
-export interface NotificationSocketObject {
-    fromUser: UserSocket;
-    toUser: UserSocket;
-    notification: NotificationObject;
-}
+import { DocumentClient, QueryOutput } from "aws-sdk/clients/dynamodb";
+import { NotificationDBObject, NotificationObject, NotificationSocketObject } from "../../config/app-config";
+import { AWSError } from "aws-sdk";
+import {
+    CHANNEL_ID_QUERY,
+    FROM_FRIEND_QUERY,
+    NOTIFICATION_AND_INSERT_TIME_CONDITION_EXPRESSION,
+    NOTIFICATIONS_CHANNEL_INDEX,
+    NOTIFICATIONS_FRIENDS_INDEX,
+    NOTIFICATIONS_TABLE_NAME,
+    NOTIFICATIONS_USER_INDEX,
+    USERNAME_QUERY
+} from "./Notifications_Constants";
 
 export class NotificationsDAO {
-    private usernameQueryDeclaration = "username = :username";
-    private channelIdQueryDeclaration = "channelId = :channelId";
-    private friendQueryDeclaration = "fromFriend = :fromFriend";
-
     constructor(private docClient: DocumentClient) {
     }
 
-    public getAllNotificationsForUser(username: string): Promise<any> {
-        const params = {
+    public getAllNotificationsForUser(username: string): Promise<Array<NotificationObject>> {
+        let params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             IndexName: NOTIFICATIONS_USER_INDEX,
-            KeyConditionExpression: this.usernameQueryDeclaration,
+            KeyConditionExpression: USERNAME_QUERY,
             ExpressionAttributeValues: {
                 ":username": username
             }
         };
 
         return new Promise<any>((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + username + "'s notifications succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public getAllFriendRequestsFromUser(fromFriend: string): Promise<any> {
-        const params = {
+    public getAllFriendRequestsFromUser(fromFriend: string): Promise<Array<NotificationObject>> {
+        let params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             IndexName: NOTIFICATIONS_FRIENDS_INDEX,
-            KeyConditionExpression: this.friendQueryDeclaration,
+            KeyConditionExpression: FROM_FRIEND_QUERY,
             ExpressionAttributeValues: {
                 ":fromFriend": fromFriend
             }
         };
 
         return new Promise<any>((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + fromFriend + "'s notifications succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public getAllNotificationsForChannel(channelId: string): Promise<any> {
-        const params = {
+    public getAllNotificationsForChannel(channelId: string): Promise<Array<NotificationObject>> {
+        let params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             IndexName: NOTIFICATIONS_CHANNEL_INDEX,
-            KeyConditionExpression: this.channelIdQueryDeclaration,
+            KeyConditionExpression: CHANNEL_ID_QUERY,
             ExpressionAttributeValues: {
                 ":channelId": channelId
             }
         };
 
         return new Promise<any>((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + "'s notifications succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public getAllNotificationsForChannelAtUsername(channelId: string, username: string): Promise<any> {
-        const params = {
+    public getAllNotificationsForChannelAtUsername(
+        channelId: string,
+        username: string
+    ): Promise<Array<NotificationObject>> {
+        let params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             IndexName: NOTIFICATIONS_CHANNEL_INDEX,
-            KeyConditionExpression: "channelId = :c",
-            FilterExpression: "username = :u",
+            KeyConditionExpression: CHANNEL_ID_QUERY,
+            FilterExpression: USERNAME_QUERY,
             ExpressionAttributeValues: {
-                ":c": channelId,
-                ":u": username
+                ":channelId": channelId,
+                ":username": username
             }
         };
 
         return new Promise<any>((resolve, reject) => {
-            this.docClient.query(params, (err, data) => {
+            this.docClient.query(params, (err: AWSError, data: QueryOutput) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Query for " + channelId + "'s notifications succeeded");
                     resolve(data.Items);
                 }
             });
         });
     }
 
-    public socketCreateNewNotification(notificationSocketObject: NotificationSocketObject): Promise<any> {
+    public socketCreateNewNotification(notificationSocketObject: NotificationSocketObject): Promise<void> {
         let notificationDBObject: NotificationDBObject = {
             notificationId: notificationSocketObject.notification.notificationId,
             insertedTime: notificationSocketObject.notification.insertedTime,
@@ -151,25 +122,24 @@ export class NotificationsDAO {
             message: notificationSocketObject.notification.message
         };
 
-        const params = {
+        let params = {
             Item: notificationDBObject,
             TableName: NOTIFICATIONS_TABLE_NAME
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Added new notification successfully");
                     resolve();
                 }
             });
         });
     }
 
-    public createNewNotification(notificationObject: NotificationObject): Promise<any> {
+    public createNewNotification(notificationObject: NotificationObject): Promise<void> {
         let notificationDBObject: NotificationDBObject = {
             notificationId: notificationObject.notificationId,
             insertedTime: notificationObject.insertedTime,
@@ -182,45 +152,43 @@ export class NotificationsDAO {
             fromFriend: notificationObject.fromFriend
         };
 
-        const params = {
+        let params = {
             Item: notificationDBObject,
             TableName: NOTIFICATIONS_TABLE_NAME
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.put(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.put(params, (err: AWSError) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 } else {
-                    console.log("Added new notification successfully");
                     resolve();
                 }
             });
         });
     }
 
-    public deleteNotification(notificationId: string, insertedTime: number): Promise<any> {
-        const params = {
+    public deleteNotification(notificationId: string, insertedTime: number): Promise<void> {
+        let params = {
             TableName: NOTIFICATIONS_TABLE_NAME,
             Key: {
                 notificationId: notificationId,
                 insertedTime: insertedTime
             },
-            ConditionExpression: "notificationId = :notificationId and insertedTime = :i",
+            ConditionExpression: NOTIFICATION_AND_INSERT_TIME_CONDITION_EXPRESSION,
             ExpressionAttributeValues: {
                 ":notificationId": notificationId,
                 ":i": insertedTime
             }
         };
 
-        return new Promise<any>((resolve, reject) => {
-            this.docClient.delete(params, (err, data) => {
+        return new Promise<void>((resolve, reject) => {
+            this.docClient.delete(params, (err: AWSError) => {
                 if (err) {
                     console.error(err);
                     reject(err);
                 } else {
-                    console.log("Successfully deleted item");
                     resolve();
                 }
             });

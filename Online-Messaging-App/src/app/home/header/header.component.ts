@@ -14,6 +14,7 @@ import {
 } from "../../shared/app-config";
 import { NotificationService } from "../../shared/notification.service";
 import { CommonService } from "../../shared/common.service";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const MY_SELECT_CHILD: string = "mySelect";
 const NOTIFICATIONS_URI: string = "/notifications";
@@ -25,10 +26,12 @@ const DEFAULT_CHANNEL_ROLE: string = "user";
 const CHATBOX_VIEW: string = "chatbox";
 const GENERAL_NOTIFICATION: string = "general";
 const ACCEPTED_NOTIFICATION: string = "accepted";
-const DENIED_NOTIFICATION: string = "accepted";
+const DENIED_NOTIFICATION: string = "denied";
 const ACCEPT_INVITE: string = " has accepted your invite to join ";
 const DENY_INVITE: string = " has denied your invite to join ";
-export const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
+const BROADCAST_NOTIFICATION_EVENT = "broadcastNotification";
+const BUTTON_WRAPPER_CLASS = "mat-button-wrapper";
+const BUTTON_CLASS = "xbutton";
 
 @Component({
     selector: "app-header",
@@ -45,7 +48,8 @@ export class HeaderComponent implements OnInit {
     notificationCount: number = 0;
     open: boolean = false;
     sideBarOpen: boolean = false;
-    @Output() notificationChannelEvent = new EventEmitter<ChannelIdAndType>();
+    @Output() newUserSubscriptionFromNotificationEvent = new EventEmitter<ChannelIdAndType>();
+    @Output() goToChannelFromNotificationEvent = new EventEmitter<ChannelIdAndType>();
     @Input() currentUserProfile: ProfileObject = null;
     @Output() newChannelEvent = new EventEmitter<UserChannelObject>();
     @Output() channelEvent = new EventEmitter<ChannelObject>();
@@ -64,7 +68,7 @@ export class HeaderComponent implements OnInit {
 
     constructor(
         private _eref: ElementRef,
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private notificationService: NotificationService,
         private http: HttpClient,
         public common: CommonService
@@ -72,7 +76,7 @@ export class HeaderComponent implements OnInit {
         this.userLoggedIn = auth.isLoggedIn();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         if (this.userLoggedIn == true) {
             this.user = this.auth.getAuthenticatedUser();
 
@@ -82,7 +86,6 @@ export class HeaderComponent implements OnInit {
             this.notificationService.addSocketListener(
                 BROADCAST_NOTIFICATION_EVENT,
                 (notificationSocketObject: NotificationSocketObject) => {
-                    console.log("notification recieved");
                     let notification: NotificationObject = notificationSocketObject.notification;
                     if (notification.type == PUBLIC_NOTIFICATION) {
                         this.publicInvites.push(notification);
@@ -99,10 +102,10 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    toggleOpen($event): void {
+    public toggleOpen($event): void {
         if ($event) {
             let target = $event.target as HTMLElement;
-            if (!target.classList.contains("mat-button-wrapper")) {
+            if (!target.classList.contains(BUTTON_WRAPPER_CLASS) && !target.classList.contains(BUTTON_CLASS)) {
                 this.open = !this.open;
             }
         } else {
@@ -110,12 +113,17 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    notificationChannelEmitter(view: string, channelId: string, type: string): void {
+    public newUserSubscriptionFromChannelEventEmitter(view: string, channelId: string, type: string): void {
         this.switchEvent.emit(view);
-        this.notificationChannelEvent.emit({ channelId, type });
+        this.newUserSubscriptionFromNotificationEvent.emit({ channelId, type });
     }
 
-    switchDisplay(value: string): void {
+    public goToChannelFromNotification(view: string, channelId: string, type: string): void {
+        this.switchEvent.emit(view);
+        this.goToChannelFromNotificationEvent.emit({ channelId, type });
+    }
+
+    public switchDisplay(value: string): void {
         this.switchEvent.emit(value);
 
         if (value === this.profile) {
@@ -123,7 +131,7 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    acceptInvite(notification: NotificationObject): void {
+    public acceptInvite(notification: NotificationObject): void {
         let user: UserChannelObject = {
             username: this.auth.getAuthenticatedUser().getUsername(),
             channelId: notification.channelId,
@@ -137,7 +145,7 @@ export class HeaderComponent implements OnInit {
         this.newChannelEvent.emit(user);
 
         this.auth.getCurrentSessionId().subscribe(
-            (data) => {
+            (data: CognitoIdToken) => {
                 let httpHeaders = {
                     headers: new HttpHeaders({
                         "Content-Type": "application/json",
@@ -145,7 +153,6 @@ export class HeaderComponent implements OnInit {
                     })
                 };
 
-                // TODO: check for errors in response
                 this.http
                     .post(this.channelsAPI + notification.channelId + Constants.USERS_PATH, user, httpHeaders)
                     .subscribe(
@@ -174,33 +181,37 @@ export class HeaderComponent implements OnInit {
                                             )
                                             .subscribe(
                                                 () => {
-                                                    console.log("success");
                                                 },
                                                 (err) => {
-                                                    console.log(err);
+                                                    console.error(err);
                                                 }
                                             );
                                     }
                                 })
                                 .catch((err) => {
-                                    console.log(err);
+                                    console.error(err);
                                 });
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
         this.sendInviteConfirmation(notification, true);
         this.removeNotification(notification);
-        this.notificationChannelEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);
+        this.newUserSubscriptionFromChannelEventEmitter(CHATBOX_VIEW, notification.channelId, notification.channelType);
+        this.notificationService.sendFriendTaglineUpdateEvent({
+            username: notification.fromFriend,
+            fromFriend: this.currentUserProfile.username,
+            status: ACCEPTED_NOTIFICATION
+        });
     }
 
-    sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
+    public sendInviteConfirmation(notification: NotificationObject, response: boolean): void {
         let message = this.auth.getAuthenticatedUser().getUsername();
         if (response) {
             message += ACCEPT_INVITE;
@@ -229,7 +240,7 @@ export class HeaderComponent implements OnInit {
         this.notificationService.sendNotification(notifications);
     }
 
-    denyInvite(notification: NotificationObject): void {
+    public denyInvite(notification: NotificationObject): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -262,26 +273,30 @@ export class HeaderComponent implements OnInit {
                             )
                             .subscribe(
                                 () => {
-                                    console.log("success");
                                 },
                                 (err) => {
-                                    console.log(err);
+                                    console.error(err);
                                 }
                             );
                     })
                     .catch((err) => {
-                        console.log(err);
+                        console.error(err);
                     });
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
         this.sendInviteConfirmation(notification, false);
         this.removeNotification(notification);
+        this.notificationService.sendFriendTaglineUpdateEvent({
+            username: notification.fromFriend,
+            fromFriend: this.currentUserProfile.username,
+            status: DENIED_NOTIFICATION
+        });
     }
 
-    removeNotification(notification: NotificationObject): void {
+    public removeNotification(notification: NotificationObject): void {
         if (notification.type == PUBLIC_NOTIFICATION) {
             this.publicInvites.splice(this.publicInvites.indexOf(notification), 1);
         } else if (notification.type == PRIVATE_NOTIFICATION) {
@@ -294,8 +309,8 @@ export class HeaderComponent implements OnInit {
         this.notificationCount--;
     }
 
-    deleteNotification(notification: NotificationObject): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public deleteNotification(notification: NotificationObject): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
                     let httpHeaders = {
@@ -323,13 +338,13 @@ export class HeaderComponent implements OnInit {
                         );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                 }
             );
         });
     }
 
-    toggleSideBarOpen(value: boolean) {
+    public toggleSideBarOpen(value: boolean): void {
         if (value) {
             this.sideBarOpen = true;
             this.sideBarToggleEvent.emit(true);
@@ -339,8 +354,8 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    private getNotifications(): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    private getNotifications(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
             this.auth.getCurrentSessionId().subscribe(
                 (data) => {
                     let httpHeaders = {
@@ -376,9 +391,10 @@ export class HeaderComponent implements OnInit {
                                         this.notificationCount++;
                                     }
                                 }
+                                resolve();
                             },
                             (err) => {
-                                console.log(err);
+                                console.error(err);
                             }
                         );
                 },

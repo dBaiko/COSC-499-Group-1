@@ -1,3 +1,8 @@
+.scrollable {
+    height: 100% !important;
+    margin-top: 0 !important;
+}
+
 mat-card {
     background: var(--element-color);
 }
@@ -22,7 +27,6 @@ mat-icon {
 }
 
 .wrapper {
-    width: 60%;
     margin: auto;
 }
 
@@ -60,8 +64,7 @@ input:focus {
 
 mat-select {
     width: 90%;
-    border: 2px solid;
-    border-color: white;
+    border: 2px solid white;
     padding: 10px 10px;
     color: var(--primary-text-color);
     background-color: var(--element-hover-color);
@@ -90,6 +93,12 @@ button {
 
 .profilePicture {
     border-radius: 50%;
+}
+
+#profileTitle {
+    position: absolute;
+    left: 4em;
+    top: 1em;
 }
 
 #imageInput {
@@ -144,4 +153,16 @@ mat-checkbox {
 
 .columnClear {
     clear: both;
+}
+
+@media (max-width: 450px) {
+    .profilePicture {
+        width: 50%;
+    }
+    #profileTitle {
+        font-size: 2rem;
+        position: absolute;
+        left: 5em;
+        top: 1.3em;
+    }
 }

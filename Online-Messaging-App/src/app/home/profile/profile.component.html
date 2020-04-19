@@ -91,7 +91,22 @@
                         >
                         </p>
                         <p (click)="this.toggleEditingStatus(true)" *ngIf="!editingStatus">
-                            {{ userProfile.statusText }}
+                            <span
+                                *ngIf="
+                                    userProfile.statusText != null &&
+                                    userProfile.statusText != ' ' &&
+                                    userProfile.statusText != ''
+                                "
+                            >{{ userProfile.statusText }}</span
+                            >
+                            <span
+                                *ngIf="
+                                    userProfile.statusText == null ||
+                                    userProfile.statusText == ' ' ||
+                                    userProfile.statusText == ''
+                                "
+                            >N/A</span
+                            >
                         </p>
                         <form
                             (ngSubmit)="statusFormSubmit(statusForm)"
@@ -158,7 +173,8 @@
                             *ngIf="
                                 userProfile.dateOfBirth == ' ' ||
                                     userProfile.dateOfBirth == '' ||
-                                    userProfile.dateOfBirth == null;
+                                    userProfile.dateOfBirth == null ||
+                                    userProfile.dateOfBirth == '1111-01-01';
                                 else dateOfBirth
                             "
                         >
@@ -190,18 +206,25 @@
                         </ng-template>
                         <hr/>
                         <p class="nameHeaders"><b>High School Graduation Year</b></p>
-                        <p *ngIf="userProfile.gradYear == 0 || userProfile.gradYear == null; else gradYear">N/A</p>
+                        <p *ngIf="userProfile.gradYear == '2000' || userProfile.gradYear == null; else gradYear">N/A</p>
                         <ng-template #gradYear>
                             <p>{{ userProfile.gradYear }}</p>
                         </ng-template>
                         <hr/>
                         <p class="nameHeaders"><b>Previous Collegiate Competitor</b></p>
-                        <p *ngIf="userProfile.previousCollegiate == null; else prevCollegiate">
+                        <p
+                            *ngIf="
+                                userProfile.previousCollegiate == null ||
+                                    userProfile.previousCollegiate == 'N/A' ||
+                                    userProfile.previousCollegiate == ' ';
+                                else prevCollegiate
+                            "
+                        >
                             N/A
                         </p>
                         <ng-template #prevCollegiate>
-                            <p *ngIf="userProfile.previousCollegiate">Yes</p>
-                            <p *ngIf="!userProfile.previousCollegiate">No</p>
+                            <p *ngIf="userProfile.previousCollegiate == 'true'">Yes</p>
+                            <p *ngIf="userProfile.previousCollegiate == 'false'">No</p>
                         </ng-template>
                         <hr/>
                         <h2>Address Information</h2>
@@ -462,11 +485,6 @@
                     </h6>
                 </div>
             </div>
-
-            <!--           EDIT PROFILE FORM-->
-            <!--            sadsads-->
-            <!--            asdsadassasdsada-->
-
             <div
                 *ngIf="
                     userProfile &&
@@ -475,7 +493,6 @@
                 "
                 class="profileInfo"
             >
-                <!--            <div class="columnLayout">-->
                 <form (ngSubmit)="editFormSubmit(editForm)" [formGroup]="editForm" class="container">
                     <div class="columnLayout">
                         <div class="columnLeft">
@@ -575,7 +592,7 @@
 
                             <p class="nameHeaders"><b>Competes as</b></p>
                             <label for="gender"></label>
-                            <mat-select formControlName="gender" id="gender" name="gender">
+                            <mat-select formControlName="gender" id="gender">
                                 <mat-option value="Male">Male</mat-option>
                                 <mat-option value="Female">Female</mat-option>
                             </mat-select>
@@ -592,7 +609,7 @@
 
                             <p class="nameHeaders"><b>Citizenship</b></p>
                             <label for="citizenship"></label>
-                            <mat-select formControlName="citizenship" id="citizenship" name="citizenship">
+                            <mat-select formControlName="citizenship" id="citizenship">
                                 <mat-option value="Afghanistan">Afghanistan</mat-option>
                                 <mat-option value="Åland Islands">Åland Islands</mat-option>
                                 <mat-option value="Albania">Albania</mat-option>
@@ -846,7 +863,7 @@
 
                             <p class="nameHeaders"><b>Grade</b></p>
                             <label for="grade"></label>
-                            <mat-select formControlName="grade" id="grade" name="grade">
+                            <mat-select formControlName="grade" id="grade">
                                 <mat-option value="8">8</mat-option>
                                 <mat-option value="9">9</mat-option>
                                 <mat-option value="10">10</mat-option>
@@ -870,11 +887,7 @@
 
                             <p class="nameHeaders"><b>Previous Collegiate Competitor</b></p>
                             <label for="previousCollegiate"></label>
-                            <mat-select
-                                formControlName="previousCollegiate"
-                                id="previousCollegiate"
-                                name="previousCollegiate"
-                            >
+                            <mat-select formControlName="previousCollegiate" id="previousCollegiate">
                                 <mat-option value="true">Yes</mat-option>
                                 <mat-option value="false">No</mat-option>
                                 >
@@ -911,7 +924,7 @@
 
                             <p class="nameHeaders"><b>Country</b></p>
                             <label for="country"></label>
-                            <mat-select formControlName="country" id="country" name="country">
+                            <mat-select formControlName="country" id="country">
                                 <mat-option value="Afghanistan">Afghanistan</mat-option>
                                 <mat-option value="Åland Islands">Åland Islands</mat-option>
                                 <mat-option value="Albania">Albania</mat-option>

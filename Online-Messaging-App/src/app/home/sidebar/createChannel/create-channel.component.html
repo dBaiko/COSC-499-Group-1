@@ -1,5 +1,5 @@
 <div (clickOutside)="clickOutsideClose()" class="container" delayClickOutsideInit="true">
-    <div class="background">
+    <div *ngIf="this.auth.isLoggedIn()" class="background">
         <form (ngSubmit)="newChannel(newChannelForm)" [formGroup]="newChannelForm" autocomplete="off">
             <div class="center">
                 <h2>Create A Channel</h2>

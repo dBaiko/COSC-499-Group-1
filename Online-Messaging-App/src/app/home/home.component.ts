@@ -18,6 +18,7 @@ import {
     UserSocket
 } from "../shared/app-config";
 import { ColorScheme, DarkThemeColors, LightThemeColors } from "../app.component";
+import { BreakpointObserver, BreakpointState } from "@angular/cdk/layout";
 
 const PROFILE_PAGE = "profile";
 const CHANNEL_BROWSER = "channelBrowser";
@@ -29,6 +30,10 @@ const USER_LIST_EVENT = "userList";
 const SETTINGS_URI = "/settings";
 const PROFILES_API = APIConfig.profilesAPI;
 const USERS_API = APIConfig.usersAPI;
+const SIDENAV_IDENTIFIER = "sidenav";
+const KICK_EVENT = "kickEvent";
+const UNBAN_EVENT = "unBanEvent";
+const BREAK_POINT_OBSERVER_KEY = "(max-width: 450px)";
 
 @Component({
     selector: "app-home",
@@ -43,19 +48,20 @@ export class HomeComponent implements OnInit {
     selectedChannelId: ChannelObject;
     newAddedChannel: ChannelObject;
     newSubbedChannel: ChannelObject;
-    notificationChannel: ChannelIdAndType;
+    newUserSubscribedChannelFromNotification: ChannelIdAndType;
+    channelToGoToFromNotification: ChannelIdAndType;
     profileView: string;
     usersUrl: string = APIConfig.usersAPI;
     userList: Array<UserObject> = [];
     settings: SettingsObject;
-
+    value: boolean = false;
     onlineUserList: Array<UserSocket> = [];
 
     newBannedUser: UserChannelObject;
 
     sidebarOpened: boolean = true;
 
-    @ViewChild("sidenav") sidebar;
+    @ViewChild(SIDENAV_IDENTIFIER) sidebar;
 
     public currentUserProfile: ProfileObject;
     public newUserSubbedChannel: NewUsersSubbedChannelObject;
@@ -66,11 +72,12 @@ export class HomeComponent implements OnInit {
         public fb: FormBuilder,
         private cookieService: CookieService,
         private notificationService: NotificationService,
-        private http: HttpClient
+        private http: HttpClient,
+        public breakpointObserver: BreakpointObserver
     ) {
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.userLoggedIn = this.auth.isLoggedIn();
         if (this.userLoggedIn) {
             this.options = this.fb.group({
@@ -100,48 +107,61 @@ export class HomeComponent implements OnInit {
                 console.error(err);
             });
 
-            this.notificationService.addSocketListener("kickEvent", (user: UserChannelObject) => {
+            this.notificationService.addSocketListener(KICK_EVENT, (user: UserChannelObject) => {
                 this.handleNewBannedUserEvent(user);
             });
 
-            this.notificationService.addSocketListener("unBanEvent", (user: UserChannelObject) => {
+            this.notificationService.addSocketListener(UNBAN_EVENT, (user: UserChannelObject) => {
                 this.handleNewUnBannedUserEvent(user);
             });
         }
+        this.breakpointObserver.observe([BREAK_POINT_OBSERVER_KEY]).subscribe((state: BreakpointState) => {
+            if (state.matches) {
+                this.value = false;
+                this.sidebarOpened = false;
+            } else {
+                this.value = true;
+                this.sidebarOpened = true;
+            }
+        });
     }
 
-    receiveId($event) {
+    public receiveId($event: ChannelObject): void {
         this.selectedChannelId = $event;
     }
 
-    receiveNewSubbedChannel(event: ChannelObject) {
+    public receiveNewSubbedChannel(event): void {
         this.newSubbedChannel = event;
     }
 
-    addNewChannel($event) {
+    public addNewChannel($event: ChannelObject): void {
         this.newAddedChannel = $event;
     }
 
-    updateDisplay(value: string): void {
+    public updateDisplay(value: string): void {
         this.display = value;
     }
 
-    updateFromNotification(channel: ChannelIdAndType): void {
-        this.notificationChannel = channel;
+    public handleNewUserSubscriptionFromChannel(channel: ChannelIdAndType): void {
+        this.newUserSubscribedChannelFromNotification = channel;
     }
 
-    updateProfile(value: string): void {
+    public handleGoToChannelFromNotification(channel: ChannelIdAndType): void {
+        this.channelToGoToFromNotification = channel;
+    }
+
+    public updateProfile(value: string): void {
         this.profileView = value;
         this.updateDisplay(PROFILE_PAGE);
     }
 
-    getUpdatedProfile(): void {
+    public getUpdatedProfile(): void {
         this.getUserInfo().then(() => {
             this.currentUserProfile.profileImage += Constants.QUESTION_MARK + Math.random();
         });
     }
 
-    changeTheme(themeString: string): void {
+    public changeTheme(themeString: string): void {
         this.settings.theme = themeString;
         if (themeString == LIGHT) {
             this.setTheme(LightThemeColors);
@@ -150,26 +170,26 @@ export class HomeComponent implements OnInit {
         }
     }
 
-    setExplicit(explicit: boolean): void {
+    public setExplicit(explicit: boolean): void {
         this.settings.explicit = explicit;
     }
 
-    setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
+    public setNewUserSubbedChannel($event: NewUsersSubbedChannelObject) {
         this.newUserSubbedChannel = $event;
     }
 
-    toggleSidebarOpen() {
+    public toggleSidebarOpen(): void {
         this.sidebar.toggle();
     }
 
-    handleNewBannedUserEvent(user: UserChannelObject): void {
+    public handleNewBannedUserEvent(user: UserChannelObject): void {
         if (this.display == CHAT_BOX && this.selectedChannelId.channelId == user.channelId) {
             this.updateDisplay(CHANNEL_BROWSER);
         }
         this.newBannedUser = user;
     }
 
-    handleNewUnBannedUserEvent(user: UserChannelObject): void {
+    public handleNewUnBannedUserEvent(user: UserChannelObject): void {
         this.newBannedUser = user;
     }
 
@@ -188,12 +208,12 @@ export class HomeComponent implements OnInit {
                         this.userList = data;
                     },
                     (err) => {
-                        console.log(err);
+                        console.error(err);
                     }
                 );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -216,12 +236,12 @@ export class HomeComponent implements OnInit {
                             this.changeTheme(data[0].theme);
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }
@@ -256,13 +276,13 @@ export class HomeComponent implements OnInit {
                             });
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                             reject(err);
                         }
                     );
                 },
                 (err) => {
-                    console.log(err);
+                    console.error(err);
                     reject(err);
                 }
             );

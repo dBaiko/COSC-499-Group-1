@@ -4,6 +4,9 @@ import { Router } from "@angular/router";
 import { Constants, UserObject, VALIDATION_MESSAGES } from "./app-config";
 import * as sanitize from "sanitize-html";
 
+const ESCAPE = "escape";
+const NULL = "null";
+
 @Injectable()
 export class CommonService {
     public validation_methods = VALIDATION_MESSAGES;
@@ -21,7 +24,6 @@ export class CommonService {
 
     public routeTo(route: string): void {
         this.router.navigate([route]).then(() => {
-            console.log("Navigating to:" + route);
         });
     }
 
@@ -54,13 +56,13 @@ export class CommonService {
         return match.substring(0, search.length) == search;
     }
 
-    public santizeText(text: string): string {
+    public sanitizeText(text: string): string {
         text = sanitize(text, {
             allowedTags: [],
             allowedAttributes: {},
-            disallowedTagsMode: "escape"
+            disallowedTagsMode: ESCAPE
         });
-        if (text === null || text === "null") {
+        if (text === null || text === NULL) {
             return Constants.EMPTY;
         }
         return text;

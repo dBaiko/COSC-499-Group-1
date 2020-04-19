@@ -6,25 +6,25 @@
             </mat-card-header>
         </div>
         <mat-card-content>
-            <hr />
-            <br />
-            <div class="settingsInfo">
+            <hr/>
+            <br/>
+            <div *ngIf="this.auth.isLoggedIn()" class="settingsInfo">
                 <mat-slide-toggle (change)="themeToggle($event)" *ngIf="settings.theme == 'dark'" checked
-                    >Dark Theme
+                >Dark Theme
                 </mat-slide-toggle>
                 <mat-slide-toggle (change)="themeToggle($event)" *ngIf="settings.theme == 'light'"
-                    >Dark Theme
+                >Dark Theme
                 </mat-slide-toggle>
-                <br />
+                <br/>
                 <mat-slide-toggle (change)="explicitToggle($event)" *ngIf="settings.explicit" checked
-                    >Explicit (see explicit content)
+                >Explicit (see explicit content)
                 </mat-slide-toggle>
                 <mat-slide-toggle (change)="explicitToggle($event)" *ngIf="!settings.explicit"
-                    >Explicit (see explicit content)
+                >Explicit (see explicit content)
                 </mat-slide-toggle>
             </div>
-            <hr />
-            <div>
+            <hr/>
+            <div *ngIf="this.auth.isLoggedIn()">
                 <p><b>Email (click to update)</b></p>
                 <p
                     (click)="editingEmail = true; this.emailForm.get('email').setValue(this.userProfile.email)"
@@ -42,14 +42,14 @@
                         <mat-label>Email</mat-label>
                         <label for="email"></label
                         ><input
-                            class="form-control"
-                            formControlName="email"
-                            id="email"
-                            matInput
-                            name="email"
-                            required
-                            type="email"
-                        />
+                        class="form-control"
+                        formControlName="email"
+                        id="email"
+                        matInput
+                        name="email"
+                        required
+                        type="email"
+                    />
                         <mat-error *ngFor="let validation of common.validation_methods.email">
                             <mat-error
                                 *ngIf="
@@ -60,15 +60,15 @@
                                         emailFormSubmitAttempt
                                     )
                                 "
-                                >{{ validation.message }}</mat-error
+                            >{{ validation.message }}</mat-error
                             >
                         </mat-error>
                     </mat-form-field>
                     <button mat-button type="submit">Save</button>
                 </form>
             </div>
-            <hr />
-            <div>
+            <hr/>
+            <div *ngIf="this.auth.isLoggedIn()">
                 <p><b>Change Password</b></p>
                 <mat-error>{{ errorMessage }}</mat-error>
                 <p>{{ successMessage }}</p>
@@ -94,11 +94,11 @@
                                         changePasswordSubmitAttempt
                                     )
                                 "
-                                >{{ validation.message }}</mat-error
+                            >{{ validation.message }}</mat-error
                             >
                         </mat-error>
                     </mat-form-field>
-                    <br />
+                    <br/>
                     <mat-form-field appearance="fill" color="primary" id="noMargin">
                         <mat-label>Password</mat-label>
                         <label for="password"></label>
@@ -110,7 +110,7 @@
                             required
                             type="password"
                         />
-                        <br />
+                        <br/>
                         <mat-hint>Minimum 8 Characters</mat-hint>
                         <mat-error *ngFor="let validation of common.validation_methods.password">
                             <mat-error
@@ -122,11 +122,11 @@
                                         changePasswordSubmitAttempt
                                     )
                                 "
-                                >{{ validation.message }}</mat-error
+                            >{{ validation.message }}</mat-error
                             >
                         </mat-error>
                     </mat-form-field>
-                    <br />
+                    <br/>
                     <mat-form-field appearance="fill" color="primary">
                         <mat-label>Confirm password</mat-label>
                         <label for="confirmPassword"></label>
@@ -144,11 +144,11 @@
                                     passwordForm.get('confirmPassword').hasError(validation.type) ||
                                     passwordForm.hasError(validation.type)
                                 "
-                                >{{ validation.message }}</mat-error
+                            >{{ validation.message }}</mat-error
                             >
                         </mat-error>
                     </mat-form-field>
-                    <br />
+                    <br/>
                     <button mat-button type="submit">Change password</button>
                 </form>
             </div>

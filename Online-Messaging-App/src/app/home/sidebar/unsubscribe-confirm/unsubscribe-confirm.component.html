@@ -1,11 +1,12 @@
-<div class="center">
+<div *ngIf="channel" class="center">
     <mat-label *ngIf="channel.channelType == 'friend'; else elseblock"
-        >Are you sure you want to unfriend this user?</mat-label
+    >Are you sure you want to unfriend this user?
+    </mat-label
     >
     <ng-template #elseblock>
         <mat-label>Are you sure you want to unsubscribe from this channel?</mat-label>
     </ng-template>
-    <br /><br />
-    <button id="cancel" (click)="onClose(false)" class="button" mat-button>Cancel</button>
+    <br/><br/>
+    <button (click)="onClose(false)" class="button" id="cancel" mat-button>Cancel</button>
     <button (click)="onClose(true)" class="button" mat-button>Yes</button>
 </div>

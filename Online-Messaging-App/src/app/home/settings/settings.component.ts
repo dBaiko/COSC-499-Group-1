@@ -5,6 +5,7 @@ import { APIConfig, Constants, SettingsObject, UserObject, UserProfileObject } f
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { FormValidationService } from "../../shared/form-validation.service";
 import { CommonService } from "../../shared/common.service";
+import { CognitoIdToken } from "amazon-cognito-identity-js";
 
 const SETTINGS_URI = "/settings";
 const DARK = "dark";
@@ -32,14 +33,14 @@ export class SettingsComponent implements OnInit {
     private usersAPI: string = APIConfig.usersAPI;
 
     constructor(
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private http: HttpClient,
         public formValidationService: FormValidationService,
         public common: CommonService
     ) {
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.passwordForm = new FormGroup(
             {
                 password: new FormControl(
@@ -57,7 +58,7 @@ export class SettingsComponent implements OnInit {
         });
     }
 
-    themeToggle($event): void {
+    public themeToggle($event): void {
         if ($event.checked) {
             this.themeEvent.emit(DARK);
             this.saveTheme(DARK);
@@ -67,7 +68,7 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    explicitToggle(event): void {
+    public explicitToggle(event): void {
         if (event.checked) {
             this.explicitEvent.emit(true);
             this.saveExplicit(true);
@@ -77,14 +78,14 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    changePasswordFormSubmit(form: FormGroup): void {
+    public changePasswordFormSubmit(form: FormGroup): void {
         this.changePasswordSubmitAttempt = true;
         this.successMessage = Constants.EMPTY;
         this.errorMessage = Constants.EMPTY;
         if (form.valid) {
             this.auth
                 .changePassword(form.value.oldPassword, form.value.password)
-                .then((result) => {
+                .then(() => {
                     this.successMessage = "Password updated successfully";
                 })
                 .catch((err: Error) => {
@@ -93,11 +94,11 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    emailFormSubmit(form: FormGroup): void {
+    public emailFormSubmit(form: FormGroup): void {
         this.emailFormSubmitAttempt = true;
         if (form.valid) {
             this.auth.getCurrentSessionId().subscribe(
-                (data) => {
+                (data: CognitoIdToken) => {
                     let httpHeaders = {
                         headers: new HttpHeaders({
                             "Content-Type": "application/json",
@@ -107,7 +108,7 @@ export class SettingsComponent implements OnInit {
 
                     let body = {
                         username: this.userProfile.username,
-                        email: this.common.santizeText(form.value.email)
+                        email: this.common.sanitizeText(form.value.email)
                     };
 
                     this.http
@@ -115,29 +116,29 @@ export class SettingsComponent implements OnInit {
                         .subscribe(
                             (data: Array<UserObject>) => {
                                 this.editingEmail = false;
-                                this.userProfile.email = this.common.santizeText(form.value.email);
+                                this.userProfile.email = this.common.sanitizeText(form.value.email);
                             },
                             (err) => {
-                                console.log(err);
+                                console.error(err);
                             }
                         );
                 },
                 (error) => {
-                    console.log(error);
+                    console.error(error);
                 }
             );
         }
     }
 
-    private saveExplicit(explicit: boolean) {
+    private saveExplicit(explicit: boolean): void {
         this.updateSettings(this.settings.theme, explicit);
     }
 
-    private saveTheme(themeString: string) {
+    private saveTheme(themeString: string): void {
         this.updateSettings(themeString, this.settings.explicit);
     }
 
-    private updateSettings(themeString: string, explicit: boolean) {
+    private updateSettings(themeString: string, explicit: boolean): void {
         this.auth.getCurrentSessionId().subscribe(
             (data) => {
                 let httpHeaders = {
@@ -160,16 +161,15 @@ export class SettingsComponent implements OnInit {
                         httpHeaders
                     )
                     .subscribe(
-                        (SettingsObject) => {
-                            console.log("Settings updated successfully.");
+                        () => {
                         },
                         (err) => {
-                            console.log(err);
+                            console.error(err);
                         }
                     );
             },
             (err) => {
-                console.log(err);
+                console.error(err);
             }
         );
     }

@@ -1,6 +1,6 @@
 <div class="header">
     <div id="title">
-        <span class="menuButton">
+        <span *ngIf="this.auth.isLoggedIn()" class="menuButton">
             <mat-icon (click)="toggleSideBarOpen(true)" *ngIf="!sideBarOpen">menu_open</mat-icon>
             <mat-icon (click)="toggleSideBarOpen(false)" *ngIf="sideBarOpen">menu</mat-icon>
         </span>
@@ -91,7 +91,7 @@
         <span class="title">General</span>
         <div *ngFor="let notification of generalNotification">
             <div
-                (click)="notificationChannelEmitter('chatbox', notification.channelId, notification.channelType)"
+                (click)="goToChannelFromNotification('chatbox', notification.channelId, notification.channelType)"
                 class="notificationOption"
                 id="generalNotification"
             >
