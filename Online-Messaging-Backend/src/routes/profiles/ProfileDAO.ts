@@ -253,7 +253,7 @@ export class ProfileDAO {
         let profileImageFilename = username + Constants.PNG_FILE_FORMAT;
 
         let param = {
-            Bucket: AWSS3Config.endpoint,
+            Bucket: AWSS3Config.bucket,
             Body: fs.createReadStream(path),
             Key: AWSS3Config.imagesFolder + profileImageFilename
         };
