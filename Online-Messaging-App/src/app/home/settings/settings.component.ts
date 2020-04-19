@@ -33,7 +33,7 @@ export class SettingsComponent implements OnInit {
     private usersAPI: string = APIConfig.usersAPI;
 
     constructor(
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private http: HttpClient,
         public formValidationService: FormValidationService,
         public common: CommonService

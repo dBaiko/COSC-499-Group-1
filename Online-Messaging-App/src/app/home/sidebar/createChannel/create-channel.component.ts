@@ -34,7 +34,7 @@ export class CreateChannelComponent implements OnInit {
     private channelAPI: string = APIConfig.channelsAPI;
 
     constructor(
-        private auth: AuthenticationService,
+        public auth: AuthenticationService,
         private http: HttpClient,
         public common: CommonService,
         public formValidationService: FormValidationService,
