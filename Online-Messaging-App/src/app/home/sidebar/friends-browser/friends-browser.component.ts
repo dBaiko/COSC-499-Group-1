@@ -51,9 +51,11 @@ export class FriendsBrowserComponent implements OnInit {
     }
 
     public ngOnInit() {
-        this.getFriendNotifications().catch((err) => {
-            console.error(err);
-        });
+        if (this.auth.isLoggedIn()) {
+            this.getFriendNotifications().catch((err) => {
+                console.error(err);
+            });
+        }
     }
 
     public onKey($event: Event): void {

@@ -160,57 +160,6 @@ describe("RegisterComponent", () => {
         expect(errors["pattern"]).toBeFalsy();
     });
 
-    it("should fail invalid username with only emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let username = component.registerForm.controls["username"];
-        username.setValue("🤦‍♂");
-
-        errors = username.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid username with only symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let username = component.registerForm.controls["username"];
-        username.setValue(";!");
-
-        errors = username.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid username with symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let username = component.registerForm.controls["username"];
-        username.setValue("asd!");
-
-        errors = username.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-    it("should fail invalid username with emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let username = component.registerForm.controls["username"];
-        username.setValue("asd💕");
-
-        errors = username.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
     it("should fail no value first name", () => {
         let firstName = component.registerForm.controls["firstName"];
         expect(firstName.valid).toBeFalsy();
@@ -255,57 +204,6 @@ describe("RegisterComponent", () => {
         expect(errors["pattern"]).toBeFalsy();
     });
 
-    it("should fail invalid first name with only emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let firstName = component.registerForm.controls["firstName"];
-        firstName.setValue("🤦‍♂");
-
-        errors = firstName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid first name with only symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let firstName = component.registerForm.controls["firstName"];
-        firstName.setValue(";!");
-
-        errors = firstName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid first name with symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let firstName = component.registerForm.controls["firstName"];
-        firstName.setValue("asd!");
-
-        errors = firstName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-    it("should fail invalid first name with emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let firstName = component.registerForm.controls["firstName"];
-        firstName.setValue("asd💕");
-
-        errors = firstName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
     it("should fail no value last name", () => {
         let lastName = component.registerForm.controls["lastName"];
         expect(lastName.valid).toBeFalsy();
@@ -348,57 +246,6 @@ describe("RegisterComponent", () => {
         errors = lastName.errors || {};
 
         expect(errors["pattern"]).toBeFalsy();
-    });
-
-    it("should fail invalid last name with only emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let lastName = component.registerForm.controls["lastName"];
-        lastName.setValue("🤦‍♂");
-
-        errors = lastName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid last name with only symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let lastName = component.registerForm.controls["lastName"];
-        lastName.setValue(";!");
-
-        errors = lastName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-
-    it("should fail invalid last name with symbols", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let lastName = component.registerForm.controls["lastName"];
-        lastName.setValue("asd!");
-
-        errors = lastName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
-    });
-    it("should fail invalid last name with emoji", () => {
-        expect(component).toBeTruthy();
-
-        let errors = {};
-
-        let lastName = component.registerForm.controls["lastName"];
-        lastName.setValue("asd💕");
-
-        errors = lastName.errors || {};
-
-        expect(errors["pattern"]).toBeTruthy();
     });
 
     it("should fail no value password", () => {
