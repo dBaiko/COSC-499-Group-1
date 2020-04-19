@@ -3,15 +3,17 @@ import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 const SETTINGS_TABLE_NAME = "Settings";
 
-interface SettingsObject {
+export interface SettingsObject {
     username: string;
     theme: string;
+    explicit?: string
 }
 
 class SettingsDAO {
     private usernameQueryDeclaration = "username = :username";
 
-    constructor(private docClient: DocumentClient) {}
+    constructor(private docClient: DocumentClient) {
+    }
 
     public createSettingsInfo(username: string, theme: string): Promise<any> {
         const params = {
@@ -35,7 +37,7 @@ class SettingsDAO {
         });
     }
 
-    public getSettingsInfoByUsername(username: string) {
+    public getSettingsInfoByUsername(username: string): Promise<Array<SettingsObject>> {
         const params = {
             TableName: SETTINGS_TABLE_NAME,
             KeyConditionExpression: this.usernameQueryDeclaration,
@@ -44,7 +46,7 @@ class SettingsDAO {
             }
         };
 
-        return new Promise((resolve, reject) => {
+        return new Promise<any>((resolve, reject) => {
             this.docClient.query(params, (err, data) => {
                 if (err) {
                     console.log(err);

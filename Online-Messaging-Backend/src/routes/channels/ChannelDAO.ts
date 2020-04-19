@@ -1,4 +1,3 @@
-/* tslint:disable:no-console */
 import aws from "aws-sdk";
 import { awsConfigPath } from "../../config/aws-config";
 import UserChannelDAO from "../userChannels/UserChannelDAO";
