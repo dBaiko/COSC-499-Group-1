@@ -170,6 +170,13 @@ export interface ChannelObject {
     channelType: string;
     channelDescription: string;
     inviteStatus?: string;
+    numUsers?: number;
+}
+
+export interface SettingsObject {
+    username: string,
+    theme: string,
+    explicit: string
 }
 
 export interface ChannelAndNumUsers extends ChannelObject {
