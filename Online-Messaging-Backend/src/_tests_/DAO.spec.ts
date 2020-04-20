@@ -911,15 +911,15 @@ describe("ALL_TESTS", () => {
                             club: null,
                             injuryStatus: null,
                             instagram: null,
-                            languages: null,
+                            languages: " ",
                             coachFirstName: null,
                             coachLastName: null,
-                            coachPhone: null,
+                            coachPhone: " ",
                             coachEmail: null,
                             parentFirstName: null,
                             parentLastName: null,
                             parentEmail: null,
-                            parentPhone: null,
+                            parentPhone: " ",
                             budget: null,
                             status: "Lorem Ipsum"
                         }
